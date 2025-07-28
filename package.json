@@ -1,0 +1,17 @@
+{
+  "name": "herodotus",
+  "version": "1.0.0",
+  "description": "A JavaScript project with a generator class.",
+  "main": "src/main.js",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'No build step required'",
+    "start": "node src/main.js",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^30.0.5"
+  }
+}
