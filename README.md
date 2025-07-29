@@ -3,6 +3,14 @@ History generator for fictional worlds
 
 ## Requirements
 
+### Development requirements
+
+D1) JavaScript 
+The application is implemented in JavaScript.
+
+D2) SOLID
+The design must observed SOLID principles.
+
 
 ### Clarity of historical event requirements
 
@@ -12,7 +20,7 @@ H2) Each entry takes place at a time, involving a historical figurue, at a place
 
 H3) Each entry must start with a super condensed heading, almost like keywords.
 
-H4) An entry can either be due to
+H4) An entry can either be due to either
 - the action/initative of historical figure
 - natural events
 
@@ -50,7 +58,7 @@ H11) Many of the incredible claims will be corroborated by archaeological and hi
 
 H12) Beyond the military conflicts, the chronicle also encompasses geography, cultural descriptions, and observations about various peoples, their customs, and beliefs.
 
-H13)Historical events become legend and legend become myth.
+H13) Historical events become legend and legend become myth.
 
 H14) Attribution of Fanciful Elements: 
 The generator should subtly attribute unverified claims or fantastical elements to specific sources within the narrative (e.g., "It is said by the mountain folk...", "The ancient scrolls of X describe...", "A bard's tale recounts..."). 
@@ -144,11 +152,15 @@ The primary output should be a structured format (e.g., JSON) that can then be e
 
 -----------------
 
-Lets start to create a simple data model for requirements H1.
-The data model is implemented in JavaScript.
-The design must observed SOLID principles.
+## Prompt 
 
-## Data Model
+Analyze the README file, extend the design with requirement H2 only.
+The design must observe requirements D1, D2.
+State how design observes requirements D2.
+Create a design proposal. 
+State how the design adjusts to already implemented requirements.
+
+# Data Model
 
 Based on requirement H1, we can establish a basic data model.
 

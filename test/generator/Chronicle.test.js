@@ -1,5 +1,8 @@
 import { Chronicle } from '../../src/generator/Chronicle.js';
 import { HistoricalEntry } from '../../src/generator/HistoricalEntry.js';
+import { Time } from '../../src/generator/time/Time.js';
+import { HistoricalFigure } from '../../src/generator/HistoricalFigure.js';
+import { Place } from '../../src/generator/Place.js';
 
 describe('Chronicle', () => {
   let chronicle;
@@ -11,25 +14,41 @@ describe('Chronicle', () => {
   describe('constructor', () => {
     it('should create an empty chronicle', () => {
       expect(chronicle).toBeInstanceOf(Chronicle);
-      expect(chronicle.entries).toEqual([]);
+      expect(chronicle.getEntries()).toEqual([]);
     });
   });
 
   describe('addEntry', () => {
     it('should add a HistoricalEntry to the chronicle', () => {
-      const entry = new HistoricalEntry('An important event happened.');
+      const entry = new HistoricalEntry(
+        new Time(490),
+        new HistoricalFigure('Miltiades'),
+        new Place('Marathon'),
+        'Athenians defeat the first Persian invasion.'
+      );
       chronicle.addEntry(entry);
-      expect(chronicle.entries).toHaveLength(1);
-      expect(chronicle.entries[0]).toBe(entry);
+      expect(chronicle.getEntries()).toHaveLength(1);
+      expect(chronicle.getEntries()[0]).toBe(entry);
     });
 
-    it('should add multiple HistoricalEntry objects to the chronicle', () => {
-      const entry1 = new HistoricalEntry('First event.');
-      const entry2 = new HistoricalEntry('Second event.');
+    it('should allow multiple entries to be added', () => {
+      const entry1 = new HistoricalEntry(
+        new Time(490),
+        new HistoricalFigure('Miltiades'),
+        new Place('Marathon'),
+        'Athenians defeat the first Persian invasion.'
+      );  
+      const entry2 = new HistoricalEntry(
+        new Time(480),
+        new HistoricalFigure('Themistocles'),
+        new Place('Salamis'),
+        'Greek fleet defeats the Persian navy.'
+      );
       chronicle.addEntry(entry1);
       chronicle.addEntry(entry2);
-      expect(chronicle.entries).toHaveLength(2);
-      expect(chronicle.entries).toEqual([entry1, entry2]);
+      expect(chronicle.getEntries()).toHaveLength(2); 
+      expect(chronicle.getEntries()[0]).toBe(entry1);
+      expect(chronicle.getEntries()[1]).toBe(entry2);
     });
 
     it('should throw a TypeError if a non-HistoricalEntry object is added', () => {
@@ -42,17 +61,6 @@ describe('Chronicle', () => {
       expect(() => chronicle.addEntry(123)).toThrow(TypeError);
       expect(() => chronicle.addEntry(null)).toThrow(TypeError);
       expect(() => chronicle.addEntry(undefined)).toThrow(TypeError);
-    });
-  });
-
-  describe('entries getter', () => {
-    it('should return the array of entries', () => {
-      const entry = new HistoricalEntry('An event');
-      chronicle.addEntry(entry);
-      const entries = chronicle.entries;
-      expect(entries).toBeInstanceOf(Array);
-      expect(entries).toHaveLength(1);
-      expect(entries[0].description).toBe('An event');
     });
   });
 });

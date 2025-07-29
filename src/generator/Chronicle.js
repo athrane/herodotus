@@ -30,7 +30,7 @@ export class Chronicle {
    * Gets the list of historical entries.
    * @returns {HistoricalEntry[]}
    */
-  get entries() {
+  getEntries() {
     return this.#entries;
   }
 }

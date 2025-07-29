@@ -1,33 +1,47 @@
 import { HistoricalEntry } from '../../src/generator/HistoricalEntry.js';
+import { Time } from '../../src/generator/time/Time.js';
+import { HistoricalFigure } from '../../src/generator/HistoricalFigure.js';
+import { Place } from '../../src/generator/Place.js';
 
 describe('HistoricalEntry', () => {
+  let time;
+  let figure;
+  let place;
+  let description;
+
+  beforeEach(() => {
+    time = new Time(484);
+    figure = new HistoricalFigure('Herodotus');
+    place = new Place('Halicarnassus');
+    description = 'The birth of the Father of History.';
+  });
+
   describe('constructor', () => {
-    it('should create a HistoricalEntry with a valid description', () => {
-      const description = 'The founding of the city of Aethelburg.';
-      const entry = new HistoricalEntry(description);
+    it('should create a HistoricalEntry with valid arguments', () => {
+      const entry = new HistoricalEntry(time, figure, place, description);
       expect(entry).toBeInstanceOf(HistoricalEntry);
-      expect(entry.description).toBe(description);
+      console.log(time);
+      expect(entry.getTime()).toBe(time);
+      expect(entry.getFigure()).toBe(figure);
+      expect(entry.getPlace()).toBe(place);
+      expect(entry.getDescription()).toBe(description);
     });
 
-    it('should throw a TypeError if the description is not a string', () => {
-      expect(() => new HistoricalEntry(123)).toThrow(TypeError);
-      expect(() => new HistoricalEntry({})).toThrow(TypeError);
-      expect(() => new HistoricalEntry(null)).toThrow(TypeError);
-      expect(() => new HistoricalEntry(undefined)).toThrow(TypeError);
-      expect(() => new HistoricalEntry([])).toThrow(TypeError);
-    });
-
-    it('should allow an empty string as a description', () => {
-      const entry = new HistoricalEntry('');
-      expect(entry.description).toBe('');
+    it('should throw a TypeError for invalid argument types', () => {
+      expect(() => new HistoricalEntry('not time', figure, place, description)).toThrow(TypeError);
+      expect(() => new HistoricalEntry(time, 'not figure', place, description)).toThrow(TypeError);
+      expect(() => new HistoricalEntry(time, figure, 'not place', description)).toThrow(TypeError);
+      expect(() => new HistoricalEntry(time, figure, place, 123)).toThrow(TypeError);
     });
   });
 
-  describe('description getter', () => {
-    it('should return the description provided in the constructor', () => {
-      const description = 'A great battle was fought on the plains of Gorgoroth.';
-      const entry = new HistoricalEntry(description);
-      expect(entry.description).toBe(description);
+  describe('getters', () => {
+    it('should return the correct values provided in the constructor', () => {
+      const entry = new HistoricalEntry(time, figure, place, description);
+      expect(entry.getTime().getYear()).toBe(484);
+      expect(entry.getFigure().getName()).toBe('Herodotus');
+      expect(entry.getPlace().getName()).toBe('Halicarnassus');
+      expect(entry.getDescription()).toBe('The birth of the Father of History.');
     });
   });
 });
