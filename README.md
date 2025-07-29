@@ -1,6 +1,21 @@
 # herodotus
 History generator for fictional worlds
 
+## Usage
+
+### Available Scripts
+
+In the project directory, you can run:
+
+#### `npm run build`
+Builds the application into a single file, ready for distribution. The build artifacts will be stored in the `dist/` directory.
+
+#### `npm start`
+Runs the application's entry point (`src/main.js`).
+
+#### `npm test`
+Launches the test runner to execute all tests.
+
 ## Requirements
 
 ### Development requirements
