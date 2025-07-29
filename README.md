@@ -8,7 +8,7 @@ History generator for fictional worlds
 In the project directory, you can run:
 
 #### `npm run build`
-Builds the application into a single file, ready for distribution. The build artifacts will be stored in the `dist/` directory.
+Builds the application into a single file, ready for distribution. This project uses esbuild for fast and efficient bundling. The build artifacts will be stored in the `dist/` directory.
 
 #### `npm start`
 Runs the application's entry point (`src/main.js`).

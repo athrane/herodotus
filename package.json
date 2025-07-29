@@ -5,7 +5,7 @@
   "main": "src/main.js",
   "type": "module",
   "scripts": {
-    "build": "rollup -c",
+    "build": "esbuild src/main.js --bundle --outfile=dist/bundle.js --format=esm --target=esnext",
     "start": "node src/main.js",
     "test": "jest --config jest.config.js"
   },
@@ -15,8 +15,7 @@
     "@babel/core": "^7.28.0",
     "@babel/preset-env": "^7.28.0",
     "babel-jest": "^30.0.5",
-    "jest": "^30.0.5",
-    "@rollup/plugin-babel": "^6.0.4",
-    "rollup": "^4.18.0"
+    "esbuild": "^0.23.0",
+    "jest": "^30.0.5"
   }
 }
