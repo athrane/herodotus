@@ -2,25 +2,28 @@ import { HistoricalEntry } from '../../src/generator/HistoricalEntry.js';
 import { Time } from '../../src/generator/time/Time.js';
 import { HistoricalFigure } from '../../src/generator/HistoricalFigure.js';
 import { Place } from '../../src/generator/Place.js';
+import { EventType } from '../../src/generator/event/EventType.js';
 
 describe('HistoricalEntry', () => {
-  let time;
   let heading;
+  let eventType;
+  let time;
   let figure;
   let place;
   let description;
 
   beforeEach(() => {
+    heading = 'Birth, Herodotus';
+    eventType = new EventType('Political', 'Birth');
     time = new Time(484);
     figure = new HistoricalFigure('Herodotus');
     place = new Place('Halicarnassus');
-    heading = 'Birth, Herodotus';
     description = 'The birth of the Father of History.';
   });
 
   describe('constructor', () => {
     it('should create a HistoricalEntry with valid arguments', () => {
-      const entry = new HistoricalEntry(heading, time, figure, place, description);
+      const entry = new HistoricalEntry(heading, eventType, time, place, description, figure);
       expect(entry).toBeInstanceOf(HistoricalEntry);
       console.log(time);
       expect(entry.getHeading()).toBe(heading);
@@ -41,12 +44,13 @@ describe('HistoricalEntry', () => {
 
   describe('getters', () => {
     it('should return the correct values provided in the constructor', () => {      
-      const entry = new HistoricalEntry(heading, time, figure, place, description);
+      const entry = new HistoricalEntry(heading, eventType, time, place, description, figure);
       expect(entry.getHeading()).toBe('Birth, Herodotus');
+      expect(entry.getEventType().getName()).toBe('Birth');
       expect(entry.getTime().getYear()).toBe(484);
-      expect(entry.getFigure().getName()).toBe('Herodotus');
       expect(entry.getPlace().getName()).toBe('Halicarnassus');
       expect(entry.getDescription()).toBe('The birth of the Father of History.');
+      expect(entry.getFigure().getName()).toBe('Herodotus');
     });
   });
 });

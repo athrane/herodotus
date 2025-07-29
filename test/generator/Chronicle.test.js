@@ -3,6 +3,7 @@ import { HistoricalEntry } from '../../src/generator/HistoricalEntry.js';
 import { Time } from '../../src/generator/time/Time.js';
 import { HistoricalFigure } from '../../src/generator/HistoricalFigure.js';
 import { Place } from '../../src/generator/Place.js';
+import { EventType } from '../../src/generator/event/EventType.js';
 
 describe('Chronicle', () => {
   let chronicle;
@@ -22,10 +23,11 @@ describe('Chronicle', () => {
     it('should add a HistoricalEntry to the chronicle', () => {
       const entry = new HistoricalEntry(
         'Victory, Marathon',
+        new EventType('Military', 'Battle'),
         new Time(490),
-        new HistoricalFigure('Miltiades'),
         new Place('Marathon'),
-        'Athenians defeat the first Persian invasion.'
+        'Athenians defeat the first Persian invasion.',
+        new HistoricalFigure('Miltiades')
       );
       chronicle.addEntry(entry);
       expect(chronicle.getEntries()).toHaveLength(1);
@@ -35,17 +37,19 @@ describe('Chronicle', () => {
     it('should allow multiple entries to be added', () => {
       const entry1 = new HistoricalEntry(
         'Victory, Marathon',
+        new EventType('Military', 'Battle'),
         new Time(490),
-        new HistoricalFigure('Miltiades'),
         new Place('Marathon'),
-        'Athenians defeat the first Persian invasion.'
+        'Athenians defeat the first Persian invasion.',
+        new HistoricalFigure('Miltiades')
       );  
       const entry2 = new HistoricalEntry(
         'Victory, Salamis',
+        new EventType('Military', 'Battle'),
         new Time(480),
-        new HistoricalFigure('Themistocles'),
         new Place('Salamis'),
-        'Greek fleet defeats the Persian navy.'
+        'Greek fleet defeats the Persian navy.',
+        new HistoricalFigure('Themistocles')
       );
       chronicle.addEntry(entry1);
       chronicle.addEntry(entry2);
