@@ -6,3 +6,6 @@ describe('Generator', () => {
     const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
     generator.run();
     expect(consoleSpy).toHaveBeenCalledWith('Generator is running!');
+        consoleSpy.mockRestore();
+  });
+});

@@ -7,11 +7,14 @@
   "scripts": {
     "build": "echo 'No build step required'",
     "start": "node src/main.js",
-    "test": "jest"
+    "test": "jest --config jest.config.js"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@babel/core": "^7.28.0",
+    "@babel/preset-env": "^7.28.0",
+    "babel-jest": "^30.0.5",
     "jest": "^30.0.5"
   }
 }
