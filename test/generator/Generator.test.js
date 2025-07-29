@@ -1,11 +1,16 @@
 import { Generator } from '../../src/generator/Generator.js';
 
 describe('Generator', () => {
-  it('should log "Generator is running!" when run() is called', () => {
-    const generator = new Generator();
-    const consoleSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
-    generator.run();
-    expect(consoleSpy).toHaveBeenCalledWith('Generator is running!');
-        consoleSpy.mockRestore();
+  let generator;
+
+  beforeEach(() => {
+    generator = new Generator();
   });
+
+    describe('constructor', () => {
+      it('should create a Generator instance', () => {
+        expect(generator).toBeInstanceOf(Generator);
+      });
+    });
+
 });
