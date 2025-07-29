@@ -10,6 +10,11 @@ export class HistoricalEntry {
   /**
    * @type {string}
    */
+  #heading;
+
+  /**
+   * @type {string}
+   */
   #description;
 
   /**
@@ -29,12 +34,14 @@ export class HistoricalEntry {
 
   /**
    * Creates an instance of HistoricalEntry.
+   * @param {string} heading - A super condensed heading for the event.
    * @param {Time} time - The time of the event.
    * @param {HistoricalFigure} figure - The historical figure involved.
    * @param {Place} place - The location of the event.
    * @param {string} description - A textual description of the historical event.
    */
-  constructor(time, figure, place, description) {
+  constructor(heading, time, figure, place, description) {
+    TypeUtils.ensureString(heading, 'HistoricalEntry heading must be a string.');
     TypeUtils.ensureInstanceOf(time, Time, 'HistoricalEntry time must be an instance of Time.');
     TypeUtils.ensureInstanceOf(figure, HistoricalFigure, 'HistoricalEntry figure must be an instance of HistoricalFigure.');
     TypeUtils.ensureInstanceOf(place, Place, 'HistoricalEntry place must be an instance of Place.');
@@ -42,6 +49,7 @@ export class HistoricalEntry {
 
     this.#time = time;
     this.#figure = figure;
+    this.#heading = heading;
     this.#place = place;
     this.#description = description;
   }
@@ -76,6 +84,14 @@ export class HistoricalEntry {
    */
   getDescription() {
     return this.#description;
+  }
+
+  /**
+   * Gets the heading of the historical entry.
+   * @returns {string}
+   */
+  getHeading() {
+    return this.#heading;
   }
 
 }

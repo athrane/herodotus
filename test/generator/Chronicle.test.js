@@ -21,6 +21,7 @@ describe('Chronicle', () => {
   describe('addEntry', () => {
     it('should add a HistoricalEntry to the chronicle', () => {
       const entry = new HistoricalEntry(
+        'Victory, Marathon',
         new Time(490),
         new HistoricalFigure('Miltiades'),
         new Place('Marathon'),
@@ -33,12 +34,14 @@ describe('Chronicle', () => {
 
     it('should allow multiple entries to be added', () => {
       const entry1 = new HistoricalEntry(
+        'Victory, Marathon',
         new Time(490),
         new HistoricalFigure('Miltiades'),
         new Place('Marathon'),
         'Athenians defeat the first Persian invasion.'
       );  
       const entry2 = new HistoricalEntry(
+        'Victory, Salamis',
         new Time(480),
         new HistoricalFigure('Themistocles'),
         new Place('Salamis'),
