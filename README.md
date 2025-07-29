@@ -147,3 +147,10 @@ The primary output should be a structured format (e.g., JSON) that can then be e
 Lets start to create a simple data model for requirements H1.
 The data model is implemented in JavaScript.
 The design must observed SOLID principles.
+
+## Data Model
+
+Based on requirement H1, we can establish a basic data model.
+
+- **`Chronicle`**: A class representing the entire historical document, which holds a collection of entries.
+- **`HistoricalEntry`**: A class representing a single, discrete entry in the chronicle.

@@ -3,9 +3,7 @@
  */
 export class TypeUtils {
   /**
-   * Ensures that a value is an instance of a given class.
-   * If not, it throws an error with details about the type mismatch
-   * and prints the stack trace.
+   * Ensures that a value is an instance of a given class. If not, it throws a TypeError.
    *
    * @param {any} value The value to check.
    * @param {Function} Class The expected class (constructor function).
