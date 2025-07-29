@@ -1,5 +1,5 @@
-import { Chronicle } from './Chronicle.js';
-import { HistoricalEntry } from './HistoricalEntry.js';
+import { Chronicle } from './chronicle/Chronicle.js';
+import { HistoricalEntry } from './chronicle/HistoricalEntry.js';
 import { EventCategory } from './event/EventCategory.js';
 import { EventType } from './event/EventType.js';
 import { HistoricalFigure } from './HistoricalFigure.js';
