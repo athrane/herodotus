@@ -16,6 +16,52 @@ Runs the application's entry point (`src/main.js`).
 #### `npm test`
 Launches the test runner to execute all tests.
 
+
+## Development
+
+This section provides an overview of the major classes in the project, grouped by their respective modules.
+
+### Module: `chronicle`
+Located in `src/generator/chronicle/`, this module deals with the core historical narrative.
+
+- **`Chronicle`**: Manages the collection of all historical entries, acting as the main container for the generated history.
+- **`HistoricalEntry`**: Represents a single, discrete event within the chronicle, detailing what happened, when, where, and who was involved.
+
+### Module: `ecs` (Entity-Component-System)
+Located in `src/generator/ecs/`, this module implements the ECS architectural pattern to manage game state and logic in a data-oriented way.
+
+- **`Component`**: A base class for data containers. Components are attached to entities and hold raw data, but no logic.
+- **`Entity`**: Represents a general-purpose object in the world. It's essentially an ID that acts as a container for a collection of components.
+- **`EntityManager`**: Responsible for the lifecycle of entities, including their creation, destruction, and retrieval. It also provides methods to query for entities that possess specific components.
+- **`System`**: A base class for the logic that operates on entities. Each system targets entities with a specific set of components and runs its update logic on them.
+
+### Module: `event`
+Located in `src/generator/event/`, this module helps categorize events.
+
+- **`EventType`**: Defines the type of a historical event, such as 'Military:Battle' or 'Political:Treaty', allowing for structured event generation and filtering.
+
+### Module: `geography`
+Located in `src/generator/geography/`, this module defines the world's physical structure.
+
+- **`World`**: Represents the entire game world, acting as a container for continents.
+- **`Continent`**: Represents a major landmass within the world, containing various geographical features and places.
+
+### Module: `time`
+Located in `src/generator/time/`, this module handles time-related concepts.
+
+- **`Time`**: Represents a specific point in time, used to date historical entries.
+
+### Module: `util`
+Located in `src/util/`, this module contains helper classes.
+
+- **`TypeUtils`**: A utility class with static methods for runtime type checking and validation, ensuring that functions and classes receive the correct types of arguments.
+
+### Other Core Classes
+These classes are fundamental to the generator and are located in `src/generator/`.
+
+- **`HistoricalFigure`**: Represents an individual (e.g., a monarch, general, or prophet) who influences or participates in historical events.
+- **`Place`**: Represents a specific location, such as a city or battlefield, where an event occurs.
+
 ## Requirements
 
 ### Development requirements
@@ -25,7 +71,6 @@ The application is implemented in JavaScript.
 
 D2) SOLID
 The design must observed SOLID principles.
-
 
 ### Clarity of historical event requirements
 
