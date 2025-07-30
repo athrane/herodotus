@@ -28,6 +28,8 @@ This module implements an Entity-Component-System (ECS) architecture, a design p
 
 *   **`EntityManager`**: A manager responsible for the entire lifecycle of entities, including their creation, destruction, and querying based on their components.
 
+*   **`SystemManager`**: Manages the registration and execution of all `System` instances. It orchestrates the main logic loop of the simulation by calling the `update` method on each registered system in sequence.
+
 #### `generator/event`
 
 This module provides an event-driven framework for managing occurrences within the generated history.
