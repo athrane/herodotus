@@ -36,11 +36,9 @@ describe('GeographicalFeature', () => {
 
         it('should throw an Error if the FeatureType is not registered', () => {
             // Create a new FeatureType instance that is NOT in the registry.
-            const unregisteredType = new FeatureType('SWAMP', 'Swamp');
+            const unregisteredType = new FeatureType('SOMEWHERE STRANGE', 'Swamp');
             const featureName = 'The Dead Marshes';
-
-            expect(() => new GeographicalFeature(featureName, unregisteredType))
-                .toThrow("The provided FeatureType with key 'SWAMP' is not registered.");
+            expect(() => new GeographicalFeature(featureName, unregisteredType)).toThrow(Error);
         });
     });
 

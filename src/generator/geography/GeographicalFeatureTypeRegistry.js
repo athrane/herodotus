@@ -1,3 +1,4 @@
+import { TypeUtils } from '../../util/TypeUtils.js';
 import { FeatureType } from './FeatureType.js';
 
 /**
@@ -20,6 +21,8 @@ export class GeographicalFeatureTypeRegistry {
      * @throws {Error} If a type with the given key is already registered.
      */
     static register(key, displayName) {
+        TypeUtils.ensureString(key);
+        TypeUtils.ensureString(displayName);
         if (this.#types.has(key)) {
             throw new Error(`GeographicalFeatureType with key '${key}' already registered.`);
         }
@@ -34,6 +37,7 @@ export class GeographicalFeatureTypeRegistry {
      * @returns {FeatureType|undefined} The FeatureType instance, or undefined if not found.
      */
     static get(key) {
+        TypeUtils.ensureString(key);
         return this.#types.get(key);
     }
 
@@ -43,6 +47,7 @@ export class GeographicalFeatureTypeRegistry {
      * @returns {boolean} True if the type is registered, false otherwise.
      */
     static has(key) {
+        TypeUtils.ensureString(key);
         return this.#types.has(key);
     }
 
@@ -60,5 +65,26 @@ export class GeographicalFeatureTypeRegistry {
      */
     static getAllKeys() {
         return Array.from(this.#types.keys());
+    }
+
+    /**
+     * Returns a random FeatureType from the registry.
+     * @returns {FeatureType|undefined} A random FeatureType, or undefined if no types are registered.
+     */
+    static getRandom() {
+        const types = this.getAll();
+        if (types.length > 0) {
+            const randomIndex = Math.floor(Math.random() * types.length);
+            return types[randomIndex];
+        }
+        return undefined;
+    }   
+
+    /**
+     * Clears all registered types from the registry.
+     * NOTE: This is intended for testing purposes to ensure a clean state between tests.
+     */
+    static clear() {
+        this.#types.clear();
     }
 }

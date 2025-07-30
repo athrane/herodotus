@@ -1,96 +1,65 @@
-# Herodotus World Generator
+# Herodotus
 
-A procedural world generation tool.
+A procedural world-building and history generation tool.
 
 ## Development
 
-This section provides an overview of the project's classes and their roles.
+This section provides an overview of the project's architecture and class structure for developers.
 
-### Project Structure & Class Documentation
+### Class Documentation
 
-The project is organized into modules based on functionality.
+The project is organized into modules, with each directory representing a distinct area of functionality.
 
-#### `util` Module
+#### `generator/chronicle`
 
-This module contains general-purpose utility classes.
+This module is responsible for generating the historical narrative of the world.
 
-*   **`TypeUtils`**
-    A static utility class for runtime type validation. It provides methods like `ensureString()`, `ensureNumber()`, and `ensureInstanceOf()` to enforce type safety throughout the application, throwing descriptive errors upon failure.
+*   **`ChronicleGenerator`**: Weaves together events, characters, and geographical features to create a coherent story or timeline for the generated world.
 
-    ```javascript
-    import { TypeUtils } from './src/util/TypeUtils.js';
+#### `generator/ecs`
 
-    TypeUtils.ensureString("hello"); // OK
-    TypeUtils.ensureInstanceOf([], Array); // OK
-    ```
+This module implements an Entity-Component-System (ECS) architecture, a design pattern that promotes data-oriented design and flexible composition over deep inheritance hierarchies.
 
----
+*   **`Entity`**: A lightweight container that represents an object in the world (e.g., a person, a city, a kingdom). It is essentially a unique ID that aggregates a collection of components.
 
-#### `generator/geography` Module
+*   **`Component`**: A simple data container that holds a specific piece of information about an entity (e.g., `PositionComponent`, `HealthComponent`). Components contain no logic.
 
-This module contains all the core classes for representing and generating the world's geography. The classes are designed to be composable, following a clear hierarchy.
+*   **`System`**: Contains all the logic for a specific domain. Systems operate on entities that possess a certain set of components (e.g., a `MovementSystem` would process entities with `PositionComponent` and `VelocityComponent`).
 
-*   **`FeatureType`**
-    An immutable class that represents a *category* of a geographical feature. Each instance has a unique `key` (e.g., 'MOUNTAIN') and a `displayName` (e.g., 'Mountain'). These are the building blocks for defining what can exist in the world.
+*   **`EntityManager`**: A manager responsible for the entire lifecycle of entities, including their creation, destruction, and querying based on their components.
 
-    ```javascript
-    import { FeatureType } from './src/generator/geography/FeatureType.js';
-    const type = new FeatureType('OCEAN', 'Ocean');
-    console.log(type.getKey()); // 'OCEAN'
-    ```
+#### `generator/event`
 
-*   **`GeographicalFeatureTypeRegistry`**
-    A static class that acts as a singleton registry for all `FeatureType` instances. It ensures that each feature type is defined only once. It's the central authority for creating and retrieving feature types via its `register()`, `get()`, and `has()` methods.
+This module provides an event-driven framework for managing occurrences within the generated history.
 
-    ```javascript
-    import { GeographicalFeatureTypeRegistry } from './src/generator/geography/GeographicalFeatureTypeRegistry.js';
+*   **`EventCategory`**: Enum Defines the categories for historical events.
 
-    // Register a new type
-    const volcanoType = GeographicalFeatureTypeRegistry.register('VOLCANO', 'Volcano');
+*   **`EventType`**: Represents the type of a historical event, including its category and specific name.
 
-    // Check if a type exists
-    console.log(GeographicalFeatureTypeRegistry.has('VOLCANO')); // true
-    ```
+#### `generator/geography`
 
-*   **`DefaultFeatureTypes`**
-    This file doesn't export a class, but rather a crucial, immutable object: `GeographicalFeatureTypes`. It uses the registry to pre-register a standard set of feature types (MOUNTAIN, RIVER, FOREST, etc.) and exports them as an enum-like object. This is the preferred way to access common types throughout the application, as it avoids magic strings.
+This module contains all the core classes for representing and managing the geographical elements of the generated world.
 
-    ```javascript
-    import { GeographicalFeatureTypes } from './src/generator/geography/DefaultFeatureTypes.js';
+*   **`World`**: The top-level container for the entire world. It holds a collection of `Continent` instances.
 
-    const mountain = GeographicalFeatureTypes.MOUNTAIN;
-    console.log(mountain.getName()); // 'Mountain'
-    ```
+*   **`Continent`**: Represents a single continent. It acts as a container for a collection of `GeographicalFeature` instances.
 
-*   **`GeographicalFeature`**
-    Represents a *specific, named instance* of a geographical feature. For example, "The Lonely Mountain" would be a `GeographicalFeature` instance with the name "The Lonely Mountain" and the type `GeographicalFeatureTypes.MOUNTAIN`. It validates that its type is a valid, registered `FeatureType`.
+*   **`GeographicalFeature`**: Represents a specific, named instance of a feature within the world, such as "The Misty Mountains." Each feature has a name and is associated with a `FeatureType`.
 
-    ```javascript
-    import { GeographicalFeature } from './src/generator/geography/GeographicalFeature.js';
-    import { GeographicalFeatureTypes } from './src/generator/geography/DefaultFeatureTypes.js';
+*   **`FeatureType`**: Represents the *definition* or *category* of a geographical feature (e.g., the concept of a 'Mountain' or 'River'). These are immutable objects with a unique key and a display name, intended to be shared and reused.
 
-    const mistyMountains = new GeographicalFeature(
-        "The Misty Mountains",
-        GeographicalFeatureTypes.MOUNTAIN
-    );
-    ```
+*   **`GeographicalFeatureTypeRegistry`**: A static singleton class that acts as a central registry for all `FeatureType` definitions. It ensures that feature types are unique and provides global methods to register, retrieve, and manage them.
 
-*   **`Continent`**
-    A class representing one of the world's continents. It primarily holds a name and will serve as a container for `GeographicalFeature` instances.
+*   **`DefaultFeatureTypes`**: This file does not export a class. Instead, it uses the `GeographicalFeatureTypeRegistry` to pre-register a standard set of common feature types (e.g., `MOUNTAIN`, `FOREST`, `RIVER`). It exports a frozen object, `GeographicalFeatureTypes`, which provides an enum-like way to access these default types.
 
-    ```javascript
-    import { Continent } from './src/generator/geography/Continent.js';
-    const mainContinent = new Continent("Mainland");
-    ```
+#### `generator/time`
 
-*   **`World`**
-    The top-level class that represents the entire generated world. It acts as a container for all `Continent` instances, forming the root of the data model.
+This module is responsible for tracking the passage of time, a core element of history generation.
 
-    ```javascript
-    import { World } from './src/generator/geography/World.js';
-    import { Continent } from './src/generator/geography/Continent.js';
+*   **`Time`**: A simple, immutable value object that represents a specific point in time (e.g., a year). It is used to timestamp events and other historical data within the chronicle.
 
-    const world = new World();
-    world.addContinent(new Continent("Westlands"));
-    world.addContinent(new Continent("Eastlands"));
-    ```
+#### `util`
+
+This module provides common utility classes used throughout the application.
+
+*   **`TypeUtils`**: A static utility class containing helper methods for runtime type validation. It provides functions like `ensureString()`, `ensureNumber()`, and `ensureInstanceOf()` to enforce type safety in constructors and methods, throwing clear errors when type constraints are violated.

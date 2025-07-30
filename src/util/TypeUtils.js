@@ -25,12 +25,13 @@ export class TypeUtils {
      * and prints the stack trace.
      *
      * @param {any} value The value to check.
+     * @param {string} [message] Optional error message to throw if the value is not a string.
      */
-  static ensureString(value) {
+  static ensureString(value, message) {
     if (typeof value !== 'string') {
       const actualType = typeof value;
       const expectedType = 'string';
-      const errorMessage = `Expected type ${expectedType}, but got ${actualType}`;
+      const errorMessage = message || `Expected type ${expectedType}, but got ${actualType}`;
       console.error(errorMessage);
       console.trace("String check failed");
       throw new TypeError(errorMessage);
@@ -43,12 +44,13 @@ export class TypeUtils {
      * and prints the stack trace.
      *
      * @param {any} value The value to check.
+     * @param {string} [message] Optional error message to throw if the value is not a number.
      */
-  static ensureNumber(value) {
+  static ensureNumber(value, message) {
     if (typeof value !== 'number') {
       const actualType = typeof value;
       const expectedType = 'number';
-      const errorMessage = `Expected type ${expectedType}, but got ${actualType}`;
+      const errorMessage = message || `Expected type ${expectedType}, but got ${actualType}`;
       console.error(errorMessage);
       console.trace("Number check failed");
       throw new TypeError(errorMessage);
