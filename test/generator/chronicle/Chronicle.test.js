@@ -1,6 +1,6 @@
 import { Chronicle } from '../../../src/generator/chronicle/Chronicle.js';
 import { HistoricalEntry } from '../../../src/generator/chronicle/HistoricalEntry.js';
-import { Time } from '../../../src/generator/time/Time.js';
+import { Time } from '../../../src//time/Time.js';
 import { HistoricalFigure } from '../../../src/generator/HistoricalFigure.js';
 import { Place } from '../../../src/generator/Place.js';
 import { EventType } from '../../../src/generator/event/EventType.js';
