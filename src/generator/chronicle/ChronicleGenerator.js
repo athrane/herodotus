@@ -1,4 +1,4 @@
-import { Continent } from '../geography/Continent.js';
+import { Continent } from '../../geography/Continent.js';
 
 /**
  * Generates a historical chronicle for a continent based on its geography.

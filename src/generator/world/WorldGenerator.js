@@ -1,11 +1,8 @@
-import { Continent } from '../geography/Continent.js';
-import { FeatureType } from '../geography/FeatureType.js';
-import { GeographicalFeature } from '../geography/GeographicalFeature.js';
-import { GeographicalFeatureTypeRegistry } from '../geography/GeographicalFeatureTypeRegistry.js';
-import { World } from '../geography/World.js';
-import { GeographicalFeatureTypes } from '../geography/DefaultFeatureTypes.js';
+import { Continent } from '../../geography/Continent.js';
+import { GeographicalFeature } from '../../geography/GeographicalFeature.js';
+import { GeographicalFeatureTypeRegistry } from '../../geography/GeographicalFeatureTypeRegistry.js';
+import { World } from '../../geography/World.js';
  
-
 /**
  * A self-contained generator that orchestrates the creation of a world,
  * including its geography and history.
