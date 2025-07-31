@@ -1,6 +1,6 @@
-import { SystemManager } from '../../../src/generator/ecs/SystemManager.js';
-import { EntityManager } from '../../../src/generator/ecs/EntityManager.js';
-import { System } from '../../../src/generator/ecs/System.js';
+import { SystemManager } from '../../src/ecs/SystemManager.js';
+import { EntityManager } from '../../src/ecs/EntityManager.js';
+import { System } from '../../src/ecs/System.js';
 
 // Mock System for testing purposes
 class MockSystemA extends System {

@@ -1,6 +1,6 @@
-import { EntityManager } from '../../../src/generator/ecs/EntityManager.js';
-import { Entity } from '../../../src/generator/ecs/Entity.js';
-import { Component } from '../../../src/generator/ecs/Component.js';
+import { EntityManager } from '../../src/ecs/EntityManager.js';
+import { Entity } from '../../src/ecs/Entity.js';
+import { Component } from '../../src/ecs/Component.js';
 
 // Mock components for testing
 class PositionComponent extends Component {

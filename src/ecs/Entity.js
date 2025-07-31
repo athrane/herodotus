@@ -1,4 +1,4 @@
-import { TypeUtils } from '../../util/TypeUtils.js';
+import { TypeUtils } from '../util/TypeUtils.js';
 import { Component } from './Component.js';
 
 /**
