@@ -25,4 +25,14 @@ export class Time {
   getYear() {
     return this.#year;
   }
+
+  /**
+   * Creates a new instance of Time.
+   * This static factory method provides a standardized way to construct Time objects.
+   * @param {number} year - The year of the event.
+   * @returns {Time} A new Time instance.
+   */
+  static create(year) {
+    return new Time(year);
+  }
 }

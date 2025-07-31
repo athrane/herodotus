@@ -1,5 +1,8 @@
 import { SystemManager } from '../ecs/SystemManager.js';
 import { EntityManager } from '../ecs/EntityManager.js';
+import { TimeComponent } from '../time/TimeComponent.js';
+import { Time } from '../time/Time.js';
+import { TimeSystem } from '../time/TimeSystem.js';
 
 /**
  * The `Simulation` class orchestrates an Entity-Component-System (ECS) based simulation.
@@ -10,6 +13,7 @@ export class Simulation {
     #systemManager;
     #isRunning;
     #lastTickTime;
+    #globalEntityId;
 
     /**
      * Creates an instance of Simulation.
@@ -19,6 +23,15 @@ export class Simulation {
         this.#systemManager = SystemManager.create(this.#entityManager);
         this.#isRunning = false;
         this.#lastTickTime = 0;
+
+        // Register systems
+        this.#systemManager.register(new TimeSystem(this.#entityManager));
+
+        // Create a global entity to hold simulation-wide state, like the current time.
+        const time = Time.create(0); // Starting at year 0
+        const timeComponent = TimeComponent.create(time);
+        const globalEntity = this.#entityManager.createEntity(timeComponent);
+        this.#globalEntityId = globalEntity.getId();
     }
 
     /**
@@ -43,6 +56,14 @@ export class Simulation {
      */
     getSystemManager() {
         return this.#systemManager;
+    }
+
+    /**
+     * Gets the global entity that holds simulation-wide state.
+     * @returns {Entity} The global entity.
+     */
+    getGlobalEntity() {
+        return this.#entityManager.getEntity(this.#globalEntityId);
     }
 
     /**
@@ -97,5 +118,3 @@ export class Simulation {
     }
     
 }
-
-
