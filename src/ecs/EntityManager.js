@@ -64,4 +64,21 @@ export class EntityManager {
       return true;
     });
   }
+
+  /**
+   * Returns the total number of entities currently managed.
+   * @returns {number} The number of entities.
+   */
+  count() {
+    return this.#entities.size;
+  }
+
+  /**
+   * Creates a new instance of EntityManager.
+   * This static factory method provides a standardized way to construct EntityManager objects.
+   * @returns {EntityManager} A new instance of EntityManager.
+   */
+  static create() {
+    return new EntityManager();
+  }
 }

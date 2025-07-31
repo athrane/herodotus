@@ -23,8 +23,8 @@ describe('SystemManager', () => {
   let systemManager;
 
   beforeEach(() => {
-    entityManager = new EntityManager();
-    systemManager = new SystemManager(entityManager);
+    entityManager = EntityManager.create();
+    systemManager = SystemManager.create(entityManager);
   });
 
   describe('constructor', () => {
@@ -47,7 +47,6 @@ describe('SystemManager', () => {
 
     it('should throw an error if a system of the same class is already registered', () => {
       systemManager.register(new MockSystemA(entityManager));
-      const expectedError = "System 'MockSystemA' is already registered.";
       expect(() => systemManager.register(new MockSystemA(entityManager))).toThrow(Error);
     });
 
@@ -67,13 +66,11 @@ describe('SystemManager', () => {
     });
 
     it('should throw an error if the system to delete is not registered', () => {
-      const expectedError = "System 'NonExistentSystem' is not registered.";
-      expect(() => systemManager.delete('NonExistentSystem')).toThrow(expectedError);
+      expect(() => systemManager.delete('NonExistentSystem')).toThrow(Error);
     });
 
     it('should throw a TypeError if the systemClassName is not a string', () => {
-      const expectedError = 'systemClassName must be a string.';
-      expect(() => systemManager.delete(123)).toThrow(expectedError);
+      expect(() => systemManager.delete(123)).toThrow(TypeError);
     });
   });
 

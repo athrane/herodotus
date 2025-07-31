@@ -65,4 +65,15 @@ export class SystemManager {
             system.update(...args);
         }
     }
+
+    /**
+     * Creates a new instance of SystemManager.
+     * This static factory method provides a standardized way to construct SystemManager objects.
+     * @param {EntityManager} entityManager The entity manager instance.
+     * @returns {SystemManager} A new instance of SystemManager.
+     */
+    static create(entityManager) {
+        return new SystemManager(entityManager);
+    }
+
 }
