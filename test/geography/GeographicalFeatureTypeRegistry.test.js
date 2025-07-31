@@ -1,5 +1,5 @@
-import { GeographicalFeatureTypeRegistry } from '../../../src/generator/geography/GeographicalFeatureTypeRegistry.js';
-import { FeatureType } from '../../../src/generator/geography/FeatureType.js';
+import { GeographicalFeatureTypeRegistry } from '../../src/geography/GeographicalFeatureTypeRegistry.js';
+import { FeatureType } from '../../src/geography/FeatureType.js';
 
 describe('GeographicalFeatureTypeRegistry', () => {
 

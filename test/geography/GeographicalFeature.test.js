@@ -1,6 +1,6 @@
-import { GeographicalFeature } from '../../../src/generator/geography/GeographicalFeature.js';
-import { FeatureType } from '../../../src/generator/geography/FeatureType.js';
-import { GeographicalFeatureTypes } from '../../../src/generator/geography/DefaultFeatureTypes.js';
+import { GeographicalFeature } from '../../src/geography/GeographicalFeature.js';
+import { FeatureType } from '../../src/geography/FeatureType.js';
+import { GeographicalFeatureTypes } from '../../src/geography/DefaultFeatureTypes.js';
 
 // The import of DefaultFeatureTypes automatically populates the registry for our tests.
 

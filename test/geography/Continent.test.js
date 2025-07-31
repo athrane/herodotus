@@ -1,4 +1,4 @@
-import { Continent } from '../../../src/generator/geography/Continent.js';
+import { Continent } from '../../src/geography/Continent.js';
 
 describe('Continent', () => {
   describe('constructor', () => {

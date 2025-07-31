@@ -1,5 +1,5 @@
-import { World } from '../../../src/generator/geography/World.js';
-import { Continent } from '../../../src/generator/geography/Continent.js';
+import { World } from '../../src/geography/World.js';
+import { Continent } from '../../src/geography/Continent.js';
 
 describe('World', () => {
   let world;
