@@ -2,6 +2,7 @@ import { Simulation } from '../../src/simulation/Simulation.js';
 import { EntityManager } from '../../src/ecs/EntityManager.js';
 import { SystemManager } from '../../src/ecs/SystemManager.js';
 import { TimeComponent } from '../../src/time/TimeComponent.js';
+import { NameComponent } from '../../src/ecs/NameComponent.js';
 
 describe('Simulation', () => {
   let simulation;
@@ -40,6 +41,10 @@ describe('Simulation', () => {
 
       const timeComponent = globalEntity.get(TimeComponent);
       expect(timeComponent.getTime().getYear()).toBe(0);
+
+      expect(globalEntity.hasComponent(NameComponent)).toBe(true);
+      const description = globalEntity.get(NameComponent);
+      expect(description.getText()).toBe('Global Simulation Entity');
     });
   });
 
@@ -56,6 +61,7 @@ describe('Simulation', () => {
       const globalEntity = simulation.getGlobalEntity();
       expect(globalEntity).toBeDefined();
       expect(globalEntity.hasComponent(TimeComponent)).toBe(true);
+      expect(globalEntity.hasComponent(NameComponent)).toBe(true);
     });
   });
 

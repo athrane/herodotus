@@ -3,6 +3,7 @@ import { EntityManager } from '../ecs/EntityManager.js';
 import { TimeComponent } from '../time/TimeComponent.js';
 import { Time } from '../time/Time.js';
 import { TimeSystem } from '../time/TimeSystem.js';
+import { NameComponent } from '../ecs/NameComponent.js';
 
 /**
  * The `Simulation` class orchestrates an Entity-Component-System (ECS) based simulation.
@@ -30,7 +31,8 @@ export class Simulation {
         // Create a global entity to hold simulation-wide state, like the current time.
         const time = Time.create(0); // Starting at year 0
         const timeComponent = TimeComponent.create(time);
-        const globalEntity = this.#entityManager.createEntity(timeComponent);
+        const nameComponent = NameComponent.create('Global Simulation Entity');
+        const globalEntity = this.#entityManager.createEntity(timeComponent, nameComponent);
         this.#globalEntityId = globalEntity.getId();
     }
 
