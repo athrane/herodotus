@@ -46,7 +46,7 @@ describe('Entity', () => {
 
   describe('constructor', () => {
     it('should create an entity with a unique ID', () => {
-      const entity = new Entity();
+      const entity = Entity.create();
       expect(entity).toBeInstanceOf(Entity);
       expect(typeof entity.getId()).toBe('string');
       expect(entity.getId()).toHaveLength(36); // UUID length
@@ -54,7 +54,7 @@ describe('Entity', () => {
 
     it('should create an entity with one component', () => {
       const position = new PositionComponent(10, 20);
-      const entity = new Entity(position, );
+      const entity = Entity.create(position, );
 
       expect(entity.hasComponent(PositionComponent)).toBe(true);
       expect(entity.get(PositionComponent)).toBe(position);
@@ -63,7 +63,7 @@ describe('Entity', () => {
     it('should create an entity with two components', () => {
       const position = new PositionComponent(10, 20);
       const velocity = new VelocityComponent(1, -1);
-      const entity = new Entity(position, velocity);
+      const entity = Entity.create(position, velocity);
 
       expect(entity.hasComponent(PositionComponent)).toBe(true);
       expect(entity.hasComponent(VelocityComponent)).toBe(true);
@@ -73,8 +73,8 @@ describe('Entity', () => {
     it('should throw a TypeError if a non-component is passed to the constructor', () => {
       // This test relies on the internal implementation of the constructor's type check.
       // We simulate the expected behavior of TypeUtils.
-      expect(() => new Entity({})).toThrow(TypeError);
-      expect(() => new Entity(new PositionComponent(0, 0), 'not-a-component')).toThrow(TypeError);
+      expect(() => Entity.create({})).toThrow(TypeError);
+      expect(() => Entity.create(new PositionComponent(0, 0), 'not-a-component')).toThrow(TypeError);
     });
   });
 
@@ -84,7 +84,7 @@ describe('Entity', () => {
     let velocity;
 
     beforeEach(() => {
-      entity = new Entity();
+      entity = Entity.create();
       position = new PositionComponent(10, 20);
       velocity = new VelocityComponent(1, -1);
     });
@@ -147,6 +147,38 @@ describe('Entity', () => {
       const retrieved = entity.get(PositionComponent);
       expect(retrieved).toBe(newPosition);
       expect(retrieved.x).toBe(99);
+    });
+  });
+
+  describe('Entity.create static factory', () => {
+    it('should create a new entity with no components', () => {
+      const entity = Entity.create();
+      expect(entity).toBeInstanceOf(Entity);
+      expect(typeof entity.getId()).toBe('string');
+    });
+
+    it('should create a new entity with one component', () => {
+      const position = new PositionComponent(10, 20);
+      const entity = Entity.create(position);
+
+      expect(entity.hasComponent(PositionComponent)).toBe(true);
+      expect(entity.get(PositionComponent)).toBe(position);
+    });
+
+    it('should create a new entity with multiple components', () => {
+      const position = new PositionComponent(10, 20);
+      const velocity = new VelocityComponent(1, -1);
+      const entity = Entity.create(position, velocity);
+
+      expect(entity.hasComponent(PositionComponent)).toBe(true);
+      expect(entity.hasComponent(VelocityComponent)).toBe(true);
+      expect(entity.get(PositionComponent)).toBe(position);
+      expect(entity.get(VelocityComponent)).toBe(velocity);
+    });
+
+    it('should throw a TypeError if a non-component is passed to the factory', () => {
+      expect(() => Entity.create({})).toThrow(TypeError);
+      expect(() => Entity.create(new PositionComponent(0, 0), 'not-a-component')).toThrow(TypeError);
     });
   });
 });

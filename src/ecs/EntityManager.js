@@ -18,7 +18,7 @@ export class EntityManager {
    * @returns {Entity} The newly created entity.
    */
   createEntity(...components) {
-    const entity = new Entity(...components);
+    const entity = Entity.create(...components);
     this.#entities.set(entity.getId(), entity);
     return entity;
   }

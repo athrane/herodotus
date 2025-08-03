@@ -27,6 +27,15 @@ export class Entity {
   }
 
   /**
+   * Creates a new Entity with the given components.
+   * @param {...Component} components - A list of components to attach to the entity.
+   * @returns {Entity} A new entity instance.
+   */
+  static create(...components) {
+    return new Entity(...components);
+  }
+
+  /**
    * Gets the unique ID of the entity.
    * @returns {number} The entity's ID.
    */
