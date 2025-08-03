@@ -5,6 +5,7 @@ import { GeographicalFeature } from './GeographicalFeature.js';
  * Represents a continent in the world.
  */
 export class Continent {
+
   /**
    * @type {string}
    */
@@ -38,7 +39,7 @@ export class Continent {
    * @param {GeographicalFeature} feature - The feature to add.
    */
   addFeature(feature) {
-    TypeUtils.ensureInstanceOf(feature, GeographicalFeature, 'Only GeographicalFeature instances can be added to a Continent.');
+    TypeUtils.ensureInstanceOf(feature, GeographicalFeature);
     this.#features.push(feature);
   }
 

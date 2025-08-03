@@ -1,32 +1,44 @@
 import { ChronicleGenerator } from './generator/chronicle/ChronicleGenerator.js';
 import { WorldGenerator } from './generator/world/WorldGenerator.js';
+import { LogHelper } from './util/log/LogHelper.js';
+import { Simulation } from './simulation/Simulation.js';
+import { GeographicalFeatureTypeRegistry } from './geography/GeographicalFeatureTypeRegistry.js';
+import { GeographicalFeaturesFactory } from './geography/GeographicalFeaturesFactory.js';
 
 /**
  * The main entry point for the chronicle generation application.
  */
 function main() {
-    console.log("Initializing World Generation...");
 
-    // 1. Instantiate the generators.
-    // The WorldGenerator now creates and manages its own feature types.
+    // create the generators
     const worldGenerator = new WorldGenerator();
     const chronicleGenerator = new ChronicleGenerator();
-    console.log("Generators are ready.");
 
-    // 2. Define world name and generate the world.
+    // create simulation
+    const simulation = Simulation.create();
+
+    // get ECS core classes
+    const entityManager = simulation.getEntityManager();
+    const systemManager = simulation.getSystemManager();
+
+    // generate the world 
     // The number of continents and features are now defined within the generator.
+    const featureFactory = GeographicalFeaturesFactory.create();
     const WORLD_NAME = "Aethel";
-
-    console.log(`\nGenerating world '${WORLD_NAME}'...`);
     const world = worldGenerator.generateWorld(WORLD_NAME);
-    console.log("World generation complete.\n");
+
+    // log world details
+    LogHelper.logWorldDetails(world);
 
     // 3. Generate and print a chronicle for each continent.
     // The chronicle is directly influenced by the randomly generated geography.
+    /**
     for (const continent of world.getContinents()) {
         const chronicleText = chronicleGenerator.generateForContinent(continent);
         console.log(chronicleText);
     }
+    */
+    // For now, we will just log the world details.
 }
 
 // Run the main function

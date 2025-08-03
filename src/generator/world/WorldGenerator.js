@@ -55,6 +55,7 @@ export class WorldGenerator {
         const continent = new Continent(name);
         for (let i = 0; i < numFeatures; i++) {
             const featureType = GeographicalFeatureTypeRegistry.getRandom();
+            console.log(`Feature Type: ${featureType ? featureType.getKey() : 'None'}`);
             if (featureType) {
                 const featureName = this._generateFeatureName();
                 const feature = new GeographicalFeature(featureName, featureType);

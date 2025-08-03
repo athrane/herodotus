@@ -2,6 +2,7 @@
  * Utility class for generic checks.
  */
 export class TypeUtils {
+  
   /**
    * Ensures that a value is an instance of a given class. If not, it throws a TypeError.
    *

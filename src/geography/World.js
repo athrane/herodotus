@@ -5,6 +5,13 @@ import { Continent } from './Continent.js';
  * Represents the entire world, which can contain multiple continents.
  */
 export class World {
+
+  /**
+   * @type {string} 
+   * The name of the world.
+   */
+  #name;
+
   /**
    * @type {Continent[]}
    */
@@ -13,7 +20,9 @@ export class World {
   /**
    * Creates an instance of World.
    */
-  constructor() {
+  constructor(name) {
+    TypeUtils.ensureString(name);
+    this.#name = name;
     this.#continents = [];
   }
 
@@ -33,4 +42,23 @@ export class World {
   getContinents() {
     return this.#continents;
   }
+
+  /**
+   * Gets the name of the world.
+   * @returns {string}  
+   */
+  getName() {
+    return this.#name;
+  }
+
+  /**
+   * Static method to create a new World instance with a name.
+   * @param {string} name - The name of the world.
+   * @return {World} A new World instance.
+   */
+  static create(name) {
+    TypeUtils.ensureString(name, 'World name must be a string.');
+    return new World(name);
+    }
+
 }

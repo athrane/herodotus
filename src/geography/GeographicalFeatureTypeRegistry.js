@@ -68,6 +68,14 @@ export class GeographicalFeatureTypeRegistry {
     }
 
     /**
+     * Returns the number of registered FeatureTypes.
+     * @returns {number} The count of registered FeatureTypes.
+     */
+    static size() {
+        return this.#types.size;
+    }
+
+    /**
      * Returns a random FeatureType from the registry.
      * @returns {FeatureType|undefined} A random FeatureType, or undefined if no types are registered.
      */

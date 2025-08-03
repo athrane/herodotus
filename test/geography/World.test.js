@@ -5,7 +5,7 @@ describe('World', () => {
   let world;
 
   beforeEach(() => {
-    world = new World();
+    world = World.create("Test World");
   });
 
   describe('constructor', () => {
@@ -45,4 +45,19 @@ describe('World', () => {
       expect(() => world.addContinent(undefined)).toThrow(TypeError);
     });
   });
+
+  describe('getName', () => {
+    it('should return the name of the world', () => {
+      const worldName = 'Earth';
+      world = World.create(worldName);
+      expect(world.getName()).toBe(worldName);
+    });
+
+    it('should throw a TypeError if the name is not a string', () => {
+      expect(() => World.create(123)).toThrow(TypeError);
+      expect(() => World.create(null)).toThrow(TypeError);
+      expect(() => World.create(undefined)).toThrow(TypeError);
+    });
+  });
+
 });
