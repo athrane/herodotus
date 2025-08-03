@@ -46,6 +46,10 @@ export class EntityManager {
   /**
    * Finds all entities that possess a given set of components.
    * If no component classes are provided, it returns all entities.
+   * 
+   * @example // Get all entities with PositionComponent and VelocityComponent
+   * entityManager.getEntitiesWithComponents(PositionComponent, VelocityComponent);
+   * 
    * @param {...Function} componentClasses The component classes to query for.
    * @returns {Entity[]} An array of entities that have all the specified components.
    */

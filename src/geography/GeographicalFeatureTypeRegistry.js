@@ -80,12 +80,12 @@ export class GeographicalFeatureTypeRegistry {
      * @returns {FeatureType|undefined} A random FeatureType, or undefined if no types are registered.
      */
     static getRandom() {
+        if (this.#types.size === 0) {
+            return undefined;
+        }   
         const types = this.getAll();
-        if (types.length > 0) {
-            const randomIndex = Math.floor(Math.random() * types.length);
-            return types[randomIndex];
-        }
-        return undefined;
+        const randomIndex = Math.floor(Math.random() * types.length);
+        return types[randomIndex];
     }   
 
     /**

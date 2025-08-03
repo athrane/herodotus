@@ -30,22 +30,6 @@ describe('Simulation', () => {
     it('should start in a not-running state', () => {
       expect(simulation.isRunning()).toBe(false);
     });
-
-    it('should create a global entity with a TimeComponent at year 0', () => {
-      const entityManager = simulation.getEntityManager();
-      expect(entityManager.count()).toBe(1);
-
-      const globalEntity = simulation.getGlobalEntity();
-      expect(globalEntity).toBeDefined();
-      expect(globalEntity.hasComponent(TimeComponent)).toBe(true);
-
-      const timeComponent = globalEntity.get(TimeComponent);
-      expect(timeComponent.getTime().getYear()).toBe(0);
-
-      expect(globalEntity.hasComponent(NameComponent)).toBe(true);
-      const description = globalEntity.get(NameComponent);
-      expect(description.getText()).toBe('Global Simulation Entity');
-    });
   });
 
   describe('getters', () => {
@@ -57,12 +41,6 @@ describe('Simulation', () => {
       expect(simulation.getSystemManager()).toBeInstanceOf(SystemManager);
     });
 
-    it('should return the global entity', () => {
-      const globalEntity = simulation.getGlobalEntity();
-      expect(globalEntity).toBeDefined();
-      expect(globalEntity.hasComponent(TimeComponent)).toBe(true);
-      expect(globalEntity.hasComponent(NameComponent)).toBe(true);
-    });
   });
 
   describe('start', () => {

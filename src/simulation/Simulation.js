@@ -14,7 +14,6 @@ export class Simulation {
     #systemManager;
     #isRunning;
     #lastTickTime;
-    #globalEntityId;
 
     /**
      * Creates an instance of Simulation.
@@ -25,15 +24,6 @@ export class Simulation {
         this.#isRunning = false;
         this.#lastTickTime = 0;
 
-        // Register systems
-        this.#systemManager.register(new TimeSystem(this.#entityManager));
-
-        // Create a global entity to hold simulation-wide state, like the current time.
-        const time = Time.create(0); // Starting at year 0
-        const timeComponent = TimeComponent.create(time);
-        const nameComponent = NameComponent.create('Global Simulation Entity');
-        const globalEntity = this.#entityManager.createEntity(timeComponent, nameComponent);
-        this.#globalEntityId = globalEntity.getId();
     }
 
     /**
@@ -58,14 +48,6 @@ export class Simulation {
      */
     getSystemManager() {
         return this.#systemManager;
-    }
-
-    /**
-     * Gets the global entity that holds simulation-wide state.
-     * @returns {Entity} The global entity.
-     */
-    getGlobalEntity() {
-        return this.#entityManager.getEntity(this.#globalEntityId);
     }
 
     /**

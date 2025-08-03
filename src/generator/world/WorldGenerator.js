@@ -2,7 +2,8 @@ import { Continent } from '../../geography/Continent.js';
 import { GeographicalFeature } from '../../geography/GeographicalFeature.js';
 import { GeographicalFeatureTypeRegistry } from '../../geography/GeographicalFeatureTypeRegistry.js';
 import { World } from '../../geography/World.js';
- 
+import { TypeUtils } from '../../util/TypeUtils.js';
+
 /**
  * A self-contained generator that orchestrates the creation of a world,
  * including its geography and history.
@@ -55,7 +56,6 @@ export class WorldGenerator {
         const continent = new Continent(name);
         for (let i = 0; i < numFeatures; i++) {
             const featureType = GeographicalFeatureTypeRegistry.getRandom();
-            console.log(`Feature Type: ${featureType ? featureType.getKey() : 'None'}`);
             if (featureType) {
                 const featureName = this._generateFeatureName();
                 const feature = new GeographicalFeature(featureName, featureType);
@@ -71,6 +71,7 @@ export class WorldGenerator {
      * @returns {World} A new world object.
      */
     generateWorld(worldName) {
+        TypeUtils.ensureString(worldName);
         const world = new World(worldName);
         const NUM_CONTINENTS = 3;
         const FEATURES_PER_CONTINENT = 50;
