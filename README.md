@@ -16,7 +16,7 @@ This module is responsible for generating the historical narrative of the world.
 
 *   **`ChronicleGenerator`**: Weaves together events, characters, and geographical features to create a coherent story or timeline for the generated world.
 
-#### `generator/ecs`
+#### `ecs`
 
 This module implements an Entity-Component-System (ECS) architecture, a design pattern that promotes data-oriented design and flexible composition over deep inheritance hierarchies.
 
@@ -38,7 +38,15 @@ This module provides an event-driven framework for managing occurrences within t
 
 *   **`EventType`**: Represents the type of a historical event, including its category and specific name.
 
-#### `generator/geography`
+#### `generator/figure`
+
+This module contains classes for representing key entities in the generated history, such as historical figures and significant places.
+
+*   **`HistoricalFigure`**: Represents a historical figure involved in an event, characterized by a name.
+
+*   **`Place`**: Represents a location where a historical event occurred, identified by a name.
+
+#### `geography`
 
 This module contains all the core classes for representing and managing the geographical elements of the generated world.
 
@@ -54,11 +62,27 @@ This module contains all the core classes for representing and managing the geog
 
 *   **`DefaultFeatureTypes`**: This file does not export a class. Instead, it uses the `GeographicalFeatureTypeRegistry` to pre-register a standard set of common feature types (e.g., `MOUNTAIN`, `FOREST`, `RIVER`). It exports a frozen object, `GeographicalFeatureTypes`, which provides an enum-like way to access these default types.
 
-#### `generator/time`
+#### `generator/world`
+
+This module is responsible for generating the initial world, including its geographical features and continents.
+
+*   **`WorldGenerator`**: Orchestrates the creation of the world, ensuring all geographical elements are properly initialized and interconnected.
+
+#### `time`
 
 This module is responsible for tracking the passage of time, a core element of history generation.
 
 *   **`Time`**: A simple, immutable value object that represents a specific point in time (e.g., a year). It is used to timestamp events and other historical data within the chronicle.
+
+#### `simulation`
+
+This module contains classes related to the simulation's core logic and its construction.
+
+*   **`Simulation`**: The main class that orchestrates the world-building and history generation process. It manages the ECS, time, and other core components to run the simulation.
+
+*   **`SimulationBuilder`**: A builder class for constructing `Simulation` instances. It provides a fluent API to configure various aspects of the simulation before it is built.
+
+*   **`SimulationDirector`**: Directs the `SimulationBuilder` to construct complex `Simulation` objects. It encapsulates the knowledge of how to construct a simulation with specific configurations.
 
 #### `util`
 
