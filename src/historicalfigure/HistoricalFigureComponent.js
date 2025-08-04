@@ -1,5 +1,5 @@
 import { Component } from '../ecs/Component.js';
-import { TypeUtils } from '../util/TypeUtils';
+import { TypeUtils } from '../util/TypeUtils.js';
 
 /**
  * @class HistoricalFigureComponent
