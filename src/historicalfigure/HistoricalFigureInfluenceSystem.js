@@ -25,14 +25,14 @@ export class HistoricalFigureInfluenceSystem extends System {
     processEntity(entity, currentYear) {
         TypeUtils.ensureNumber(currentYear, 'currentYear must be a number.');
 
-        const historicalFigure = entity.getComponent(HistoricalFigureComponent);
+        const historicalFigure = entity.get(HistoricalFigureComponent);
         const worldEntity = this.entityManager.getSingletonEntityByComponent(ChronicleEventComponent);
 
         if (!historicalFigure || !worldEntity) {
             return;
         }
 
-        const chronicle = worldEntity.getComponent(ChronicleEventComponent);
+        const chronicle = worldEntity.get(ChronicleEventComponent);
 
         // Example: A simple event generation based on the historical figure's existence
         // In a real scenario, this would be much more complex, considering traits, roles, etc.
