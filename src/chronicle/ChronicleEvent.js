@@ -1,13 +1,13 @@
-import { TypeUtils } from '../../util/TypeUtils.js';
-import { Time } from '../../time/Time.js';
-import { HistoricalFigure } from '../HistoricalFigure.js';
-import { Place } from '../Place.js';
-import { EventType } from '../event/EventType.js';
+import { TypeUtils } from '../util/TypeUtils.js';
+import { Time } from '../time/Time.js';
+import { HistoricalFigure } from '../historicalfigure/HistoricalFigure.js';
+import { Place } from '../generator/Place.js';
+import { EventType } from './EventType.js';
 
 /**
  * Represents a single, discrete entry in the chronicle, describing a historical event.
  */
-export class HistoricalEntry {
+export class ChronicleEvent {
   /**
    * @type {string}
    */
@@ -39,7 +39,7 @@ export class HistoricalEntry {
   #place;
 
   /**
-   * Creates an instance of HistoricalEntry.
+   * Creates an instance of ChronicleEvent.
    * @param {string} heading - A super condensed heading for the event.
    * @param {EventType} eventType - The type of the event.
    * @param {Time} time - The time of the event.
@@ -48,14 +48,14 @@ export class HistoricalEntry {
    * @param {HistoricalFigure | null} [figure=null] - The historical figure involved. Can be null for natural events.
    */
   constructor(heading, eventType, time, place, description, figure = null) {
-    TypeUtils.ensureString(heading, 'HistoricalEntry heading must be a string.');
-    TypeUtils.ensureInstanceOf(eventType, EventType, 'HistoricalEntry eventType must be an instance of EventType.');
-    TypeUtils.ensureInstanceOf(time, Time, 'HistoricalEntry time must be an instance of Time.');
+    TypeUtils.ensureString(heading, 'ChronicleEvent heading must be a string.');
+    TypeUtils.ensureInstanceOf(eventType, EventType, 'ChronicleEvent eventType must be an instance of EventType.');
+    TypeUtils.ensureInstanceOf(time, Time, 'ChronicleEvent time must be an instance of Time.');
     if (figure !== null) {
-      TypeUtils.ensureInstanceOf(figure, HistoricalFigure, 'HistoricalEntry figure must be an instance of HistoricalFigure or null.');
+      TypeUtils.ensureInstanceOf(figure, HistoricalFigure, 'ChronicleEvent figure must be an instance of HistoricalFigure or null.');
     }
-    TypeUtils.ensureInstanceOf(place, Place, 'HistoricalEntry place must be an instance of Place.');
-    TypeUtils.ensureString(description, 'HistoricalEntry description must be a string.');
+    TypeUtils.ensureInstanceOf(place, Place, 'ChronicleEvent place must be an instance of Place.');
+    TypeUtils.ensureString(description, 'ChronicleEvent description must be a string.');
 
     this.#heading = heading;
     this.#eventType = eventType;

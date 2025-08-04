@@ -2,9 +2,8 @@ import { SimulationBuilder } from '../../../src/simulation/builder/SimulationBui
 import { Simulation} from '../../../src/simulation/Simulation.js';
 import { WorldGenerator } from '../../../src/generator/world/WorldGenerator.js';
 import { TimeSystem } from '../../../src/time/TimeSystem.js';
-import { TimeComponent } from '../../../src/time/TimeComponent.js';
-import { NameComponent } from '../../../src/ecs/NameComponent.js';
-import { WorldComponent } from '../../../src/geography/WorldComponent.js';
+import { HistoricalFigureLifecycleSystem } from '../../../src/historicalfigure/HistoricalFigureLifecycleSystem.js';
+import { HistoricalFigureInfluenceSystem } from '../../../src/historicalfigure/HistoricalFigureInfluenceSystem.js';
 
 // Mock the WorldGenerator to control its output
 jest.mock('../../../src/generator/world/WorldGenerator.js', () => {
@@ -59,8 +58,10 @@ describe('SimulationBuilder', () => {
     it('should build systems correctly', () => {
         builder.buildSystems();
 
-        expect(systemManager.register).toHaveBeenCalledTimes(1);
+        expect(systemManager.register).toHaveBeenCalledTimes(3);
         expect(systemManager.register).toHaveBeenCalledWith(expect.any(TimeSystem));
+        expect(systemManager.register).toHaveBeenCalledWith(expect.any(HistoricalFigureLifecycleSystem));
+        expect(systemManager.register).toHaveBeenCalledWith(expect.any(HistoricalFigureInfluenceSystem));
     });
 
     it('should have an empty buildGeographicalFeatures method', () => {

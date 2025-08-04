@@ -1,10 +1,10 @@
-import { HistoricalEntry } from '../../../src/generator/chronicle/HistoricalEntry.js';
-import { Time } from '../../../src/time/Time.js';
-import { HistoricalFigure } from '../../../src/generator/HistoricalFigure.js';
-import { Place } from '../../../src/generator/Place.js';
-import { EventType } from '../../../src/generator/event/EventType.js';
+import { ChronicleEvent } from '../../src/chronicle/ChronicleEvent.js';
+import { Time } from '../../src/time/Time.js';
+import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure.js';
+import { Place } from '../../src/generator/Place.js';
+import { EventType } from '../../src/chronicle/EventType.js';
 
-describe('HistoricalEntry', () => {
+describe('ChronicleEvent', () => {
   let heading;
   let eventType;
   let time;
@@ -22,9 +22,9 @@ describe('HistoricalEntry', () => {
   });
 
   describe('constructor', () => {
-    it('should create a HistoricalEntry with valid arguments', () => {
-      const entry = new HistoricalEntry(heading, eventType, time, place, description, figure);
-      expect(entry).toBeInstanceOf(HistoricalEntry);
+    it('should create a ChronicleEvent with valid arguments', () => {
+      const entry = new ChronicleEvent(heading, eventType, time, place, description, figure);
+      expect(entry).toBeInstanceOf(ChronicleEvent);
       console.log(time);
       expect(entry.getHeading()).toBe(heading);
       expect(entry.getTime()).toBe(time);
@@ -34,17 +34,17 @@ describe('HistoricalEntry', () => {
     });
 
     it('should throw a TypeError for invalid argument types', () => {      
-      expect(() => new HistoricalEntry(123, time, figure, place, description)).toThrow(TypeError);
-      expect(() => new HistoricalEntry(heading, 'not time', figure, place, description)).toThrow(TypeError);
-      expect(() => new HistoricalEntry(heading, time, 'not figure', place, description)).toThrow(TypeError);
-      expect(() => new HistoricalEntry(heading, time, figure, 'not place', description)).toThrow(TypeError);
-      expect(() => new HistoricalEntry(heading, time, figure, place, 123)).toThrow(TypeError);
+      expect(() => new ChronicleEvent(123, time, figure, place, description)).toThrow(TypeError);
+      expect(() => new ChronicleEvent(heading, 'not time', figure, place, description)).toThrow(TypeError);
+      expect(() => new ChronicleEvent(heading, time, 'not figure', place, description)).toThrow(TypeError);
+      expect(() => new ChronicleEvent(heading, time, figure, 'not place', description)).toThrow(TypeError);
+      expect(() => new ChronicleEvent(heading, time, figure, place, 123)).toThrow(TypeError);
     });
   });
 
   describe('getters', () => {
     it('should return the correct values provided in the constructor', () => {      
-      const entry = new HistoricalEntry(heading, eventType, time, place, description, figure);
+      const entry = new ChronicleEvent(heading, eventType, time, place, description, figure);
       expect(entry.getHeading()).toBe('Birth, Herodotus');
       expect(entry.getEventType().getName()).toBe('Birth');
       expect(entry.getTime().getYear()).toBe(484);

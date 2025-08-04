@@ -7,6 +7,10 @@ import { TimeComponent } from '../../time/TimeComponent.js';
 import { NameComponent } from '../../ecs/NameComponent.js';
 import { WorldComponent } from '../../geography/WorldComponent.js';
 import { GeographicalFeaturesFactory } from '../../geography/GeographicalFeaturesFactory.js';
+import { HistoricalFigureComponent } from '../../historicalfigure/HistoricalFigureComponent.js';
+import { ChronicleEventComponent } from '../../chronicle/ChronicleEventComponent.js';
+import { HistoricalFigureLifecycleSystem } from '../../historicalfigure/HistoricalFigureLifecycleSystem.js';
+import { HistoricalFigureInfluenceSystem } from '../../historicalfigure/HistoricalFigureInfluenceSystem.js';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -53,7 +57,14 @@ export class SimulationBuilder extends Builder {
         entityManager.createEntity(
             new NameComponent("Global"),
             new TimeComponent(Time.create(0)),
-            new WorldComponent(world)
+            new WorldComponent(world),
+            new ChronicleEventComponent()
+        );
+
+        // Create a sample historical figure
+        entityManager.createEntity(
+            new NameComponent("Herodotus"),
+            new HistoricalFigureComponent("Herodotus", -484, -425, "Greek", "Historian")
         );
     }
 
@@ -63,7 +74,9 @@ export class SimulationBuilder extends Builder {
     buildSystems() {
         const entityManager = this.#simulation.getEntityManager();        
         const systemManager = this.#simulation.getSystemManager();
-        systemManager.register(new TimeSystem(entityManager));        
+        systemManager.register(new TimeSystem(entityManager));
+        systemManager.register(new HistoricalFigureLifecycleSystem(entityManager));
+        systemManager.register(new HistoricalFigureInfluenceSystem(entityManager));        
     }
 
     /**

@@ -1,4 +1,4 @@
-import { TypeUtils } from '../../util/TypeUtils.js';
+import { TypeUtils } from '../util/TypeUtils.js';
 import { EventCategory } from './EventCategory.js';
 
 /**
@@ -21,8 +21,8 @@ export class EventType {
    * @param {string} name - The specific name of the event (e.g., 'Battle', 'Plague').
    */
   constructor(category, name) {
-    TypeUtils.ensureString(category, 'EventType category must be a string.');
-    TypeUtils.ensureString(name, 'EventType name must be a string.');
+    TypeUtils.ensureString(category);
+    TypeUtils.ensureString(name);
 
     if (!Object.values(EventCategory).includes(category)) {
       throw new TypeError(`Invalid event category: ${category}`);

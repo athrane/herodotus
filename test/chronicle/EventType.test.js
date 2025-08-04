@@ -1,5 +1,6 @@
-import { EventType } from '../../../src/generator/event/EventType.js';
-import { EventCategory } from '../../../src/generator/event/EventCategory.js';
+import { EventType } from '../../src/chronicle/EventType.js';
+import { EventCategory } from '../../src/chronicle/EventCategory.js';
+
 
 describe('EventType', () => {
   describe('constructor', () => {

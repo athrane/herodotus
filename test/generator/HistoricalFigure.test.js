@@ -1,4 +1,4 @@
-import { HistoricalFigure } from '../../src/generator/HistoricalFigure.js';
+import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure.js';
 
 describe('HistoricalFigure', () => {
   describe('constructor', () => {
