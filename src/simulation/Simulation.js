@@ -61,7 +61,7 @@ export class Simulation {
 
         this.#isRunning = true;
         this.#lastTickTime = performance.now();
-        this.#tick();
+        this.tick();
     }
 
     /**
@@ -77,11 +77,11 @@ export class Simulation {
     }
 
     /**
-     * The main simulation loop. This method is called repeatedly using requestAnimationFrame.
+     * The main simulation loop. 
+     * It is called repeatedly while the simulation is running.
      * It calculates the time since the last tick and updates all systems.
-     * @private
      */
-    #tick() {
+    tick() {
         if (!this.#isRunning) return;
 
         const currentTime = performance.now();

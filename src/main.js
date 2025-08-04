@@ -28,15 +28,16 @@ function main() {
     // start the simulation
     simulation.start();
 
-    // 3. Generate and print a chronicle for each continent.
-    // The chronicle is directly influenced by the randomly generated geography.
-    /**
-    for (const continent of world.getContinents()) {
-        const chronicleText = chronicleGenerator.generateForContinent(continent);
-        console.log(chronicleText);
+    // run the simulation for a few ticks
+    for (let i = 0; i < 100; i++) {
+        simulation.tick();
     }
-    */
-    // For now, we will just log the world details.
+
+    // stop the simulation
+    simulation.stop();
+
+    // generate the chronicle
+
 }
 
 // Run the main function
