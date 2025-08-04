@@ -39,7 +39,7 @@ export class Continent {
    * @param {GeographicalFeature} feature - The feature to add.
    */
   addFeature(feature) {
-    TypeUtils.ensureInstanceOf(feature, GeographicalFeature);
+    TypeUtils.ensureInstanceOf(feature, GeographicalFeature, 'Only GeographicalFeature instances can be added to the Continent.');
     this.#features.push(feature);
   }
 

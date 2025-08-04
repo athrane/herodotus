@@ -23,7 +23,7 @@ export class ChronicleEventComponent extends Component {
      */
     constructor(events = []) {
         super();
-        TypeUtils.ensureArray(events);
+        TypeUtils.ensureArray(events, 'ChronicleEventComponent events must be an array.');
         for (const event of events) {
             this.addEvent(event);
         }
@@ -34,7 +34,7 @@ export class ChronicleEventComponent extends Component {
      * @param {ChronicleEvent} event - The event to add.
      */
     addEvent(event) {
-        TypeUtils.ensureInstanceOf(event, ChronicleEvent);
+        TypeUtils.ensureInstanceOf(event, ChronicleEvent, 'ChronicleEventComponent addEvent requires a ChronicleEvent instance.');
         this.#events.push(event);
     }
 

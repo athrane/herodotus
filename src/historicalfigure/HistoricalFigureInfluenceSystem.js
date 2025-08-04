@@ -23,7 +23,7 @@ export class HistoricalFigureInfluenceSystem extends System {
      * @param {number} currentYear - The current year in the simulation.
      */
     processEntity(entity, currentYear) {
-        TypeUtils.ensureNumber(currentYear);
+        TypeUtils.ensureNumber(currentYear, 'currentYear must be a number.');
 
         const historicalFigure = entity.getComponent(HistoricalFigureComponent);
         if (!historicalFigure) return;

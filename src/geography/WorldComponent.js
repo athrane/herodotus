@@ -20,7 +20,7 @@ export class WorldComponent extends Component {
      */
     constructor(world) {
         super();
-        TypeUtils.ensureInstanceOf(world, World);
+        TypeUtils.ensureInstanceOf(world, World, 'WorldComponent requires a World instance.');
         this.#world = world;
     }
 

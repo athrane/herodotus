@@ -18,11 +18,11 @@ export class HistoricalFigureComponent extends Component {
      */
     constructor(name, birthYear, deathYear, culture, occupation) {
         super();
-        TypeUtils.ensureString(name);
-        TypeUtils.ensureNumber(birthYear);
-        TypeUtils.ensureNumber(deathYear);
-        TypeUtils.ensureString(culture);
-        TypeUtils.ensureString(occupation);
+        TypeUtils.ensureString(name, 'HistoricalFigureComponent name must be a string.');
+        TypeUtils.ensureNumber(birthYear, 'HistoricalFigureComponent birthYear must be a number.');
+        TypeUtils.ensureNumber(deathYear, 'HistoricalFigureComponent deathYear must be a number.');
+        TypeUtils.ensureString(culture, 'HistoricalFigureComponent culture must be a string.');
+        TypeUtils.ensureString(occupation, 'HistoricalFigureComponent occupation must be a string.');
         this.name = name;
         this.birthYear = birthYear;
         this.deathYear = deathYear;

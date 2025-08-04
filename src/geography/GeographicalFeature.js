@@ -20,8 +20,8 @@ export class GeographicalFeature {
      * @throws {Error} if the name is not a string, or if the type is not a valid, registered FeatureType.
      */
     constructor(name, type) {
-        TypeUtils.ensureString(name);
-        TypeUtils.ensureInstanceOf(type, FeatureType);
+        TypeUtils.ensureString(name, 'GeographicalFeature name must be a string.');
+        TypeUtils.ensureInstanceOf(type, FeatureType, 'GeographicalFeature type must be an instance of FeatureType.');
 
         if (!GeographicalFeatureTypeRegistry.has(type.getKey())) {
             throw new Error(`The provided FeatureType with key '${type.getKey()}' is not registered.`);

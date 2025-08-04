@@ -21,7 +21,7 @@ export class World {
    * Creates an instance of World.
    */
   constructor(name) {
-    TypeUtils.ensureString(name);
+    TypeUtils.ensureString(name, 'World name must be a string.');
     this.#name = name;
     this.#continents = [];
   }
