@@ -95,6 +95,7 @@ export class EntityManager {
       return undefined;
     }
 
+    // return first entity with the specified component
     return entities[0].getComponent(componentClass);
   }
 
@@ -114,4 +115,5 @@ export class EntityManager {
   static create() {
     return new EntityManager();
   }
+
 }

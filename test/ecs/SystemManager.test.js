@@ -119,3 +119,13 @@ describe('SystemManager', () => {
     });
   });
 });
+
+describe('System', () => {
+  describe('getEntityManager()', () => {
+    it('should return the entity manager associated with the system', () => {
+      const entityManager = EntityManager.create();
+      const system = new MockSystemA(entityManager);
+      expect(system.getEntityManager()).toBe(entityManager);
+    });
+  });
+});

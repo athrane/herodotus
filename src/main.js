@@ -20,7 +20,7 @@ function main() {
     const entityManager = simulation.getEntityManager();
     const entityWithWorldComponent = entityManager.getEntitiesWithComponents(WorldComponent)[0];
     if (entityWithWorldComponent) {
-        const worldComponent = entityWithWorldComponent.get(WorldComponent);
+        const worldComponent = entityWithWorldComponent.getComponent(WorldComponent);
         const world = worldComponent.get();
         LogHelper.logWorldDetails(world);
     }

@@ -35,6 +35,14 @@ export class System {
   }
 
   /**
+   * Get the (private) entity manager associated with this system.
+   * @returns {EntityManager} The entity manager instance associated with this system.
+   */
+  getEntityManager() {
+    return this.#entityManager;
+  }
+
+  /**
    * Processes a single entity. This method is intended to be overridden by concrete system implementations.
    * @param {Entity} entity The entity to process.
    * @param {...any} args Additional arguments passed from the update method.

@@ -23,17 +23,14 @@ export class HistoricalFigureInfluenceSystem extends System {
      * @param {number} currentYear - The current year in the simulation.
      */
     processEntity(entity, currentYear) {
-        TypeUtils.ensureNumber(currentYear, 'currentYear must be a number.');
+        TypeUtils.ensureNumber(currentYear);
 
-        const historicalFigure = entity.get(HistoricalFigureComponent);
-        const worldEntity = this.entityManager.getSingletonEntityByComponent(ChronicleEventComponent);
-
-        if (!historicalFigure || !worldEntity) {
-            return;
-        }
-
-        const chronicle = worldEntity.get(ChronicleEventComponent);
-
+        const historicalFigure = entity.getComponent(HistoricalFigureComponent);
+        if (!historicalFigure) return;
+    
+        const chronicle = this.getEntityManager().getSingletonComponent(ChronicleEventComponent);
+        if (!chronicle) return;
+    
         // Example: A simple event generation based on the historical figure's existence
         // In a real scenario, this would be much more complex, considering traits, roles, etc.
         if (currentYear >= historicalFigure.birthYear && currentYear <= historicalFigure.deathYear) {
