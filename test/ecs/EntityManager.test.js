@@ -1,11 +1,13 @@
 import { EntityManager } from '../../src/ecs/EntityManager.js';
 import { Entity } from '../../src/ecs/Entity.js';
 import { Component } from '../../src/ecs/Component.js';
+import { Time } from '../../src/time/Time';
+import { TimeComponent } from '../../src/time/TimeComponent.js';
 
 // Mock Components for testing
-class PositionComponent extends Component {}
-class VelocityComponent extends Component {}
-class RenderableComponent extends Component {}
+class PositionComponent extends Component { }
+class VelocityComponent extends Component { }
+class RenderableComponent extends Component { }
 
 describe('EntityManager', () => {
   let entityManager;
@@ -131,6 +133,42 @@ describe('EntityManager', () => {
       expect(entityManager.count()).toBe(0);
       entityManager.createEntity();
       expect(entityManager.count()).toBe(1);
+    });
+  });
+
+  describe('getSingletonComponent', () => {
+    let entityManager;
+    let time;
+
+    beforeEach(() => {
+      entityManager = new EntityManager();
+      time = new Time(100);
+    });
+
+    test('should return the component when one entity has it', () => {
+      const timeComponent = new TimeComponent(time);
+      entityManager.createEntity(timeComponent);
+
+      const result = entityManager.getSingletonComponent(TimeComponent);
+
+      expect(result).toBe(timeComponent);
+    });
+
+    test('should return undefined when no entity has the component', () => {
+      const result = entityManager.getSingletonComponent(TimeComponent);
+
+      expect(result).toBeUndefined();
+    });
+
+    test('should throw an error when multiple entities have the component', () => {
+      const timeComponent1 = new TimeComponent(time);
+      const timeComponent2 = new TimeComponent(time);
+      entityManager.createEntity(timeComponent1);
+      entityManager.createEntity(timeComponent2);
+
+      expect(() => {
+        entityManager.getSingletonComponent(TimeComponent);
+      }).toThrow('Expected to find one entity with TimeComponent but found 2.');
     });
   });
 
