@@ -1,6 +1,6 @@
 import { TypeUtils } from '../util/TypeUtils.js';
 import { Component } from '../ecs/Component.js';
-import { HistoricalEvent } from './ChronicleEvent.js';
+import { ChronicleEvent } from './ChronicleEvent.js';
 
 /**
  * @class ChronicleEventComponent
@@ -23,10 +23,10 @@ export class ChronicleEventComponent extends Component {
 
     /**
      * Adds a new event to the chronicle.
-     * @param {HistoricalEvent} event - The event to add.
+     * @param {ChronicleEvent} event - The event to add.
      */
     addEvent(event) {
-        TypeUtils.ensureInstanceOf(event, HistoricalEvent);
+        TypeUtils.ensureInstanceOf(event, ChronicleEvent);
         this.events.push(event);
     }
 
@@ -42,7 +42,7 @@ export class ChronicleEventComponent extends Component {
 
     /**
      * Retrieves the list of events.
-     * @returns {Array<HistoricalEvent>} The list of historical events.
+     * @returns {Array<ChronicleEvent>} The list of historical events.
      */
     getEvents() {
         return this.events;
