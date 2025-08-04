@@ -57,7 +57,7 @@ describe('Entity', () => {
       const entity = Entity.create(position, );
 
       expect(entity.hasComponent(PositionComponent)).toBe(true);
-      expect(entity.get(PositionComponent)).toBe(position);
+      expect(entity.getComponent(PositionComponent)).toBe(position);
     });
 
     it('should create an entity with two components', () => {
@@ -67,7 +67,7 @@ describe('Entity', () => {
 
       expect(entity.hasComponent(PositionComponent)).toBe(true);
       expect(entity.hasComponent(VelocityComponent)).toBe(true);
-      expect(entity.get(PositionComponent)).toBe(position);
+      expect(entity.getComponent(PositionComponent)).toBe(position);
     });
 
     it('should throw a TypeError if a non-component is passed to the constructor', () => {
@@ -89,62 +89,62 @@ describe('Entity', () => {
       velocity = new VelocityComponent(1, -1);
     });
 
-    it('should add a component with add()', () => {
-      entity.add(position);
+    it('should add a component with addComponent()', () => {
+      entity.addComponent(position);
       expect(entity.hasComponent(PositionComponent)).toBe(true);
     });
 
     it('should return the entity instance after adding a component for chaining', () => {
-      const result = entity.add(position);
+      const result = entity.addComponent(position);
       expect(result).toBe(entity);
-      result.add(velocity);
+      result.addComponent(velocity);
       expect(entity.hasComponent(VelocityComponent)).toBe(true);
     });
 
     it('should throw an error when adding an invalid component', () => {
-      expect(() => entity.add(null)).toThrow(TypeError);
-      expect(() => entity.add({})).toThrow(TypeError);
-      expect(() => entity.add(123)).toThrow(TypeError);
+      expect(() => entity.addComponent(null)).toThrow(TypeError);
+      expect(() => entity.addComponent({})).toThrow(TypeError);
+      expect(() => entity.addComponent(123)).toThrow(TypeError);
     });
 
-    it('should get a component that has been added with get()', () => {
-      entity.add(position);
-      const retrieved = entity.get(PositionComponent);
+    it('should get a component that has been added with getComponent()', () => {
+      entity.addComponent(position);
+      const retrieved = entity.getComponent(PositionComponent);
       expect(retrieved).toBe(position);
       expect(retrieved.x).toBe(10);
     });
 
     it('should return undefined when getting a component that does not exist', () => {
-      expect(entity.get(HealthComponent)).toBeUndefined();
+      expect(entity.getComponent(HealthComponent)).toBeUndefined();
     });
 
     it('should check if a component exists with hasComponent()', () => {
-      entity.add(position);
+      entity.addComponent(position);
       expect(entity.hasComponent(PositionComponent)).toBe(true);
       expect(entity.hasComponent(VelocityComponent)).toBe(false);
     });
 
-    it('should remove a component with remove()', () => {
-      entity.add(position);
+    it('should remove a component', () => {
+      entity.addComponent(position);
       expect(entity.hasComponent(PositionComponent)).toBe(true);
-      const wasRemoved = entity.remove(PositionComponent);
+      const wasRemoved = entity.removeComponent(PositionComponent);
       expect(wasRemoved).toBe(true);
       expect(entity.hasComponent(PositionComponent)).toBe(false);
     });
 
     it('should return false when trying to remove a component that does not exist', () => {
-      const wasRemoved = entity.remove(HealthComponent);
+      const wasRemoved = entity.removeComponent(HealthComponent);
       expect(wasRemoved).toBe(false);
     });
 
     it('should replace a component if one of the same type is added again', () => {
       const oldPosition = new PositionComponent(1, 1);
       const newPosition = new PositionComponent(99, 99);
-      entity.add(oldPosition);
-      expect(entity.get(PositionComponent).x).toBe(1);
+      entity.addComponent(oldPosition);
+      expect(entity.getComponent(PositionComponent).x).toBe(1);
 
-      entity.add(newPosition);
-      const retrieved = entity.get(PositionComponent);
+      entity.addComponent(newPosition);
+      const retrieved = entity.getComponent(PositionComponent);
       expect(retrieved).toBe(newPosition);
       expect(retrieved.x).toBe(99);
     });
@@ -162,7 +162,7 @@ describe('Entity', () => {
       const entity = Entity.create(position);
 
       expect(entity.hasComponent(PositionComponent)).toBe(true);
-      expect(entity.get(PositionComponent)).toBe(position);
+      expect(entity.getComponent(PositionComponent)).toBe(position);
     });
 
     it('should create a new entity with multiple components', () => {
@@ -172,8 +172,8 @@ describe('Entity', () => {
 
       expect(entity.hasComponent(PositionComponent)).toBe(true);
       expect(entity.hasComponent(VelocityComponent)).toBe(true);
-      expect(entity.get(PositionComponent)).toBe(position);
-      expect(entity.get(VelocityComponent)).toBe(velocity);
+      expect(entity.getComponent(PositionComponent)).toBe(position);
+      expect(entity.getComponent(VelocityComponent)).toBe(velocity);
     });
 
     it('should throw a TypeError if a non-component is passed to the factory', () => {

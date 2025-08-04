@@ -19,20 +19,11 @@ export class Entity {
     this.#components = new Map();
 
     // Add each component to the entity.
-    TypeUtils.ensureArray(components, 'components must be an array of Component instances.');
+    TypeUtils.ensureArray(components);
 
     for (const component of components) {
-      this.add(component);
+      this.addComponent(component);
     }
-  }
-
-  /**
-   * Creates a new Entity with the given components.
-   * @param {...Component} components - A list of components to attach to the entity.
-   * @returns {Entity} A new entity instance.
-   */
-  static create(...components) {
-    return new Entity(...components);
   }
 
   /**
@@ -48,8 +39,8 @@ export class Entity {
    * @param {object} component The component instance to add. The component must be a non-null object with a constructor.
    * @returns {Entity} The entity instance for chaining.
    */
-  add(component) {
-    TypeUtils.ensureInstanceOf(component, Component, 'component must be an instance of Component.');
+  addComponent(component) {
+    TypeUtils.ensureInstanceOf(component, Component);
 
     // The key is the component's constructor name (its type).
     this.#components.set(component.constructor.name, component);
@@ -61,7 +52,7 @@ export class Entity {
    * @param {Function} ComponentClass The class (constructor function) of the component to retrieve.
    * @returns {object|undefined} The component instance, or undefined if not found.
    */
-  get(ComponentClass) {
+  getComponent(ComponentClass) {
     TypeUtils.ensureFunction(ComponentClass, 'ComponentClass must be a class constructor.');
     return this.#components.get(ComponentClass.name);
   }
@@ -81,8 +72,18 @@ export class Entity {
    * @param {Function} ComponentClass The class (constructor function) of the component to remove.
    * @returns {boolean} True if a component was removed, false otherwise.
    */
-  remove(ComponentClass) {
+  removeComponent(ComponentClass) {
     TypeUtils.ensureFunction(ComponentClass, 'ComponentClass must be a class constructor.');
     return this.#components.delete(ComponentClass.name);
   }
+
+  /**
+   * Creates a new Entity with the given components.
+   * @param {...Component} components - A list of components to attach to the entity.
+   * @returns {Entity} A new entity instance.
+   */
+  static create(...components) {
+    return new Entity(...components);
+  }
+
 }

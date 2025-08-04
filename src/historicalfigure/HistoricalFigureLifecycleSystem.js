@@ -52,6 +52,7 @@ export class HistoricalFigureLifecycleSystem extends System {
         // Check for death
         if (currentYear === historicalFigure.deathYear) {
             // Logic to 'remove' or 'deactivate' the historical figure
+
             // For now, we'll just log it and remove the HistoricalFigureComponent.
             console.log(`Historical figure ${historicalFigure.name} (died ${historicalFigure.deathYear}) has exited the simulation.`);
             entity.removeComponent(HistoricalFigureComponent);

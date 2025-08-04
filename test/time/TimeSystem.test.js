@@ -27,7 +27,7 @@ describe('TimeSystem', () => {
     const deltaTime = 0.5;
     timeSystem.update(deltaTime);
 
-    const updatedTimeComponent = entity.get(TimeComponent);
+    const updatedTimeComponent = entity.getComponent(TimeComponent);
     const newYear = updatedTimeComponent.getTime().getYear();
 
     // The new year should be 100 + (0.5 * 10) = 105.
@@ -43,6 +43,6 @@ describe('TimeSystem', () => {
   it('should handle floating point year values correctly', () => {
     const entity = entityManager.createEntity(TimeComponent.create(Time.create(50.25)));
     timeSystem.update(0.1); // Adds 1 year (0.1 * 10)
-    expect(entity.get(TimeComponent).getTime().getYear()).toBe(51.25);
+    expect(entity.getComponent(TimeComponent).getTime().getYear()).toBe(51.25);
   });
 });

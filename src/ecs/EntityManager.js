@@ -70,6 +70,35 @@ export class EntityManager {
   }
 
   /**
+   * Retrieves a component from an entity that is expected to be a "singleton"
+   * for that component type. A singleton component is a component that is expected
+   * to exist on only one entity in the entire manager.
+   *
+   * This method is useful for accessing global or system-wide components,
+   * such as TimeComponent or WorldComponent, without needing to know which
+   * entity they are attached to.
+   *
+   * @param {Function} componentClass - The class of the component to retrieve.
+   * @returns {Component|undefined} The singleton component instance, or undefined if no entity has it.
+   * @throws {Error} If more than one entity has the specified component.
+   */
+  getSingletonComponent(componentClass) {
+    const entities = this.getEntitiesWithComponents(componentClass);
+
+    if (entities.length > 1) {
+      throw new Error(
+        `Expected to find one entity with ${componentClass.name} but found ${entities.length}.`
+      );
+    }
+
+    if (entities.length === 0) {
+      return undefined;
+    }
+
+    return entities[0].getComponent(componentClass);
+  }
+
+  /**
    * Returns the total number of entities currently managed.
    * @returns {number} The number of entities.
    */

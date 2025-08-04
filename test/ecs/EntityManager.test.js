@@ -36,7 +36,7 @@ describe('EntityManager', () => {
 
       expect(entity.hasComponent(PositionComponent)).toBe(true);
       expect(entity.hasComponent(VelocityComponent)).toBe(true);
-      expect(entity.get(PositionComponent)).toBe(position);
+      expect(entity.getComponent(PositionComponent)).toBe(position);
     });
   });
 

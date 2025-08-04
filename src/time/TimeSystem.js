@@ -24,7 +24,7 @@ export class TimeSystem extends System {
    * @param {number} deltaTime - The time elapsed since the last frame in seconds.
    */
   processEntity(entity, deltaTime) {
-    const timeComponent = entity.get(TimeComponent);
+    const timeComponent = entity.getComponent(TimeComponent);
     const currentTime = timeComponent.getTime();
 
     const yearsToAdd = deltaTime * YEARS_PER_SECOND;
