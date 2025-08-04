@@ -1,5 +1,8 @@
 import { World } from "../../geography/World.js";
 import { TypeUtils } from "../TypeUtils.js";
+import { ChronicleEvent } from "../../chronicle/ChronicleEvent.js";
+import { HistoricalFigure } from "../../historicalfigure/HistoricalFigure.js";
+import { Time } from "../../time/Time.js";
 
 /**
  * A helper class with static methods for logging application-specific details.
@@ -36,4 +39,30 @@ export class LogHelper {
         }
         console.log("---------------------\n");
     }
+
+    /**
+     * Logs detailed information about the chronicle, including its events.
+     * @param {Array<ChronicleEvent>} chronicle The chronicle array containing event objects.
+     */
+    static logChronicleDetails(events) {
+        TypeUtils.ensureArray(events);
+
+        console.log("--- Chronicle Details ---");
+        
+        if (events.length === 0) {
+            console.log("No events recorded in the chronicle.");
+            return;
+        }
+
+        for (const event of events) {
+            console.log(`\nEvent Heading: ${event.getHeading()}`);
+            console.log(`Year: ${event.getTime().getYear()}`);
+            console.log(`Figure: ${event.getFigure().getName}`);
+            console.log(`Description: ${event.getDescription()}`);
+            console.log(`Place: ${event.getPlace().getName()}`);
+            console.log(`Type: ${event.getEventType().getKey()}`);
+            console.log(`Category: ${event.getEventType().getCategory()}`);            
+            console.log("---------------------");
+        }
+    }   
 }

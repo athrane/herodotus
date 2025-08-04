@@ -9,6 +9,14 @@ import { ChronicleEvent } from './ChronicleEvent.js';
  * This component is typically attached to the primary World entity.
  */
 export class ChronicleEventComponent extends Component {
+
+    /**
+     * An array to hold the historical events.
+     * @type {Array<ChronicleEvent>}
+     * @private
+     */
+    #events = [];
+
     /**
      * @constructor
      * @param {Array<Object>} events - An array of historical events.
@@ -27,7 +35,7 @@ export class ChronicleEventComponent extends Component {
      */
     addEvent(event) {
         TypeUtils.ensureInstanceOf(event, ChronicleEvent);
-        this.events.push(event);
+        this.#events.push(event);
     }
 
     /**
@@ -45,6 +53,6 @@ export class ChronicleEventComponent extends Component {
      * @returns {Array<ChronicleEvent>} The list of historical events.
      */
     getEvents() {
-        return this.events;
+        return this.#events;
     }   
 }

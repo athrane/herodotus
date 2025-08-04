@@ -1,16 +1,13 @@
-import { ChronicleGenerator } from './generator/chronicle/ChronicleGenerator.js';
 import { LogHelper } from './util/log/LogHelper.js';
 import { SimulationDirector } from './simulation/builder/SimulationDirector.js';
 import { SimulationBuilder } from './simulation/builder/SimulationBuilder.js';
 import { WorldComponent } from './geography/WorldComponent.js';
+import { ChronicleEventComponent } from './chronicle/ChronicleEventComponent.js';
 
 /**
  * The main entry point for the chronicle generation application.
  */
 function main() {
-
-    // create the generators
-    const chronicleGenerator = new ChronicleGenerator();
 
     // create simulation
     const director = SimulationDirector.create(SimulationBuilder.create());
@@ -18,12 +15,8 @@ function main() {
 
     // log the world details
     const entityManager = simulation.getEntityManager();
-    const entityWithWorldComponent = entityManager.getEntitiesWithComponents(WorldComponent)[0];
-    if (entityWithWorldComponent) {
-        const worldComponent = entityWithWorldComponent.getComponent(WorldComponent);
-        const world = worldComponent.get();
-        LogHelper.logWorldDetails(world);
-    }
+    const worldComponent = entityManager.getSingletonComponent(WorldComponent);
+    LogHelper.logWorldDetails(worldComponent.get());
 
     // start the simulation
     simulation.start();
@@ -36,7 +29,9 @@ function main() {
     // stop the simulation
     simulation.stop();
 
-    // generate the chronicle
+    // print the chronicle
+    const chronicleComponent = entityManager.getSingletonComponent(ChronicleEventComponent);
+    LogHelper.logChronicleDetails(chronicleComponent.getEvents());
 
 }
 
