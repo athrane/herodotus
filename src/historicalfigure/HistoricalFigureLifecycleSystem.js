@@ -18,16 +18,6 @@ export class HistoricalFigureLifecycleSystem extends System {
     }
 
     /**
-     * Static factory method to create a HistoricalFigureLifecycleSystem.
-     * @static
-     * @param {EntityManager} entityManager - The entity manager instance.
-     * @returns {HistoricalFigureLifecycleSystem} A new instance of HistoricalFigureLifecycleSystem.
-     */
-    static create(entityManager) {
-        return new HistoricalFigureLifecycleSystem(entityManager);
-    }
-
-    /**
      * Processes a single entity to manage its lifecycle.
      * @param {Entity} entity - The entity to process.
      * @param {number} currentYear - The current year in the simulation.
@@ -35,12 +25,12 @@ export class HistoricalFigureLifecycleSystem extends System {
     processEntity(entity, currentYear) {
         TypeUtils.ensureNumber(currentYear, 'currentYear must be a number.');
 
+        // Get the HistoricalFigureComponent and TimeComponent from the entity
         const historicalFigure = entity.getComponent(HistoricalFigureComponent);
-        const timeComponent = this.entityManager.getSingletonComponent(TimeComponent);
+        if (!historicalFigure) return;
 
-        if (!historicalFigure || !timeComponent) {
-            return;
-        }
+        const timeComponent = this.getEntityManager().getSingletonComponent(TimeComponent);
+        if (!timeComponent) return;
 
         // Check for birth
         if (currentYear === historicalFigure.birthYear) {
@@ -58,4 +48,15 @@ export class HistoricalFigureLifecycleSystem extends System {
             entity.removeComponent(HistoricalFigureComponent);
         }
     }
+
+    /**
+     * Static factory method to create a HistoricalFigureLifecycleSystem.
+     * @static
+     * @param {EntityManager} entityManager - The entity manager instance.
+     * @returns {HistoricalFigureLifecycleSystem} A new instance of HistoricalFigureLifecycleSystem.
+     */
+    static create(entityManager) {
+        return new HistoricalFigureLifecycleSystem(entityManager);
+    }
+
 }
