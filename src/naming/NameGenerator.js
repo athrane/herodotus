@@ -1,6 +1,7 @@
 
 import { SyllableSets } from './SyllableSets.js';
 import { MarkovChain } from './MarkovChain.js';
+import { TypeUtils } from '../util/TypeUtils.js';
 
 /**
  * Provides a flexible and powerful system for procedurally generating names.
@@ -31,6 +32,8 @@ export class NameGenerator {
      * @returns {string} A procedurally generated name.
      */
     generateSyllableName(setName) {
+        TypeUtils.ensureString(setName, 'Syllable set name must be a string.');
+        TypeUtils.ensureNonEmptyString(setName, 'Syllable set name must not be empty.');
         const set = this.syllableSets[setName];
         if (!set) {
             throw new Error(`Syllable set "${setName}" not found.`);
@@ -70,11 +73,48 @@ export class NameGenerator {
      * @returns {string} A procedurally generated name.
      */
     generateMarkovName(nameType, minLength, maxLength) {
+        TypeUtils.ensureString(nameType, 'Name type must be a string.');
+        TypeUtils.ensureNonEmptyString(nameType, 'Name type must not be empty.');
+        TypeUtils.ensureNumber(minLength, 'Minimum length must be a number.');
+        TypeUtils.ensureNumber(maxLength, 'Maximum length must be a number.');        
         const chain = this.markovChains.get(nameType);
         if (!chain) {
             throw new Error(`Markov chain for "${nameType}" not found.`);
         }
         return chain.generateName(minLength, maxLength);
+    }
+
+    /**
+     * Generates a name for a historical figure.
+     * This method uses a combination of syllable sets and Markov chains to generate a name.
+     *
+     * @param {string} culture - The culture to generate a name from.
+     * @param {number} minLength - The minimum length of the name.
+     * @param {number} maxLength - The maximum length of the name.
+     * @returns {string} The generated name.
+     */
+    generateHistoricalFigureName(culture, minLength, maxLength) {
+        TypeUtils.ensureString(culture, 'Culture must be a string.');
+        TypeUtils.ensureNonEmptyString(culture, 'Culture must not be empty.');
+        TypeUtils.ensureNumber(minLength, 'Minimum length must be a number.');
+        TypeUtils.ensureNumber(maxLength, 'Maximum length must be a number.');
+        const nameType = `historicalFigure_${culture}`;
+        if (!this.markovChains.has(nameType)) {
+            const syllableSet = this.syllableSets[culture];
+            if (!syllableSet) {
+                throw new Error(`Syllable set for culture "${culture}" not found.`);
+            }
+            const trainingData = [];
+            for (let i = 0; i < 100; i++) {
+                let name = '';
+                name += syllableSet.initial[Math.floor(Math.random() * syllableSet.initial.length)];
+                name += syllableSet.middle[Math.floor(Math.random() * syllableSet.middle.length)];
+                name += syllableSet.final[Math.floor(Math.random() * syllableSet.final.length)];
+                trainingData.push(name);
+            }
+            this.addMarkovChain(nameType, trainingData, 2);
+        }
+        return this.generateMarkovName(nameType, minLength, maxLength);
     }
 
     /**

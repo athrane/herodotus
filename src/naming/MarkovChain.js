@@ -59,8 +59,8 @@ export class MarkovChain {
         let result = currentGram;
 
         while (result.length < maxLength) {
-            const nextChars = this.chains.get(currentGram);
-            if (!nextChars || nextChars.length === 0) {
+            const nextChars = this.getFollowers(currentGram);
+            if (nextChars.length === 0) {
                 break;
             }
 
@@ -78,6 +78,15 @@ export class MarkovChain {
         }
 
         return result.charAt(0).toUpperCase() + result.slice(1);
+    }
+
+    /**
+     * Gets the possible next characters for a given gram.
+     * @param {string} gram - The current gram.
+     * @returns {string[]} An array of possible next characters.
+     */
+    getFollowers(gram) {
+        return this.chains.get(gram) || [];
     }
 
     /**

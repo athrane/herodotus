@@ -144,4 +144,26 @@ describe('TypeUtils', () => {
       expect(() => TypeUtils.ensureArray(123, 'Custom array error')).toThrow(new TypeError('Custom array error'));
     });
   });
+
+  describe('ensureNonEmptyString', () => {
+    it('should not throw for a non-empty string', () => {
+      expect(() => TypeUtils.ensureNonEmptyString('hello')).not.toThrow();
+      expect(() => TypeUtils.ensureNonEmptyString(' ')).not.toThrow(); // space is not empty  
+    });
+
+    it('should throw a TypeError for an empty string', () => {
+      expect(() => TypeUtils.ensureNonEmptyString('')).toThrow(new TypeError('Expected type non-empty string, but got string'));
+      expect(() => TypeUtils.ensureNonEmptyString('   ')).not.toThrow(); // spaces are not considered empty 
+    });
+
+    it('should throw a TypeError for non-string values', () => {
+      expect(() => TypeUtils.ensureNonEmptyString(123)).toThrow(new TypeError('Expected type non-empty string, but got number'));
+      expect(() => TypeUtils.ensureNonEmptyString(null)).toThrow(new TypeError('Expected type non-empty string, but got object'));
+      expect(() => TypeUtils.ensureNonEmptyString(undefined)).toThrow(new TypeError('Expected type non-empty string, but got undefined'));
+      expect(() => TypeUtils.ensureNonEmptyString({})).toThrow(new TypeError('Expected type non-empty string, but got object'));
+      expect(() => TypeUtils.ensureNonEmptyString([])).toThrow(new TypeError('Expected type non-empty string, but got object'));
+      expect(() => TypeUtils.ensureNonEmptyString(() => {})).toThrow(new TypeError('Expected type non-empty string, but got function'));
+    });
+  });
+
 });

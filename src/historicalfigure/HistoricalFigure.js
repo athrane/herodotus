@@ -25,4 +25,24 @@ export class HistoricalFigure {
   getName() {
     return this.#name;
   }
+
+  /**
+   * Creates a new HistoricalFigure instance.
+   * @param {string} name - The name of the historical figure.
+   * @returns {HistoricalFigure} A new HistoricalFigure instance.
+   */
+  static create(name) {
+    return new HistoricalFigure(name);
+  }
+
+  /**
+   * Generates a new historical figure with a random name.
+   * @param {string} culture - The culture to generate a name from.
+   * @param {NameGenerator} nameGenerator - The name generator to use.
+   * @returns {HistoricalFigure} A new historical figure.
+   */
+  static generate(culture, nameGenerator) {
+    const name = nameGenerator.generateHistoricalFigureName(culture, 4, 8);
+    return new HistoricalFigure(name);
+  }
 }

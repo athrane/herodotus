@@ -40,6 +40,24 @@ export class TypeUtils {
   }
 
   /**
+     * Ensures that a value is a non-empty string.
+     * If not, it throws an error with details about the type mismatch
+     * and prints the stack trace.
+     * @param {any} value The value to check.
+     * @param {string} [message] Optional error message to throw if the value is not a non-empty string.
+     */
+  static ensureNonEmptyString(value, message) {
+    if (typeof value !== 'string' || value.length === 0 ) {
+      const actualType = typeof value;
+      const expectedType = 'non-empty string';
+      const errorMessage = message || `Expected type ${expectedType}, but got ${actualType}`;
+      console.error(errorMessage);
+      console.trace("Non-empty string check failed");
+      throw new TypeError(errorMessage);
+    }
+  }
+
+  /**
      * Ensures that a value is of type number.
      * If not, it throws an error with details about the type mismatch
      * and prints the stack trace.
