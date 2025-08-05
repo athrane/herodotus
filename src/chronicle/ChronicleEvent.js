@@ -113,4 +113,18 @@ export class ChronicleEvent {
     return this.#eventType;
   }
 
+  /**
+   * Creates a new ChronicleEvent instance.
+   * @param {string} heading - A super condensed heading for the event.
+   * @param {EventType} eventType - The type of the event.
+   * @param {Time} time - The time of the event.
+   * @param {Place} place - The location of the event.
+   * @param {string} description - A textual description of the historical event. 
+   * @param {HistoricalFigure | null} [figure=null] - The historical figure involved. Can be null for natural events.
+   * @returns {ChronicleEvent} A new ChronicleEvent instance.
+   */
+  static create(heading, eventType, time, place, description, figure = null) {
+    return new ChronicleEvent(heading, eventType, time, place, description, figure);
+  } 
+
 }

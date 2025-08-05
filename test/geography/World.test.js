@@ -15,6 +15,21 @@ describe('World', () => {
     });
   });
 
+  describe('create', () => {
+    it('should create a world with a valid name', () => {
+      const worldName = 'Mythical World';
+      const newWorld = World.create(worldName);
+      expect(newWorld).toBeInstanceOf(World);
+      expect(newWorld.getName()).toBe(worldName);
+    });
+
+    it('should throw a TypeError if the name is not a string', () => {
+      expect(() => World.create(123)).toThrow(TypeError);
+      expect(() => World.create(null)).toThrow(TypeError);
+      expect(() => World.create(undefined)).toThrow(TypeError);
+    });
+  });
+
   describe('addContinent', () => {
     it('should add a Continent to the world', () => {
       const continent = new Continent('Pangea');
@@ -59,5 +74,34 @@ describe('World', () => {
       expect(() => World.create(undefined)).toThrow(TypeError);
     });
   });
+
+  describe('getRandomContinent', () => {
+    it('should return null if no continents exist', () => {
+      expect(world.getRandomContinent()).toBeNull();
+    });
+
+    it('should return a random continent from the world', () => {
+      const continent1 = new Continent('Atlantis');
+      const continent2 = new Continent('Lemuria');
+      world.addContinent(continent1);
+      world.addContinent(continent2);
+      const randomContinent = world.getRandomContinent();
+      expect([continent1, continent2]).toContain(randomContinent);
+    });
+  });
+
+  describe('getContinents', () => {
+    it('should return an empty array if no continents have been added', () => {
+      expect(world.getContinents()).toEqual([]);
+    });
+
+    it('should return all added continents', () => {
+      const continent1 = new Continent('North America');
+      const continent2 = new Continent('South America');
+      world.addContinent(continent1);
+      world.addContinent(continent2);
+      expect(world.getContinents()).toEqual([continent1, continent2]);
+    });
+  }); 
 
 });

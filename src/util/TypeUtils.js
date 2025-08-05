@@ -2,7 +2,7 @@
  * Utility class for generic checks.
  */
 export class TypeUtils {
-  
+
   /**
    * Ensures that a value is an instance of a given class. If not, it throws a TypeError.
    *
@@ -19,6 +19,22 @@ export class TypeUtils {
       throw new TypeError(errorMessage);
     }
   }
+
+  /**
+   * Logs an instance of a class to the console.
+   * @param {any} value The value to log.
+   * @param {Function} expectedType The expected class (constructor function).
+   */
+  static logInstanceOf(value, expectedType) {
+    if (!(value instanceof expectedType)) {
+      const actualType = value.constructor.name;
+      const errorMessage = `Expected instance of ${expectedType.name}, but got ${actualType}`;
+      console.log(errorMessage);
+    } else {
+      console.log(`Value is an instance of ${expectedType.name}`);
+    }
+  }
+
 
   /**
      * Ensures that a value is of type string.
@@ -47,7 +63,7 @@ export class TypeUtils {
      * @param {string} [message] Optional error message to throw if the value is not a non-empty string.
      */
   static ensureNonEmptyString(value, message) {
-    if (typeof value !== 'string' || value.length === 0 ) {
+    if (typeof value !== 'string' || value.length === 0) {
       const actualType = typeof value;
       const expectedType = 'non-empty string';
       const errorMessage = message || `Expected type ${expectedType}, but got ${actualType}`;

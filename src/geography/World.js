@@ -52,6 +52,17 @@ export class World {
   }
 
   /**
+   * Gets a random continent from the world.
+   * @returns {Continent|null} A random continent or null if none exist.
+   */
+  getRandomContinent() {
+    if (this.#continents.length === 0) {
+      return null;
+    }
+    return this.#continents[Math.floor(Math.random() * this.#continents.length)];
+  }
+
+  /**
    * Static method to create a new World instance with a name.
    * @param {string} name - The name of the world.
    * @return {World} A new World instance.

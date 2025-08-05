@@ -1,5 +1,5 @@
 /**
- * Defines the categories for historical events, aligning with H4 and H5.
+ * Defines the categories for historical events.
  * @enum {string}
  */
 export const EventCategory = Object.freeze({

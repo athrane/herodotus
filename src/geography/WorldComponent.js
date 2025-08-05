@@ -10,12 +10,14 @@ import { World } from './World.js';
 export class WorldComponent extends Component {
 
     /**
+     * World instance.
      * @type {World}
      * @private
      */
     #world;
 
     /**
+     * Creates a new WorldComponent.
      * @param {World} world
      */
     constructor(world) {

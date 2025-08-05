@@ -10,6 +10,23 @@ import { NameGenerator } from '../naming/NameGenerator.js';
  * including its geography and history.
  */
 export class WorldGenerator {
+
+    /**
+     * @constant
+     * @type {number}
+     * @description The number of continents to generate in the world.
+     * @default 3   
+     */
+    static NUM_CONTINENTS = 3;
+
+    /**
+     * @constant
+     * @type {number}
+     * @description The number of geographical features to generate per continent.
+     * @default 50
+     */
+    static FEATURES_PER_CONTINENT = 50;
+
     /**
      * Creates an instance of WorldGenerator.
      *
@@ -49,9 +66,7 @@ export class WorldGenerator {
     generateWorld(worldName) {
         TypeUtils.ensureString(worldName, 'World name must be a string.');
         const world = new World(worldName);
-        const NUM_CONTINENTS = 3;
-        const FEATURES_PER_CONTINENT = 50;
-
+    
         for (let i = 0; i < NUM_CONTINENTS; i++) {
             const continentName = this.nameGenerator.generateSyllableName('GENERIC');
             const continent = this.generateContinent(continentName, FEATURES_PER_CONTINENT);

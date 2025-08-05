@@ -47,4 +47,15 @@ export class EventType {
   getName() {
     return this.#name;
   }
+
+  /**
+   * Creates a new EventType instance.
+   * @param {string} category - The category of the event.
+   * @param {string} name - The specific name of the event.
+   * @returns {EventType}
+   */
+  static create(category, name) {
+    return new EventType(category, name);
+  }
+
 }

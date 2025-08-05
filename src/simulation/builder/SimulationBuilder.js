@@ -11,6 +11,7 @@ import { HistoricalFigureComponent } from '../../historicalfigure/HistoricalFigu
 import { ChronicleEventComponent } from '../../chronicle/ChronicleEventComponent.js';
 import { HistoricalFigureLifecycleSystem } from '../../historicalfigure/HistoricalFigureLifecycleSystem.js';
 import { HistoricalFigureInfluenceSystem } from '../../historicalfigure/HistoricalFigureInfluenceSystem.js';
+import { HistoricalFigureBirthSystem } from '../../historicalfigure/HistoricalFigureBirthSystem.js';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -58,7 +59,7 @@ export class SimulationBuilder extends Builder {
             new NameComponent("Global"),
             new TimeComponent(Time.create(0)),
             new WorldComponent(world),
-            new ChronicleEventComponent()
+            new ChronicleEventComponent(),
         );
 
         // Create a sample historical figure
@@ -75,6 +76,7 @@ export class SimulationBuilder extends Builder {
         const entityManager = this.#simulation.getEntityManager();        
         const systemManager = this.#simulation.getSystemManager();
         systemManager.register(new TimeSystem(entityManager));
+        systemManager.register(new HistoricalFigureBirthSystem(entityManager));
         systemManager.register(new HistoricalFigureLifecycleSystem(entityManager));
         systemManager.register(new HistoricalFigureInfluenceSystem(entityManager));        
     }

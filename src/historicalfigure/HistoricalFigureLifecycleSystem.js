@@ -10,6 +10,31 @@ import { TypeUtils } from '../util/TypeUtils.js';
  * @description Manages the birth and death of historical figures based on their lifespan.
  */
 export class HistoricalFigureLifecycleSystem extends System {
+
+    /**
+     * @constant
+     * @type {number}
+     * @description The chance of a historical figure being born each year.
+     * @default 0.05
+     */
+    static BIRTH_CHANCE_PER_YEAR = 0.05;
+
+    /**
+     * @constant
+     * @type {number}
+     * @description The mean lifespan of a historical figure in years.
+     * @default 70
+     */
+    static NATURAL_LIFESPAN_MEAN = 70;
+
+    /**
+     * @constant
+     * @type {number}
+     * @description The standard deviation for the lifespan of a historical figure.
+     * @default 15
+     */
+    static NATURAL_LIFESPAN_STD_DEV = 15;
+
     /**
      * @param {EntityManager} entityManager - The entity manager instance.
      */

@@ -25,4 +25,13 @@ export class Place {
   getName() {
     return this.#name;
   }
+
+  /**
+   * Creates a new Place instance.
+   * @param {string} name - The name of the place.
+   * @returns {Place}
+   */
+  static create(name) {
+    return new Place(name);
+  }
 }

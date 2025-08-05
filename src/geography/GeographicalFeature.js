@@ -47,4 +47,14 @@ export class GeographicalFeature {
     getType() {
         return this.#type;
     }
+
+    /**
+     * Creates a new GeographicalFeature instance.
+     * @param {string} name - The specific name of the feature.
+     * @param {FeatureType} type - The registered type of the feature.
+     * @returns {GeographicalFeature}
+     */
+    static create(name, type) {
+        return new GeographicalFeature(name, type);
+    }
 }

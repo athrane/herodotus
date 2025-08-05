@@ -58,7 +58,7 @@ describe('SimulationBuilder', () => {
     it('should build systems correctly', () => {
         builder.buildSystems();
 
-        expect(systemManager.register).toHaveBeenCalledTimes(3);
+        expect(systemManager.register).toHaveBeenCalledTimes(4);
         expect(systemManager.register).toHaveBeenCalledWith(expect.any(TimeSystem));
         expect(systemManager.register).toHaveBeenCalledWith(expect.any(HistoricalFigureLifecycleSystem));
         expect(systemManager.register).toHaveBeenCalledWith(expect.any(HistoricalFigureInfluenceSystem));
