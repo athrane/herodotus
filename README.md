@@ -10,57 +10,66 @@ This section provides an overview of the project's architecture and class struct
 
 The project is organized into modules, with each directory representing a distinct area of functionality.
 
-#### `generator/chronicle`
+#### `chronicle`
 
-This module is responsible for generating the historical narrative of the world.
+This module provides the classes for creating and managing historical events in the simulation.
 
-*   **`ChronicleGenerator`**: Weaves together events, characters, and geographical features to create a coherent story or timeline for the generated world.
+*   **`ChronicleEvent`**: Represents a single, discrete entry in the chronicle, describing a historical event.
+*   **`ChronicleEventComponent`**: A component to store a logbook of significant historical events. This component is typically attached to the primary World entity.
+*   **`EventCategory`**: Defines the categories for historical events, aligning with H4 and H5.
+*   **`EventType`**: Represents the type of a historical event, including its category and specific name.
 
 #### `ecs`
 
 This module implements an Entity-Component-System (ECS) architecture, a design pattern that promotes data-oriented design and flexible composition over deep inheritance hierarchies.
 
-*   **`Entity`**: A lightweight container that represents an object in the world (e.g., a person, a city, a kingdom). It is essentially a unique ID that aggregates a collection of components.
+*   **`Component`**: A base class for all components in the Entity-Component-System (ECS) architecture. Components are simple data containers. They should not contain any logic. This class serves as a marker to identify objects as components.
+*   **`Entity`**: Represents an entity in the Entity-Component-System (ECS) architecture. An entity is essentially a container for components, identified by a unique ID. It acts as a lightweight wrapper that groups various components, which hold the actual data.
+*   **`EntityManager`**: Manages the lifecycle of entities in the ECS architecture. It is responsible for creating, retrieving, destroying, and querying entities.
+*   **`NameComponent`**: A component that provides a human-readable name.
+*   **`System`**: A base class for all systems in the Entity-Component-System (ECS) architecture. Systems contain the logic that operates on entities possessing a specific set of components.
+*   **`SystemManager`**: Manages the registration, lifecycle, and execution of all systems in the ECS. This class orchestrates the logic updates for the simulation.
 
-*   **`Component`**: A simple data container that holds a specific piece of information about an entity (e.g., `PositionComponent`, `HealthComponent`). Components contain no logic.
+#### `generator`
 
-*   **`System`**: Contains all the logic for a specific domain. Systems operate on entities that possess a certain set of components (e.g., a `MovementSystem` would process entities with `PositionComponent` and `VelocityComponent`).
+This module contains classes responsible for generating various aspects of the world, including places and the world itself.
 
-*   **`EntityManager`**: A manager responsible for the entire lifecycle of entities, including their creation, destruction, and querying based on their components.
+*   **`Place`**: Represents a location where a historical event occurred.
 
-*   **`SystemManager`**: Manages the registration and execution of all `System` instances. It orchestrates the main logic loop of the simulation by calling the `update` method on each registered system in sequence.
+#### `generator/world`
 
-#### `generator/event`
+This module is responsible for generating the initial world, including its geographical features and continents.
 
-This module provides an event-driven framework for managing occurrences within the generated history.
-
-*   **`EventCategory`**: Enum Defines the categories for historical events.
-
-*   **`EventType`**: Represents the type of a historical event, including its category and specific name.
-
-#### `generator/figure`
-
-This module contains classes for representing key entities in the generated history, such as historical figures and significant places.
-
-*   **`HistoricalFigure`**: Represents a historical figure involved in an event, characterized by a name.
-
-*   **`Place`**: Represents a location where a historical event occurred, identified by a name.
+*   **`WorldGenerator`**: A self-contained generator that orchestrates the creation of a world, including its geography and history.
 
 #### `geography`
 
 This module contains all the core classes for representing and managing the geographical elements of the generated world.
 
-*   **`World`**: The top-level container for the entire world. It holds a collection of `Continent` instances.
+*   **`Continent`**: Represents a continent in the world.
+*   **`FeatureType`**: Represents a single geographical feature type. This class ensures each type has a consistent structure (e.g., a unique key and a display name).
+*   **`GeographicalFeature`**: Represents a specific, named instance of a geographical feature in the world. e.g., "The Misty Mountains" which is of type MOUNTAIN.
+*   **`GeographicalFeaturesFactory`**: Responsible for creating and registering various geographical feature types in the `GeographicalFeatureTypeRegistry`.
+*   **`GeographicalFeatureTypeRegistry`**: A registry for managing and providing access to all defined geographical feature types. This acts as the central point for defining and retrieving types, making it extensible. This is implemented as a static class to enforce a single registry instance.
+*   **`World`**: Represents the entire world, which can contain multiple continents.
+*   **`WorldComponent`**: Holds the world data. This component is typically attached to the primary World entity.
 
-*   **`Continent`**: Represents a single continent. It acts as a container for a collection of `GeographicalFeature` instances.
+#### `historicalfigure`
 
-*   **`GeographicalFeature`**: Represents a specific, named instance of a feature within the world, such as "The Misty Mountains." Each feature has a name and is associated with a `FeatureType`.
+This module contains classes for representing key entities in the generated history, such as historical figures and significant places.
 
-*   **`FeatureType`**: Represents the *definition* or *category* of a geographical feature (e.g., the concept of a 'Mountain' or 'River'). These are immutable objects with a unique key and a display name, intended to be shared and reused.
+*   **`HistoricalFigure`**: Represents a historical figure involved in an event.
+*   **`HistoricalFigureComponent`**: A marker component to identify an entity as a historical figure.
+*   **`HistoricalFigureInfluenceSystem`**: Translates the existence and roles of active historical figures into concrete historical events.
+*   **`HistoricalFigureLifecycleSystem`**: Manages the birth and death of historical figures based on their lifespan.
 
-*   **`GeographicalFeatureTypeRegistry`**: A static singleton class that acts as a central registry for all `FeatureType` definitions. It ensures that feature types are unique and provides global methods to register, retrieve, and manage them.
+#### `naming`
 
-*   **`DefaultFeatureTypes`**: This file does not export a class. Instead, it uses the `GeographicalFeatureTypeRegistry` to pre-register a standard set of common feature types (e.g., `MOUNTAIN`, `FOREST`, `RIVER`). It exports a frozen object, `GeographicalFeatureTypes`, which provides an enum-like way to access these default types.
+This module provides a flexible and powerful system for procedurally generating names, supporting various linguistic styles.
+
+*   **`MarkovChain`**: Represents a Markov chain for procedural name generation. This class learns from a set of example names and can generate new names that mimic the patterns found in the input data.
+*   **`NameGenerator`**: Provides a flexible and powerful system for procedurally generating names. This class supports multiple generation strategies, including syllable-based combination and Markov chains.
+*   **`SyllableSets`**: Defines a collection of syllable sets for procedural name generation, categorized by linguistic characteristics. This allows for the creation of names with distinct flavors.
 
 #### `generator/world`
 
@@ -72,20 +81,27 @@ This module is responsible for generating the initial world, including its geogr
 
 This module is responsible for tracking the passage of time, a core element of history generation.
 
-*   **`Time`**: A simple, immutable value object that represents a specific point in time (e.g., a year). It is used to timestamp events and other historical data within the chronicle.
+*   **`Time`**: Represents a point in time within the chronicle.
+*   **`TimeComponent`**: A component that associates a specific point in time with an entity. This is useful for entities that represent historical events, scheduled tasks, or any other time-sensitive data.
+*   **`TimeSystem`**: A system that advances the simulation's global time. It processes all entities with a TimeComponent and updates their time based on the delta time.
 
 #### `simulation`
 
 This module contains classes related to the simulation's core logic and its construction.
 
-*   **`Simulation`**: The main class that orchestrates the world-building and history generation process. It manages the ECS, time, and other core components to run the simulation.
+*   **`Simulation`**: The main class that orchestrates an Entity-Component-System (ECS) based simulation. It manages all entities and systems, and drives the main simulation loop.
 
-*   **`SimulationBuilder`**: A builder class for constructing `Simulation` instances. It provides a fluent API to configure various aspects of the simulation before it is built.
+#### `simulation/builder`
 
-*   **`SimulationDirector`**: Directs the `SimulationBuilder` to construct complex `Simulation` objects. It encapsulates the knowledge of how to construct a simulation with specific configurations.
+This module provides classes for constructing and directing the simulation.
+
+*   **`Builder`**: An abstract base class for building simulations. It defines the methods that must be implemented by subclasses to build entities, systems, and geographical features in a simulation.
+*   **`SimulationBuilder`**: Responsible for building an ECS-based simulation. It extends the Builder to create a simulation with ECS components.
+*   **`SimulationDirector`**: Responsible for directing the simulation building process. It uses a builder to construct the simulation and its components.
 
 #### `util`
 
 This module provides common utility classes used throughout the application.
 
+*   **`LogHelper`**: A helper class with static methods for logging application-specific details. This provides a centralized place for logging formats.
 *   **`TypeUtils`**: A static utility class containing helper methods for runtime type validation. It provides functions like `ensureString()`, `ensureNumber()`, and `ensureInstanceOf()` to enforce type safety in constructors and methods, throwing clear errors when type constraints are violated.

@@ -11,6 +11,11 @@ import { GeographicalFeatureTypeRegistry } from './GeographicalFeatureTypeRegist
  */
 export class GeographicalFeaturesFactory {
 
+    /**
+     * Static factory method to create and register geographical feature types.
+     * This method populates the GeographicalFeatureTypeRegistry with a variety of
+     * geographical features, each identified by a unique key.
+     */
     static create() {
         GeographicalFeatureTypeRegistry.register('MOUNTAIN', 'Mountain');     
         GeographicalFeatureTypeRegistry.register('RIVER', 'River');
