@@ -1,0 +1,42 @@
+# Copilot Custom Instructions
+
+## General Guidance
+- Follow established coding conventions and style guides used in this repository.
+- Prefer clear, readable, and maintainable code over clever or overly compact solutions.
+- Include comments for complex logic or non-obvious decisions.
+- For configuration files, match the format and structure already used (YAML, JSON, etc).
+- always create a static factory function when implementing a class
+
+## Language/Framework Preferences
+- Use the primary language(s) and frameworks found in this repository.
+- Prefer built-in or standard library functionality when possible.
+- Use dependency versions compatible with the current codebase.
+
+## Testing
+- When adding new features, provide corresponding tests if relevant.
+- Follow the repository’s testing framework and naming conventions.
+- Create unit tests using mocks
+- Create unit test for each method in a class
+- Create integration tests without mocks, but with usage of classes included in the project
+
+## Pull Requests
+- Reference related issues or discussions in your PR descriptions.
+- Ensure all code passes CI checks and linting before merging.
+
+## Additional Notes
+- If unsure, ask for clarification or review from the repository maintainers.
+- Avoid introducing breaking changes unless explicitly requested.
+
+## Project-Specific Guidance
+- Use ES module syntax (`import`/`export`) for all new files and refactors.
+- When creating new classes, always provide a static `create` factory method in addition to the constructor.
+- For constants (such as configuration values or default numbers), use `static` class properties and document them with JSDoc.
+- Place each class in its own file, named after the class (e.g., `WorldGenerator` in `WorldGenerator.js`).
+- Organize files by domain (e.g., `chronicle/`, `ecs/`, `geography/`, `naming/`, `simulation/`, `util/`), and follow the existing folder structure for new features.
+- For utility functions, use the `TypeUtils` or similar utility modules when type checking or validation is needed.
+- When adding new features to the simulation, ensure they are integrated via the `SimulationDirector` and `SimulationBuilder` patterns.
+- When adding new entity or component types, ensure they are registered and accessible through the `EntityManager` and `SystemManager`.
+- For test files, use the `.test.js` or `.integration.test.js` suffix and mirror the source file structure under the `test/` directory.
+- Prefer descriptive and explicit naming for all classes, methods, and variables.
+
+# End of instructions
