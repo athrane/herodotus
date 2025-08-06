@@ -3,7 +3,7 @@ import { GeographicalFeature } from '../../geography/GeographicalFeature.js';
 import { GeographicalFeatureTypeRegistry } from '../../geography/GeographicalFeatureTypeRegistry.js';
 import { World } from '../../geography/World.js';
 import { TypeUtils } from '../../util/TypeUtils.js';
-import { NameGenerator } from '../naming/NameGenerator.js';
+import { NameGenerator } from '../../naming/NameGenerator.js';
 
 /**
  * A self-contained generator that orchestrates the creation of a world,
