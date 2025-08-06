@@ -33,6 +33,8 @@ export class HistoricalFigureInfluenceSystem extends System {
     
         // Example: A simple event generation based on the historical figure's existence
         // In a real scenario, this would be much more complex, considering traits, roles, etc.
+
+        /**
         if (currentYear >= historicalFigure.birthYear && currentYear <= historicalFigure.deathYear) {
             const event = {
                 year: currentYear,
@@ -42,6 +44,7 @@ export class HistoricalFigureInfluenceSystem extends System {
             };
             chronicle.addEvent(event);
         }
+            */
     }
 
     /**
