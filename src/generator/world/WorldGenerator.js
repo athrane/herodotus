@@ -66,12 +66,23 @@ export class WorldGenerator {
     generateWorld(worldName) {
         TypeUtils.ensureString(worldName, 'World name must be a string.');
         const world = new World(worldName);
-    
-        for (let i = 0; i < NUM_CONTINENTS; i++) {
+
+        for (let i = 0; i < WorldGenerator.NUM_CONTINENTS; i++) {
             const continentName = this.nameGenerator.generateSyllableName('GENERIC');
-            const continent = this.generateContinent(continentName, FEATURES_PER_CONTINENT);
+            const continent = this.generateContinent(continentName, WorldGenerator.FEATURES_PER_CONTINENT);
             world.addContinent(continent);
         }
         return world;
+    }
+
+    /**
+     * Creates a new instance of WorldGenerator.
+     *
+     * @static
+     * @param {NameGenerator} nameGenerator - The name generator to use.
+     * @returns {WorldGenerator} A new WorldGenerator instance.
+     */
+    static create(nameGenerator) {
+        return new WorldGenerator(nameGenerator);
     }
 }

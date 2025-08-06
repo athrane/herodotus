@@ -12,6 +12,7 @@ import { ChronicleEventComponent } from '../../chronicle/ChronicleEventComponent
 import { HistoricalFigureLifecycleSystem } from '../../historicalfigure/HistoricalFigureLifecycleSystem.js';
 import { HistoricalFigureInfluenceSystem } from '../../historicalfigure/HistoricalFigureInfluenceSystem.js';
 import { HistoricalFigureBirthSystem } from '../../historicalfigure/HistoricalFigureBirthSystem.js';
+import { NameGenerator } from '../../naming/NameGenerator.js';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -51,7 +52,8 @@ export class SimulationBuilder extends Builder {
         const entityManager = this.#simulation.getEntityManager();
 
         // create world
-        const worldGenerator = new WorldGenerator();
+        const nameGenerator = NameGenerator.create();
+        const worldGenerator = WorldGenerator.create(nameGenerator); 
         const world = worldGenerator.generateWorld('Aethel');
         
         // create global entity to hold simulation-wide state, like the current time.
