@@ -33,6 +33,8 @@ export class HistoricalFigureInfluenceSystem extends System {
     
         // Simple event generation based on the historical figure's active years
         if (currentYear >= historicalFigure.birthYear && currentYear <= historicalFigure.deathYear) {
+
+            /** 
             const event = {
                 year: currentYear,
                 description: `${historicalFigure.name} (${historicalFigure.occupation}) is active this year.`,
@@ -40,6 +42,7 @@ export class HistoricalFigureInfluenceSystem extends System {
                 figureId: entity.getId()
             };
             chronicle.addEvent(event);
+            **/
         }
     }
 
