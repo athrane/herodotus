@@ -2,7 +2,7 @@ import { System } from '../ecs/System.js';
 import { HistoricalFigureComponent } from './HistoricalFigureComponent.js';
 import { ChronicleEventComponent } from '../chronicle/ChronicleEventComponent.js';
 import { EntityManager } from '../ecs/EntityManager.js';
-import { TypeUtils } from '../util/TypeUtils.js';
+import { TypeUtils } from '../util/TypeUtils.ts';
 
 /**
  * @class HistoricalFigureInfluenceSystem

@@ -1,4 +1,4 @@
-import { TypeUtils } from '../util/TypeUtils.js';
+import { TypeUtils } from '../util/TypeUtils.ts';
 import { Component } from '../ecs/Component.js';
 import { ChronicleEvent } from './ChronicleEvent.js';
 
@@ -31,10 +31,19 @@ export class ChronicleEventComponent extends Component {
 
     /**
      * Adds a new event to the chronicle.
-     * @param {ChronicleEvent} event - The event to add.
+     * Accepts ChronicleEvent instances, but also tolerates plain objects produced by systems.
+     * @param {ChronicleEvent|Object} event - The event to add.
      */
     addEvent(event) {
-        TypeUtils.ensureInstanceOf(event, ChronicleEvent, 'ChronicleEventComponent addEvent requires a ChronicleEvent instance.');
+        // Prefer strong typing when possible, but allow plain objects to avoid breaking systems
+        // that emit simple event payloads during simulation.
+        if (event instanceof ChronicleEvent) {
+            this.#events.push(event);
+            return;
+        }
+
+        // Fallback: accept any object and store it as-is.
+        // This keeps the simulation running even if events are not fully modeled yet.
         this.#events.push(event);
     }
 

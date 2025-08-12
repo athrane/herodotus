@@ -2,7 +2,7 @@ import { System } from '../ecs/System.js';
 import { HistoricalFigureComponent } from './HistoricalFigureComponent.js';
 import { TimeComponent } from '../time/TimeComponent.js';
 import { EntityManager } from '../ecs/EntityManager.js';
-import { TypeUtils } from '../util/TypeUtils.js';
+import { TypeUtils } from '../util/TypeUtils.ts';
 import { World } from '../geography/World.js';
 import { WorldComponent } from '../geography/WorldComponent.js';
 import { ChronicleEventComponent } from '../chronicle/ChronicleEventComponent.js';

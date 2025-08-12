@@ -1,7 +1,7 @@
 
 import { SyllableSets } from './SyllableSets.js';
 import { MarkovChain } from './MarkovChain.js';
-import { TypeUtils } from '../util/TypeUtils.js';
+import { TypeUtils } from '../util/TypeUtils.ts';
 
 /**
  * Provides a flexible and powerful system for procedurally generating names.

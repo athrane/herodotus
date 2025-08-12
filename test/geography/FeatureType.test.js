@@ -1,4 +1,4 @@
-import { FeatureType } from '../../src/geography/FeatureType.js';
+import { FeatureType } from '../../src/geography/FeatureType.ts';
 
 describe('FeatureType', () => {
     it('should correctly initialize with a key and displayName', () => {

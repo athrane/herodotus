@@ -1,5 +1,5 @@
 import { Entity } from './Entity.js';
-import { TypeUtils } from '../util/TypeUtils.js';
+import { TypeUtils } from '../util/TypeUtils.ts';
 
 /**
  * Manages the lifecycle of entities in the ECS architecture.

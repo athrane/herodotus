@@ -1,5 +1,5 @@
 import { Component } from '../ecs/Component.js';
-import { TypeUtils } from '../util/TypeUtils.js';
+import { TypeUtils } from '../util/TypeUtils.ts';
 
 /**
  * A component that provides a human-readable name .

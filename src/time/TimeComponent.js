@@ -1,6 +1,6 @@
 import { Component } from '../ecs/Component.js';
 import { Time } from '../time/Time.js';
-import { TypeUtils } from '../util/TypeUtils.js';
+import { TypeUtils } from '../util/TypeUtils.ts';
 
 /**
  * A component that associates a specific point in time with an entity.

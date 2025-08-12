@@ -2,7 +2,7 @@ import { Continent } from '../../geography/Continent.js';
 import { GeographicalFeature } from '../../geography/GeographicalFeature.js';
 import { GeographicalFeatureTypeRegistry } from '../../geography/GeographicalFeatureTypeRegistry.js';
 import { World } from '../../geography/World.js';
-import { TypeUtils } from '../../util/TypeUtils.js';
+import { TypeUtils } from '../../util/TypeUtils.ts';
 import { NameGenerator } from '../../naming/NameGenerator.js';
 
 /**

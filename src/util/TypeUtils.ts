@@ -1,16 +1,11 @@
-// @ts-check
 /**
  * Utility class for generic checks.
  */
 export class TypeUtils {
-
   /**
    * Ensures that a value is an instance of a given class. If not, it throws a TypeError.
-   *
-   * @param {any} value The value to check.
-   * @param {Function} Class The expected class (constructor function).
    */
-  static ensureInstanceOf(value, Class) {
+  static ensureInstanceOf<T>(value: unknown, Class: new (...args: any[]) => T): asserts value is T {
     if (!(value instanceof Class)) {
       const actualType = typeof value;
       const expectedType = Class.name;
@@ -23,12 +18,10 @@ export class TypeUtils {
 
   /**
    * Logs an instance of a class to the console.
-   * @param {any} value The value to log.
-   * @param {Function} expectedType The expected class (constructor function).
    */
-  static logInstanceOf(value, expectedType) {
+  static logInstanceOf<T>(value: unknown, expectedType: new (...args: any[]) => T): void {
     if (!(value instanceof expectedType)) {
-      const actualType = value.constructor.name;
+      const actualType = (value as any)?.constructor?.name ?? typeof value;
       const errorMessage = `Expected instance of ${expectedType.name}, but got ${actualType}`;
       console.log(errorMessage);
     } else {
@@ -36,16 +29,12 @@ export class TypeUtils {
     }
   }
 
-
   /**
-     * Ensures that a value is of type string.
-     * If not, it throws an error with details about the type mismatch
-     * and prints the stack trace.
-     *
-     * @param {any} value The value to check.
-     * @param {string} [message] Optional error message to throw if the value is not a string.
-     */
-  static ensureString(value, message) {
+   * Ensures that a value is of type string.
+   * If not, it throws an error with details about the type mismatch
+   * and prints the stack trace.
+   */
+  static ensureString(value: unknown, message?: string): asserts value is string {
     if (typeof value !== 'string') {
       const actualType = typeof value;
       const expectedType = 'string';
@@ -57,13 +46,11 @@ export class TypeUtils {
   }
 
   /**
-     * Ensures that a value is a non-empty string.
-     * If not, it throws an error with details about the type mismatch
-     * and prints the stack trace.
-     * @param {any} value The value to check.
-     * @param {string} [message] Optional error message to throw if the value is not a non-empty string.
-     */
-  static ensureNonEmptyString(value, message) {
+   * Ensures that a value is a non-empty string.
+   * If not, it throws an error with details about the type mismatch
+   * and prints the stack trace.
+   */
+  static ensureNonEmptyString(value: unknown, message?: string): asserts value is string {
     if (typeof value !== 'string' || value.length === 0) {
       const actualType = typeof value;
       const expectedType = 'non-empty string';
@@ -75,14 +62,11 @@ export class TypeUtils {
   }
 
   /**
-     * Ensures that a value is of type number.
-     * If not, it throws an error with details about the type mismatch
-     * and prints the stack trace.
-     *
-     * @param {any} value The value to check.
-     * @param {string} [message] Optional error message to throw if the value is not a number.
-     */
-  static ensureNumber(value, message) {
+   * Ensures that a value is of type number.
+   * If not, it throws an error with details about the type mismatch
+   * and prints the stack trace.
+   */
+  static ensureNumber(value: unknown, message?: string): asserts value is number {
     if (typeof value !== 'number') {
       const actualType = typeof value;
       const expectedType = 'number';
@@ -95,26 +79,19 @@ export class TypeUtils {
 
   /**
    * Ensures that the provided value is a function.
-   * @param {any} value The value to check.
-   * @param {string} [message] Optional error message to throw if the value is not a function.
-   * @throws {Error} If the value is not a function.
    */
-  static ensureFunction(value, message) {
+  static ensureFunction(value: unknown, message?: string): asserts value is (...args: any[]) => unknown {
     if (typeof value !== 'function') {
       throw new TypeError(message || 'Expected a function');
     }
   }
 
   /**
-       * Ensures that the provided value is an array.
-       * @param {any} value The value to check.
-       * @param {string} [message] Optional error message to throw if the value is not an array.
-       * @throws {Error} If the value is not an array.
-  */
-  static ensureArray(value, message) {
+   * Ensures that the provided value is an array.
+   */
+  static ensureArray<T = unknown>(value: unknown, message?: string): asserts value is T[] {
     if (!Array.isArray(value)) {
       throw new TypeError(message || 'Expected an array');
     }
   }
-
 }

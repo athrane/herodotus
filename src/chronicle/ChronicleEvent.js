@@ -1,4 +1,4 @@
-import { TypeUtils } from '../util/TypeUtils.js';
+import { TypeUtils } from '../util/TypeUtils.ts';
 import { Time } from '../time/Time.js';
 import { HistoricalFigure } from '../historicalfigure/HistoricalFigure.js';
 import { Place } from '../generator/Place.js';

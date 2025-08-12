@@ -1,5 +1,5 @@
-import { TypeUtils } from '../util/TypeUtils.js';
-import { FeatureType } from './FeatureType.js';
+import { TypeUtils } from '../util/TypeUtils.ts';
+import { FeatureType } from './FeatureType.ts';
 import { GeographicalFeatureTypeRegistry } from './GeographicalFeatureTypeRegistry.js';
 
 /**

@@ -1,4 +1,4 @@
-import { TypeUtils } from '../../src/util/TypeUtils.js';
+import { TypeUtils } from '../../src/util/TypeUtils.ts';
 
 describe('TypeUtils', () => {
   let errorSpy;

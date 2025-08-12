@@ -3,7 +3,7 @@ import { NameGenerator } from '../../../src/naming/NameGenerator.js';
 import { World } from '../../../src/geography/World.js';
 import { Continent } from '../../../src/geography/Continent.js';
 import { GeographicalFeatureTypeRegistry } from '../../../src/geography/GeographicalFeatureTypeRegistry.js';
-import { FeatureType } from '../../../src/geography/FeatureType.js';
+import { FeatureType } from '../../../src/geography/FeatureType.ts';
 
 describe('WorldGenerator', () => {
   let nameGenerator;
