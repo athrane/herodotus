@@ -18,6 +18,14 @@ This module provides the classes for creating and managing historical events in 
 *   **`ChronicleEventComponent`**: A component to store a logbook of significant historical events. This component is typically attached to the primary World entity.
 *   **`EventType`**: Represents the type of a historical event, including its category and specific name.
 
+#### `data`
+
+This module contains classes for loading and accessing event data.
+
+*   **`DataEventComponent`**: A component that holds all loaded event data.
+*   **`Event`**: Represents a single event in the system.
+*   **`loadEvents`**: A function that loads events from a JSON file.
+
 #### `ecs`
 
 This module implements an Entity-Component-System (ECS) architecture, a design pattern that promotes data-oriented design and flexible composition over deep inheritance hierarchies.

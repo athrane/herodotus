@@ -35,7 +35,7 @@ describe('HistoricalFigureInfluenceSystem', () => {
             year: 1025,
             description: 'Test Figure (King) is active this year.',
             type: 'HistoricalFigureActivity',
-            figureId: figureEntity.id
+            figureId: figureEntity.getId()
         });
     });
 

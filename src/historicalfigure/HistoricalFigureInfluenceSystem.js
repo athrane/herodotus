@@ -31,20 +31,16 @@ export class HistoricalFigureInfluenceSystem extends System {
         const chronicle = this.getEntityManager().getSingletonComponent(ChronicleEventComponent);
         if (!chronicle) return;
     
-        // Example: A simple event generation based on the historical figure's existence
-        // In a real scenario, this would be much more complex, considering traits, roles, etc.
-
-        /**
+        // Simple event generation based on the historical figure's active years
         if (currentYear >= historicalFigure.birthYear && currentYear <= historicalFigure.deathYear) {
             const event = {
                 year: currentYear,
                 description: `${historicalFigure.name} (${historicalFigure.occupation}) is active this year.`,
                 type: 'HistoricalFigureActivity',
-                figureId: entity.id
+                figureId: entity.getId()
             };
             chronicle.addEvent(event);
         }
-            */
     }
 
     /**
