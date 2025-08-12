@@ -11,7 +11,7 @@ import { NameGenerator } from '../naming/NameGenerator.js';
 import { NameComponent } from '../ecs/NameComponent.js';
 import { ChronicleEvent } from '../chronicle/ChronicleEvent.js';
 import { EventCategory } from '../chronicle/EventCategory.js';
-import { EventType } from '../chronicle/EventType.js';
+import { EventType } from '../chronicle/EventType.ts';
 import { Place } from '../generator/Place.js';
 
 /**

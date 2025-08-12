@@ -1,4 +1,4 @@
-import { EventType } from '../../src/chronicle/EventType.js';
+import { EventType } from '../../src/chronicle/EventType.ts';
 import { EventCategory } from '../../src/chronicle/EventCategory.js';
 
 

@@ -2,7 +2,7 @@ import { ChronicleEvent } from '../../src/chronicle/ChronicleEvent.js';
 import { Time } from '../../src/time/Time.js';
 import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure.js';
 import { Place } from '../../src/generator/Place.js';
-import { EventType } from '../../src/chronicle/EventType.js';
+import { EventType } from '../../src/chronicle/EventType.ts';
 
 describe('ChronicleEvent', () => {
   let heading;

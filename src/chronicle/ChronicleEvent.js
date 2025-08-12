@@ -2,7 +2,7 @@ import { TypeUtils } from '../util/TypeUtils.ts';
 import { Time } from '../time/Time.js';
 import { HistoricalFigure } from '../historicalfigure/HistoricalFigure.js';
 import { Place } from '../generator/Place.js';
-import { EventType } from './EventType.js';
+import { EventType } from './EventType.ts';
 
 /**
  * Represents a single, discrete entry in the chronicle, describing a historical event.
