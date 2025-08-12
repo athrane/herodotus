@@ -2,7 +2,7 @@ import { LogHelper } from './util/log/LogHelper.js';
 import { SimulationDirector } from './simulation/builder/SimulationDirector.js';
 import { SimulationBuilder } from './simulation/builder/SimulationBuilder.js';
 import { WorldComponent } from './geography/WorldComponent.js';
-import { ChronicleEventComponent } from './chronicle/ChronicleEventComponent.js';
+import { ChronicleEventComponent } from './chronicle/ChronicleEventComponent.ts';
 
 /**
  * The main entry point for the chronicle generation application.

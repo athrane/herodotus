@@ -1,5 +1,5 @@
 
-import { ChronicleEventComponent } from '../../src/chronicle/ChronicleEventComponent.js';
+import { ChronicleEventComponent } from '../../src/chronicle/ChronicleEventComponent.ts';
 import { TimeComponent } from '../../src/time/TimeComponent.js';
 import { WorldComponent } from '../../src/geography/WorldComponent.js';
 import { World } from '../../src/geography/World.js';

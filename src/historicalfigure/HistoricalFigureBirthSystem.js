@@ -5,7 +5,7 @@ import { EntityManager } from '../ecs/EntityManager.js';
 import { TypeUtils } from '../util/TypeUtils.ts';
 import { World } from '../geography/World.js';
 import { WorldComponent } from '../geography/WorldComponent.js';
-import { ChronicleEventComponent } from '../chronicle/ChronicleEventComponent.js';
+import { ChronicleEventComponent } from '../chronicle/ChronicleEventComponent.ts';
 import { HistoricalFigure } from './HistoricalFigure.js';
 import { NameGenerator } from '../naming/NameGenerator.js';
 import { NameComponent } from '../ecs/NameComponent.js';

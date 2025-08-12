@@ -8,7 +8,7 @@ import { NameComponent } from '../../ecs/NameComponent.js';
 import { WorldComponent } from '../../geography/WorldComponent.js';
 import { GeographicalFeaturesFactory } from '../../geography/GeographicalFeaturesFactory.js';
 import { HistoricalFigureComponent } from '../../historicalfigure/HistoricalFigureComponent.js';
-import { ChronicleEventComponent } from '../../chronicle/ChronicleEventComponent.js';
+import { ChronicleEventComponent } from '../../chronicle/ChronicleEventComponent.ts';
 import { HistoricalFigureLifecycleSystem } from '../../historicalfigure/HistoricalFigureLifecycleSystem.js';
 import { HistoricalFigureInfluenceSystem } from '../../historicalfigure/HistoricalFigureInfluenceSystem.js';
 import { HistoricalFigureBirthSystem } from '../../historicalfigure/HistoricalFigureBirthSystem.js';
