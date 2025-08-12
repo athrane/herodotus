@@ -6,6 +6,25 @@ A procedural world-building and history generation tool.
 
 This section provides an overview of the project's architecture and class structure for developers.
 
+### Linting
+
+This project uses ESLint (flat config) to lint both JavaScript and TypeScript.
+
+- Config file: `eslint.config.mjs` (ESLint v9 flat config)
+- Scope: lints `src/**/*.js` and `src/**/*.ts`; Jest globals enabled for files in `test/`
+- Ignored by default: `dist/`, `coverage/`, `node_modules/`
+
+Run locally:
+
+```powershell
+npm run lint      # report issues
+npm run lint:fix  # attempt automatic fixes
+```
+
+Notes:
+- Rules are intentionally lenient to ease adoption (e.g., fewer errors in tests and JS unused-vars shown as warnings). Tightening can be done later in `eslint.config.mjs`.
+- For best DX, install the "ESLint" extension in VS Code to see problems inline and auto-fix on save.
+
 ### Class Documentation
 
 The project is organized into modules, with each directory representing a distinct area of functionality.
