@@ -1,6 +1,6 @@
 import { TypeUtils } from '../util/TypeUtils.ts';
 import { Component } from '../ecs/Component.js';
-import { ChronicleEvent } from './ChronicleEvent.js';
+import { ChronicleEvent } from './ChronicleEvent.ts';
 
 /**
  * @class ChronicleEventComponent

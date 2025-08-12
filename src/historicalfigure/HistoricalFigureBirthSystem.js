@@ -9,7 +9,7 @@ import { ChronicleEventComponent } from '../chronicle/ChronicleEventComponent.js
 import { HistoricalFigure } from './HistoricalFigure.js';
 import { NameGenerator } from '../naming/NameGenerator.js';
 import { NameComponent } from '../ecs/NameComponent.js';
-import { ChronicleEvent } from '../chronicle/ChronicleEvent.js';
+import { ChronicleEvent } from '../chronicle/ChronicleEvent.ts';
 import { EventCategory } from '../chronicle/EventCategory.js';
 import { EventType } from '../chronicle/EventType.ts';
 import { Place } from '../generator/Place.js';

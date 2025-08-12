@@ -1,9 +1,21 @@
 /**
- * Utility class for generic checks.
+ * Utility class for runtime type and instance checks used across the codebase.
+ *
+ * Notes:
+ * - Methods with "ensures" use TypeScript assertion signatures to narrow types after validation.
+ * - On failure, methods log a helpful error and stack trace, then throw a TypeError.
  */
 export class TypeUtils {
   /**
-   * Ensures that a value is an instance of a given class. If not, it throws a TypeError.
+   * Ensures that a value is an instance of a given class.
+   *
+   * @typeParam T - The expected instance type.
+   * @param value - The value to validate.
+   * @param Class - The constructor function of the expected type.
+   * @throws {TypeError} If the value is not an instance of the provided constructor.
+   * @example
+   * TypeUtils.ensureInstanceOf(time, Time);
+   * // time is now narrowed to Time
    */
   static ensureInstanceOf<T>(value: unknown, Class: new (...args: any[]) => T): asserts value is T {
     if (!(value instanceof Class)) {
@@ -17,7 +29,14 @@ export class TypeUtils {
   }
 
   /**
-   * Logs an instance of a class to the console.
+   * Logs whether a value is an instance of the given class constructor.
+   *
+   * @typeParam T - The expected instance type.
+   * @param value - The value to test.
+   * @param expectedType - The constructor to test against.
+   * @returns {void}
+   * @example
+   * TypeUtils.logInstanceOf(world, World);
    */
   static logInstanceOf<T>(value: unknown, expectedType: new (...args: any[]) => T): void {
     if (!(value instanceof expectedType)) {
@@ -33,6 +52,10 @@ export class TypeUtils {
    * Ensures that a value is of type string.
    * If not, it throws an error with details about the type mismatch
    * and prints the stack trace.
+   *
+   * @param value - The value to validate.
+   * @param message - Optional custom error message.
+   * @throws {TypeError} If the value is not a string.
    */
   static ensureString(value: unknown, message?: string): asserts value is string {
     if (typeof value !== 'string') {
@@ -49,6 +72,10 @@ export class TypeUtils {
    * Ensures that a value is a non-empty string.
    * If not, it throws an error with details about the type mismatch
    * and prints the stack trace.
+   *
+   * @param value - The value to validate.
+   * @param message - Optional custom error message.
+   * @throws {TypeError} If the value is not a string or is an empty string.
    */
   static ensureNonEmptyString(value: unknown, message?: string): asserts value is string {
     if (typeof value !== 'string' || value.length === 0) {
@@ -65,6 +92,10 @@ export class TypeUtils {
    * Ensures that a value is of type number.
    * If not, it throws an error with details about the type mismatch
    * and prints the stack trace.
+   *
+   * @param value - The value to validate.
+   * @param message - Optional custom error message.
+   * @throws {TypeError} If the value is not a number.
    */
   static ensureNumber(value: unknown, message?: string): asserts value is number {
     if (typeof value !== 'number') {
@@ -79,6 +110,10 @@ export class TypeUtils {
 
   /**
    * Ensures that the provided value is a function.
+   *
+   * @param value - The value to validate.
+   * @param message - Optional custom error message.
+   * @throws {TypeError} If the value is not a function.
    */
   static ensureFunction(value: unknown, message?: string): asserts value is (...args: any[]) => unknown {
     if (typeof value !== 'function') {
@@ -88,6 +123,11 @@ export class TypeUtils {
 
   /**
    * Ensures that the provided value is an array.
+   *
+   * @typeParam T - The expected element type of the array.
+   * @param value - The value to validate.
+   * @param message - Optional custom error message.
+   * @throws {TypeError} If the value is not an array.
    */
   static ensureArray<T = unknown>(value: unknown, message?: string): asserts value is T[] {
     if (!Array.isArray(value)) {
