@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+
+# Run linters on staged files
+npx --no-install lint-staged
+
+# Run TypeScript type-check (no emit)
+npm run typecheck

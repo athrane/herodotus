@@ -9,7 +9,9 @@
     "start": "node src/main.js",
   "test": "jest --config jest.config.js",
   "lint": "eslint .",
-  "lint:fix": "eslint . --fix"
+  "lint:fix": "eslint . --fix",
+  "typecheck": "tsc --noEmit -p tsconfig.json",
+  "prepare": "husky"
   },
   "author": "",
   "license": "MIT",
@@ -27,6 +29,13 @@
   "eslint": "^9.9.0",
   "eslint-plugin-jest": "^28.8.3",
   "globals": "^15.11.0",
-  "typescript-eslint": "^8.4.0"
+    "typescript-eslint": "^8.4.0",
+    "husky": "^9.1.6",
+    "lint-staged": "^15.2.10"
+  },
+  "lint-staged": {
+    "*.{js,ts}": [
+      "eslint --fix"
+    ]
   }
 }

@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * Utility class for generic checks.
  */

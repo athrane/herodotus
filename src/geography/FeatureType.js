@@ -1,3 +1,4 @@
+// @ts-check
 import { TypeUtils } from '../util/TypeUtils.js';
 
 /**
@@ -8,6 +9,10 @@ export class FeatureType {
     /**
      * @param {string} key - A unique identifier for the feature type (e.g., 'MOUNTAIN').
      * @param {string} displayName - The display name for the feature type (e.g., 'Mountain').
+     */
+    /**
+     * @param {string} key
+     * @param {string} displayName
      */
     constructor(key, displayName) {
         TypeUtils.ensureString(key, "FeatureType key must be a string.");
@@ -22,6 +27,7 @@ export class FeatureType {
      * Returns the unique key of the feature type.
      * @returns {string}
      */
+    /** @returns {string} */
     getKey() {
         return this.key;
     }
@@ -29,6 +35,7 @@ export class FeatureType {
      * Returns the display name of the feature type.
      * @returns {string}
      */
+    /** @returns {string} */
     getName() {
         return this.displayName;
     }
