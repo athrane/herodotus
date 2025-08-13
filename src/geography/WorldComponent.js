@@ -1,4 +1,4 @@
-import { Component } from '../ecs/Component.js';
+import { Component } from '../ecs/Component';
 import { TypeUtils } from '../util/TypeUtils.ts';
 import { World } from './World.js';
 

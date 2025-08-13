@@ -1,5 +1,5 @@
 import { TypeUtils } from '../util/TypeUtils';
-import { Component } from '../ecs/Component.js';
+import { Component } from '../ecs/Component';
 import { ChronicleEvent } from './ChronicleEvent';
 
 /**

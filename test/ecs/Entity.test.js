@@ -1,5 +1,5 @@
-import { Entity } from '../../src/ecs/Entity.js';
-import { Component } from '../../src/ecs/Component.js';
+import { Entity } from '../../src/ecs/Entity';
+import { Component } from '../../src/ecs/Component';
 
 // Mock components for testing. They must extend the base Component class.
 class PositionComponent extends Component {

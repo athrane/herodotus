@@ -4,7 +4,7 @@ import { WorldGenerator } from '../../generator/world/WorldGenerator.js';
 import { Time } from '../../time/Time.js';
 import { TimeSystem } from '../../time/TimeSystem.js';
 import { TimeComponent } from '../../time/TimeComponent.js';
-import { NameComponent } from '../../ecs/NameComponent.js';
+import { NameComponent } from '../../ecs/NameComponent';
 import { WorldComponent } from '../../geography/WorldComponent.js';
 import { GeographicalFeaturesFactory } from '../../geography/GeographicalFeaturesFactory.js';
 import { HistoricalFigureComponent } from '../../historicalfigure/HistoricalFigureComponent.js';

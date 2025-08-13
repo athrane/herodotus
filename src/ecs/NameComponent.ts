@@ -1,5 +1,5 @@
-import { Component } from '../ecs/Component.js';
-import { TypeUtils } from '../util/TypeUtils.ts';
+import { Component } from '../ecs/Component';
+import { TypeUtils } from '../util/TypeUtils';
 
 /**
  * A component that provides a human-readable name .
@@ -8,13 +8,13 @@ export class NameComponent extends Component {
   /**
    * @type {string}
    */
-  #text;
+  readonly #text: string;
 
   /**
    * Creates an instance of NameComponent.
-   * @param {string} text - The name or description for the entity.
+   * @param text - The name or description for the entity.
    */
-  constructor(text) {
+  constructor(text: string) {
     super();
     TypeUtils.ensureString(text, 'Description text must be a string.');
     this.#text = text;
@@ -22,18 +22,18 @@ export class NameComponent extends Component {
 
   /**
    * Gets the description text.
-   * @returns {string} The description text.
+   * @returns The description text.
    */
-  getText() {
+  getText(): string {
     return this.#text;
   }
 
   /**
    * Creates a new instance of NameComponent.
-   * @param {string} text - The name or description for the entity.
-   * @returns {NameComponent} A new NameComponent instance.
+   * @param text - The name or description for the entity.
+   * @returns A new NameComponent instance.
    */
-  static create(text) {
+  static create(text: string): NameComponent {
     return new NameComponent(text);
   }
 }

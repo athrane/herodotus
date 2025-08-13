@@ -1,8 +1,8 @@
 import { TimeSystem } from '../../src/time/TimeSystem.js';
-import { EntityManager } from '../../src/ecs/EntityManager.js';
+import { EntityManager } from '../../src/ecs/EntityManager';
 import { TimeComponent } from '../../src/time/TimeComponent.js';
 import { Time } from '../../src/time/Time.js';
-import { System } from '../../src/ecs/System.js';
+import { System } from '../../src/ecs/System';
 
 describe('TimeSystem', () => {
   let entityManager;

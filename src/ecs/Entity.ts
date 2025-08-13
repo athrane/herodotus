@@ -1,5 +1,5 @@
-import { TypeUtils } from '../util/TypeUtils.ts';
-import { Component } from './Component.js';
+import { TypeUtils } from '../util/TypeUtils';
+import { Component } from './Component';
 
 /**
  * Represents an entity in the Entity-Component-System (ECS) architecture.
@@ -7,14 +7,14 @@ import { Component } from './Component.js';
  * It acts as a lightweight wrapper that groups various components, which hold the actual data.
  */
 export class Entity {
-  #id;
-  #components;
+  readonly #id: string;
+  readonly #components: Map<string, Component>;
 
   /**
    * Do not instantiate Entity directly. Use an EntityManager to create entities.
-   * @param {...Component} components - A list of components to attach to the entity upon creation.
+   * @param components - A list of components to attach to the entity upon creation.
    */
-  constructor(...components) {
+  constructor(...components: Component[]) {
     this.#id = crypto.randomUUID();
     this.#components = new Map();
 
@@ -28,18 +28,18 @@ export class Entity {
 
   /**
    * Gets the unique ID of the entity.
-   * @returns {number} The entity's ID.
+   * @returns The entity's ID.
    */
-  getId() {
+  getId(): string {
     return this.#id;
   }
 
   /**
    * Adds a component to the entity. If a component of the same type already exists, it will be replaced.
-   * @param {object} component The component instance to add. The component must be a non-null object with a constructor.
-   * @returns {Entity} The entity instance for chaining.
+   * @param component The component instance to add. The component must be a non-null object with a constructor.
+   * @returns The entity instance for chaining.
    */
-  addComponent(component) {
+  addComponent(component: Component): Entity {
     TypeUtils.ensureInstanceOf(component, Component);
 
     // The key is the component's constructor name (its type).
@@ -49,40 +49,40 @@ export class Entity {
 
   /**
    * Retrieves a component from the entity by its class.
-   * @param {Function} ComponentClass The class (constructor function) of the component to retrieve.
-   * @returns {object|undefined} The component instance, or undefined if not found.
+   * @param ComponentClass The class (constructor function) of the component to retrieve.
+   * @returns The component instance, or undefined if not found.
    */
-  getComponent(ComponentClass) {
+  getComponent<T extends Component>(ComponentClass: new (...args: any[]) => T): T | undefined {
     TypeUtils.ensureFunction(ComponentClass, 'ComponentClass must be a class constructor.');
-    return this.#components.get(ComponentClass.name);
+    return this.#components.get(ComponentClass.name) as T | undefined;
   }
 
   /**
    * Checks if the entity has a component of a given class.
-   * @param {Function} ComponentClass The class (constructor function) of the component to check for.
-   * @returns {boolean} True if the component exists, false otherwise.
+   * @param ComponentClass The class (constructor function) of the component to check for.
+   * @returns True if the component exists, false otherwise.
    */
-  hasComponent(ComponentClass) {
+  hasComponent(ComponentClass: new (...args: any[]) => Component): boolean {
     TypeUtils.ensureFunction(ComponentClass, 'ComponentClass must be a class constructor.');
     return this.#components.has(ComponentClass.name);
   }
 
   /**
    * Removes a component from the entity by its class.
-   * @param {Function} ComponentClass The class (constructor function) of the component to remove.
-   * @returns {boolean} True if a component was removed, false otherwise.
+   * @param ComponentClass The class (constructor function) of the component to remove.
+   * @returns True if a component was removed, false otherwise.
    */
-  removeComponent(ComponentClass) {
+  removeComponent(ComponentClass: new (...args: any[]) => Component): boolean {
     TypeUtils.ensureFunction(ComponentClass, 'ComponentClass must be a class constructor.');
     return this.#components.delete(ComponentClass.name);
   }
 
   /**
    * Creates a new Entity with the given components.
-   * @param {...Component} components - A list of components to attach to the entity.
-   * @returns {Entity} A new entity instance.
+   * @param components - A list of components to attach to the entity.
+   * @returns A new entity instance.
    */
-  static create(...components) {
+  static create(...components: Component[]): Entity {
     return new Entity(...components);
   }
 

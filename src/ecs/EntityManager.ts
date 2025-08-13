@@ -1,12 +1,13 @@
-import { Entity } from './Entity.js';
-import { TypeUtils } from '../util/TypeUtils.ts';
+import { Entity } from './Entity';
+import { Component } from './Component';
+import { TypeUtils } from '../util/TypeUtils';
 
 /**
  * Manages the lifecycle of entities in the ECS architecture.
  * It is responsible for creating, retrieving, destroying, and querying entities.
  */
 export class EntityManager {
-  #entities;
+  readonly #entities: Map<string, Entity>;
 
   constructor() {
     this.#entities = new Map();
@@ -14,10 +15,10 @@ export class EntityManager {
 
   /**
    * Creates a new entity with a unique ID.
-   * @param {...Component} components - A list of components to attach to the entity upon creation.
-   * @returns {Entity} The newly created entity.
+   * @param components - A list of components to attach to the entity upon creation.
+   * @returns The newly created entity.
    */
-  createEntity(...components) {
+  createEntity(...components: Component[]): Entity {
     const entity = Entity.create(...components);
     this.#entities.set(entity.getId(), entity);
     return entity;
@@ -25,20 +26,20 @@ export class EntityManager {
 
   /**
    * Retrieves an entity by its ID.
-   * @param {string} id The ID of the entity to retrieve.
-   * @returns {Entity|undefined} The entity if found, otherwise undefined.
+   * @param id The ID of the entity to retrieve.
+   * @returns The entity if found, otherwise undefined.
    */
-  getEntity(id) {
+  getEntity(id: string): Entity | undefined {
     TypeUtils.ensureString(id);
     return this.#entities.get(id);
   }
 
   /**
    * Destroys an entity, removing it from the manager.
-   * @param {string} id The ID of the entity to destroy.
-   * @returns {boolean} True if the entity was found and destroyed, false otherwise.
+   * @param id The ID of the entity to destroy.
+   * @returns True if the entity was found and destroyed, false otherwise.
    */
-  destroyEntity(id) {
+  destroyEntity(id: string): boolean {
     TypeUtils.ensureString(id);
     return this.#entities.delete(id);
   }
@@ -50,10 +51,10 @@ export class EntityManager {
    * @example // Get all entities with PositionComponent and VelocityComponent
    * entityManager.getEntitiesWithComponents(PositionComponent, VelocityComponent);
    * 
-   * @param {...Function} componentClasses The component classes to query for.
-   * @returns {Entity[]} An array of entities that have all the specified components.
+   * @param componentClasses The component classes to query for.
+   * @returns An array of entities that have all the specified components.
    */
-  getEntitiesWithComponents(...componentClasses) {
+  getEntitiesWithComponents(...componentClasses: Array<new (...args: any[]) => Component>): Entity[] {
     const allEntities = [...this.#entities.values()];
     if (componentClasses.length === 0) {
       return allEntities;
@@ -78,11 +79,11 @@ export class EntityManager {
    * such as TimeComponent or WorldComponent, without needing to know which
    * entity they are attached to.
    *
-   * @param {Function} componentClass - The class of the component to retrieve.
-   * @returns {Component|undefined} The singleton component instance, or undefined if no entity has it.
-   * @throws {Error} If more than one entity has the specified component.
+   * @param componentClass - The class of the component to retrieve.
+   * @returns The singleton component instance, or undefined if no entity has it.
+   * @throws If more than one entity has the specified component.
    */
-  getSingletonComponent(componentClass) {
+  getSingletonComponent<T extends Component>(componentClass: new (...args: any[]) => T): T | undefined {
     const entities = this.getEntitiesWithComponents(componentClass);
 
     if (entities.length > 1) {
@@ -101,18 +102,18 @@ export class EntityManager {
 
   /**
    * Returns the total number of entities currently managed.
-   * @returns {number} The number of entities.
+   * @returns The number of entities.
    */
-  count() {
+  count(): number {
     return this.#entities.size;
   }
 
   /**
    * Creates a new instance of EntityManager.
    * This static factory method provides a standardized way to construct EntityManager objects.
-   * @returns {EntityManager} A new instance of EntityManager.
+   * @returns A new instance of EntityManager.
    */
-  static create() {
+  static create(): EntityManager {
     return new EntityManager();
   }
 

@@ -1,14 +1,14 @@
-import { System } from '../ecs/System.js';
+import { System } from '../ecs/System';
 import { HistoricalFigureComponent } from './HistoricalFigureComponent.js';
 import { TimeComponent } from '../time/TimeComponent.js';
-import { EntityManager } from '../ecs/EntityManager.js';
+import { EntityManager } from '../ecs/EntityManager';
 import { TypeUtils } from '../util/TypeUtils.ts';
 import { World } from '../geography/World.js';
 import { WorldComponent } from '../geography/WorldComponent.js';
 import { ChronicleEventComponent } from '../chronicle/ChronicleEventComponent.ts';
 import { HistoricalFigure } from './HistoricalFigure.js';
 import { NameGenerator } from '../naming/NameGenerator.js';
-import { NameComponent } from '../ecs/NameComponent.js';
+import { NameComponent } from '../ecs/NameComponent';
 import { ChronicleEvent } from '../chronicle/ChronicleEvent.ts';
 import { EventCategory } from '../chronicle/EventCategory.js';
 import { EventType } from '../chronicle/EventType.ts';

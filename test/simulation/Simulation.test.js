@@ -1,8 +1,8 @@
 import { Simulation } from '../../src/simulation/Simulation.js';
-import { EntityManager } from '../../src/ecs/EntityManager.js';
-import { SystemManager } from '../../src/ecs/SystemManager.js';
+import { EntityManager } from '../../src/ecs/EntityManager';
+import { SystemManager } from '../../src/ecs/SystemManager';
 import { TimeComponent } from '../../src/time/TimeComponent.js';
-import { NameComponent } from '../../src/ecs/NameComponent.js';
+import { NameComponent } from '../../src/ecs/NameComponent';
 
 describe('Simulation', () => {
   let simulation;

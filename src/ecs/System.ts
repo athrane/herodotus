@@ -1,20 +1,22 @@
-import { TypeUtils } from '../util/TypeUtils.ts';
-import { EntityManager } from './EntityManager.js';
+import { TypeUtils } from '../util/TypeUtils';
+import { EntityManager } from './EntityManager';
+import { Entity } from './Entity';
+import { Component } from './Component';
 
 /**
  * A base class for all systems in the Entity-Component-System (ECS) architecture.
  * Systems contain the logic that operates on entities possessing a specific set of components.
  */
 export class System {
-  #entityManager;
-  #requiredComponents;
+  readonly #entityManager: EntityManager;
+  readonly #requiredComponents: Array<new (...args: any[]) => Component>;
 
   /**
-   * @param {EntityManager} entityManager The entity manager instance.
-   * @param {Function[]} [requiredComponents=[]] An array of component classes that an entity must have for this system to process it.
+   * @param entityManager The entity manager instance.
+   * @param requiredComponents An array of component classes that an entity must have for this system to process it.
    */
-  constructor(entityManager, requiredComponents = []) {
-    TypeUtils.ensureInstanceOf(entityManager, EntityManager, 'entityManager must be an instance of EntityManager.');
+  constructor(entityManager: EntityManager, requiredComponents: Array<new (...args: any[]) => Component> = []) {
+    TypeUtils.ensureInstanceOf(entityManager, EntityManager);
     TypeUtils.ensureArray(requiredComponents, 'requiredComponents must be an array.');
 
     this.#entityManager = entityManager;
@@ -25,9 +27,9 @@ export class System {
    * The main update loop for the system.
    * This method retrieves all relevant entities and calls the processEntity method for each one.
    * Concrete systems can override this for more complex update logic if needed.
-   * @param {...any} args Additional arguments to pass to the processEntity method.
+   * @param args Additional arguments to pass to the processEntity method.
    */
-  update(...args) {
+  update(...args: any[]): void {
     const entities = this.#entityManager.getEntitiesWithComponents(...this.#requiredComponents);
     for (const entity of entities) {
       this.processEntity(entity, ...args);
@@ -36,19 +38,20 @@ export class System {
 
   /**
    * Get the (private) entity manager associated with this system.
-   * @returns {EntityManager} The entity manager instance associated with this system.
+   * @returns The entity manager instance associated with this system.
    */
-  getEntityManager() {
+  getEntityManager(): EntityManager {
     return this.#entityManager;
   }
 
   /**
    * Processes a single entity. This method is intended to be overridden by concrete system implementations.
-   * @param {Entity} entity The entity to process.
-   * @param {...any} args Additional arguments passed from the update method.
+   * @param entity The entity to process.
+   * @param args Additional arguments passed from the update method.
    * @abstract
    */
-  processEntity(entity, ...args) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  processEntity(entity: Entity, ...args: any[]): void {
     throw new Error('System.processEntity() must be implemented by a subclass.');
   }
 }
