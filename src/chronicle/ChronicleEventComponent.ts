@@ -7,14 +7,14 @@ import { ChronicleEvent } from './ChronicleEvent';
  * Typically attached to the primary World entity.
  */
 export class ChronicleEventComponent extends Component {
-  /** Internal list of events (ChronicleEvent or plain objects during migration). */
-  private events: Array<ChronicleEvent | Record<string, unknown>> = [];
+  /** Internal list of events (ChronicleEvent instances only). */
+  private events: ChronicleEvent[] = [];
 
   /**
    * @param events - Initial events to seed the component with.
-   *                 Accepts ChronicleEvent instances or plain objects.
+   *                 Accepts only ChronicleEvent instances.
    */
-  constructor(events: Array<ChronicleEvent | Record<string, unknown>> = []) {
+  constructor(events: ChronicleEvent[] = []) {
     super();
     TypeUtils.ensureArray(events, 'ChronicleEventComponent events must be an array.');
     for (const event of events) {
@@ -24,24 +24,20 @@ export class ChronicleEventComponent extends Component {
 
   /**
    * Adds a new event to the chronicle.
-   * Accepts ChronicleEvent instances, but also tolerates plain objects produced by systems.
+   * Accepts only ChronicleEvent instances.
    */
-  addEvent(event: ChronicleEvent | Record<string, unknown>): void {
-    if (event instanceof ChronicleEvent) {
-      this.events.push(event);
-      return;
-    }
-    // Fallback: accept any object and store it as-is to keep simulation running.
+  addEvent(event: ChronicleEvent): void {
+    TypeUtils.ensureInstanceOf(event, ChronicleEvent);
     this.events.push(event);
   }
 
   /** Creates a ChronicleEventComponent instance. */
-  static create(events: Array<ChronicleEvent | Record<string, unknown>> = []): ChronicleEventComponent {
+  static create(events: ChronicleEvent[] = []): ChronicleEventComponent {
     return new ChronicleEventComponent(events);
   }
 
   /** Retrieves the list of events (read-only view). */
-  getEvents(): ReadonlyArray<ChronicleEvent | Record<string, unknown>> {
-    return this.events;
+  getEvents(): ReadonlyArray<ChronicleEvent> {
+    return Object.freeze([...this.events]);
   }
 }
