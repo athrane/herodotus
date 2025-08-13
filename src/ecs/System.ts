@@ -8,8 +8,8 @@ import { Component } from './Component';
  * Systems contain the logic that operates on entities possessing a specific set of components.
  */
 export class System {
-  readonly #entityManager: EntityManager;
-  readonly #requiredComponents: Array<new (...args: any[]) => Component>;
+  private readonly entityManager: EntityManager;
+  private readonly requiredComponents: Array<new (...args: any[]) => Component>;
 
   /**
    * @param entityManager The entity manager instance.
@@ -19,8 +19,8 @@ export class System {
     TypeUtils.ensureInstanceOf(entityManager, EntityManager);
     TypeUtils.ensureArray(requiredComponents, 'requiredComponents must be an array.');
 
-    this.#entityManager = entityManager;
-    this.#requiredComponents = requiredComponents;
+  this.entityManager = entityManager;
+  this.requiredComponents = requiredComponents;
   }
 
   /**
@@ -30,7 +30,7 @@ export class System {
    * @param args Additional arguments to pass to the processEntity method.
    */
   update(...args: any[]): void {
-    const entities = this.#entityManager.getEntitiesWithComponents(...this.#requiredComponents);
+  const entities = this.entityManager.getEntitiesWithComponents(...this.requiredComponents);
     for (const entity of entities) {
       this.processEntity(entity, ...args);
     }
@@ -41,7 +41,7 @@ export class System {
    * @returns The entity manager instance associated with this system.
    */
   getEntityManager(): EntityManager {
-    return this.#entityManager;
+  return this.entityManager;
   }
 
   /**

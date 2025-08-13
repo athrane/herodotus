@@ -7,10 +7,10 @@ import { TypeUtils } from '../util/TypeUtils';
  * It is responsible for creating, retrieving, destroying, and querying entities.
  */
 export class EntityManager {
-  readonly #entities: Map<string, Entity>;
+  private readonly entities: Map<string, Entity>;
 
   constructor() {
-    this.#entities = new Map();
+    this.entities = new Map();
   }
 
   /**
@@ -20,7 +20,7 @@ export class EntityManager {
    */
   createEntity(...components: Component[]): Entity {
     const entity = Entity.create(...components);
-    this.#entities.set(entity.getId(), entity);
+    this.entities.set(entity.getId(), entity);
     return entity;
   }
 
@@ -31,7 +31,7 @@ export class EntityManager {
    */
   getEntity(id: string): Entity | undefined {
     TypeUtils.ensureString(id);
-    return this.#entities.get(id);
+    return this.entities.get(id);
   }
 
   /**
@@ -41,7 +41,7 @@ export class EntityManager {
    */
   destroyEntity(id: string): boolean {
     TypeUtils.ensureString(id);
-    return this.#entities.delete(id);
+    return this.entities.delete(id);
   }
 
   /**
@@ -55,7 +55,7 @@ export class EntityManager {
    * @returns An array of entities that have all the specified components.
    */
   getEntitiesWithComponents(...componentClasses: Array<new (...args: any[]) => Component>): Entity[] {
-    const allEntities = [...this.#entities.values()];
+    const allEntities = [...this.entities.values()];
     if (componentClasses.length === 0) {
       return allEntities;
     }
@@ -105,7 +105,7 @@ export class EntityManager {
    * @returns The number of entities.
    */
   count(): number {
-    return this.#entities.size;
+    return this.entities.size;
   }
 
   /**

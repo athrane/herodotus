@@ -7,16 +7,16 @@ import { Component } from './Component';
  * It acts as a lightweight wrapper that groups various components, which hold the actual data.
  */
 export class Entity {
-  readonly #id: string;
-  readonly #components: Map<string, Component>;
+  private readonly id: string;
+  private readonly components: Map<string, Component>;
 
   /**
    * Do not instantiate Entity directly. Use an EntityManager to create entities.
    * @param components - A list of components to attach to the entity upon creation.
    */
   constructor(...components: Component[]) {
-    this.#id = crypto.randomUUID();
-    this.#components = new Map();
+  this.id = crypto.randomUUID();
+  this.components = new Map();
 
     // Add each component to the entity.
     TypeUtils.ensureArray(components);
@@ -31,7 +31,7 @@ export class Entity {
    * @returns The entity's ID.
    */
   getId(): string {
-    return this.#id;
+  return this.id;
   }
 
   /**
@@ -43,7 +43,7 @@ export class Entity {
     TypeUtils.ensureInstanceOf(component, Component);
 
     // The key is the component's constructor name (its type).
-    this.#components.set(component.constructor.name, component);
+  this.components.set(component.constructor.name, component);
     return this;
   }
 
@@ -54,7 +54,7 @@ export class Entity {
    */
   getComponent<T extends Component>(ComponentClass: new (...args: any[]) => T): T | undefined {
     TypeUtils.ensureFunction(ComponentClass, 'ComponentClass must be a class constructor.');
-    return this.#components.get(ComponentClass.name) as T | undefined;
+  return this.components.get(ComponentClass.name) as T | undefined;
   }
 
   /**
@@ -64,7 +64,7 @@ export class Entity {
    */
   hasComponent(ComponentClass: new (...args: any[]) => Component): boolean {
     TypeUtils.ensureFunction(ComponentClass, 'ComponentClass must be a class constructor.');
-    return this.#components.has(ComponentClass.name);
+  return this.components.has(ComponentClass.name);
   }
 
   /**
@@ -74,7 +74,7 @@ export class Entity {
    */
   removeComponent(ComponentClass: new (...args: any[]) => Component): boolean {
     TypeUtils.ensureFunction(ComponentClass, 'ComponentClass must be a class constructor.');
-    return this.#components.delete(ComponentClass.name);
+  return this.components.delete(ComponentClass.name);
   }
 
   /**

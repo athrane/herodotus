@@ -7,16 +7,16 @@ import { EntityManager } from './EntityManager';
  * This class orchestrates the logic updates for the simulation.
  */
 export class SystemManager {
-    readonly #entityManager: EntityManager;
-    readonly #systems: Map<string, System>;
+    private readonly entityManager: EntityManager;
+    private readonly systems: Map<string, System>;
 
     /**
      * @param entityManager The entity manager instance.
      */
     constructor(entityManager: EntityManager) {
         TypeUtils.ensureInstanceOf(entityManager, EntityManager);
-        this.#entityManager = entityManager;
-        this.#systems = new Map();
+    this.entityManager = entityManager;
+    this.systems = new Map();
     }
 
     /**
@@ -27,10 +27,10 @@ export class SystemManager {
     register(system: System): void {
         TypeUtils.ensureInstanceOf(system, System);
         const systemClassName = system.constructor.name;
-        if (this.#systems.has(systemClassName)) {
+    if (this.systems.has(systemClassName)) {
             throw new Error(`System '${systemClassName}' is already registered.`);
         }
-        this.#systems.set(systemClassName, system);
+    this.systems.set(systemClassName, system);
     }
 
     /**
@@ -40,10 +40,10 @@ export class SystemManager {
      */
     delete(systemClassName: string): void {
         TypeUtils.ensureString(systemClassName, 'systemClassName must be a string.');
-        if (!this.#systems.has(systemClassName)) {
+    if (!this.systems.has(systemClassName)) {
             throw new Error(`System '${systemClassName}' is not registered.`);
         }
-        this.#systems.delete(systemClassName);
+    this.systems.delete(systemClassName);
     }
 
     /** 
@@ -53,7 +53,7 @@ export class SystemManager {
      * */
     get(systemClassName: string): System | undefined {
         TypeUtils.ensureString(systemClassName, 'systemClassName must be a string.');
-        return this.#systems.get(systemClassName);
+    return this.systems.get(systemClassName);
     }
 
     /**
@@ -61,7 +61,7 @@ export class SystemManager {
      * @param args Additional arguments to pass to each system's update method (e.g., deltaTime).
      */
     update(...args: any[]): void {
-        for (const system of this.#systems.values()) {
+    for (const system of this.systems.values()) {
             system.update(...args);
         }
     }

@@ -8,7 +8,7 @@ export class NameComponent extends Component {
   /**
    * @type {string}
    */
-  readonly #text: string;
+  private readonly text: string;
 
   /**
    * Creates an instance of NameComponent.
@@ -17,7 +17,7 @@ export class NameComponent extends Component {
   constructor(text: string) {
     super();
     TypeUtils.ensureString(text, 'Description text must be a string.');
-    this.#text = text;
+  this.text = text;
   }
 
   /**
@@ -25,7 +25,7 @@ export class NameComponent extends Component {
    * @returns The description text.
    */
   getText(): string {
-    return this.#text;
+  return this.text;
   }
 
   /**
