@@ -1,5 +1,5 @@
 import { TypeUtils } from '../util/TypeUtils';
-import { EventCategory } from './EventCategory.js';
+import { EventCategory } from './EventCategory';
 
 /**
  * Represents the type of a historical event, including its category and specific name.
