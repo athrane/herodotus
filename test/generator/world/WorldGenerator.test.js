@@ -1,8 +1,8 @@
 import { WorldGenerator } from '../../../src/generator/world/WorldGenerator.js';
 import { NameGenerator } from '../../../src/naming/NameGenerator.js';
-import { World } from '../../../src/geography/World.js';
-import { Continent } from '../../../src/geography/Continent.js';
-import { GeographicalFeatureTypeRegistry } from '../../../src/geography/GeographicalFeatureTypeRegistry.js';
+import { World } from '../../../src/geography/World.ts';
+import { Continent } from '../../../src/geography/Continent.ts';
+import { GeographicalFeatureTypeRegistry } from '../../../src/geography/GeographicalFeatureTypeRegistry.ts';
 import { FeatureType } from '../../../src/geography/FeatureType.ts';
 
 describe('WorldGenerator', () => {
