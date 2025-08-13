@@ -1,4 +1,4 @@
-import { WorldGenerator } from '../../../src/generator/world/WorldGenerator.js';
+import { WorldGenerator } from '../../../src/generator/world/WorldGenerator.ts';
 import { NameGenerator } from '../../../src/naming/NameGenerator.js';
 import { World } from '../../../src/geography/World.js';
 import { Continent } from '../../../src/geography/Continent.js';

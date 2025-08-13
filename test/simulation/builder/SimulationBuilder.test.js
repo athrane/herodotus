@@ -1,12 +1,12 @@
 import { SimulationBuilder } from '../../../src/simulation/builder/SimulationBuilder.js';
 import { Simulation} from '../../../src/simulation/Simulation.js';
-import { WorldGenerator } from '../../../src/generator/world/WorldGenerator.js';
+import { WorldGenerator } from '../../../src/generator/world/WorldGenerator.ts';
 import { TimeSystem } from '../../../src/time/TimeSystem.js';
 import { HistoricalFigureLifecycleSystem } from '../../../src/historicalfigure/HistoricalFigureLifecycleSystem.js';
 import { HistoricalFigureInfluenceSystem } from '../../../src/historicalfigure/HistoricalFigureInfluenceSystem.js';
 
 // Mock the WorldGenerator to control its output
-jest.mock('../../../src/generator/world/WorldGenerator.js', () => {
+jest.mock('../../../src/generator/world/WorldGenerator.ts', () => {
     return {
         WorldGenerator: jest.fn().mockImplementation(() => {
             return {
