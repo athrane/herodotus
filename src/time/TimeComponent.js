@@ -1,4 +1,4 @@
-import { Component } from '../ecs/Component.js';
+import { Component } from '../ecs/Component';
 import { Time } from '../time/Time.js';
 import { TypeUtils } from '../util/TypeUtils.ts';
 

@@ -1,4 +1,4 @@
-import { System } from '../ecs/System.js';
+import { System } from '../ecs/System';
 import { TimeComponent } from '../../src/time/TimeComponent.js';
 import { Time } from '../time/Time.js';
 

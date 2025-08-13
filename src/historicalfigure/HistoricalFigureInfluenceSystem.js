@@ -1,7 +1,7 @@
-import { System } from '../ecs/System.js';
+import { System } from '../ecs/System';
 import { HistoricalFigureComponent } from './HistoricalFigureComponent.js';
 import { ChronicleEventComponent } from '../chronicle/ChronicleEventComponent.ts';
-import { EntityManager } from '../ecs/EntityManager.js';
+import { EntityManager } from '../ecs/EntityManager';
 import { TypeUtils } from '../util/TypeUtils.ts';
 
 /**

@@ -1,6 +1,6 @@
-import { EntityManager } from '../../src/ecs/EntityManager.js';
-import { Entity } from '../../src/ecs/Entity.js';
-import { Component } from '../../src/ecs/Component.js';
+import { EntityManager } from '../../src/ecs/EntityManager';
+import { Entity } from '../../src/ecs/Entity';
+import { Component } from '../../src/ecs/Component';
 import { Time } from '../../src/time/Time';
 import { TimeComponent } from '../../src/time/TimeComponent.js';
 

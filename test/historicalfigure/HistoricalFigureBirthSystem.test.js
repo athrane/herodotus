@@ -3,8 +3,8 @@ import { ChronicleEventComponent } from '../../src/chronicle/ChronicleEventCompo
 import { TimeComponent } from '../../src/time/TimeComponent.js';
 import { WorldComponent } from '../../src/geography/WorldComponent.js';
 import { World } from '../../src/geography/World.js';
-import { Entity } from '../../src/ecs/Entity.js';
-import { EntityManager } from '../../src/ecs/EntityManager.js';
+import { Entity } from '../../src/ecs/Entity';
+import { EntityManager } from '../../src/ecs/EntityManager';
 import { HistoricalFigureBirthSystem } from '../../src/historicalfigure/HistoricalFigureBirthSystem.js';
 import { NameGenerator } from '../../src/naming/NameGenerator.js';
 import { Time } from '../../src/time/Time.js';

@@ -1,4 +1,4 @@
-import { NameComponent } from '../../src/ecs/NameComponent.js';
+import { NameComponent } from '../../src/ecs/NameComponent';
 
 describe('NameComponent', () => {
   describe('constructor', () => {

@@ -1,8 +1,8 @@
 import { HistoricalFigureInfluenceSystem } from '../../src/historicalfigure/HistoricalFigureInfluenceSystem.js';
 import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent.js';
 import { ChronicleEventComponent } from '../../src/chronicle/ChronicleEventComponent.ts';
-import { EntityManager } from '../../src/ecs/EntityManager.js';
-import { Entity } from '../../src/ecs/Entity.js';
+import { EntityManager } from '../../src/ecs/EntityManager';
+import { Entity } from '../../src/ecs/Entity';
 
 describe('HistoricalFigureInfluenceSystem', () => {
     let entityManager;

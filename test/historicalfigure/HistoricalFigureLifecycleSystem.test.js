@@ -1,6 +1,6 @@
 import { HistoricalFigureLifecycleSystem } from '../../src/historicalfigure/HistoricalFigureLifecycleSystem.js';
-import { EntityManager } from '../../src/ecs/EntityManager.js';
-import { Entity } from '../../src/ecs/Entity.js';
+import { EntityManager } from '../../src/ecs/EntityManager';
+import { Entity } from '../../src/ecs/Entity';
 import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent.js';
 import { TimeComponent } from '../../src/time/TimeComponent.js';
 import { Time } from '../../src/time/Time.js';

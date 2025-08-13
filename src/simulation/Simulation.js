@@ -1,9 +1,9 @@
-import { SystemManager } from '../ecs/SystemManager.js';
-import { EntityManager } from '../ecs/EntityManager.js';
+import { SystemManager } from '../ecs/SystemManager';
+import { EntityManager } from '../ecs/EntityManager';
 import { TimeComponent } from '../time/TimeComponent.js';
 import { Time } from '../time/Time.js';
 import { TimeSystem } from '../time/TimeSystem.js';
-import { NameComponent } from '../ecs/NameComponent.js';
+import { NameComponent } from '../ecs/NameComponent';
 
 /**
  * The `Simulation` class orchestrates an Entity-Component-System (ECS) based simulation.
