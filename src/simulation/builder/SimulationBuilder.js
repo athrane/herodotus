@@ -1,17 +1,17 @@
 import { Builder} from './Builder.js';
 import { Simulation } from '../Simulation.js';
-import { WorldGenerator } from '../../generator/world/WorldGenerator';
+import { WorldGenerator } from '../../generator/world/WorldGenerator.ts';
 import { Time } from '../../time/Time.js';
 import { TimeSystem } from '../../time/TimeSystem.js';
 import { TimeComponent } from '../../time/TimeComponent.js';
 import { NameComponent } from '../../ecs/NameComponent';
-import { WorldComponent } from '../../geography/WorldComponent';
-import { GeographicalFeaturesFactory } from '../../geography/GeographicalFeaturesFactory';
-import { HistoricalFigureComponent } from '../../historicalfigure/HistoricalFigureComponent';
-import { ChronicleEventComponent } from '../../chronicle/ChronicleEventComponent';
-import { HistoricalFigureLifecycleSystem } from '../../historicalfigure/HistoricalFigureLifecycleSystem';
-import { HistoricalFigureInfluenceSystem } from '../../historicalfigure/HistoricalFigureInfluenceSystem';
-import { HistoricalFigureBirthSystem } from '../../historicalfigure/HistoricalFigureBirthSystem';
+import { WorldComponent } from '../../geography/WorldComponent.js';
+import { GeographicalFeaturesFactory } from '../../geography/GeographicalFeaturesFactory.js';
+import { HistoricalFigureComponent } from '../../historicalfigure/HistoricalFigureComponent.js';
+import { ChronicleEventComponent } from '../../chronicle/ChronicleEventComponent.ts';
+import { HistoricalFigureLifecycleSystem } from '../../historicalfigure/HistoricalFigureLifecycleSystem.js';
+import { HistoricalFigureInfluenceSystem } from '../../historicalfigure/HistoricalFigureInfluenceSystem.js';
+import { HistoricalFigureBirthSystem } from '../../historicalfigure/HistoricalFigureBirthSystem.js';
 import { NameGenerator } from '../../naming/NameGenerator.js';
 
 /**

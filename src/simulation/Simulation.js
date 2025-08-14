@@ -1,8 +1,8 @@
 import { SystemManager } from '../ecs/SystemManager';
 import { EntityManager } from '../ecs/EntityManager';
-import { TimeComponent } from '../time/TimeComponent.js';
-import { Time } from '../time/Time.js';
-import { TimeSystem } from '../time/TimeSystem.js';
+import { TimeComponent } from '../time/TimeComponent.ts';
+import { Time } from '../time/Time.ts';
+import { TimeSystem } from '../time/TimeSystem.ts';
 import { NameComponent } from '../ecs/NameComponent';
 
 /**

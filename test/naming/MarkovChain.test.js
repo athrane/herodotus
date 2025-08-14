@@ -1,4 +1,4 @@
-import { MarkovChain } from '../../src/naming/MarkovChain.js';
+import { MarkovChain } from '../../src/naming/MarkovChain.ts';
 
 describe('MarkovChain', () => {
     const trainingData = ['alpha', 'beta', 'gamma'];

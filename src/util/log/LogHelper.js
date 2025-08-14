@@ -1,7 +1,7 @@
-import { World } from "../../geography/World.ts";
-import { TypeUtils } from "../TypeUtils.ts";
-import { ChronicleEvent } from "../../chronicle/ChronicleEvent.ts";
-import { HistoricalFigure } from "../../historicalfigure/HistoricalFigure.ts";
+import { World } from "../../geography/World";
+import { TypeUtils } from "../TypeUtil";
+import { ChronicleEvent } from "../../chronicle/ChronicleEvent";
+import { HistoricalFigure } from "../../historicalfigure/HistoricalFigure";
 import { Time } from "../../time/Time.js";
 
 /**

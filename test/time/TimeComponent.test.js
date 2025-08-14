@@ -1,5 +1,5 @@
-import { TimeComponent } from '../../src/time/TimeComponent.js';
-import { Time } from '../../src/time/Time.js';
+import { TimeComponent } from '../../src/time/TimeComponent.ts';
+import { Time } from '../../src/time/Time.ts';
 
 describe('TimeComponent', () => {
   describe('constructor', () => {

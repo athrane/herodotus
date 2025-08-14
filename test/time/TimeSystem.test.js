@@ -1,7 +1,7 @@
-import { TimeSystem } from '../../src/time/TimeSystem.js';
+import { TimeSystem } from '../../src/time/TimeSystem.ts';
 import { EntityManager } from '../../src/ecs/EntityManager';
-import { TimeComponent } from '../../src/time/TimeComponent.js';
-import { Time } from '../../src/time/Time.js';
+import { TimeComponent } from '../../src/time/TimeComponent.ts';
+import { Time } from '../../src/time/Time.ts';
 import { System } from '../../src/ecs/System';
 
 describe('TimeSystem', () => {

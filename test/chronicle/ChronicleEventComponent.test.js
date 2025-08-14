@@ -4,7 +4,7 @@ import { EventType } from '../../src/chronicle/EventType';
 import { EventCategory } from '../../src/chronicle/EventCategory';
 import { Time } from '../../src/time/Time.js';
 import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure';
-import { Place } from '../../src/generator/Place.ts';
+import { Place } from '../../src/generator/Place';
 
 describe('ChronicleEventComponent', () => {
   let sampleEvent1;

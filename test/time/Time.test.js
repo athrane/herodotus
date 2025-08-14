@@ -1,4 +1,4 @@
-import { Time } from '../../src/time/Time.js';
+import { Time } from '../../src/time/Time.ts';
 
 describe('Time', () => {
   describe('constructor', () => {
