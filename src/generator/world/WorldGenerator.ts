@@ -1,9 +1,9 @@
-import { Continent } from '../../geography/Continent.ts';
-import { GeographicalFeature } from '../../geography/GeographicalFeature.ts';
-import { GeographicalFeatureTypeRegistry } from '../../geography/GeographicalFeatureTypeRegistry.ts';
-import { World } from '../../geography/World.ts';
-import { TypeUtils } from '../../util/TypeUtils.ts';
-import { NameGenerator } from '../../naming/NameGenerator.js';
+import { Continent } from '../../geography/Continent';
+import { GeographicalFeature } from '../../geography/GeographicalFeature';
+import { GeographicalFeatureTypeRegistry } from '../../geography/GeographicalFeatureTypeRegistry';
+import { World } from '../../geography/World';
+import { TypeUtils } from '../../util/TypeUtils';
+import { NameGenerator } from '../../naming/NameGenerator';
 
 /**
  * A self-contained generator that orchestrates the creation of a world,
@@ -13,38 +13,38 @@ export class WorldGenerator {
 
     /**
      * @constant
-     * @type {number}
      * @description The number of continents to generate in the world.
      * @default 3   
      */
-    static NUM_CONTINENTS = 3;
+    static readonly NUM_CONTINENTS: number = 3;
 
     /**
      * @constant
-     * @type {number}
      * @description The number of geographical features to generate per continent.
      * @default 50
      */
-    static FEATURES_PER_CONTINENT = 50;
+    static readonly FEATURES_PER_CONTINENT: number = 50;
+
+    private readonly nameGenerator: NameGenerator;
 
     /**
      * Creates an instance of WorldGenerator.
      *
-     * @param {NameGenerator} nameGenerator - The name generator to use.
+     * @param nameGenerator - The name generator to use.
      */
-    constructor(nameGenerator) {
-        TypeUtils.ensureInstanceOf(nameGenerator, NameGenerator, 'nameGenerator must be an instance of NameGenerator.');
+    constructor(nameGenerator: NameGenerator) {
+        TypeUtils.ensureInstanceOf(nameGenerator, NameGenerator);
         this.nameGenerator = nameGenerator;
     }
 
     /**
      * Generates a single continent with a specified number of features.
      *
-     * @param {string} name - The name of the continent.
-     * @param {number} numFeatures - The number of geographical features to generate.
-     * @returns {Continent} A new continent object.
+     * @param name - The name of the continent.
+     * @param numFeatures - The number of geographical features to generate.
+     * @returns A new continent object.
      */
-    generateContinent(name, numFeatures) {
+    generateContinent(name: string, numFeatures: number): Continent {
         const continent = new Continent(name);
         for (let i = 0; i < numFeatures; i++) {
             const featureType = GeographicalFeatureTypeRegistry.getRandom();
@@ -60,10 +60,10 @@ export class WorldGenerator {
     /**
      * Generates a world with 3 continents, each having 50 geographical features.
      *
-     * @param {string} worldName - The name of the world.
-     * @returns {World} A new world object.
+     * @param worldName - The name of the world.
+     * @returns A new world object.
      */
-    generateWorld(worldName) {
+    generateWorld(worldName: string): World {
         TypeUtils.ensureString(worldName, 'World name must be a string.');
         const world = new World(worldName);
 
@@ -78,11 +78,10 @@ export class WorldGenerator {
     /**
      * Creates a new instance of WorldGenerator.
      *
-     * @static
-     * @param {NameGenerator} nameGenerator - The name generator to use.
-     * @returns {WorldGenerator} A new WorldGenerator instance.
+     * @param nameGenerator - The name generator to use.
+     * @returns A new WorldGenerator instance.
      */
-    static create(nameGenerator) {
+    static create(nameGenerator: NameGenerator): WorldGenerator {
         return new WorldGenerator(nameGenerator);
     }
 }

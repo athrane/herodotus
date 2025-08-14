@@ -1,6 +1,6 @@
 import { Builder} from './Builder.js';
 import { Simulation } from '../Simulation.js';
-import { WorldGenerator } from '../../generator/world/WorldGenerator.js';
+import { WorldGenerator } from '../../generator/world/WorldGenerator.ts';
 import { Time } from '../../time/Time.js';
 import { TimeSystem } from '../../time/TimeSystem.js';
 import { TimeComponent } from '../../time/TimeComponent.js';

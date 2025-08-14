@@ -12,7 +12,7 @@ import { NameComponent } from '../ecs/NameComponent';
 import { ChronicleEvent } from '../chronicle/ChronicleEvent.ts';
 import { EventCategory } from '../chronicle/EventCategory.ts';
 import { EventType } from '../chronicle/EventType.ts';
-import { Place } from '../generator/Place.js';
+import { Place } from '../generator/Place.ts';
 
 /**
  * @class HistoricalFigureBirthSystem
