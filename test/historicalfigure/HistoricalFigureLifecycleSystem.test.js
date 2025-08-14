@@ -1,9 +1,8 @@
-import { HistoricalFigureLifecycleSystem } from '../../src/historicalfigure/HistoricalFigureLifecycleSystem.ts';
+import { HistoricalFigureLifecycleSystem } from '../../src/historicalfigure/HistoricalFigureLifecycleSystem';
 import { EntityManager } from '../../src/ecs/EntityManager';
-import { Entity } from '../../src/ecs/Entity';
-import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent.ts';
-import { TimeComponent } from '../../src/time/TimeComponent.js';
-import { Time } from '../../src/time/Time.js';
+import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent';
+import { TimeComponent } from '../../src/time/TimeComponent';
+import { Time } from '../../src/time/Time';
 
 describe('HistoricalFigureLifecycleSystem', () => {
     let entityManager;

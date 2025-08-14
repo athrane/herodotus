@@ -2,7 +2,7 @@ import { EntityManager } from '../../src/ecs/EntityManager';
 import { Entity } from '../../src/ecs/Entity';
 import { Component } from '../../src/ecs/Component';
 import { Time } from '../../src/time/Time';
-import { TimeComponent } from '../../src/time/TimeComponent.js';
+import { TimeComponent } from '../../src/time/TimeComponent';
 
 // Mock Components for testing
 class PositionComponent extends Component { }

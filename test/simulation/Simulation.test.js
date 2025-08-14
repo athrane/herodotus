@@ -1,7 +1,7 @@
 import { Simulation } from '../../src/simulation/Simulation.js';
 import { EntityManager } from '../../src/ecs/EntityManager';
 import { SystemManager } from '../../src/ecs/SystemManager';
-import { TimeComponent } from '../../src/time/TimeComponent.js';
+import { TimeComponent } from '../../src/time/TimeComponent';
 import { NameComponent } from '../../src/ecs/NameComponent';
 
 describe('Simulation', () => {
