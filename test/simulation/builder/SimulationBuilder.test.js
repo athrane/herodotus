@@ -1,5 +1,5 @@
-import { SimulationBuilder } from '../../../src/simulation/builder/SimulationBuilder';
-import { Simulation} from '../../../src/simulation/Simulation.js';
+import { SimulationBuilder } from '../../../src/simulation/builder/SimulationBuilder.ts';
+import { Simulation} from '../../../src/simulation/Simulation.ts';
 import { WorldGenerator } from '../../../src/generator/world/WorldGenerator';
 import { TimeSystem } from '../../../src/time/TimeSystem';
 import { HistoricalFigureLifecycleSystem } from '../../../src/historicalfigure/HistoricalFigureLifecycleSystem';

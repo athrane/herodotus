@@ -1,19 +1,15 @@
 import { SystemManager } from '../ecs/SystemManager';
 import { EntityManager } from '../ecs/EntityManager';
-import { TimeComponent } from '../time/TimeComponent.ts';
-import { Time } from '../time/Time.ts';
-import { TimeSystem } from '../time/TimeSystem.ts';
-import { NameComponent } from '../ecs/NameComponent';
 
 /**
  * The `Simulation` class orchestrates an Entity-Component-System (ECS) based simulation.
  * It manages all entities and systems, and drives the main simulation loop.
  */
 export class Simulation {
-    #entityManager;
-    #systemManager;
-    #isRunning;
-    #lastTickTime;
+    readonly #entityManager: EntityManager;
+    readonly #systemManager: SystemManager;
+    #isRunning: boolean;
+    #lastTickTime: number;
 
     /**
      * Creates an instance of Simulation.
@@ -23,30 +19,29 @@ export class Simulation {
         this.#systemManager = SystemManager.create(this.#entityManager);
         this.#isRunning = false;
         this.#lastTickTime = 0;
-
     }
 
     /**
      * Returns whether the simulation is currently running.
-     * @returns {boolean} True if the simulation is running, false otherwise.
+     * @returns True if the simulation is running, false otherwise.
      */
-    isRunning() {
+    isRunning(): boolean {
         return this.#isRunning;
     }
 
     /**
      * Returns the EntityManager instance used by this simulation.
-     * @returns {EntityManager} The EntityManager.
+     * @returns The EntityManager.
      */
-    getEntityManager() {
+    getEntityManager(): EntityManager {
         return this.#entityManager;
     }
 
     /**
      * Returns the SystemManager instance used by this simulation.
-     * @returns {SystemManager} The SystemManager.
+     * @returns The SystemManager.
      */
-    getSystemManager() {
+    getSystemManager(): SystemManager {
         return this.#systemManager;
     }
 
@@ -54,7 +49,7 @@ export class Simulation {
      * Starts the simulation loop.
      * If the simulation is already running, this method does nothing.
      */
-    start() {
+    start(): void {
         if (this.#isRunning) {
             return;
         }
@@ -68,7 +63,7 @@ export class Simulation {
      * Stops the simulation loop.
      * If the simulation is not running, this method does nothing.
      */
-    stop() {
+    stop(): void {
         if (!this.#isRunning) {
             return;
         }
@@ -81,7 +76,7 @@ export class Simulation {
      * It is called repeatedly while the simulation is running.
      * It calculates the time since the last tick and updates all systems.
      */
-    tick() {
+    tick(): void {
         if (!this.#isRunning) return;
 
         const currentTime = performance.now();
@@ -95,10 +90,9 @@ export class Simulation {
     /**
      * Creates a new instance of Simulation.
      * This static factory method provides a standardized way to construct Simulation objects.
-     * @returns {Simulation} A new Simulation instance.
+     * @returns A new Simulation instance.
      */ 
-    static create() {
+    static create(): Simulation {
         return new Simulation();
     }
-    
 }

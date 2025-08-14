@@ -1,6 +1,6 @@
 import { LogHelper } from './util/log/LogHelper.js';
-import { SimulationDirector } from './simulation/builder/SimulationDirector.js';
-import { SimulationBuilder } from './simulation/builder/SimulationBuilder.js';
+import { SimulationDirector } from './simulation/builder/SimulationDirector.ts';
+import { SimulationBuilder } from './simulation/builder/SimulationBuilder.ts';
 import { WorldComponent } from './geography/WorldComponent.ts';
 import { ChronicleEventComponent } from './chronicle/ChronicleEventComponent.ts';
 

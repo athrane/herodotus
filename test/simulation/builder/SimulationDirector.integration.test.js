@@ -1,5 +1,5 @@
-import { SimulationDirector } from '../../../src/simulation/builder/SimulationDirector.js';
-import { SimulationBuilder } from '../../../src/simulation/builder/SimulationBuilder.js';
+import { SimulationDirector } from '../../../src/simulation/builder/SimulationDirector.ts';
+import { SimulationBuilder } from '../../../src/simulation/builder/SimulationBuilder.ts';
 
 // This test will create a real simulation using the director and builder, run it, and check for basic integration behavior.
 describe('SimulationDirector integration (no mocks)', () => {
