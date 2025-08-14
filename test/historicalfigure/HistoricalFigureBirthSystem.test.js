@@ -1,8 +1,8 @@
 
 import { ChronicleEventComponent } from '../../src/chronicle/ChronicleEventComponent.ts';
 import { TimeComponent } from '../../src/time/TimeComponent.js';
-import { WorldComponent } from '../../src/geography/WorldComponent.js';
-import { World } from '../../src/geography/World.js';
+import { WorldComponent } from '../../src/geography/WorldComponent.ts';
+import { World } from '../../src/geography/World.ts';
 import { Entity } from '../../src/ecs/Entity';
 import { EntityManager } from '../../src/ecs/EntityManager';
 import { HistoricalFigureBirthSystem } from '../../src/historicalfigure/HistoricalFigureBirthSystem.ts';

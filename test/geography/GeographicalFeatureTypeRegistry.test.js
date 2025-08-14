@@ -1,4 +1,4 @@
-import { GeographicalFeatureTypeRegistry } from '../../src/geography/GeographicalFeatureTypeRegistry.js';
+import { GeographicalFeatureTypeRegistry } from '../../src/geography/GeographicalFeatureTypeRegistry.ts';
 import { FeatureType } from '../../src/geography/FeatureType.ts';
 
 describe('GeographicalFeatureTypeRegistry', () => {

@@ -1,5 +1,5 @@
-import { WorldComponent } from '../../src/geography/WorldComponent.js';
-import { World } from '../../src/geography/World.js';
+import { WorldComponent } from '../../src/geography/WorldComponent.ts';
+import { World } from '../../src/geography/World.ts';
 
 describe('WorldComponent', () => {
     let mockWorld;

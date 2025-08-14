@@ -7,7 +7,7 @@ import { TimeComponent } from '../../time/TimeComponent.js';
 import { NameComponent } from '../../ecs/NameComponent';
 import { WorldComponent } from '../../geography/WorldComponent.js';
 import { GeographicalFeaturesFactory } from '../../geography/GeographicalFeaturesFactory.js';
-import { HistoricalFigureComponent } from '../../historicalfigure/HistoricalFigureComponent.ts';
+import { HistoricalFigureComponent } from '../../historicalfigure/HistoricalFigureComponent.js';
 import { ChronicleEventComponent } from '../../chronicle/ChronicleEventComponent.ts';
 import { HistoricalFigureLifecycleSystem } from '../../historicalfigure/HistoricalFigureLifecycleSystem.ts';
 import { HistoricalFigureInfluenceSystem } from '../../historicalfigure/HistoricalFigureInfluenceSystem.ts';
