@@ -6,7 +6,7 @@ import { HistoricalFigureLifecycleSystem } from '../../../src/historicalfigure/H
 import { HistoricalFigureInfluenceSystem } from '../../../src/historicalfigure/HistoricalFigureInfluenceSystem';
 
 // Mock the WorldGenerator to control its output
-jest.mock('../../../src/generator/world/WorldGenerator.ts', () => {
+jest.mock('../../../src/generator/world/WorldGenerator', () => {
     return {
         WorldGenerator: jest.fn().mockImplementation(() => {
             return {
