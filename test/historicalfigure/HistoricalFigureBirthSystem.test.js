@@ -1,5 +1,5 @@
 
-import { ChronicleEventComponent } from '../../src/chronicle/ChronicleEventComponent';
+import { ChronicleComponent } from '../../src/chronicle/ChronicleComponent';
 import { TimeComponent } from '../../src/time/TimeComponent';
 import { WorldComponent } from '../../src/geography/WorldComponent';
 import { World } from '../../src/geography/World';
@@ -44,7 +44,7 @@ describe('HistoricalFigureBirthSystem', () => {
             .mockImplementation((componentType) => {
                 if (componentType === TimeComponent) return mockTimeComponent;
                 if (componentType === WorldComponent) return mockWorldComponent;
-                if (componentType === ChronicleEventComponent) return mockChronicleEventComponent;
+                if (componentType === ChronicleComponent) return mockChronicleEventComponent;
                 return null;
             });
         jest.spyOn(entityManager, 'createEntity')
@@ -83,7 +83,7 @@ describe('HistoricalFigureBirthSystem', () => {
         entityManager.getSingletonComponent.mockImplementation((componentType) => {
             if (componentType === TimeComponent) return null;
             if (componentType === WorldComponent) return mockWorldComponent;
-            if (componentType === ChronicleEventComponent) return mockChronicleEventComponent;
+            if (componentType === ChronicleComponent) return mockChronicleEventComponent;
             return null;
         });
         system.processEntity(entity, 100);
@@ -95,7 +95,7 @@ describe('HistoricalFigureBirthSystem', () => {
         entityManager.getSingletonComponent.mockImplementation((componentType) => {
             if (componentType === TimeComponent) return mockTimeComponent;
             if (componentType === WorldComponent) return null;
-            if (componentType === ChronicleEventComponent) return mockChronicleEventComponent;
+            if (componentType === ChronicleComponent) return mockChronicleEventComponent;
             return null;
         });
         system.processEntity(entity, 100);
@@ -107,7 +107,7 @@ describe('HistoricalFigureBirthSystem', () => {
         entityManager.getSingletonComponent.mockImplementation((componentType) => {
             if (componentType === TimeComponent) return mockTimeComponent;
             if (componentType === WorldComponent) return mockWorldComponent;
-            if (componentType === ChronicleEventComponent) return null;
+            if (componentType === ChronicleComponent) return null;
             return null;
         });
         system.processEntity(entity, 100);
