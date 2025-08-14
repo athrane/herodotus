@@ -1,28 +1,27 @@
 import { System } from '../ecs/System';
-import { HistoricalFigureComponent } from './HistoricalFigureComponent.js';
-import { ChronicleEventComponent } from '../chronicle/ChronicleEventComponent.ts';
+import { HistoricalFigureComponent } from './HistoricalFigureComponent';
+import { ChronicleEventComponent } from '../chronicle/ChronicleEventComponent';
 import { EntityManager } from '../ecs/EntityManager';
-import { TypeUtils } from '../util/TypeUtils.ts';
+import { Entity } from '../ecs/Entity';
+import { TypeUtils } from '../util/TypeUtils';
 
 /**
- * @class HistoricalFigureInfluenceSystem
- * @augments System
- * @description Translates the existence and roles of active historical figures into concrete historical events.
+ * Translates the existence and roles of active historical figures into concrete historical events.
  */
 export class HistoricalFigureInfluenceSystem extends System {
     /**
-     * @param {EntityManager} entityManager - The entity manager instance.
+     * @param entityManager - The entity manager instance.
      */
-    constructor(entityManager) {
+    constructor(entityManager: EntityManager) {
         super(entityManager, [HistoricalFigureComponent]);
     }
 
     /**
      * Processes a single entity to generate historical events based on its influence.
-     * @param {Entity} entity - The historical figure entity.
-     * @param {number} currentYear - The current year in the simulation.
+     * @param entity - The historical figure entity.
+     * @param currentYear - The current year in the simulation.
      */
-    processEntity(entity, currentYear) {
+    processEntity(entity: Entity, currentYear: number): void {
         TypeUtils.ensureNumber(currentYear, 'currentYear must be a number.');
 
         const historicalFigure = entity.getComponent(HistoricalFigureComponent);
@@ -48,12 +47,10 @@ export class HistoricalFigureInfluenceSystem extends System {
 
     /**
      * Static factory method to create a HistoricalFigureInfluenceSystem.
-     * @static
-     * @param {EntityManager} entityManager - The entity manager instance.
-     * @returns {HistoricalFigureInfluenceSystem} A new instance of HistoricalFigureInfluenceSystem.
+     * @param entityManager - The entity manager instance.
+     * @returns A new instance of HistoricalFigureInfluenceSystem.
      */
-    static create(entityManager) {
+    static create(entityManager: EntityManager): HistoricalFigureInfluenceSystem {
         return new HistoricalFigureInfluenceSystem(entityManager);
     }
-
 }

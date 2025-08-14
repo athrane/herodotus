@@ -7,11 +7,11 @@ import { TimeComponent } from '../../time/TimeComponent.js';
 import { NameComponent } from '../../ecs/NameComponent';
 import { WorldComponent } from '../../geography/WorldComponent.js';
 import { GeographicalFeaturesFactory } from '../../geography/GeographicalFeaturesFactory.js';
-import { HistoricalFigureComponent } from '../../historicalfigure/HistoricalFigureComponent.js';
+import { HistoricalFigureComponent } from '../../historicalfigure/HistoricalFigureComponent.ts';
 import { ChronicleEventComponent } from '../../chronicle/ChronicleEventComponent.ts';
-import { HistoricalFigureLifecycleSystem } from '../../historicalfigure/HistoricalFigureLifecycleSystem.js';
-import { HistoricalFigureInfluenceSystem } from '../../historicalfigure/HistoricalFigureInfluenceSystem.js';
-import { HistoricalFigureBirthSystem } from '../../historicalfigure/HistoricalFigureBirthSystem.js';
+import { HistoricalFigureLifecycleSystem } from '../../historicalfigure/HistoricalFigureLifecycleSystem.ts';
+import { HistoricalFigureInfluenceSystem } from '../../historicalfigure/HistoricalFigureInfluenceSystem.ts';
+import { HistoricalFigureBirthSystem } from '../../historicalfigure/HistoricalFigureBirthSystem.ts';
 import { NameGenerator } from '../../naming/NameGenerator.js';
 
 /**
