@@ -1,53 +1,43 @@
 import { System } from '../ecs/System';
-import { HistoricalFigureComponent } from './HistoricalFigureComponent.js';
+import { HistoricalFigureComponent } from './HistoricalFigureComponent';
 import { TimeComponent } from '../time/TimeComponent.js';
 import { EntityManager } from '../ecs/EntityManager';
-import { TypeUtils } from '../util/TypeUtils.ts';
+import { Entity } from '../ecs/Entity';
+import { TypeUtils } from '../util/TypeUtils';
 
 /**
- * @class HistoricalFigureLifecycleSystem
- * @augments System
- * @description Manages the birth and death of historical figures based on their lifespan.
+ * Manages the birth and death of historical figures based on their lifespan.
  */
 export class HistoricalFigureLifecycleSystem extends System {
 
     /**
-     * @constant
-     * @type {number}
-     * @description The chance of a historical figure being born each year.
-     * @default 0.05
+     * The chance of a historical figure being born each year.
      */
-    static BIRTH_CHANCE_PER_YEAR = 0.05;
+    static readonly BIRTH_CHANCE_PER_YEAR: number = 0.05;
 
     /**
-     * @constant
-     * @type {number}
-     * @description The mean lifespan of a historical figure in years.
-     * @default 70
+     * The mean lifespan of a historical figure in years.
      */
-    static NATURAL_LIFESPAN_MEAN = 70;
+    static readonly NATURAL_LIFESPAN_MEAN: number = 70;
 
     /**
-     * @constant
-     * @type {number}
-     * @description The standard deviation for the lifespan of a historical figure.
-     * @default 15
+     * The standard deviation for the lifespan of a historical figure.
      */
-    static NATURAL_LIFESPAN_STD_DEV = 15;
+    static readonly NATURAL_LIFESPAN_STD_DEV: number = 15;
 
     /**
-     * @param {EntityManager} entityManager - The entity manager instance.
+     * @param entityManager - The entity manager instance.
      */
-    constructor(entityManager) {
+    constructor(entityManager: EntityManager) {
         super(entityManager, [HistoricalFigureComponent, TimeComponent]);
     }
 
     /**
      * Processes a single entity to manage its lifecycle.
-     * @param {Entity} entity - The entity to process.
-     * @param {number} currentYear - The current year in the simulation.
+     * @param entity - The entity to process.
+     * @param currentYear - The current year in the simulation.
      */
-    processEntity(entity, currentYear) {
+    processEntity(entity: Entity, currentYear: number): void {
         TypeUtils.ensureNumber(currentYear, 'currentYear must be a number.');
 
         // Get the HistoricalFigureComponent and TimeComponent from the entity
@@ -76,12 +66,10 @@ export class HistoricalFigureLifecycleSystem extends System {
 
     /**
      * Static factory method to create a HistoricalFigureLifecycleSystem.
-     * @static
-     * @param {EntityManager} entityManager - The entity manager instance.
-     * @returns {HistoricalFigureLifecycleSystem} A new instance of HistoricalFigureLifecycleSystem.
+     * @param entityManager - The entity manager instance.
+     * @returns A new instance of HistoricalFigureLifecycleSystem.
      */
-    static create(entityManager) {
+    static create(entityManager: EntityManager): HistoricalFigureLifecycleSystem {
         return new HistoricalFigureLifecycleSystem(entityManager);
     }
-
 }

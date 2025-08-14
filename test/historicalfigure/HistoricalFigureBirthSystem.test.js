@@ -5,7 +5,7 @@ import { WorldComponent } from '../../src/geography/WorldComponent.ts';
 import { World } from '../../src/geography/World.ts';
 import { Entity } from '../../src/ecs/Entity';
 import { EntityManager } from '../../src/ecs/EntityManager';
-import { HistoricalFigureBirthSystem } from '../../src/historicalfigure/HistoricalFigureBirthSystem.js';
+import { HistoricalFigureBirthSystem } from '../../src/historicalfigure/HistoricalFigureBirthSystem.ts';
 import { NameGenerator } from '../../src/naming/NameGenerator.js';
 import { Time } from '../../src/time/Time.js';
 
