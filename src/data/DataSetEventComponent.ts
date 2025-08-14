@@ -30,10 +30,8 @@ export class DataSetEventComponent {
       // Keep an explicit instance check to preserve error semantics expected by tests
       TypeUtils.ensureInstanceOf<DataSetEvent>(e, DataSetEvent, 'All items must be DataSetEvent instances');
       const evt = e as DataSetEvent; // narrowed by assertion above
-      TypeUtils.ensureNonEmptyString(
-        evt.EventTrigger,
-        'Each DataSetEvent must have a non-empty EventTrigger string'
-      );
+      TypeUtils.ensureNonEmptyString(evt.EventTrigger, 'Each DataSetEvent must have a non-empty EventTrigger string');
+      
       // add if event with same trigger doesn't exist
       if (!map.has(evt.EventTrigger)) {
         map.set(evt.EventTrigger, evt);
@@ -54,7 +52,7 @@ export class DataSetEventComponent {
   /** 
    * Get underlying map (do not mutate)
    * @returns {ReadonlyMap<string, DataSetEvent>} - Immutable map of events
-   */ 
+   */
   getEventMap(): ReadonlyMap<string, DataSetEvent> {
     return this.eventMap;
   }

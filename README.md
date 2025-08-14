@@ -34,7 +34,7 @@ The project is organized into modules, with each directory representing a distin
 This module provides the classes for creating and managing historical events in the simulation.
 
 *   **`ChronicleEvent`**: Represents a single, discrete entry in the chronicle, describing a historical event.
-*   **`ChronicleEventComponent`**: A component to store a logbook of significant historical events. This component is typically attached to the primary World entity.
+*   **`ChronicleComponent`**: A component to store a logbook of significant historical events. This component is typically attached to the primary World entity.
 *   **`EventType`**: Represents the type of a historical event, including its category and specific name.
 
 #### `data`
@@ -42,7 +42,8 @@ This module provides the classes for creating and managing historical events in 
 This module contains classes for loading and accessing event data.
 
 *   **`DataSetEventComponent`**: A component that holds all loaded event data.
-*   **`Event`**: Represents a single event in the system.
+*   **`DataSetEvent`**: Data-set specific event class that maps raw JSON into strongly-typed fields; includes a helper to construct an array from a JSON object map.
+*   **`Event`**: Base event class with tolerant field mapping from raw JSON (supports legacy key variants).
 *   **`loadEvents`**: A function that loads events from a JSON file.
 
 #### `ecs`
@@ -52,7 +53,7 @@ This module implements an Entity-Component-System (ECS) architecture, a design p
 *   **`Component`**: A base class for all components in the Entity-Component-System (ECS) architecture. Components are simple data containers. They should not contain any logic. This class serves as a marker to identify objects as components.
 *   **`Entity`**: Represents an entity in the Entity-Component-System (ECS) architecture. An entity is essentially a container for components, identified by a unique ID. It acts as a lightweight wrapper that groups various components, which hold the actual data.
 *   **`EntityManager`**: Manages the lifecycle of entities in the ECS architecture. It is responsible for creating, retrieving, destroying, and querying entities.
-*   **`NameComponent`**: A component that provides a human-readable name .
+*   **`NameComponent`**: A component that provides a human-readable name.
 *   **`System`**: A base class for all systems in the Entity-Component-System (ECS) architecture. Systems contain the logic that operates on entities possessing a specific set of components.
 *   **`SystemManager`**: Manages the registration, lifecycle, and execution of all systems in the ECS. This class orchestrates the logic updates for the simulation.
 
