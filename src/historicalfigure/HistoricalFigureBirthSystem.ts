@@ -1,6 +1,6 @@
 import { System } from '../ecs/System';
 import { HistoricalFigureComponent } from './HistoricalFigureComponent';
-import { TimeComponent } from '../time/TimeComponent.js';
+import { TimeComponent } from '../time/TimeComponent';
 import { EntityManager } from '../ecs/EntityManager';
 import { Entity} from '../ecs/Entity';
 import { TypeUtils } from '../util/TypeUtils';
@@ -8,7 +8,7 @@ import { World } from '../geography/World';
 import { WorldComponent } from '../geography/WorldComponent';
 import { ChronicleEventComponent } from '../chronicle/ChronicleEventComponent';
 import { HistoricalFigure } from './HistoricalFigure';
-import { NameGenerator } from '../naming/NameGenerator.js';
+import { NameGenerator } from '../naming/NameGenerator';
 import { NameComponent } from '../ecs/NameComponent';
 import { ChronicleEvent } from '../chronicle/ChronicleEvent';
 import { EventCategory } from '../chronicle/EventCategory';

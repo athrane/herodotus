@@ -2,7 +2,7 @@ import { ChronicleEventComponent } from '../../src/chronicle/ChronicleEventCompo
 import { ChronicleEvent } from '../../src/chronicle/ChronicleEvent';
 import { EventType } from '../../src/chronicle/EventType';
 import { EventCategory } from '../../src/chronicle/EventCategory';
-import { Time } from '../../src/time/Time.js';
+import { Time } from '../../src/time/Time';
 import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure';
 import { Place } from '../../src/generator/Place';
 

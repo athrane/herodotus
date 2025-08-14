@@ -1,5 +1,5 @@
-import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure.ts';
-import { NameGenerator } from '../../src/naming/NameGenerator.js';
+import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure';
+import { NameGenerator } from '../../src/naming/NameGenerator';
 
 describe('HistoricalFigure', () => {
   describe('constructor', () => {

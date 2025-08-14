@@ -1,7 +1,5 @@
 import { WorldGenerator } from '../../../src/generator/world/WorldGenerator.ts';
-import { NameGenerator } from '../../../src/naming/NameGenerator.js';
-import { World } from '../../../src/geography/World.ts';
-import { Continent } from '../../../src/geography/Continent.ts';
+import { NameGenerator } from '../../../src/naming/NameGenerator';
 import { GeographicalFeatureTypeRegistry } from '../../../src/geography/GeographicalFeatureTypeRegistry.ts';
 import { FeatureType } from '../../../src/geography/FeatureType.ts';
 

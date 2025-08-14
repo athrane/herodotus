@@ -1,8 +1,8 @@
-import { ChronicleEvent } from '../../src/chronicle/ChronicleEvent.ts';
-import { Time } from '../../src/time/Time.js';
-import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure.ts';
-import { Place } from '../../src/generator/Place.ts';
-import { EventType } from '../../src/chronicle/EventType.ts';
+import { ChronicleEvent } from '../../src/chronicle/ChronicleEvent';
+import { Time } from '../../src/time/Time';
+import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure';
+import { Place } from '../../src/generator/Place';
+import { EventType } from '../../src/chronicle/EventType';
 
 describe('ChronicleEvent', () => {
   let heading;
