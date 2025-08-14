@@ -1,4 +1,4 @@
-import { WorldGenerator } from '../../../src/generator/world/WorldGenerator.ts';
+import { WorldGenerator } from '../../../src/generator/world/WorldGenerator';
 import { NameGenerator } from '../../../src/naming/NameGenerator';
 import { GeographicalFeatureTypeRegistry } from '../../../src/geography/GeographicalFeatureTypeRegistry.ts';
 import { FeatureType } from '../../../src/geography/FeatureType.ts';
