@@ -3,10 +3,10 @@ import { Component } from '../ecs/Component';
 import { ChronicleEvent } from './ChronicleEvent';
 
 /**
- * A component to store a logbook of significant historical events.
+ * A component to store a chronicle of significant historical events.
  * Typically attached to the primary World entity.
  */
-export class ChronicleEventComponent extends Component {
+export class ChronicleComponent extends Component {
   /** Internal list of events (ChronicleEvent instances only). */
   private events: ChronicleEvent[] = [];
 
@@ -16,7 +16,7 @@ export class ChronicleEventComponent extends Component {
    */
   constructor(events: ChronicleEvent[] = []) {
     super();
-    TypeUtils.ensureArray(events, 'ChronicleEventComponent events must be an array.');
+    TypeUtils.ensureArray(events, 'ChronicleComponent events must be an array.');
     for (const event of events) {
       this.addEvent(event);
     }
@@ -31,9 +31,9 @@ export class ChronicleEventComponent extends Component {
     this.events.push(event);
   }
 
-  /** Creates a ChronicleEventComponent instance. */
-  static create(events: ChronicleEvent[] = []): ChronicleEventComponent {
-    return new ChronicleEventComponent(events);
+  /** Creates a ChronicleComponent instance. */
+  static create(events: ChronicleEvent[] = []): ChronicleComponent {
+    return new ChronicleComponent(events);
   }
 
   /** Retrieves the list of events (read-only view). */

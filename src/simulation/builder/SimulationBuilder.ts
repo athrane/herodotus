@@ -8,7 +8,7 @@ import { NameComponent } from '../../ecs/NameComponent';
 import { WorldComponent } from '../../geography/WorldComponent';
 import { GeographicalFeaturesFactory } from '../../geography/GeographicalFeaturesFactory';
 import { HistoricalFigureComponent } from '../../historicalfigure/HistoricalFigureComponent';
-import { ChronicleEventComponent } from '../../chronicle/ChronicleEventComponent';
+import { ChronicleComponent } from '../../chronicle/ChronicleComponent';
 import { HistoricalFigureLifecycleSystem } from '../../historicalfigure/HistoricalFigureLifecycleSystem';
 import { HistoricalFigureInfluenceSystem } from '../../historicalfigure/HistoricalFigureInfluenceSystem';
 import { HistoricalFigureBirthSystem } from '../../historicalfigure/HistoricalFigureBirthSystem';
@@ -62,7 +62,7 @@ export class SimulationBuilder extends Builder {
             new NameComponent("Global"),
             new TimeComponent(Time.create(0)),
             new WorldComponent(world),
-            new ChronicleEventComponent(),
+            new ChronicleComponent(),
         );
 
         // Create a sample historical figure

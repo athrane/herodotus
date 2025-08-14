@@ -1,6 +1,6 @@
 import { HistoricalFigureInfluenceSystem } from '../../src/historicalfigure/HistoricalFigureInfluenceSystem.ts';
 import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent.ts';
-import { ChronicleEventComponent } from '../../src/chronicle/ChronicleEventComponent.ts';
+import { ChronicleComponent } from '../../src/chronicle/ChronicleComponent.ts';
 import { EntityManager } from '../../src/ecs/EntityManager';
 import { Entity } from '../../src/ecs/Entity';
 
@@ -13,11 +13,11 @@ describe('HistoricalFigureInfluenceSystem', () => {
         entityManager = new EntityManager();
         system = new HistoricalFigureInfluenceSystem(entityManager);
 
-        // Mock ChronicleEventComponent
-        mockChronicleComponent = new ChronicleEventComponent();
+    // Mock ChronicleComponent
+    mockChronicleComponent = new ChronicleComponent();
         mockChronicleComponent.addEvent = jest.fn(); // Mock the addEvent method
 
-        // Create an entity for the singleton ChronicleEventComponent and add it to the EntityManager
+    // Create an entity for the singleton ChronicleComponent and add it to the EntityManager
         entityManager.createEntity(mockChronicleComponent);
     });
 

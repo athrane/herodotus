@@ -1,4 +1,4 @@
-import { ChronicleEventComponent } from '../../src/chronicle/ChronicleEventComponent';
+import { ChronicleComponent } from '../../src/chronicle/ChronicleComponent';
 import { ChronicleEvent } from '../../src/chronicle/ChronicleEvent';
 import { EventType } from '../../src/chronicle/EventType';
 import { EventCategory } from '../../src/chronicle/EventCategory';
@@ -6,7 +6,7 @@ import { Time } from '../../src/time/Time';
 import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure';
 import { Place } from '../../src/generator/Place';
 
-describe('ChronicleEventComponent', () => {
+describe('ChronicleComponent', () => {
   let sampleEvent1;
   let sampleEvent2;
   let eventType;
@@ -41,28 +41,28 @@ describe('ChronicleEventComponent', () => {
 
   describe('constructor', () => {
     it('should create an empty component when no events provided', () => {
-      const component = new ChronicleEventComponent();
-      expect(component).toBeInstanceOf(ChronicleEventComponent);
+  const component = new ChronicleComponent();
+  expect(component).toBeInstanceOf(ChronicleComponent);
       expect(component.getEvents()).toHaveLength(0);
     });
 
     it('should create a component with initial events', () => {
-      const component = new ChronicleEventComponent([sampleEvent1, sampleEvent2]);
+  const component = new ChronicleComponent([sampleEvent1, sampleEvent2]);
       expect(component.getEvents()).toHaveLength(2);
       expect(component.getEvents()[0]).toBe(sampleEvent1);
       expect(component.getEvents()[1]).toBe(sampleEvent2);
     });
 
     it('should throw TypeError when events is not an array', () => {
-      expect(() => new ChronicleEventComponent('not an array')).toThrow(TypeError);
-      expect(() => new ChronicleEventComponent(123)).toThrow(TypeError);
-      expect(() => new ChronicleEventComponent({})).toThrow(TypeError);
+  expect(() => new ChronicleComponent('not an array')).toThrow(TypeError);
+  expect(() => new ChronicleComponent(123)).toThrow(TypeError);
+  expect(() => new ChronicleComponent({})).toThrow(TypeError);
     });
 
     it('should throw TypeError when events array contains non-ChronicleEvent instances', () => {
-      expect(() => new ChronicleEventComponent([sampleEvent1, { plain: 'object' }])).toThrow(TypeError);
-      expect(() => new ChronicleEventComponent(['string'])).toThrow(TypeError);
-      expect(() => new ChronicleEventComponent([123])).toThrow(TypeError);
+  expect(() => new ChronicleComponent([sampleEvent1, { plain: 'object' }])).toThrow(TypeError);
+  expect(() => new ChronicleComponent(['string'])).toThrow(TypeError);
+  expect(() => new ChronicleComponent([123])).toThrow(TypeError);
     });
   });
 
@@ -70,7 +70,7 @@ describe('ChronicleEventComponent', () => {
     let component;
 
     beforeEach(() => {
-      component = new ChronicleEventComponent();
+      component = new ChronicleComponent();
     });
 
     it('should add a valid ChronicleEvent', () => {
@@ -98,14 +98,14 @@ describe('ChronicleEventComponent', () => {
 
   describe('getEvents', () => {
     it('should return empty array for empty component', () => {
-      const component = new ChronicleEventComponent();
+  const component = new ChronicleComponent();
       const events = component.getEvents();
       expect(events).toHaveLength(0);
       expect(Array.isArray(events)).toBe(true);
     });
 
     it('should return all events in chronological order', () => {
-      const component = new ChronicleEventComponent([sampleEvent1, sampleEvent2]);
+  const component = new ChronicleComponent([sampleEvent1, sampleEvent2]);
       const events = component.getEvents();
       expect(events).toHaveLength(2);
       expect(events[0]).toBe(sampleEvent1);
@@ -113,7 +113,7 @@ describe('ChronicleEventComponent', () => {
     });
 
     it('should return a read-only array', () => {
-      const component = new ChronicleEventComponent([sampleEvent1]);
+  const component = new ChronicleComponent([sampleEvent1]);
       const events = component.getEvents();
       
       // Should not be able to modify the returned array
@@ -123,20 +123,20 @@ describe('ChronicleEventComponent', () => {
 
   describe('static create', () => {
     it('should create an empty component when no events provided', () => {
-      const component = ChronicleEventComponent.create();
-      expect(component).toBeInstanceOf(ChronicleEventComponent);
+  const component = ChronicleComponent.create();
+  expect(component).toBeInstanceOf(ChronicleComponent);
       expect(component.getEvents()).toHaveLength(0);
     });
 
     it('should create a component with initial events', () => {
-      const component = ChronicleEventComponent.create([sampleEvent1, sampleEvent2]);
+  const component = ChronicleComponent.create([sampleEvent1, sampleEvent2]);
       expect(component.getEvents()).toHaveLength(2);
       expect(component.getEvents()[0]).toBe(sampleEvent1);
       expect(component.getEvents()[1]).toBe(sampleEvent2);
     });
 
     it('should throw TypeError when events contains non-ChronicleEvent instances', () => {
-      expect(() => ChronicleEventComponent.create([sampleEvent1, { plain: 'object' }])).toThrow(TypeError);
+  expect(() => ChronicleComponent.create([sampleEvent1, { plain: 'object' }])).toThrow(TypeError);
     });
   });
 });
