@@ -1,6 +1,6 @@
-import { Simulation } from '../../src/simulation/Simulation.js';
-import { SimulationDirector } from '../../src/simulation/builder/SimulationDirector.js';
-import { SimulationBuilder } from '../../src/simulation/builder/SimulationBuilder.js';
+import { Simulation } from '../../src/simulation/Simulation.ts';
+import { SimulationDirector } from '../../src/simulation/builder/SimulationDirector.ts';
+import { SimulationBuilder } from '../../src/simulation/builder/SimulationBuilder.ts';
 
 describe('Simulation integration (no mocks)', () => {
   it('should run and stop a real simulation', () => {

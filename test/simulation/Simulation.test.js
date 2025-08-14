@@ -1,4 +1,4 @@
-import { Simulation } from '../../src/simulation/Simulation.js';
+import { Simulation } from '../../src/simulation/Simulation.ts';
 import { EntityManager } from '../../src/ecs/EntityManager';
 import { SystemManager } from '../../src/ecs/SystemManager';
 import { TimeComponent } from '../../src/time/TimeComponent';

@@ -1,5 +1,5 @@
-import { Builder} from './Builder';
-import { Simulation } from '../Simulation.js';
+import { Builder } from './Builder';
+import { Simulation } from '../Simulation';
 import { WorldGenerator } from '../../generator/world/WorldGenerator';
 import { Time } from '../../time/Time';
 import { TimeSystem } from '../../time/TimeSystem';
@@ -13,6 +13,8 @@ import { HistoricalFigureLifecycleSystem } from '../../historicalfigure/Historic
 import { HistoricalFigureInfluenceSystem } from '../../historicalfigure/HistoricalFigureInfluenceSystem';
 import { HistoricalFigureBirthSystem } from '../../historicalfigure/HistoricalFigureBirthSystem';
 import { NameGenerator } from '../../naming/NameGenerator';
+import { EntityManager } from '../../ecs/EntityManager';
+import { SystemManager } from '../../ecs/SystemManager';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -23,12 +25,11 @@ import { NameGenerator } from '../../naming/NameGenerator';
  */
 export class SimulationBuilder extends Builder {
 
-    /** * 
+    /** 
      * The simulation instance that is built by this builder.
-     * @type {Simulation}
      * @private
      */
-    #simulation;
+    #simulation!: Simulation;
 
     /** 
      * Creates a new instance of SimulationBuilder.
@@ -41,15 +42,15 @@ export class SimulationBuilder extends Builder {
     /**
      * @override
      */
-    build() {
+    build(): void {
         this.#simulation = new Simulation();
     }
 
     /**
      * @override
      */
-    buildEntities() {
-        const entityManager = this.#simulation.getEntityManager();
+    buildEntities(): void {
+        const entityManager: EntityManager = this.#simulation.getEntityManager();
 
         // create world
         const nameGenerator = NameGenerator.create();
@@ -74,9 +75,9 @@ export class SimulationBuilder extends Builder {
     /**
      * @override
      */
-    buildSystems() {
-        const entityManager = this.#simulation.getEntityManager();        
-        const systemManager = this.#simulation.getSystemManager();
+    buildSystems(): void {
+        const entityManager: EntityManager = this.#simulation.getEntityManager();        
+        const systemManager: SystemManager = this.#simulation.getSystemManager();
         systemManager.register(new TimeSystem(entityManager));
         systemManager.register(new HistoricalFigureBirthSystem(entityManager));
         systemManager.register(new HistoricalFigureLifecycleSystem(entityManager));
@@ -86,23 +87,23 @@ export class SimulationBuilder extends Builder {
     /**
      * @override
      */
-    buildGeographicalFeatures() {
+    buildGeographicalFeatures(): void {
         GeographicalFeaturesFactory.create();
     }
 
     /**
      * Returns the simulation instance built by this builder.
-     * @returns {Simulation}
+     * @returns The simulation instance.
      */
-    getSimulation() {
+    getSimulation(): Simulation {
         return this.#simulation;
     }   
 
     /**
      * Static factory method to create a new instance of SimulationBuilder.
-     * @returns {SimulationBuilder}
+     * @returns A new SimulationBuilder instance.
      */
-    static create() {
+    static create(): SimulationBuilder {
         return new SimulationBuilder();
     }   
 }
