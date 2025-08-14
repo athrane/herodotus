@@ -2,7 +2,7 @@ import { World } from "../../geography/World.js";
 import { TypeUtils } from "../TypeUtils.ts";
 import { ChronicleEvent } from "../../chronicle/ChronicleEvent.ts";
 import { HistoricalFigure } from "../../historicalfigure/HistoricalFigure.js";
-import { Time } from "../../time/Time.js";
+import { Time } from "../../time/Time.ts";
 
 /**
  * A helper class with static methods for logging application-specific details.

@@ -1,4 +1,4 @@
-import { SyllableSets } from '../../src/naming/SyllableSets.js';
+import { SyllableSets } from '../../src/naming/SyllableSets.ts';
 
 describe('SyllableSets', () => {
     it('should have a GENERIC syllable set', () => {

@@ -1,6 +1,6 @@
 import { Component } from '../ecs/Component';
-import { Time } from '../time/Time.js';
-import { TypeUtils } from '../util/TypeUtils.ts';
+import { Time } from './Time';
+import { TypeUtils } from '../util/TypeUtils';
 
 /**
  * A component that associates a specific point in time with an entity.
@@ -8,16 +8,13 @@ import { TypeUtils } from '../util/TypeUtils.ts';
  * or any other time-sensitive data.
  */
 export class TimeComponent extends Component {
-  /**
-   * @type {Time}
-   */
-  #time;
+  #time: Time;
 
   /**
    * Creates an instance of TimeComponent.
-   * @param {Time} time - The Time object representing the point in time for this component.
+   * @param time - The Time object representing the point in time for this component.
    */
-  constructor(time) {
+  constructor(time: Time) {
     super();
     TypeUtils.ensureInstanceOf(time, Time, 'time must be an instance of the Time class.');
     this.#time = time;
@@ -25,28 +22,28 @@ export class TimeComponent extends Component {
 
   /**
    * Gets the Time object associated with this component.
-   * @returns {Time} The Time object.
+   * @returns The Time object.
    */
-  getTime() {
+  getTime(): Time {
     return this.#time;
   }
 
   /**
    * Sets the Time object for this component.
-   * @param {Time} time - The new Time object.
+   * @param time - The new Time object.
    */
-  setTime(time) {
+  setTime(time: Time): void {
     TypeUtils.ensureInstanceOf(time, Time, 'time must be an instance of the Time class.');
     this.#time = time;
   }
 
-    /**
-     * Creates a new instance of TimeComponent.
-     * This static factory method provides a standardized way to construct TimeComponent objects.
-     * @param {Time} time - The Time object representing the point in time for this component.
-     * @returns {TimeComponent} A new TimeComponent instance.
-     */
-    static create(time) {
-        return new TimeComponent(time);
-    }   
+  /**
+   * Creates a new instance of TimeComponent.
+   * This static factory method provides a standardized way to construct TimeComponent objects.
+   * @param time - The Time object representing the point in time for this component.
+   * @returns A new TimeComponent instance.
+   */
+  static create(time: Time): TimeComponent {
+    return new TimeComponent(time);
+  }
 }

@@ -1,4 +1,4 @@
-import { NameGenerator } from '../../src/naming/NameGenerator.js';
+import { NameGenerator } from '../../src/naming/NameGenerator.ts';
 
 describe('NameGenerator', () => {
     let nameGenerator;

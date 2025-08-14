@@ -12,16 +12,17 @@ export class TypeUtils {
    * @typeParam T - The expected instance type.
    * @param value - The value to validate.
    * @param Class - The constructor function of the expected type.
+   * @param message - Optional custom error message.
    * @throws {TypeError} If the value is not an instance of the provided constructor.
    * @example
    * TypeUtils.ensureInstanceOf(time, Time);
    * // time is now narrowed to Time
    */
-  static ensureInstanceOf<T>(value: unknown, Class: new (...args: any[]) => T): asserts value is T {
+  static ensureInstanceOf<T>(value: unknown, Class: new (...args: any[]) => T, message?: string): asserts value is T {
     if (!(value instanceof Class)) {
       const actualType = typeof value;
       const expectedType = Class.name;
-      const errorMessage = `Expected instance of ${expectedType}, but got ${actualType}`;
+      const errorMessage = message || `Expected instance of ${expectedType}, but got ${actualType}`;
       console.error(errorMessage);
       console.trace("Instance check failed");
       throw new TypeError(errorMessage);

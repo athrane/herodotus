@@ -1,5 +1,5 @@
 import { TypeUtils } from '../util/TypeUtils';
-import { Time } from '../time/Time.js';
+import { Time } from '../time/Time';
 import { HistoricalFigure } from '../historicalfigure/HistoricalFigure.js';
 import { Place } from '../generator/Place';
 import { EventType } from './EventType';

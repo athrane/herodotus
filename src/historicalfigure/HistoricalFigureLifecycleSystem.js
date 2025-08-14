@@ -1,6 +1,6 @@
 import { System } from '../ecs/System';
 import { HistoricalFigureComponent } from './HistoricalFigureComponent.js';
-import { TimeComponent } from '../time/TimeComponent.js';
+import { TimeComponent } from '../time/TimeComponent.ts';
 import { EntityManager } from '../ecs/EntityManager';
 import { TypeUtils } from '../util/TypeUtils.ts';
 
