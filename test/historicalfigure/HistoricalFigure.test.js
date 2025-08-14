@@ -1,4 +1,4 @@
-import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure.js';
+import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure.ts';
 import { NameGenerator } from '../../src/naming/NameGenerator.js';
 
 describe('HistoricalFigure', () => {

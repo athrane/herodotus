@@ -1,9 +1,9 @@
 import { Builder} from './Builder.js';
 import { Simulation } from '../Simulation.js';
 import { WorldGenerator } from '../../generator/world/WorldGenerator.ts';
-import { Time } from '../../time/Time.ts';
-import { TimeSystem } from '../../time/TimeSystem.ts';
-import { TimeComponent } from '../../time/TimeComponent.ts';
+import { Time } from '../../time/Time.js';
+import { TimeSystem } from '../../time/TimeSystem.js';
+import { TimeComponent } from '../../time/TimeComponent.js';
 import { NameComponent } from '../../ecs/NameComponent';
 import { WorldComponent } from '../../geography/WorldComponent.js';
 import { GeographicalFeaturesFactory } from '../../geography/GeographicalFeaturesFactory.js';
@@ -12,7 +12,7 @@ import { ChronicleEventComponent } from '../../chronicle/ChronicleEventComponent
 import { HistoricalFigureLifecycleSystem } from '../../historicalfigure/HistoricalFigureLifecycleSystem.js';
 import { HistoricalFigureInfluenceSystem } from '../../historicalfigure/HistoricalFigureInfluenceSystem.js';
 import { HistoricalFigureBirthSystem } from '../../historicalfigure/HistoricalFigureBirthSystem.js';
-import { NameGenerator } from '../../naming/NameGenerator.ts';
+import { NameGenerator } from '../../naming/NameGenerator.js';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.

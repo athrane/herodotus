@@ -1,10 +1,10 @@
-import { ChronicleEventComponent } from '../../src/chronicle/ChronicleEventComponent.ts';
-import { ChronicleEvent } from '../../src/chronicle/ChronicleEvent.ts';
-import { EventType } from '../../src/chronicle/EventType.ts';
-import { EventCategory } from '../../src/chronicle/EventCategory.ts';
-import { Time } from '../../src/time/Time.ts';
-import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure.js';
-import { Place } from '../../src/generator/Place.ts';
+import { ChronicleEventComponent } from '../../src/chronicle/ChronicleEventComponent';
+import { ChronicleEvent } from '../../src/chronicle/ChronicleEvent';
+import { EventType } from '../../src/chronicle/EventType';
+import { EventCategory } from '../../src/chronicle/EventCategory';
+import { Time } from '../../src/time/Time.js';
+import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure';
+import { Place } from '../../src/generator/Place';
 
 describe('ChronicleEventComponent', () => {
   let sampleEvent1;

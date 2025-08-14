@@ -1,5 +1,5 @@
-import { HistoricalFigureInfluenceSystem } from '../../src/historicalfigure/HistoricalFigureInfluenceSystem.js';
-import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent.js';
+import { HistoricalFigureInfluenceSystem } from '../../src/historicalfigure/HistoricalFigureInfluenceSystem.ts';
+import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent.ts';
 import { ChronicleEventComponent } from '../../src/chronicle/ChronicleEventComponent.ts';
 import { EntityManager } from '../../src/ecs/EntityManager';
 import { Entity } from '../../src/ecs/Entity';

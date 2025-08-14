@@ -1,4 +1,4 @@
-import { GeographicalFeatureTypeRegistry } from './GeographicalFeatureTypeRegistry.js';
+import { GeographicalFeatureTypeRegistry } from './GeographicalFeatureTypeRegistry';
 
 /**
  * GeographicalFeaturesFactory is responsible for creating and registering
@@ -16,7 +16,7 @@ export class GeographicalFeaturesFactory {
      * This method populates the GeographicalFeatureTypeRegistry with a variety of
      * geographical features, each identified by a unique key.
      */
-    static create() {
+    static create(): void {
         GeographicalFeatureTypeRegistry.register('MOUNTAIN', 'Mountain');     
         GeographicalFeatureTypeRegistry.register('RIVER', 'River');
         GeographicalFeatureTypeRegistry.register('LAKE', 'Lake');  
@@ -50,5 +50,3 @@ export class GeographicalFeaturesFactory {
         GeographicalFeatureTypeRegistry.register('WETLAND', 'Wetland');
     }
 }
-
-    
