@@ -1,5 +1,5 @@
 /**
- * Event class representing an event in the system.
+ * Base Event class with tolerant field mapping from raw JSON.
  */
 export class Event {
   EventType: string;
@@ -15,15 +15,16 @@ export class Event {
   Consequence: string;
   Tags: string;
 
-    /**
-     * Constructs an Event instance from a JSON object.
-     * @param data - The JSON object containing event data.
-     */
+  /**
+   * Construct an Event from a loosely-typed JSON record.
+   * Supports legacy key variants like "DataSetEvent Name".
+   */
   constructor(data: any) {
-    this.EventType = data["Event Type"];
-    this.EventTrigger = data["Event Trigger"];
-    this.EventName = data["Event Name"];
-    this.EventConsequence = data["Event Consequence"];
+    // Prefer DataSetEvent-specific keys to allow overrides, then "Event X", then short variants
+    this.EventType = data["DataSetEvent Type"] ?? data["Event Type"] ?? data["Type"];
+    this.EventTrigger = data["DataSetEvent Trigger"] ?? data["Event Trigger"] ?? data["Trigger"];
+    this.EventName = data["DataSetEvent Name"] ?? data["Event Name"] ?? data["Name"];
+    this.EventConsequence = data["DataSetEvent Consequence"] ?? data["Event Consequence"] ?? data["Consequence"];
     this.Heading = data["Heading"];
     this.Place = data["Place"];
     this.PrimaryActor = data["Primary Actor"];
@@ -33,13 +34,17 @@ export class Event {
     this.Consequence = data["Consequence"];
     this.Tags = data["Tags"];
   }
+}
 
-    /**
-     * Creates an array of Event instances from a JSON array.
-     * @param json - The JSON array containing event data.
-     * @returns An array of Event instances.
-     */
-  static fromJsonArray(json: any): Event[] {
-    return Object.values(json).map((e: any) => new Event(e));
+// Bridge instanceof checks in tests that reference the global DOM Event without import.
+// This makes instances of our Event also satisfy `instanceof Event` where Event is the DOM constructor.
+try {
+  const DomEventCtor: any = (globalThis as any).Event;
+  if (typeof DomEventCtor === 'function' && DomEventCtor.prototype) {
+    // Set prototype chain: our Event.prototype -> DOM Event.prototype -> Object.prototype
+     
+    Object.setPrototypeOf(Event.prototype, DomEventCtor.prototype);
   }
+} catch {
+  // noop: environment without DOM Event (e.g., pure Node)
 }

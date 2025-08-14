@@ -1,5 +1,5 @@
 import { loadEvents } from '../../src/data/loadEvents';
-import { Event } from '../../src/data/Event';
+import { DataSetEvent } from '../../src/data/DataSetEvent';
 
 jest.mock('../../data/events-flashp6-1.0.json', () => ({
   a: {

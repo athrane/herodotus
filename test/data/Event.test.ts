@@ -1,11 +1,11 @@
-import { Event } from '../../src/data/Event';
+import { DataSetEvent } from '../../src/data/DataSetEvent';
 
 describe('Event', () => {
   const sample = {
     "Event Type": "TypeA",
     "Event Trigger": "TriggerA",
     "Event Name": "NameA",
-    "Event Consequence": "ConsequenceA",
+    "DataSetEvent Consequence": "ConsequenceA",
     "Heading": "HeadingA",
     "Place": "PlaceA",
     "Primary Actor": "ActorA",
@@ -16,8 +16,8 @@ describe('Event', () => {
     "Tags": "TagA"
   };
 
-  it('should construct an Event from raw data', () => {
-    const event = new Event(sample);
+  it('should construct an DataSetEvent from raw data', () => {
+    const event = new DataSetEvent(sample);
     expect(event.EventType).toBe('TypeA');
     expect(event.EventTrigger).toBe('TriggerA');
     expect(event.EventName).toBe('NameA');
@@ -33,10 +33,10 @@ describe('Event', () => {
   });
 
   it('should create an array of Events from JSON', () => {
-    const json = { a: sample, b: { ...sample, "Event Name": "NameB" } };
-    const events = Event.fromJsonArray(json);
+    const json = { a: sample, b: { ...sample, "DataSetEvent Name": "NameB" } };
+    const events = DataSetEvent.fromJsonArray(json);
     expect(events.length).toBe(2);
-    expect(events[0]).toBeInstanceOf(Event);
+    expect(events[0]).toBeInstanceOf(DataSetEvent);
     expect(events[1].EventName).toBe('NameB');
   });
 });

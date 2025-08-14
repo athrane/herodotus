@@ -41,7 +41,7 @@ This module provides the classes for creating and managing historical events in 
 
 This module contains classes for loading and accessing event data.
 
-*   **`DataEventComponent`**: A component that holds all loaded event data.
+*   **`DataSetEventComponent`**: A component that holds all loaded event data.
 *   **`Event`**: Represents a single event in the system.
 *   **`loadEvents`**: A function that loads events from a JSON file.
 
