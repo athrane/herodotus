@@ -6,7 +6,7 @@ import { Entity } from '../ecs/Entity';
 import { TypeUtils } from '../util/TypeUtils';
 
 /**
- * Manages the birth and death of historical figures based on their lifespan.
+ * Manages the death and other life cycle events of historical figures based on their lifespan.
  */
 export class HistoricalFigureLifecycleSystem extends System {
 
