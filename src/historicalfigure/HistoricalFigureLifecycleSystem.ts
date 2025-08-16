@@ -23,7 +23,7 @@ export class HistoricalFigureLifecycleSystem extends System {
      * @param entityManager - The entity manager instance.
      */
     constructor(entityManager: EntityManager) {
-        super(entityManager, [HistoricalFigureComponent, TimeComponent, ChronicleComponent, WorldComponent]);
+        super(entityManager, [HistoricalFigureComponent]);
     }
 
     /**
