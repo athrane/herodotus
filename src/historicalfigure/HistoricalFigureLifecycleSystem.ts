@@ -4,32 +4,26 @@ import { TimeComponent } from '../time/TimeComponent';
 import { EntityManager } from '../ecs/EntityManager';
 import { Entity } from '../ecs/Entity';
 import { TypeUtils } from '../util/TypeUtils';
+import { ChronicleComponent } from '../chronicle/ChronicleComponent';
+import { ChronicleEvent } from '../chronicle/ChronicleEvent';
+import { EventType } from '../chronicle/EventType';
+import { EventCategory } from '../chronicle/EventCategory';
+import { Time } from '../time/Time';
+import { Place } from '../generator/Place';
+import { WorldComponent } from '../geography/WorldComponent';
+import { HistoricalFigure } from './HistoricalFigure';
+import { World } from '../geography/World';
 
 /**
- * Manages the birth and death of historical figures based on their lifespan.
+ * Manages the death and other life cycle events of historical figures based on their lifespan.
  */
 export class HistoricalFigureLifecycleSystem extends System {
-
-    /**
-     * The chance of a historical figure being born each year.
-     */
-    static readonly BIRTH_CHANCE_PER_YEAR: number = 0.05;
-
-    /**
-     * The mean lifespan of a historical figure in years.
-     */
-    static readonly NATURAL_LIFESPAN_MEAN: number = 70;
-
-    /**
-     * The standard deviation for the lifespan of a historical figure.
-     */
-    static readonly NATURAL_LIFESPAN_STD_DEV: number = 15;
 
     /**
      * @param entityManager - The entity manager instance.
      */
     constructor(entityManager: EntityManager) {
-        super(entityManager, [HistoricalFigureComponent, TimeComponent]);
+        super(entityManager, [HistoricalFigureComponent, TimeComponent, ChronicleComponent, WorldComponent]);
     }
 
     /**
@@ -47,29 +41,33 @@ export class HistoricalFigureLifecycleSystem extends System {
         const timeComponent = this.getEntityManager().getSingletonComponent(TimeComponent);
         if (!timeComponent) return;
 
-        // Check for birth
-        if (currentYear === historicalFigure.birthYear) {
-            // Logic to 'introduce' the historical figure into the simulation
-            // For now, we'll just log it. More complex logic can be added later.
-            console.log(`Historical figure ${historicalFigure.name} (born ${historicalFigure.birthYear}) has entered the simulation.`);
-        }
-
         // Check for death
-        if (currentYear === historicalFigure.deathYear) {
-            this.handleHistoricalFigureDeath(entity, historicalFigure);
+        const calculatedDeathYear = this.calculateDeathYear(historicalFigure);
+        if (currentYear === calculatedDeathYear) {
+            this.handleHistoricalFigureDeath(entity, historicalFigure, calculatedDeathYear);
         }
+    }
+
+    /**
+     * Calculates the death year based on birth year and average lifespan.
+     * Can be overridden by subclasses to implement more complex logic (e.g., randomization).
+     * @param historicalFigure - The historical figure component.
+     * @returns The calculated death year.
+     */
+    protected calculateDeathYear(historicalFigure: HistoricalFigureComponent): number {
+        return historicalFigure.birthYear + historicalFigure.averageLifeSpan;
     }
 
     /**
      * Handles the death of a historical figure.
      * @param entity - The entity representing the historical figure.
      * @param historicalFigure - The historical figure component.
+     * @param deathYear - The calculated death year.
      */
-    private handleHistoricalFigureDeath(entity: Entity, historicalFigure: HistoricalFigureComponent): void {
-        console.log(`Historical figure ${historicalFigure.name} (died ${historicalFigure.deathYear}) has died and exited the simulation.`);
+    private handleHistoricalFigureDeath(entity: Entity, historicalFigure: HistoricalFigureComponent, deathYear: number): void {
         
         // Record death event for potential chronicle/historical record
-        this.recordDeathEvent(historicalFigure);
+        this.recordDeathEvent(historicalFigure, deathYear);
         
         // Clean up the entity by removing the HistoricalFigureComponent
         entity.removeComponent(HistoricalFigureComponent);
@@ -97,15 +95,70 @@ export class HistoricalFigureLifecycleSystem extends System {
     }
 
     /**
+     * Calculate a random place for the historical figure's death.
+     * This method retrieves a random geographical feature from the world.
+     * @param world - The world instance to get a random place from.
+     * @returns A Place instance representing the location of the historical figure's death.
+     */
+    private computePlace(world: World): Place {
+        TypeUtils.ensureInstanceOf(world, World);
+        const continent = world.getRandomContinent();
+        if (continent) {
+            const randomFeature = continent.getRandomFeature();
+            if (randomFeature) {
+                return Place.create(randomFeature.getName());
+            }
+        }
+        return Place.create('Unknown Location');
+    }
+
+    /**
      * Records the death event for historical tracking.
      * @param historicalFigure - The historical figure component.
+     * @param deathYear - The calculated death year.
      */
-    private recordDeathEvent(historicalFigure: HistoricalFigureComponent): void {
-        // This could be expanded to create chronicle events, update statistics, etc.
-        // For now, we'll just log additional information
-        const lifespan = historicalFigure.deathYear - historicalFigure.birthYear;
-        console.log(`  - ${historicalFigure.name} lived for ${lifespan} years (${historicalFigure.birthYear}-${historicalFigure.deathYear})`);
+    private recordDeathEvent(historicalFigure: HistoricalFigureComponent, deathYear: number): void {
+        // Calculate lifespan for the description
+        const lifespan = deathYear - historicalFigure.birthYear;
+        
+        // Always log the basic information (for backwards compatibility with tests)
+        console.log(`Historical figure ${historicalFigure.name} (died ${deathYear}) has died and exited the simulation.`);
+        console.log(`  - ${historicalFigure.name} lived for ${lifespan} years (${historicalFigure.birthYear}-${deathYear})`);
         console.log(`  - Occupation: ${historicalFigure.occupation}, Culture: ${historicalFigure.culture}`);
+
+        // Try to create a chronicle event if the required components are available
+        const chronicleComponent = this.getEntityManager().getSingletonComponent(ChronicleComponent);
+        const worldComponent = this.getEntityManager().getSingletonComponent(WorldComponent);
+        
+        if (chronicleComponent && worldComponent) {
+            // Create the time and place for the death event
+            const time = Time.create(deathYear);
+            const place = this.computePlace(worldComponent.get());
+            
+            // Create the historical figure instance for the chronicle event
+            const historicalFigureInstance = HistoricalFigure.create(historicalFigure.name);
+            
+            // Create the event type for death
+            const eventType = EventType.create(EventCategory.SOCIAL, 'Historical Figure Death');
+            
+            // Create the chronicle event
+            const event = ChronicleEvent.create(
+                `${historicalFigure.name} has died in ${deathYear}.`,
+                eventType,
+                time,
+                place,
+                `The historical figure ${historicalFigure.name} has died in the year ${deathYear} at ${place.getName()}. ` +
+                `They lived for ${lifespan} years (${historicalFigure.birthYear}-${deathYear}). ` +
+                `Their occupation was ${historicalFigure.occupation} and they belonged to the ${historicalFigure.culture} culture.`,
+                historicalFigureInstance
+            );
+            
+            // Add the event to the chronicle
+            chronicleComponent.addEvent(event);
+            
+            // Log additional information for chronicle recording
+            console.log(`  - Death recorded in chronicle at ${place.getName()}`);
+        }
     }
 
     /**

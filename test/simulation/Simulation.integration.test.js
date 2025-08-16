@@ -7,10 +7,10 @@ describe('Simulation integration (no mocks)', () => {
     const simulation = Simulation.create();
 
     // Should not be running initially
-    expect(simulation.isRunning()).toBe(false);
+    expect(simulation.getIsRunning()).toBe(false);
 
     simulation.start();
-    expect(simulation.isRunning()).toBe(true);
+    expect(simulation.getIsRunning()).toBe(true);
 
     // Run a few ticks
     for (let i = 0; i < 5; i++) {
@@ -18,17 +18,17 @@ describe('Simulation integration (no mocks)', () => {
     }
 
     simulation.stop();
-    expect(simulation.isRunning()).toBe(false);
+    expect(simulation.getIsRunning()).toBe(false);
   });
 
   it('should allow multiple start/stop cycles', () => {
     const simulation = Simulation.create();
     for (let cycle = 0; cycle < 3; cycle++) {
       simulation.start();
-      expect(simulation.isRunning()).toBe(true);
+      expect(simulation.getIsRunning()).toBe(true);
       simulation.tick();
       simulation.stop();
-      expect(simulation.isRunning()).toBe(false);
+      expect(simulation.getIsRunning()).toBe(false);
     }
   });
 
@@ -43,12 +43,12 @@ describe('Simulation integration (no mocks)', () => {
 
     // Start, tick, and stop the simulation
     simulation.start();
-    expect(simulation.isRunning()).toBe(true);
+    expect(simulation.getIsRunning()).toBe(true);
     for (let i = 0; i < 3; i++) {
       simulation.tick();
     }
     simulation.stop();
-    expect(simulation.isRunning()).toBe(false);
+    expect(simulation.getIsRunning()).toBe(false);
   });
 
   it('should simulate 5 ticks and then stop', () => {
@@ -60,7 +60,7 @@ describe('Simulation integration (no mocks)', () => {
     }
 
     simulation.stop();
-    expect(simulation.isRunning()).toBe(false);
+    expect(simulation.getIsRunning()).toBe(false);
   });
 
 });

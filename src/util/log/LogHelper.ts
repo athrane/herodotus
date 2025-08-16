@@ -1,4 +1,5 @@
 import { World } from "../../geography/World";
+import { ChronicleEvent } from "../../chronicle/ChronicleEvent";
 import { TypeUtils } from "../TypeUtils";
 
 /**
@@ -10,9 +11,9 @@ export class LogHelper {
     /**
      * Logs detailed information about the generated world, including its continents and their features.
      * This method makes assumptions about the world, continent, and feature object structures.
-     * @param {object} world The world object to log. It should have getName() and getContinents() methods.
+     * @param world The world object to log. It should have getName() and getContinents() methods.
      */
-    static logWorldDetails(world) {
+    static logWorldDetails(world: World): void {
         TypeUtils.ensureInstanceOf(world, World);
 
         console.log("--- World Details ---");
@@ -39,9 +40,9 @@ export class LogHelper {
 
     /**
      * Logs detailed information about the chronicle, including its events.
-     * @param {Array<ChronicleEvent>} chronicle The chronicle array containing event objects.
+     * @param events The chronicle array containing event objects.
      */
-    static logChronicleDetails(events) {
+    static logChronicleDetails(events: readonly ChronicleEvent[]): void {
         TypeUtils.ensureArray(events);
 
         console.log("--- Chronicle Details ---");
@@ -52,14 +53,17 @@ export class LogHelper {
         }
 
         for (const event of events) {
-            console.log(`\nEvent Heading: ${event.getHeading()}`);
+            console.log(`Event Heading: ${event.getHeading()}`);
             console.log(`Year: ${event.getTime().getYear()}`);
-            console.log(`Figure: ${event.getFigure().getName()}`);
+            const figure = event.getFigure();
+            console.log(`Figure: ${figure ? figure.getName() : 'N/A'}`);
             console.log(`Description: ${event.getDescription()}`);
             console.log(`Place: ${event.getPlace().getName()}`);
             console.log(`Type: ${event.getEventType().getName()}`);
             console.log(`Category: ${event.getEventType().getCategory()}`);            
             console.log("---------------------");
         }
-    }   
+
+        console.log("--- Chronicle End ---");
+    }
 }

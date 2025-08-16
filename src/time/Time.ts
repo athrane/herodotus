@@ -4,7 +4,7 @@ import { TypeUtils } from '../util/TypeUtils';
  * Represents a point in time within the chronicle.
  */
 export class Time {
-  readonly #year: number;
+  private readonly year: number;
 
   /**
    * Creates an instance of Time.
@@ -12,7 +12,7 @@ export class Time {
    */
   constructor(year: number) {
     TypeUtils.ensureNumber(year, 'Time year must be a number.');
-    this.#year = year;
+    this.year = year;
   }
 
   /**
@@ -20,7 +20,7 @@ export class Time {
    * @returns The year.
    */
   getYear(): number {
-    return this.#year;
+    return this.year;
   }
 
   /**

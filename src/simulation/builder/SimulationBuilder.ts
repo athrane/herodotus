@@ -78,7 +78,7 @@ export class SimulationBuilder extends Builder {
         // Create a sample historical figure
         entityManager.createEntity(
             new NameComponent("Herodotus"),
-            new HistoricalFigureComponent("Herodotus", -484, -425, "Greek", "Historian")
+            new HistoricalFigureComponent("Herodotus", -484, 59, "Greek", "Historian")
         );
     }
 
