@@ -24,7 +24,7 @@ describe('HistoricalFigureBirthSystem', () => {
 
         // Mock dependencies
         const mockTime = Time.create(1970);
-        const mockTimeComponent = TimeComponent.create(mockTime);
+        mockTimeComponent = TimeComponent.create(mockTime);
         const mockWorld = new World('TestWorld');
         jest.spyOn(mockWorld, 'getRandomContinent').mockReturnValue({
             getRandomFeature: () => ({
@@ -41,6 +41,15 @@ describe('HistoricalFigureBirthSystem', () => {
         jest.spyOn(NameGenerator, 'create').mockReturnValue(mockNameGenerator);
 
         jest.spyOn(entityManager, 'getSingletonComponent')
+            .mockImplementation((componentType) => {
+                if (componentType === TimeComponent) return mockTimeComponent;
+                if (componentType === WorldComponent) return mockWorldComponent;
+                if (componentType === ChronicleComponent) return mockChronicleEventComponent;
+                return null;
+            });
+
+        // Mock entity.getComponent to return the same components as getSingletonComponent
+        jest.spyOn(entity, 'getComponent')
             .mockImplementation((componentType) => {
                 if (componentType === TimeComponent) return mockTimeComponent;
                 if (componentType === WorldComponent) return mockWorldComponent;
@@ -86,6 +95,12 @@ describe('HistoricalFigureBirthSystem', () => {
             if (componentType === ChronicleComponent) return mockChronicleEventComponent;
             return null;
         });
+        entity.getComponent.mockImplementation((componentType) => {
+            if (componentType === TimeComponent) return null;
+            if (componentType === WorldComponent) return mockWorldComponent;
+            if (componentType === ChronicleComponent) return mockChronicleEventComponent;
+            return null;
+        });
         system.processEntity(entity, 100);
         expect(entityManager.createEntity).not.toHaveBeenCalled();
         expect(mockChronicleEventComponent.addEvent).not.toHaveBeenCalled();
@@ -98,6 +113,12 @@ describe('HistoricalFigureBirthSystem', () => {
             if (componentType === ChronicleComponent) return mockChronicleEventComponent;
             return null;
         });
+        entity.getComponent.mockImplementation((componentType) => {
+            if (componentType === TimeComponent) return mockTimeComponent;
+            if (componentType === WorldComponent) return null;
+            if (componentType === ChronicleComponent) return mockChronicleEventComponent;
+            return null;
+        });
         system.processEntity(entity, 100);
         expect(entityManager.createEntity).not.toHaveBeenCalled();
         expect(mockChronicleEventComponent.addEvent).not.toHaveBeenCalled();
@@ -105,6 +126,12 @@ describe('HistoricalFigureBirthSystem', () => {
 
     it('does nothing if ChronicleEventComponent is missing', () => {
         entityManager.getSingletonComponent.mockImplementation((componentType) => {
+            if (componentType === TimeComponent) return mockTimeComponent;
+            if (componentType === WorldComponent) return mockWorldComponent;
+            if (componentType === ChronicleComponent) return null;
+            return null;
+        });
+        entity.getComponent.mockImplementation((componentType) => {
             if (componentType === TimeComponent) return mockTimeComponent;
             if (componentType === WorldComponent) return mockWorldComponent;
             if (componentType === ChronicleComponent) return null;
@@ -133,7 +160,7 @@ describe('HistoricalFigureBirthSystem', () => {
         expect(entityManager.createEntity).toHaveBeenCalledTimes(1);
         expect(mockChronicleEventComponent.addEvent).toHaveBeenCalledTimes(1);
         const event = mockChronicleEventComponent.addEvent.mock.calls[0][0];
-        expect(event.getHeading()).toContain('TestName was born in 100.');
+        expect(event.getHeading()).toContain('Historical figure TestName was born in 1970.');
     });
 
     it('isBorn returns true or false based on BIRTH_CHANCE_PER_YEAR', () => {
@@ -147,5 +174,182 @@ describe('HistoricalFigureBirthSystem', () => {
         const lifespan = system.calculateLifespan();
         expect(Number.isInteger(lifespan)).toBe(true);
         expect(lifespan).toBeGreaterThan(0);
+    });
+
+    describe('Time Component Integration Tests', () => {
+        it('uses year from TimeComponent for historical figure birth year', () => {
+            const testYear = 1500;
+            const mockTime = Time.create(testYear);
+            const mockTimeComponentWithCustomYear = TimeComponent.create(mockTime);
+            
+            entityManager.getSingletonComponent.mockImplementation((componentType) => {
+                if (componentType === TimeComponent) return mockTimeComponentWithCustomYear;
+                if (componentType === WorldComponent) return mockWorldComponent;
+                if (componentType === ChronicleComponent) return mockChronicleEventComponent;
+                return null;
+            });
+
+            entity.getComponent.mockImplementation((componentType) => {
+                if (componentType === TimeComponent) return mockTimeComponentWithCustomYear;
+                if (componentType === WorldComponent) return mockWorldComponent;
+                if (componentType === ChronicleComponent) return mockChronicleEventComponent;
+                return null;
+            });
+
+            jest.spyOn(system, 'isBorn').mockReturnValue(true);
+            jest.spyOn(system, 'calculateLifespan').mockReturnValue(50);
+
+            system.processEntity(entity, 100); // Note: currentYear parameter should be ignored
+
+            expect(entityManager.createEntity).toHaveBeenCalledTimes(1);
+            const createEntityCall = entityManager.createEntity.mock.calls[0];
+            const historicalFigureComponent = createEntityCall.find(component => 
+                component.constructor.name === 'HistoricalFigureComponent'
+            );
+            expect(historicalFigureComponent.birthYear).toBe(testYear);
+            expect(historicalFigureComponent.averageLifeSpan).toBe(testYear + 50); // This field stores death year
+        });
+
+        it('uses year from TimeComponent in chronicle event message', () => {
+            const testYear = 2000;
+            const mockTime = Time.create(testYear);
+            const mockTimeComponentWithCustomYear = TimeComponent.create(mockTime);
+            
+            entityManager.getSingletonComponent.mockImplementation((componentType) => {
+                if (componentType === TimeComponent) return mockTimeComponentWithCustomYear;
+                if (componentType === WorldComponent) return mockWorldComponent;
+                if (componentType === ChronicleComponent) return mockChronicleEventComponent;
+                return null;
+            });
+
+            entity.getComponent.mockImplementation((componentType) => {
+                if (componentType === TimeComponent) return mockTimeComponentWithCustomYear;
+                if (componentType === WorldComponent) return mockWorldComponent;
+                if (componentType === ChronicleComponent) return mockChronicleEventComponent;
+                return null;
+            });
+
+            jest.spyOn(system, 'isBorn').mockReturnValue(true);
+            jest.spyOn(system, 'calculateLifespan').mockReturnValue(75);
+
+            system.processEntity(entity, 999); // currentYear parameter should be ignored
+
+            expect(mockChronicleEventComponent.addEvent).toHaveBeenCalledTimes(1);
+            const event = mockChronicleEventComponent.addEvent.mock.calls[0][0];
+            expect(event.getHeading()).toContain(`Historical figure TestName was born in ${testYear}.`);
+            expect(event.getDescription()).toContain(`was born in the year ${testYear}`);
+        });
+
+        it('ignores currentYear parameter and uses TimeComponent year instead', () => {
+            const timeComponentYear = 1776;
+            const ignoredCurrentYear = 1234;
+            const mockTime = Time.create(timeComponentYear);
+            const mockTimeComponentWithCustomYear = TimeComponent.create(mockTime);
+            
+            entityManager.getSingletonComponent.mockImplementation((componentType) => {
+                if (componentType === TimeComponent) return mockTimeComponentWithCustomYear;
+                if (componentType === WorldComponent) return mockWorldComponent;
+                if (componentType === ChronicleComponent) return mockChronicleEventComponent;
+                return null;
+            });
+
+            entity.getComponent.mockImplementation((componentType) => {
+                if (componentType === TimeComponent) return mockTimeComponentWithCustomYear;
+                if (componentType === WorldComponent) return mockWorldComponent;
+                if (componentType === ChronicleComponent) return mockChronicleEventComponent;
+                return null;
+            });
+
+            jest.spyOn(system, 'isBorn').mockReturnValue(true);
+            jest.spyOn(system, 'calculateLifespan').mockReturnValue(60);
+
+            system.processEntity(entity, ignoredCurrentYear);
+
+            // Verify the TimeComponent year is used, not the currentYear parameter
+            expect(entityManager.createEntity).toHaveBeenCalledTimes(1);
+            const createEntityCall = entityManager.createEntity.mock.calls[0];
+            const historicalFigureComponent = createEntityCall.find(component => 
+                component.constructor.name === 'HistoricalFigureComponent'
+            );
+            expect(historicalFigureComponent.birthYear).toBe(timeComponentYear);
+            expect(historicalFigureComponent.birthYear).not.toBe(ignoredCurrentYear);
+
+            // Verify chronicle event also uses TimeComponent year
+            const event = mockChronicleEventComponent.addEvent.mock.calls[0][0];
+            expect(event.getHeading()).toContain(`Historical figure TestName was born in ${timeComponentYear}.`);
+            expect(event.getHeading()).not.toContain(`Historical figure TestName was born in ${ignoredCurrentYear}.`);
+        });
+
+        it('uses TimeComponent time instance for chronicle event', () => {
+            const testYear = 1066;
+            const mockTime = Time.create(testYear);
+            const mockTimeComponentWithCustomYear = TimeComponent.create(mockTime);
+            
+            entityManager.getSingletonComponent.mockImplementation((componentType) => {
+                if (componentType === TimeComponent) return mockTimeComponentWithCustomYear;
+                if (componentType === WorldComponent) return mockWorldComponent;
+                if (componentType === ChronicleComponent) return mockChronicleEventComponent;
+                return null;
+            });
+
+            entity.getComponent.mockImplementation((componentType) => {
+                if (componentType === TimeComponent) return mockTimeComponentWithCustomYear;
+                if (componentType === WorldComponent) return mockWorldComponent;
+                if (componentType === ChronicleComponent) return mockChronicleEventComponent;
+                return null;
+            });
+
+            jest.spyOn(system, 'isBorn').mockReturnValue(true);
+            jest.spyOn(system, 'calculateLifespan').mockReturnValue(45);
+
+            system.processEntity(entity, 500);
+
+            expect(mockChronicleEventComponent.addEvent).toHaveBeenCalledTimes(1);
+            const event = mockChronicleEventComponent.addEvent.mock.calls[0][0];
+            
+            // Verify the time instance passed to the chronicle event is the same one from TimeComponent
+            expect(event.getTime()).toBe(mockTime);
+        });
+
+        it('handles different years correctly from TimeComponent', () => {
+            const testCases = [1, 500, 1000, 1500, 2000, 2500];
+            
+            testCases.forEach(testYear => {
+                // Reset mocks for each test case
+                jest.clearAllMocks();
+                
+                const mockTime = Time.create(testYear);
+                const mockTimeComponentWithCustomYear = TimeComponent.create(mockTime);
+                
+                entityManager.getSingletonComponent.mockImplementation((componentType) => {
+                    if (componentType === TimeComponent) return mockTimeComponentWithCustomYear;
+                    if (componentType === WorldComponent) return mockWorldComponent;
+                    if (componentType === ChronicleComponent) return mockChronicleEventComponent;
+                    return null;
+                });
+
+                entity.getComponent.mockImplementation((componentType) => {
+                    if (componentType === TimeComponent) return mockTimeComponentWithCustomYear;
+                    if (componentType === WorldComponent) return mockWorldComponent;
+                    if (componentType === ChronicleComponent) return mockChronicleEventComponent;
+                    return null;
+                });
+
+                jest.spyOn(system, 'isBorn').mockReturnValue(true);
+                jest.spyOn(system, 'calculateLifespan').mockReturnValue(70);
+
+                system.processEntity(entity, 9999); // Should be ignored
+
+                expect(entityManager.createEntity).toHaveBeenCalledTimes(1);
+                const createEntityCall = entityManager.createEntity.mock.calls[0];
+                const historicalFigureComponent = createEntityCall.find(component => 
+                    component.constructor.name === 'HistoricalFigureComponent'
+                );
+                expect(historicalFigureComponent.birthYear).toBe(testYear);
+
+                const event = mockChronicleEventComponent.addEvent.mock.calls[0][0];
+                expect(event.getHeading()).toContain(`Historical figure TestName was born in ${testYear}.`);
+            });
+        });
     });
 });

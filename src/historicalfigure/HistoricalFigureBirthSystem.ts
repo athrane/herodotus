@@ -75,16 +75,17 @@ export class HistoricalFigureBirthSystem extends System {
      * @param currentYear - The current year in the simulation.
      */
     processEntity(entity: Entity, currentYear: number): void {
+        TypeUtils.ensureInstanceOf(entity, Entity);
         TypeUtils.ensureNumber(currentYear, 'currentYear must be a number.');
 
-        // Get components from the entity manager
-        const timeComponent = this.getEntityManager().getSingletonComponent(TimeComponent);
+        // Get components from the entity
+        const timeComponent = entity.getComponent(TimeComponent);
         if (!timeComponent) return;
 
-        const worldComponent = this.getEntityManager().getSingletonComponent(WorldComponent);
+        const worldComponent = entity.getComponent(WorldComponent);
         if (!worldComponent) return;
 
-        const chronicleComponent = this.getEntityManager().getSingletonComponent(ChronicleComponent);
+        const chronicleComponent = entity.getComponent(ChronicleComponent);
         if (!chronicleComponent) return;
 
         // exit if no historical figure is born
