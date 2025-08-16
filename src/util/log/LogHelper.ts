@@ -53,7 +53,7 @@ export class LogHelper {
         }
 
         for (const event of events) {
-            console.log(`\nEvent Heading: ${event.getHeading()}`);
+            console.log(`Event Heading: ${event.getHeading()}`);
             console.log(`Year: ${event.getTime().getYear()}`);
             const figure = event.getFigure();
             console.log(`Figure: ${figure ? figure.getName() : 'N/A'}`);
@@ -63,5 +63,7 @@ export class LogHelper {
             console.log(`Category: ${event.getEventType().getCategory()}`);            
             console.log("---------------------");
         }
-    }   
+
+        console.log("--- Chronicle End ---");
+    }
 }

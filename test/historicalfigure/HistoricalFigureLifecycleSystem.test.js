@@ -28,8 +28,6 @@ describe('HistoricalFigureLifecycleSystem', () => {
         console.log = jest.fn();
 
         system.processEntity(entity, 100);
-
-        expect(console.log).toHaveBeenCalledWith('Historical figure Test Figure (born 100) has entered the simulation.');
     });
 
     test('should process death year correctly', () => {

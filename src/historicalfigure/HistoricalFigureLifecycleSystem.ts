@@ -32,13 +32,6 @@ export class HistoricalFigureLifecycleSystem extends System {
         const timeComponent = this.getEntityManager().getSingletonComponent(TimeComponent);
         if (!timeComponent) return;
 
-        // Check for birth
-        if (currentYear === historicalFigure.birthYear) {
-            // Logic to 'introduce' the historical figure into the simulation
-            // For now, we'll just log it. More complex logic can be added later.
-            console.log(`Historical figure ${historicalFigure.name} (born ${historicalFigure.birthYear}) has entered the simulation.`);
-        }
-
         // Check for death
         const calculatedDeathYear = this.calculateDeathYear(historicalFigure);
         if (currentYear === calculatedDeathYear) {
