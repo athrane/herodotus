@@ -8,7 +8,7 @@ import { TypeUtils } from '../util/TypeUtils';
  * or any other time-sensitive data.
  */
 export class TimeComponent extends Component {
-  #time: Time;
+  private time: Time;
 
   /**
    * Creates an instance of TimeComponent.
@@ -17,7 +17,7 @@ export class TimeComponent extends Component {
   constructor(time: Time) {
     super();
     TypeUtils.ensureInstanceOf(time, Time, 'time must be an instance of the Time class.');
-    this.#time = time;
+    this.time = time;
   }
 
   /**
@@ -25,7 +25,7 @@ export class TimeComponent extends Component {
    * @returns The Time object.
    */
   getTime(): Time {
-    return this.#time;
+    return this.time;
   }
 
   /**
@@ -34,7 +34,7 @@ export class TimeComponent extends Component {
    */
   setTime(time: Time): void {
     TypeUtils.ensureInstanceOf(time, Time, 'time must be an instance of the Time class.');
-    this.#time = time;
+    this.time = time;
   }
 
   /**

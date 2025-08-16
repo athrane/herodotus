@@ -28,7 +28,7 @@ describe('Simulation', () => {
     });
 
     it('should start in a not-running state', () => {
-      expect(simulation.isRunning()).toBe(false);
+      expect(simulation.getIsRunning()).toBe(false);
     });
   });
 
@@ -46,7 +46,7 @@ describe('Simulation', () => {
   describe('start', () => {
     it('should set isRunning to true', () => {
       simulation.start();
-      expect(simulation.isRunning()).toBe(true);
+      expect(simulation.getIsRunning()).toBe(true);
     });
 
     it('should set the last tick time using performance.now', () => {
@@ -57,7 +57,7 @@ describe('Simulation', () => {
 
     it('should not do anything if already running', () => {
       simulation.start(); // First call
-      expect(simulation.isRunning()).toBe(true);
+      expect(simulation.getIsRunning()).toBe(true);
 
       simulation.start(); // Second call
     });
@@ -67,7 +67,7 @@ describe('Simulation', () => {
     it('should set isRunning to false', () => {
       simulation.start();
       simulation.stop();
-      expect(simulation.isRunning()).toBe(false);
+      expect(simulation.getIsRunning()).toBe(false);
     });
   });
 
