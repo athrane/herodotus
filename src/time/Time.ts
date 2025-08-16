@@ -8,10 +8,10 @@ export class Time {
 
   /**
    * Creates an instance of Time.
-   * @param year - The year of the event.
+   * @param year - The year of the event (must be a whole number).
    */
   constructor(year: number) {
-    TypeUtils.ensureNumber(year, 'Time year must be a number.');
+    TypeUtils.ensureInteger(year, 'Time year must be a whole number.');
     this.year = year;
   }
 

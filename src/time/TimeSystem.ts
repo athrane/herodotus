@@ -30,7 +30,7 @@ export class TimeSystem extends System {
     const currentTime = timeComponent.getTime();
 
     const yearsToAdd = deltaTime * YEARS_PER_SECOND;
-    const newYear = currentTime.getYear() + yearsToAdd;
+    const newYear = Math.round(currentTime.getYear() + yearsToAdd);
 
     // Create a new Time object to maintain immutability and update the component.
     timeComponent.setTime(Time.create(newYear));

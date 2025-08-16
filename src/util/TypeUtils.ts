@@ -110,6 +110,26 @@ export class TypeUtils {
   }
 
   /**
+   * Ensures that a value is a whole number (integer).
+   * If not, it throws an error with details about the type mismatch
+   * and prints the stack trace.
+   *
+   * @param value - The value to validate.
+   * @param message - Optional custom error message.
+   * @throws {TypeError} If the value is not an integer.
+   */
+  static ensureInteger(value: unknown, message?: string): asserts value is number {
+    if (typeof value !== 'number' || !Number.isInteger(value)) {
+      const actualType = typeof value === 'number' ? 'decimal number' : typeof value;
+      const expectedType = 'integer';
+      const errorMessage = message || `Expected type ${expectedType}, but got ${actualType}`;
+      console.error(errorMessage);
+      console.trace("Integer check failed");
+      throw new TypeError(errorMessage);
+    }
+  }
+
+  /**
    * Ensures that the provided value is a function.
    *
    * @param value - The value to validate.
