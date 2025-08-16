@@ -27,6 +27,12 @@ export abstract class Builder {
     abstract buildSystems(): void;
 
     /**
+     * Builds and loads data for the simulation.
+     * @abstract
+     */
+    abstract buildData(): void;
+
+    /**
      * Builds geographical features for the simulation.
      * @abstract
      */

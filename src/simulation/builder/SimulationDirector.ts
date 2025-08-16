@@ -25,6 +25,7 @@ export class SimulationDirector {
      */
     build(): Simulation {
         this.builder.build();
+        this.builder.buildData();
         this.builder.buildGeographicalFeatures();
         this.builder.buildSystems();
         this.builder.buildEntities();

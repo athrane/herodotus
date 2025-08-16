@@ -1,3 +1,4 @@
+import { Component } from '../ecs/Component';
 import { TypeUtils } from '../util/TypeUtils';
 import { DataSetEvent } from './DataSetEvent';
 
@@ -5,7 +6,7 @@ import { DataSetEvent } from './DataSetEvent';
  * Component holding all loaded data set events (immutable snapshot at load time).
  * Stored internally as a Map keyed by EventTrigger.
  */
-export class DataSetComponent {
+export class DataSetComponent extends Component {
 
   /**
    * Map of EventTrigger to DataSetEvent.
@@ -22,6 +23,7 @@ export class DataSetComponent {
    * @param events - Array of DataSetEvent instances.
    */
   private constructor(events: DataSetEvent[]) {
+    super();
     // Narrow to DataSetEvent[] and validate shape of items
     TypeUtils.ensureArray<DataSetEvent>(events, 'events must be an array of DataSetEvent');
     const map = new Map<string, DataSetEvent>();
