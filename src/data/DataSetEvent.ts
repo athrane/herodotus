@@ -1,5 +1,5 @@
 /**
- * Data set event class representing an event in the system.
+ * Data set event class representing a data set event in the system.
  */
 export class DataSetEvent {
   EventType: string;

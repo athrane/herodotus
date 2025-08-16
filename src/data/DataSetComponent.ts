@@ -2,10 +2,10 @@ import { TypeUtils } from '../util/TypeUtils';
 import { DataSetEvent } from './DataSetEvent';
 
 /**
- * Component holding all loaded data set event (immutable snapshot at load time).
+ * Component holding all loaded data set events (immutable snapshot at load time).
  * Stored internally as a Map keyed by EventTrigger.
  */
-export class DataSetEventComponent {
+export class DataSetComponent {
 
   /**
    * Map of EventTrigger to DataSetEvent.
@@ -78,12 +78,12 @@ export class DataSetEventComponent {
   }
 
   /**
-   * Factory method to create a DataSetEventComponent.
+   * Factory method to create a DataSetComponent.
    * @param events - Array of DataSetEvent instances.
-   * @returns A new DataSetEventComponent instance.
+   * @returns A new DataSetComponent instance.
    */
-  public static create(events: DataSetEvent[]): DataSetEventComponent {
-    return new DataSetEventComponent(events);
+  public static create(events: DataSetEvent[]): DataSetComponent {
+    return new DataSetComponent(events);
   }
 
 }
