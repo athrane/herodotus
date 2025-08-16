@@ -11,21 +11,6 @@ import { TypeUtils } from '../util/TypeUtils';
 export class HistoricalFigureLifecycleSystem extends System {
 
     /**
-     * The chance of a historical figure being born each year.
-     */
-    static readonly BIRTH_CHANCE_PER_YEAR: number = 0.05;
-
-    /**
-     * The mean lifespan of a historical figure in years.
-     */
-    static readonly NATURAL_LIFESPAN_MEAN: number = 70;
-
-    /**
-     * The standard deviation for the lifespan of a historical figure.
-     */
-    static readonly NATURAL_LIFESPAN_STD_DEV: number = 15;
-
-    /**
      * @param entityManager - The entity manager instance.
      */
     constructor(entityManager: EntityManager) {
