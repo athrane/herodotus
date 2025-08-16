@@ -1,8 +1,5 @@
 import { World } from "../../geography/World";
 import { TypeUtils } from "../TypeUtils";
-import { ChronicleEvent } from "../../chronicle/ChronicleEvent";
-import { HistoricalFigure } from "../../historicalfigure/HistoricalFigure";
-import { Time } from "../../time/Time.js";
 
 /**
  * A helper class with static methods for logging application-specific details.
