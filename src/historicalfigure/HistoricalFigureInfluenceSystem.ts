@@ -26,10 +26,10 @@ export class HistoricalFigureInfluenceSystem extends System {
 
         const historicalFigure = entity.getComponent(HistoricalFigureComponent);
         if (!historicalFigure) return;
-    
-    const chronicle = this.getEntityManager().getSingletonComponent(ChronicleComponent);
+
+        const chronicle = this.getEntityManager().getSingletonComponent(ChronicleComponent);
         if (!chronicle) return;
-    
+
         // Simple event generation based on the historical figure's active years
         const calculatedDeathYear = historicalFigure.birthYear + historicalFigure.averageLifeSpan;
         if (currentYear >= historicalFigure.birthYear && currentYear <= calculatedDeathYear) {

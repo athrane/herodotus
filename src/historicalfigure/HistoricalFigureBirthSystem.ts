@@ -77,14 +77,14 @@ export class HistoricalFigureBirthSystem extends System {
     processEntity(entity: Entity, currentYear: number): void {
         TypeUtils.ensureNumber(currentYear, 'currentYear must be a number.');
 
-        // Get components from the entity
+        // Get components from the entity manager
         const timeComponent = this.getEntityManager().getSingletonComponent(TimeComponent);
         if (!timeComponent) return;
 
         const worldComponent = this.getEntityManager().getSingletonComponent(WorldComponent);
         if (!worldComponent) return;
 
-    const chronicleComponent = this.getEntityManager().getSingletonComponent(ChronicleComponent);
+        const chronicleComponent = this.getEntityManager().getSingletonComponent(ChronicleComponent);
         if (!chronicleComponent) return;
 
         // exit if no historical figure is born
@@ -93,12 +93,15 @@ export class HistoricalFigureBirthSystem extends System {
         // get time
         const time = timeComponent.getTime();
 
+        // get year
+        const year = time.getYear();
+
         // Generate a random name for the historical figure
         const culture = 'GENERIC';
         const name = this.nameGenerator.generateHistoricalFigureName(culture, 4, 8);
 
-        // define a lifespan for the historical figure
-        const lifespan = this.calculateLifespan();
+        // define a lifespan in years for the historical figure
+        const lifespanYears = this.calculateLifespan();
 
         // Get a random place for the historical figure
         const place = this.computePlace(worldComponent.get());
@@ -109,8 +112,8 @@ export class HistoricalFigureBirthSystem extends System {
         // Create a HistoricalFigureComponent with a random lifespan    
         const historicalFigureComponent = HistoricalFigureComponent.create(
             name,
-            currentYear,
-            currentYear + lifespan,
+            year,
+            year + lifespanYears,
             'Not implemented yet',
             'Not implemented yet'
         );
@@ -124,11 +127,11 @@ export class HistoricalFigureBirthSystem extends System {
         // Log the birth event
         const eventType = EventType.create(EventCategory.SOCIAL, 'Historical Figure Born');
         const event = ChronicleEvent.create(
-            `Historical figure ${name} was born in ${currentYear}.`,
+            `Historical figure ${name} was born in ${year}.`,
             eventType,
             time,
             place,
-            `The historical figure named ${name} was born in the year ${currentYear}. They will live for approximately ${lifespan} years.`,
+            `The historical figure named ${name} was born in the year ${year}. They will live for approximately ${lifespanYears} years.`,
             historicalFigure);
         chronicleComponent.addEvent(event);
     }
