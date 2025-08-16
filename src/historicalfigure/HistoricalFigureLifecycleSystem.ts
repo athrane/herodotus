@@ -55,21 +55,33 @@ export class HistoricalFigureLifecycleSystem extends System {
         }
 
         // Check for death
-        if (currentYear === historicalFigure.deathYear) {
-            this.handleHistoricalFigureDeath(entity, historicalFigure);
+        const calculatedDeathYear = this.calculateDeathYear(historicalFigure);
+        if (currentYear === calculatedDeathYear) {
+            this.handleHistoricalFigureDeath(entity, historicalFigure, calculatedDeathYear);
         }
+    }
+
+    /**
+     * Calculates the death year based on birth year and average lifespan.
+     * Can be overridden by subclasses to implement more complex logic (e.g., randomization).
+     * @param historicalFigure - The historical figure component.
+     * @returns The calculated death year.
+     */
+    protected calculateDeathYear(historicalFigure: HistoricalFigureComponent): number {
+        return historicalFigure.birthYear + historicalFigure.averageLifeSpan;
     }
 
     /**
      * Handles the death of a historical figure.
      * @param entity - The entity representing the historical figure.
      * @param historicalFigure - The historical figure component.
+     * @param deathYear - The calculated death year.
      */
-    private handleHistoricalFigureDeath(entity: Entity, historicalFigure: HistoricalFigureComponent): void {
-        console.log(`Historical figure ${historicalFigure.name} (died ${historicalFigure.deathYear}) has died and exited the simulation.`);
+    private handleHistoricalFigureDeath(entity: Entity, historicalFigure: HistoricalFigureComponent, deathYear: number): void {
+        console.log(`Historical figure ${historicalFigure.name} (died ${deathYear}) has died and exited the simulation.`);
         
         // Record death event for potential chronicle/historical record
-        this.recordDeathEvent(historicalFigure);
+        this.recordDeathEvent(historicalFigure, deathYear);
         
         // Clean up the entity by removing the HistoricalFigureComponent
         entity.removeComponent(HistoricalFigureComponent);
@@ -99,12 +111,13 @@ export class HistoricalFigureLifecycleSystem extends System {
     /**
      * Records the death event for historical tracking.
      * @param historicalFigure - The historical figure component.
+     * @param deathYear - The calculated death year.
      */
-    private recordDeathEvent(historicalFigure: HistoricalFigureComponent): void {
+    private recordDeathEvent(historicalFigure: HistoricalFigureComponent, deathYear: number): void {
         // This could be expanded to create chronicle events, update statistics, etc.
         // For now, we'll just log additional information
-        const lifespan = historicalFigure.deathYear - historicalFigure.birthYear;
-        console.log(`  - ${historicalFigure.name} lived for ${lifespan} years (${historicalFigure.birthYear}-${historicalFigure.deathYear})`);
+        const lifespan = deathYear - historicalFigure.birthYear;
+        console.log(`  - ${historicalFigure.name} lived for ${lifespan} years (${historicalFigure.birthYear}-${deathYear})`);
         console.log(`  - Occupation: ${historicalFigure.occupation}, Culture: ${historicalFigure.culture}`);
     }
 
