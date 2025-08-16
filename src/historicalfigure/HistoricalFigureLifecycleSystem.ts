@@ -56,12 +56,56 @@ export class HistoricalFigureLifecycleSystem extends System {
 
         // Check for death
         if (currentYear === historicalFigure.deathYear) {
-            // Logic to 'remove' or 'deactivate' the historical figure
-
-            // For now, we'll just log it and remove the HistoricalFigureComponent.
-            console.log(`Historical figure ${historicalFigure.name} (died ${historicalFigure.deathYear}) has exited the simulation.`);
-            entity.removeComponent(HistoricalFigureComponent);
+            this.handleHistoricalFigureDeath(entity, historicalFigure);
         }
+    }
+
+    /**
+     * Handles the death of a historical figure.
+     * @param entity - The entity representing the historical figure.
+     * @param historicalFigure - The historical figure component.
+     */
+    private handleHistoricalFigureDeath(entity: Entity, historicalFigure: HistoricalFigureComponent): void {
+        console.log(`Historical figure ${historicalFigure.name} (died ${historicalFigure.deathYear}) has died and exited the simulation.`);
+        
+        // Record death event for potential chronicle/historical record
+        this.recordDeathEvent(historicalFigure);
+        
+        // Clean up the entity by removing the HistoricalFigureComponent
+        entity.removeComponent(HistoricalFigureComponent);
+        
+        // Check if we should destroy the entity completely
+        this.cleanupDeadEntity(entity);
+    }
+
+    /**
+     * Cleans up an entity after historical figure death.
+     * Can be overridden by subclasses to implement custom cleanup logic.
+     * @param entity - The entity to potentially clean up.
+     */
+    protected cleanupDeadEntity(entity: Entity): void {
+        // Default behavior: keep the entity but without the HistoricalFigureComponent
+        // This allows other systems to potentially track "deceased" entities if needed
+        
+        // If needed, entity could be destroyed with:
+        // this.getEntityManager().destroyEntity(entity.getId());
+        
+        // Or marked with a "deceased" component for historical tracking
+        
+        // Parameter is intentionally unused in base implementation but available for subclasses
+        void entity; // Explicitly mark as intentionally unused
+    }
+
+    /**
+     * Records the death event for historical tracking.
+     * @param historicalFigure - The historical figure component.
+     */
+    private recordDeathEvent(historicalFigure: HistoricalFigureComponent): void {
+        // This could be expanded to create chronicle events, update statistics, etc.
+        // For now, we'll just log additional information
+        const lifespan = historicalFigure.deathYear - historicalFigure.birthYear;
+        console.log(`  - ${historicalFigure.name} lived for ${lifespan} years (${historicalFigure.birthYear}-${historicalFigure.deathYear})`);
+        console.log(`  - Occupation: ${historicalFigure.occupation}, Culture: ${historicalFigure.culture}`);
     }
 
     /**

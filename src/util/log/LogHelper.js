@@ -57,10 +57,10 @@ export class LogHelper {
         for (const event of events) {
             console.log(`\nEvent Heading: ${event.getHeading()}`);
             console.log(`Year: ${event.getTime().getYear()}`);
-            console.log(`Figure: ${event.getFigure().getName}`);
+            console.log(`Figure: ${event.getFigure().getName()}`);
             console.log(`Description: ${event.getDescription()}`);
             console.log(`Place: ${event.getPlace().getName()}`);
-            console.log(`Type: ${event.getEventType().getKey()}`);
+            console.log(`Type: ${event.getEventType().getName()}`);
             console.log(`Category: ${event.getEventType().getCategory()}`);            
             console.log("---------------------");
         }
