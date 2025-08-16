@@ -16,27 +16,6 @@ import { EventType } from '../chronicle/EventType';
 import { Place } from '../generator/Place';
 
 /**
- * Interface for objects representing geographical features.
- */
-interface GeographicalFeature {
-  getName(): string;
-}
-
-/**
- * Interface for objects representing continents.
- */
-interface Continent {
-  getRandomFeature(): GeographicalFeature | null;
-}
-
-/**
- * Interface for World objects that can provide continents.
- */
-interface WorldInterface {
-  getRandomContinent(): Continent | null;
-}
-
-/**
  * Manages the birth of historical figures.
  */
 export class HistoricalFigureBirthSystem extends System {
@@ -177,7 +156,7 @@ export class HistoricalFigureBirthSystem extends System {
      * @param world - The world instance to get a random place from.
      * @returns A Place instance representing the location of the historical figure's birth.
      */
-    computePlace(world: WorldInterface): Place {
+    computePlace(world: World): Place {
         TypeUtils.ensureInstanceOf(world, World);
         const continent = world.getRandomContinent();
         if (continent) {
