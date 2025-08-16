@@ -6,6 +6,86 @@ A procedural world-building and history generation tool.
 
 This section provides an overview of the project's architecture and class structure for developers.
 
+### Scripts
+
+All available npm scripts and what they do. Commands below are for PowerShell.
+
+- build — bundle `src/main.ts` to `dist/bundle.js` using esbuild.
+	Purpose: produce an optimized ESM bundle for Node (no TypeScript at runtime), ideal for reproducible runs and CI.
+	- Run:
+		```powershell
+		npm run build
+		```
+
+- start — alias for `start:bundle`.
+	Purpose: conventional entry to run the built bundle; safe default for production-like runs.
+	- Run:
+		```powershell
+		npm start
+		```
+
+- start:bundle — builds (via prestart hook) and runs `node dist/bundle.js`.
+	Purpose: ensures the bundle is up to date, then executes the exact artifact that would be deployed.
+	- Run:
+		```powershell
+		npm run start:bundle
+		```
+
+- prestart:bundle — automatic pre-hook that runs `npm run build` before `start:bundle`.
+	Purpose: guarantees the bundle reflects the latest sources without needing a separate build step.
+
+- start:main — run `src/main.ts` directly via tsx (no bundling).
+	Purpose: fastest developer loop; executes TypeScript directly with TS-aware loader, no files emitted.
+	- Run:
+		```powershell
+		npm run start:main
+		```
+
+- dev — same as `start:main`; runs `src/main.ts` via tsx for fast iteration.
+	Purpose: convenient alias commonly used during active development.
+	- Run:
+		```powershell
+		npm run dev
+		```
+
+- start:ts — same as `start:main`; runs `src/main.ts` via tsx.
+	Purpose: alternate name if you prefer explicit “ts” in scripts or for CI environments.
+	- Run:
+		```powershell
+		npm run start:ts
+		```
+
+- test — run Jest test suite.
+	Purpose: executes all unit tests using `jest.config.js`; use to validate behavior locally and in CI.
+	- Run:
+		```powershell
+		npm test
+		```
+
+- lint — run ESLint on the project.
+	Purpose: checks code quality and style across JS/TS; integrates with VS Code ESLint extension.
+	- Run:
+		```powershell
+		npm run lint
+		```
+
+- lint:fix — ESLint with automatic fixes.
+	Purpose: applies safe fixes where possible (formatting, simple refactors) to keep the codebase consistent.
+	- Run:
+		```powershell
+		npm run lint:fix
+		```
+
+- typecheck — run TypeScript type-checking without emitting files.
+	Purpose: validates types according to `tsconfig.json`; useful pre-commit or CI gate.
+	- Run:
+		```powershell
+		npm run typecheck
+		```
+
+- prepare — runs Husky install (managed by npm automatically on install).
+	Purpose: sets up Git hooks (e.g., pre-commit) defined by Husky; typically runs during `npm install`.
+
 ### Linting
 
 This project uses ESLint (flat config) to lint both JavaScript and TypeScript.
