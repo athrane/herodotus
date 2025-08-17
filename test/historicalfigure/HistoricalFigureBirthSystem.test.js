@@ -8,6 +8,7 @@ import { EntityManager } from '../../src/ecs/EntityManager';
 import { HistoricalFigureBirthSystem } from '../../src/historicalfigure/HistoricalFigureBirthSystem';
 import { NameGenerator } from '../../src/naming/NameGenerator';
 import { Time } from '../../src/time/Time';
+import { DataSetEventComponent } from '../../src/data/DataSetEventComponent';
 
 describe('HistoricalFigureBirthSystem', () => {
     let entityManager;
@@ -350,6 +351,144 @@ describe('HistoricalFigureBirthSystem', () => {
                 const event = mockChronicleEventComponent.addEvent.mock.calls[0][0];
                 expect(event.getHeading()).toContain(`Historical figure TestName was born in ${testYear}.`);
             });
+        });
+    });
+
+    describe('DataSetEventComponent Integration', () => {
+        beforeEach(() => {
+            jest.spyOn(system, 'isBorn').mockReturnValue(true);
+            jest.spyOn(system, 'calculateLifespan').mockReturnValue(50);
+        });
+
+        it('should attach DataSetEventComponent to newly created historical figures', () => {
+            system.processEntity(entity, 1000);
+
+            expect(entityManager.createEntity).toHaveBeenCalledTimes(1);
+            
+            const createEntityCall = entityManager.createEntity.mock.calls[0];
+            expect(createEntityCall).toHaveLength(3); // NameComponent, HistoricalFigureComponent, DataSetEventComponent
+            
+            // Verify DataSetEventComponent is included
+            const dataSetEventComponent = createEntityCall.find(component => 
+                component.constructor.name === 'DataSetEventComponent'
+            );
+            expect(dataSetEventComponent).toBeDefined();
+        });
+
+        it('should create DataSetEvent with correct Social event type', () => {
+            system.processEntity(entity, 1000);
+            
+            const createEntityCall = entityManager.createEntity.mock.calls[0];
+            const dataSetEventComponent = createEntityCall.find(component => 
+                component.constructor.name === 'DataSetEventComponent'
+            );
+            
+            const birthEvent = dataSetEventComponent.getDataSetEvent();
+            expect(birthEvent.EventType).toBe('Social');
+        });
+
+        it('should create DataSetEvent with unique trigger ID', () => {
+            // Process two births to verify unique triggers
+            system.processEntity(entity, 1000);
+            system.processEntity(entity, 1000);
+            
+            expect(entityManager.createEntity).toHaveBeenCalledTimes(2);
+            
+            const firstCall = entityManager.createEntity.mock.calls[0];
+            const secondCall = entityManager.createEntity.mock.calls[1];
+            
+            const firstDataSetEventComponent = firstCall.find(c => c.constructor.name === 'DataSetEventComponent');
+            const secondDataSetEventComponent = secondCall.find(c => c.constructor.name === 'DataSetEventComponent');
+            
+            const firstEvent = firstDataSetEventComponent.getDataSetEvent();
+            const secondEvent = secondDataSetEventComponent.getDataSetEvent();
+            
+            expect(firstEvent.EventTrigger).toMatch(/NPC_BIRTH_1970_\d+/);
+            expect(secondEvent.EventTrigger).toMatch(/NPC_BIRTH_1970_\d+/);
+            expect(firstEvent.EventTrigger).not.toBe(secondEvent.EventTrigger);
+        });
+
+        it('should create DataSetEvent with correct birth event data', () => {
+            system.processEntity(entity, 1000);
+            
+            const createEntityCall = entityManager.createEntity.mock.calls[0];
+            const dataSetEventComponent = createEntityCall.find(component => 
+                component.constructor.name === 'DataSetEventComponent'
+            );
+            
+            const birthEvent = dataSetEventComponent.getDataSetEvent();
+            
+            expect(birthEvent.EventName).toBe('Birth of TestName');
+            expect(birthEvent.EventConsequence).toBe('A new historical figure has emerged');
+            expect(birthEvent.Heading).toBe('A New Figure Emerges');
+            expect(birthEvent.Place).toBe('TestPlace');
+            expect(birthEvent.PrimaryActor).toBe('TestName');
+            expect(birthEvent.SecondaryActor).toBe('The Community');
+            expect(birthEvent.Motive).toBe('Natural birth and emergence into society');
+            expect(birthEvent.Tags).toBe('birth, historical-figure, social, emergence');
+        });
+
+        it('should create DataSetEvent with detailed description including lifespan', () => {
+            system.processEntity(entity, 1000);
+            
+            const createEntityCall = entityManager.createEntity.mock.calls[0];
+            const dataSetEventComponent = createEntityCall.find(component => 
+                component.constructor.name === 'DataSetEventComponent'
+            );
+            
+            const birthEvent = dataSetEventComponent.getDataSetEvent();
+            
+            expect(birthEvent.Description).toContain('TestName was born in TestPlace during the year 1970');
+            expect(birthEvent.Description).toContain('expected lifespan of 50 years');
+            expect(birthEvent.Consequence).toContain('The world gains a new historical figure');
+        });
+
+        it('should create DataSetEvent with place information from world', () => {
+            // Test with different place
+            const mockWorldWithDifferentPlace = new World('TestWorld');
+            jest.spyOn(mockWorldWithDifferentPlace, 'getRandomContinent').mockReturnValue({
+                getRandomFeature: () => ({
+                    getName: () => 'Mountain Peaks'
+                })
+            });
+            
+            mockWorldComponent.get = () => mockWorldWithDifferentPlace;
+            
+            system.processEntity(entity, 1000);
+            
+            const createEntityCall = entityManager.createEntity.mock.calls[0];
+            const dataSetEventComponent = createEntityCall.find(component => 
+                component.constructor.name === 'DataSetEventComponent'
+            );
+            
+            const birthEvent = dataSetEventComponent.getDataSetEvent();
+            expect(birthEvent.Place).toBe('Mountain Peaks');
+            expect(birthEvent.Description).toContain('Mountain Peaks');
+        });
+
+        it('should handle unknown location gracefully', () => {
+            // Mock world to return no continent
+            const mockWorldWithNoLocation = new World('TestWorld');
+            jest.spyOn(mockWorldWithNoLocation, 'getRandomContinent').mockReturnValue(null);
+            mockWorldComponent.get = () => mockWorldWithNoLocation;
+            
+            system.processEntity(entity, 1000);
+            
+            const createEntityCall = entityManager.createEntity.mock.calls[0];
+            const dataSetEventComponent = createEntityCall.find(component => 
+                component.constructor.name === 'DataSetEventComponent'
+            );
+            
+            const birthEvent = dataSetEventComponent.getDataSetEvent();
+            expect(birthEvent.Place).toBe('Unknown Location');
+        });
+
+        it('should not create DataSetEventComponent if birth does not occur', () => {
+            jest.spyOn(system, 'isBorn').mockReturnValue(false);
+            
+            system.processEntity(entity, 1000);
+            
+            expect(entityManager.createEntity).not.toHaveBeenCalled();
         });
     });
 });

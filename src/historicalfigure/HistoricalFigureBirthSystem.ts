@@ -14,6 +14,8 @@ import { ChronicleEvent } from '../chronicle/ChronicleEvent';
 import { EventCategory } from '../chronicle/EventCategory';
 import { EventType } from '../chronicle/EventType';
 import { Place } from '../generator/Place';
+import { DataSetEvent } from '../data/DataSetEvent';
+import { DataSetEventComponent } from '../data/DataSetEventComponent';
 
 /**
  * Manages the birth of historical figures.
@@ -97,11 +99,28 @@ export class HistoricalFigureBirthSystem extends System {
             'Not implemented yet',
             'Not implemented yet'
         );
+
+        // Create a DataSetEvent for the historical figure's birth
+        const birthEvent = new DataSetEvent({
+            "Event Type": "Social",
+            "Event Trigger": `NPC_BIRTH_${year}_${Math.floor(Math.random() * 10000)}`,
+            "Event Name": `Birth of ${name}`,
+            "Event Consequence": `A new historical figure has emerged`,
+            "Heading": "A New Figure Emerges",
+            "Place": place.getName(),
+            "Primary Actor": name,
+            "Secondary Actor": "The Community",
+            "Motive": "Natural birth and emergence into society",
+            "Description": `${name} was born in ${place.getName()} during the year ${year}. This individual is destined to become a notable figure in history, with an expected lifespan of ${lifespanYears} years.`,
+            "Consequence": `The world gains a new historical figure who may influence future events`,
+            "Tags": "birth, historical-figure, social, emergence"
+        });
     
-        // Create a new entity for the historical figure
+        // Create a new entity for the historical figure with DataSetEventComponent
         this.getEntityManager().createEntity(
             NameComponent.create(name),
             historicalFigureComponent,
+            DataSetEventComponent.create(birthEvent)
         );
 
         // Log the birth event
