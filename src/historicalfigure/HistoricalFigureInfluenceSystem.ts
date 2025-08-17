@@ -22,11 +22,14 @@ export class HistoricalFigureInfluenceSystem extends System {
      * @param currentYear - The current year in the simulation.
      */
     processEntity(entity: Entity, currentYear: number): void {
+        TypeUtils.ensureInstanceOf(entity, Entity);
         TypeUtils.ensureNumber(currentYear, 'currentYear must be a number.');
 
+        // Get the historical figure component from the entity
         const historicalFigure = entity.getComponent(HistoricalFigureComponent);
         if (!historicalFigure) return;
 
+        // get chronicle component from entity manager
         const chronicle = this.getEntityManager().getSingletonComponent(ChronicleComponent);
         if (!chronicle) return;
 

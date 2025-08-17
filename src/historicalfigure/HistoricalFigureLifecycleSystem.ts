@@ -32,12 +32,14 @@ export class HistoricalFigureLifecycleSystem extends System {
      * @param currentYear - The current year in the simulation.
      */
     processEntity(entity: Entity, currentYear: number): void {
+        TypeUtils.ensureInstanceOf(entity, Entity);
         TypeUtils.ensureNumber(currentYear, 'currentYear must be a number.');
 
-        // Get the HistoricalFigureComponent and TimeComponent from the entity
+        // Get the historical figure component from the entity
         const historicalFigure = entity.getComponent(HistoricalFigureComponent);
         if (!historicalFigure) return;
 
+        // Get the TimeComponent from the entity manager
         const timeComponent = this.getEntityManager().getSingletonComponent(TimeComponent);
         if (!timeComponent) return;
 
