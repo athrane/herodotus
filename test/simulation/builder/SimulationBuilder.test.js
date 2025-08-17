@@ -5,6 +5,8 @@ import { TimeSystem } from '../../../src/time/TimeSystem';
 import { HistoricalFigureLifecycleSystem } from '../../../src/historicalfigure/HistoricalFigureLifecycleSystem';
 import { HistoricalFigureInfluenceSystem } from '../../../src/historicalfigure/HistoricalFigureInfluenceSystem';
 import { DataSetComponent } from '../../../src/data/DataSetComponent.ts';
+import { DataSetEventComponent } from '../../../src/data/DataSetEventComponent.ts';
+import { HistoricalFigureComponent } from '../../../src/historicalfigure/HistoricalFigureComponent.ts';
 
 // Mock the WorldGenerator to control its output
 jest.mock('../../../src/generator/world/WorldGenerator', () => {
@@ -81,8 +83,8 @@ describe('SimulationBuilder', () => {
         builder.buildData();
         builder.buildEntities();
 
-        // Assert: createEntity was called twice (Global entity + historical figure)
-        expect(entityManager.createEntity).toHaveBeenCalledTimes(2);
+        // Assert: createEntity was called three times (Global entity, Player entity, and historical figure)
+        expect(entityManager.createEntity).toHaveBeenCalledTimes(3);
         
         // Check that the first call (Global entity) includes a DataSetComponent
         const firstCall = entityManager.createEntity.mock.calls[0];
@@ -91,5 +93,12 @@ describe('SimulationBuilder', () => {
         expect(dsComp.getEvents()).toHaveLength(2);
         expect(dsComp.getByTrigger('EVT_1')).toBeDefined();
         expect(dsComp.getByTrigger('EVT_2')).toBeDefined();
+
+        // Check that the second call (Player entity) includes both HistoricalFigureComponent and DataSetEventComponent
+        const secondCall = entityManager.createEntity.mock.calls[1];
+        const playerHistoricalFigure = secondCall.find(arg => arg instanceof HistoricalFigureComponent);
+        const playerDataSetEvent = secondCall.find(arg => arg instanceof DataSetEventComponent);
+        expect(playerHistoricalFigure).toBeInstanceOf(HistoricalFigureComponent);
+        expect(playerDataSetEvent).toBeInstanceOf(DataSetEventComponent);
     });
 });

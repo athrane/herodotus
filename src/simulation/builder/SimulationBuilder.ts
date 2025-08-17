@@ -18,6 +18,7 @@ import { SystemManager } from '../../ecs/SystemManager';
 import { loadEvents } from '../../data/loadEvents';
 import { DataSetComponent } from '../../data/DataSetComponent';
 import { DataSetEvent } from '../../data/DataSetEvent';
+import { DataSetEventComponent } from '../../data/DataSetEventComponent';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -73,6 +74,29 @@ export class SimulationBuilder extends Builder {
             new WorldComponent(world),
             new ChronicleComponent(),
             DataSetComponent.create(this.dataSetEvents)
+        );
+
+        // Create the dedicated Player entity with DataSetEventComponent and HistoricalFigureComponent
+        // Use a default created event as the initial game state context
+        const initialEvent = new DataSetEvent({ 
+            "Event Type": "Political",
+            "Event Trigger": "PLAYER_START",
+            "Event Name": "Rise to Power",
+            "Event Consequence": "The player begins their reign as a new ruler",
+            "Heading": "A New Dawn Rises",
+            "Place": "Capital",
+            "Primary Actor": "Player",
+            "Secondary Actor": "The People",
+            "Motive": "Ascension to power",
+            "Description": "You have ascended to power and now rule over your domain. The people look to you for leadership as you begin your journey to shape history.",
+            "Consequence": "The player gains control and must make decisions that will affect their realm",
+            "Tags": "political, beginning, power, leadership"
+        });
+
+        entityManager.createEntity(
+            new NameComponent("Player"),
+            new HistoricalFigureComponent("Player Character", 0, 70, "Unknown", "Ruler"),
+            DataSetEventComponent.create(initialEvent)
         );
 
         // Create a sample historical figure
