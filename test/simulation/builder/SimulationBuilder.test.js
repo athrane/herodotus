@@ -5,7 +5,6 @@ import { TimeSystem } from '../../../src/time/TimeSystem';
 import { HistoricalFigureLifecycleSystem } from '../../../src/historicalfigure/HistoricalFigureLifecycleSystem';
 import { HistoricalFigureInfluenceSystem } from '../../../src/historicalfigure/HistoricalFigureInfluenceSystem';
 import { DataSetComponent } from '../../../src/data/DataSetComponent.ts';
-import { DataSetEvent } from '../../../src/data/DataSetEvent.ts';
 
 // Mock the WorldGenerator to control its output
 jest.mock('../../../src/generator/world/WorldGenerator', () => {

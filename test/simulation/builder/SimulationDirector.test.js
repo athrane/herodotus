@@ -1,5 +1,4 @@
 import { SimulationDirector } from '../../../src/simulation/builder/SimulationDirector.ts';
-import { Builder } from '../../../src/simulation/builder/Builder.ts';
 import { Simulation } from '../../../src/simulation/Simulation.ts';
 
 describe('SimulationDirector', () => {

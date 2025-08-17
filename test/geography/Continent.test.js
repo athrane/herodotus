@@ -1,6 +1,5 @@
 import { Continent } from '../../src/geography/Continent.ts';
 import { GeographicalFeature } from '../../src/geography/GeographicalFeature.ts';
-import { FeatureType } from '../../src/geography/FeatureType.ts';
 import { GeographicalFeatureTypeRegistry } from '../../src/geography/GeographicalFeatureTypeRegistry.ts';
 
 describe('Continent', () => {

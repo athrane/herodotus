@@ -27,23 +27,6 @@ class HealthComponent extends Component {
 }
 
 describe('Entity', () => {
-  // Mock TypeUtils to avoid dependency on the actual implementation's console logging
-  const mockTypeUtils = {
-    ensureInstanceOf: (value, type, message) => {
-      if (!(value instanceof type)) {
-        throw new TypeError(message || 'Type check failed');
-      }
-    },
-    ensureFunction: (value, message) => {
-      if (typeof value !== 'function') {
-        throw new TypeError(message || 'Function check failed');
-      }
-    },
-  };
-
-  // In a real Jest setup, you would use jest.mock to replace the module.
-  // For this example, we'll just acknowledge the dependency.
-
   describe('constructor', () => {
     it('should create an entity with a unique ID', () => {
       const entity = Entity.create();

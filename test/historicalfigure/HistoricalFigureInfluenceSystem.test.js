@@ -2,7 +2,6 @@ import { HistoricalFigureInfluenceSystem } from '../../src/historicalfigure/Hist
 import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent.ts';
 import { ChronicleComponent } from '../../src/chronicle/ChronicleComponent.ts';
 import { EntityManager } from '../../src/ecs/EntityManager';
-import { Entity } from '../../src/ecs/Entity';
 
 describe('HistoricalFigureInfluenceSystem', () => {
     let entityManager;
