@@ -8,6 +8,7 @@ import { EntityManager } from '../../src/ecs/EntityManager';
 import { HistoricalFigureBirthSystem } from '../../src/historicalfigure/HistoricalFigureBirthSystem';
 import { NameGenerator } from '../../src/naming/NameGenerator';
 import { Time } from '../../src/time/Time';
+// eslint-disable-next-line no-unused-vars
 import { DataSetEventComponent } from '../../src/data/DataSetEventComponent';
 
 describe('HistoricalFigureBirthSystem', () => {

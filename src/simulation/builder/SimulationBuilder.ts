@@ -19,6 +19,7 @@ import { loadEvents } from '../../data/loadEvents';
 import { DataSetComponent } from '../../data/DataSetComponent';
 import { DataSetEvent } from '../../data/DataSetEvent';
 import { DataSetEventComponent } from '../../data/DataSetEventComponent';
+import { PlayerComponent } from '../../ecs/PlayerComponent';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -96,7 +97,8 @@ export class SimulationBuilder extends Builder {
         entityManager.createEntity(
             new NameComponent("Player"),
             new HistoricalFigureComponent("Player Character", 0, 70, "Unknown", "Ruler"),
-            DataSetEventComponent.create(initialEvent)
+            DataSetEventComponent.create(initialEvent),
+            PlayerComponent.create()
         );
 
         // Create a sample historical figure
