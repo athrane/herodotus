@@ -79,6 +79,7 @@ export class Simulation {
     tick(): void {
         if (!this.isRunning) return;
 
+        // Calculate the time in milliseconds since the last tick
         const currentTime = performance.now();
         const deltaTime = (currentTime - this.lastTickTime) / 1000; // Convert to seconds
         this.lastTickTime = currentTime;

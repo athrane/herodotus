@@ -23,7 +23,7 @@ function main(): void {
   simulation.start();
 
   // run the simulation for a few ticks
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 1000; i++) {
     simulation.tick();
   }
 
