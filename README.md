@@ -118,6 +118,14 @@ This module provides the classes for creating and managing historical events in 
 *   **`EventType`**: Represents the type of a historical event, including its category and specific name.
 *   **`EventCategory`**: Defines categories for historical events (Political, Social, Economic, Technological, Cultural/Religious, Military, Natural).
 
+#### `behaviour`
+
+This module contains classes for managing player behavior and decision-making systems.
+
+*   **`DilemmaComponent`**: Component representing a player choice scenario with multiple options.
+*   **`DilemmaSystem`**: The engine of the dilemma loop, responsible for generating choices based on the player's current state. Implements the read_state → find_triggers → generate_choices sequence.
+*   **`DilemmaResolutionSystem`**: Processes entities with DilemmaComponents to resolve player choices. Selects one of the available choices, updates the entity's DataSetEventComponent, and removes the DilemmaComponent to prepare for the next cycle.
+
 #### `data`
 
 This module contains classes for loading and accessing event data.
@@ -125,9 +133,6 @@ This module contains classes for loading and accessing event data.
 *   **`DataSetComponent`**: Component holding all loaded data set events (immutable snapshot at load time). Stored internally as a Map keyed by EventTrigger, supporting multiple events per trigger.
 *   **`DataSetEvent`**: Represents a data-driven event that can occur during gameplay.
 *   **`DataSetEventComponent`**: Component storing the current state of data-driven events on an entity.
-*   **`DilemmaComponent`**: Component representing a player choice scenario with multiple options.
-*   **`DilemmaSystem`**: The engine of the dilemma loop, responsible for generating choices based on the player's current state. Implements the read_state → find_triggers → generate_choices sequence.
-*   **`DilemmaResolutionSystem`**: Processes entities with DilemmaComponents to resolve player choices. Selects one of the available choices, updates the entity's DataSetEventComponent, and removes the DilemmaComponent to prepare for the next cycle.
 *   **`loadEvents`**: A function that loads events from a JSON file.
 
 #### `ecs`
