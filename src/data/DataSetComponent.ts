@@ -32,13 +32,13 @@ export class DataSetComponent extends Component {
       // Keep an explicit instance check to preserve error semantics expected by tests
       TypeUtils.ensureInstanceOf<DataSetEvent>(e, DataSetEvent, 'All items must be DataSetEvent instances');
       const evt = e as DataSetEvent; // narrowed by assertion above
-      TypeUtils.ensureNonEmptyString(evt.EventTrigger, 'Each DataSetEvent must have a non-empty EventTrigger string');
+      TypeUtils.ensureNonEmptyString(evt.getEventTrigger(), 'Each DataSetEvent must have a non-empty EventTrigger string');
       
       // Add event to array for this trigger
-      if (!map.has(evt.EventTrigger)) {
-        map.set(evt.EventTrigger, []);
+      if (!map.has(evt.getEventTrigger())) {
+        map.set(evt.getEventTrigger(), []);
       }
-      map.get(evt.EventTrigger)!.push(evt);
+      map.get(evt.getEventTrigger())!.push(evt);
     }
     this.eventMap = map;
     this.events = Object.freeze(events.slice()); // Keep all original events in order

@@ -30,7 +30,7 @@ describe('DataSetComponent', () => {
     const comp = DataSetComponent.create(events);
     const list = comp.getEvents();
     expect(list.length).toBe(3);
-    expect(list[0].EventName).toBe('Name1');
+    expect(list[0].getEventName()).toBe('Name1');
   });
 
   it('stores multiple events with the same EventTrigger', () => {
@@ -39,8 +39,8 @@ describe('DataSetComponent', () => {
     expect(comp.getEvents().length).toBe(4); // all events kept including duplicate
     const byTrigger = comp.getByTrigger('Trigger2');
     expect(byTrigger.length).toBe(2); // both events with Trigger2
-    expect(byTrigger[0]?.EventName).toBe('Name2'); // original first
-    expect(byTrigger[1]?.EventName).toBe('Name99'); // duplicate second
+    expect(byTrigger[0]?.getEventName()).toBe('Name2'); // original first
+    expect(byTrigger[1]?.getEventName()).toBe('Name99'); // duplicate second
   });
 
   it('getByTrigger returns empty array for missing key', () => {
@@ -50,9 +50,9 @@ describe('DataSetComponent', () => {
 
   it('find filters events by predicate', () => {
     const comp = DataSetComponent.create(events);
-    const filtered = comp.find(e => e.EventTrigger === 'Trigger2');
+    const filtered = comp.find(e => e.getEventTrigger() === 'Trigger2');
     expect(filtered.length).toBe(1);
-    expect(filtered[0].EventName).toBe('Name2');
+    expect(filtered[0].getEventName()).toBe('Name2');
   });
 
   it('getEvents returns an immutable snapshot', () => {

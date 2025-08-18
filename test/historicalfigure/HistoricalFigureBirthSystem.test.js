@@ -391,7 +391,7 @@ describe('HistoricalFigureBirthSystem', () => {
             );
             
             const birthEvent = dataSetEventComponent.getDataSetEvent();
-            expect(birthEvent.EventType).toBe('Social');
+            expect(birthEvent.getEventType()).toBe('Social');
         });
 
         it('should create DataSetEvent with unique trigger ID', () => {
@@ -410,9 +410,9 @@ describe('HistoricalFigureBirthSystem', () => {
             const firstEvent = firstDataSetEventComponent.getDataSetEvent();
             const secondEvent = secondDataSetEventComponent.getDataSetEvent();
             
-            expect(firstEvent.EventTrigger).toMatch(/NPC_BIRTH_1970_\d+/);
-            expect(secondEvent.EventTrigger).toMatch(/NPC_BIRTH_1970_\d+/);
-            expect(firstEvent.EventTrigger).not.toBe(secondEvent.EventTrigger);
+            expect(firstEvent.getEventTrigger()).toMatch(/NPC_BIRTH_1970_\d+/);
+            expect(secondEvent.getEventTrigger()).toMatch(/NPC_BIRTH_1970_\d+/);
+            expect(firstEvent.getEventTrigger()).not.toBe(secondEvent.getEventTrigger());
         });
 
         it('should create DataSetEvent with correct birth event data', () => {
@@ -425,14 +425,14 @@ describe('HistoricalFigureBirthSystem', () => {
             
             const birthEvent = dataSetEventComponent.getDataSetEvent();
             
-            expect(birthEvent.EventName).toBe('Birth of TestName');
-            expect(birthEvent.EventConsequence).toBe('A new historical figure has emerged');
-            expect(birthEvent.Heading).toBe('A New Figure Emerges');
-            expect(birthEvent.Place).toBe('TestPlace');
-            expect(birthEvent.PrimaryActor).toBe('TestName');
-            expect(birthEvent.SecondaryActor).toBe('The Community');
-            expect(birthEvent.Motive).toBe('Natural birth and emergence into society');
-            expect(birthEvent.Tags).toBe('birth, historical-figure, social, emergence');
+            expect(birthEvent.getEventName()).toBe('Birth of TestName');
+            expect(birthEvent.getEventConsequence()).toBe('A new historical figure has emerged');
+            expect(birthEvent.getHeading()).toBe('A New Figure Emerges');
+            expect(birthEvent.getPlace()).toBe('TestPlace');
+            expect(birthEvent.getPrimaryActor()).toBe('TestName');
+            expect(birthEvent.getSecondaryActor()).toBe('The Community');
+            expect(birthEvent.getMotive()).toBe('Natural birth and emergence into society');
+            expect(birthEvent.getTags()).toBe('birth, historical-figure, social, emergence');
         });
 
         it('should create DataSetEvent with detailed description including lifespan', () => {
@@ -445,9 +445,9 @@ describe('HistoricalFigureBirthSystem', () => {
             
             const birthEvent = dataSetEventComponent.getDataSetEvent();
             
-            expect(birthEvent.Description).toContain('TestName was born in TestPlace during the year 1970');
-            expect(birthEvent.Description).toContain('expected lifespan of 50 years');
-            expect(birthEvent.Consequence).toContain('The world gains a new historical figure');
+            expect(birthEvent.getDescription()).toContain('TestName was born in TestPlace during the year 1970');
+            expect(birthEvent.getDescription()).toContain('expected lifespan of 50 years');
+            expect(birthEvent.getConsequence()).toContain('The world gains a new historical figure');
         });
 
         it('should create DataSetEvent with place information from world', () => {
@@ -469,8 +469,8 @@ describe('HistoricalFigureBirthSystem', () => {
             );
             
             const birthEvent = dataSetEventComponent.getDataSetEvent();
-            expect(birthEvent.Place).toBe('Mountain Peaks');
-            expect(birthEvent.Description).toContain('Mountain Peaks');
+            expect(birthEvent.getPlace()).toBe('Mountain Peaks');
+            expect(birthEvent.getDescription()).toContain('Mountain Peaks');
         });
 
         it('should handle unknown location gracefully', () => {
@@ -487,7 +487,7 @@ describe('HistoricalFigureBirthSystem', () => {
             );
             
             const birthEvent = dataSetEventComponent.getDataSetEvent();
-            expect(birthEvent.Place).toBe('Unknown Location');
+            expect(birthEvent.getPlace()).toBe('Unknown Location');
         });
 
         it('should not create DataSetEventComponent if birth does not occur', () => {

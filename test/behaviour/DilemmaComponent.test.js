@@ -226,25 +226,25 @@ describe('DilemmaComponent', () => {
       const component = new DilemmaComponent([dataSetEvent1]);
       const retrievedChoice = component.getChoice(0);
       
-      expect(retrievedChoice.EventType).toBe("Political");
-      expect(retrievedChoice.EventTrigger).toBe("Election");
-      expect(retrievedChoice.EventName).toBe("Royal Election");
-      expect(retrievedChoice.EventConsequence).toBe("New ruler appointed");
-      expect(retrievedChoice.Heading).toBe("A New Era Begins");
-      expect(retrievedChoice.Place).toBe("Capital City");
-      expect(retrievedChoice.PrimaryActor).toBe("Prince Alexander");
-      expect(retrievedChoice.SecondaryActor).toBe("The Council");
-      expect(retrievedChoice.Motive).toBe("Succession");
-      expect(retrievedChoice.Description).toBe("The prince was elected as the new ruler");
-      expect(retrievedChoice.Tags).toBe("politics,succession,election");
+      expect(retrievedChoice.getEventType()).toBe("Political");
+      expect(retrievedChoice.getEventTrigger()).toBe("Election");
+      expect(retrievedChoice.getEventName()).toBe("Royal Election");
+      expect(retrievedChoice.getEventConsequence()).toBe("New ruler appointed");
+      expect(retrievedChoice.getHeading()).toBe("A New Era Begins");
+      expect(retrievedChoice.getPlace()).toBe("Capital City");
+      expect(retrievedChoice.getPrimaryActor()).toBe("Prince Alexander");
+      expect(retrievedChoice.getSecondaryActor()).toBe("The Council");
+      expect(retrievedChoice.getMotive()).toBe("Succession");
+      expect(retrievedChoice.getDescription()).toBe("The prince was elected as the new ruler");
+      expect(retrievedChoice.getTags()).toBe("politics,succession,election");
     });
 
     it('should handle different event types correctly', () => {
       const component = new DilemmaComponent(choices);
       
-      expect(component.getChoice(0).EventType).toBe("Political");
-      expect(component.getChoice(1).EventType).toBe("Military");
-      expect(component.getChoice(2).EventType).toBe("Economic");
+      expect(component.getChoice(0).getEventType()).toBe("Political");
+      expect(component.getChoice(1).getEventType()).toBe("Military");
+      expect(component.getChoice(2).getEventType()).toBe("Economic");
     });
   });
 
@@ -257,7 +257,7 @@ describe('DilemmaComponent', () => {
       component.setChoices(newChoices);
 
       expect(component.getChoiceCount()).toBe(1);
-      expect(component.getChoice(0).EventType).toBe("Economic");
+      expect(component.getChoice(0).getEventType()).toBe("Economic");
     });
 
     it('should validate that new choices are DataSetEvent instances', () => {

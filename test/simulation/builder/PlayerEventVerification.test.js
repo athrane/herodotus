@@ -33,17 +33,17 @@ describe('Player Initial Event Verification', () => {
         const event = dataSetEventComponent.getDataSetEvent();
         
         // Verify all fields are set
-        expect(event.EventType).toBe('Political');
-        expect(event.EventTrigger).toBe('PLAYER_START');
-        expect(event.EventName).toBe('Rise to Power');
-        expect(event.EventConsequence).toBe('The player begins their reign as a new ruler');
-        expect(event.Heading).toBe('A New Dawn Rises');
-        expect(event.Place).toBe('Capital');
-        expect(event.PrimaryActor).toBe('Player');
-        expect(event.SecondaryActor).toBe('The People');
-        expect(event.Motive).toBe('Ascension to power');
-        expect(event.Description).toContain('You have ascended to power');
-        expect(event.Consequence).toContain('The player gains control');
-        expect(event.Tags).toBe('political, beginning, power, leadership');
+        expect(event.getEventType()).toBe('Political');
+        expect(event.getEventTrigger()).toBe('PLAYER_START');
+        expect(event.getEventName()).toBe('Rise to Power');
+        expect(event.getEventConsequence()).toBe('The player begins their reign as a new ruler');
+        expect(event.getHeading()).toBe('A New Dawn Rises');
+        expect(event.getPlace()).toBe('Capital');
+        expect(event.getPrimaryActor()).toBe('Player');
+        expect(event.getSecondaryActor()).toBe('The People');
+        expect(event.getMotive()).toBe('Ascension to power');
+        expect(event.getDescription()).toContain('You have ascended to power');
+        expect(event.getConsequence()).toContain('The player gains control');
+        expect(event.getTags()).toBe('political, beginning, power, leadership');
     });
 });

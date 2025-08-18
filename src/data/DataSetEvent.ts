@@ -15,12 +15,12 @@ export class DataSetEvent {
   private readonly consequence: string;
   private readonly tags: string;
 
-    /**
-     * Constructs a DataSetEvent instance from a JSON object.
-     * @param data - The JSON object containing event data.
-     */
+  /**
+   * Constructs a DataSetEvent instance from a JSON object.
+   * @param data - The JSON object containing event data.
+   */
   constructor(data: any) {
-// Prefer DataSetEvent-specific keys to allow overrides, then "Event X", then short variants
+    // Prefer DataSetEvent-specific keys to allow overrides, then "Event X", then short variants
     this.eventType = data["Event Type"];
     this.eventTrigger = data["Event Trigger"];
     this.eventName = data["Event Name"];
@@ -32,110 +32,110 @@ export class DataSetEvent {
     this.motive = data["Motive"];
     this.description = data["Description"];
     this.consequence = data["Consequence"];
-    this.tags = data["Tags"];   
+    this.tags = data["Tags"];
   }
 
-    /**
-     * Gets the event type.
-     * @returns The event type.
-     */
-    get EventType(): string {
-        return this.eventType;
-    }
+  /**
+   * Gets the event type.
+   * @returns The event type.
+   */
+  getEventType(): string {
+    return this.eventType;
+  }
 
-    /**
-     * Gets the event trigger.
-     * @returns The event trigger.
-     */
-    get EventTrigger(): string {
-        return this.eventTrigger;
-    }
+  /**
+   * Gets the event trigger.
+   * @returns The event trigger.
+   */
+  getEventTrigger(): string {
+    return this.eventTrigger;
+  }
 
-    /**
-     * Gets the event name.
-     * @returns The event name.
-     */
-    get EventName(): string {
-        return this.eventName;
-    }
+  /**
+   * Gets the event name.
+   * @returns The event name.
+   */
+  getEventName(): string {
+    return this.eventName;
+  }
 
-    /**
-     * Gets the event consequence.
-     * @returns The event consequence.
-     */
-    get EventConsequence(): string {
-        return this.eventConsequence;
-    }
+  /**
+   * Gets the event consequence.
+   * @returns The event consequence.
+   */
+  getEventConsequence(): string {
+    return this.eventConsequence;
+  }
 
-    /**
-     * Gets the heading.
-     * @returns The heading.
-     */
-    get Heading(): string {
-        return this.heading;
-    }
+  /**
+   * Gets the heading.
+   * @returns The heading.
+   */
+  getHeading(): string {
+    return this.heading;
+  }
 
-    /**
-     * Gets the place.
-     * @returns The place.
-     */
-    get Place(): string {
-        return this.place;
-    }
+  /**
+   * Gets the place.
+   * @returns The place.
+   */
+  getPlace(): string {
+    return this.place;
+  }
 
-    /**
-     * Gets the primary actor.
-     * @returns The primary actor.
-     */
-    get PrimaryActor(): string {
-        return this.primaryActor;
-    }
+  /**
+   * Gets the primary actor.
+   * @returns The primary actor.
+   */
+  getPrimaryActor(): string {
+    return this.primaryActor;
+  }
 
-    /**
-     * Gets the secondary actor.
-     * @returns The secondary actor.
-     */
-    get SecondaryActor(): string {
-        return this.secondaryActor;
-    }
+  /**
+   * Gets the secondary actor.
+   * @returns The secondary actor.
+   */
+  getSecondaryActor(): string {
+    return this.secondaryActor;
+  }
 
-    /**
-     * Gets the motive.
-     * @returns The motive.
-     */
-    get Motive(): string {
-        return this.motive;
-    }
+  /**
+   * Gets the motive.
+   * @returns The motive.
+   */
+  getMotive(): string {
+    return this.motive;
+  }
 
-    /**
-     * Gets the description.
-     * @returns The description.
-     */
-    get Description(): string {
-        return this.description;
-    }
+  /**
+   * Gets the description.
+   * @returns The description.
+   */
+  getDescription(): string {
+    return this.description;
+  }
 
-    /**
-     * Gets the consequence.
-     * @returns The consequence.
-     */
-    get Consequence(): string {
-        return this.consequence;
-    }
+  /**
+   * Gets the consequence.
+   * @returns The consequence.
+   */
+  getConsequence(): string {
+    return this.consequence;
+  }
 
-    /**
-     * Gets the tags.
-     * @returns The tags.
-     */
-    get Tags(): string {
-        return this.tags;
-    }
+  /**
+   * Gets the tags.
+   * @returns The tags.
+   */
+  getTags(): string {
+    return this.tags;
+  }
 
-    /**
-     * Creates an array of DataSetEvent instances from a JSON array.
-     * @param json - The JSON array containing event data.
-     * @returns An array of DataSetEvent instances.
-     */
+  /**
+   * Creates an array of DataSetEvent instances from a JSON array.
+   * @param json - The JSON array containing event data.
+   * @returns An array of DataSetEvent instances.
+   */
   static fromJsonArray(json: any): DataSetEvent[] {
     // Deterministic order by key to satisfy tests expecting specific index positions
     return Object.keys(json)

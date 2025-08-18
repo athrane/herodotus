@@ -77,8 +77,8 @@ describe('DataSetEventComponent', () => {
       
       expect(result).toBe(newDataSetEvent);
       expect(result).not.toBe(dataSetEvent);
-      expect(result.EventType).toBe("Military");
-      expect(result.Place).toBe("Battlefield");
+      expect(result.getEventType()).toBe("Military");
+      expect(result.getPlace()).toBe("Battlefield");
     });
 
     it('should throw error if dataSetEvent is null', () => {
@@ -118,8 +118,8 @@ describe('DataSetEventComponent', () => {
       expect(retrievedEvent).toBe(dataSetEvent);
       
       // Verify it's the same DataSetEvent with expected properties
-      expect(retrievedEvent.EventType).toBe("Political");
-      expect(retrievedEvent.Place).toBe("Capital City");
+      expect(retrievedEvent.getEventType()).toBe("Political");
+      expect(retrievedEvent.getPlace()).toBe("Capital City");
     });
 
     it('should allow updating the reference during simulation', () => {
@@ -147,7 +147,7 @@ describe('DataSetEventComponent', () => {
       
       expect(newEvent).toBe(updatedEvent);
       expect(newEvent).not.toBe(originalEvent);
-      expect(newEvent.EventType).toBe("Economic");
+      expect(newEvent.getEventType()).toBe("Economic");
     });
   });
 });

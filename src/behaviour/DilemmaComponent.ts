@@ -3,7 +3,7 @@ import { DataSetEvent } from '../data/DataSetEvent';
 import { TypeUtils } from '../util/TypeUtils';
 
 /**
- * A component that holds the current set of available choices for a dilemma.
+ * A component that holds the current set of available choices for an entity.
  * This component is attached to an entity when choices are generated,
  * and represents all valid DataSetEvent options that can be selected for the current turn.
  */

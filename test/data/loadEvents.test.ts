@@ -37,6 +37,6 @@ describe('loadEvents', () => {
     const events = loadEvents();
     expect(events.length).toBe(2);
     expect(events[0]).toBeInstanceOf(DataSetEvent);
-    expect(events[1].EventType).toBe('TypeB');
+    expect(events[1].getEventType()).toBe('TypeB');
   });
 });

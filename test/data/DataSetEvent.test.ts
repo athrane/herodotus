@@ -18,18 +18,18 @@ describe('Event', () => {
 
   it('should construct an DataSetEvent from raw data', () => {
     const event = new DataSetEvent(sample);
-    expect(event.EventType).toBe('TypeA');
-    expect(event.EventTrigger).toBe('TriggerA');
-    expect(event.EventName).toBe('NameA');
-    expect(event.EventConsequence).toBe('ConsequenceA');
-    expect(event.Heading).toBe('HeadingA');
-    expect(event.Place).toBe('PlaceA');
-    expect(event.PrimaryActor).toBe('ActorA');
-    expect(event.SecondaryActor).toBe('ActorB');
-    expect(event.Motive).toBe('MotiveA');
-    expect(event.Description).toBe('DescriptionA');
-    expect(event.Consequence).toBe('ConsequenceA');
-    expect(event.Tags).toBe('TagA');
+    expect(event.getEventType()).toBe('TypeA');
+    expect(event.getEventTrigger()).toBe('TriggerA');
+    expect(event.getEventName()).toBe('NameA');
+    expect(event.getEventConsequence()).toBe('ConsequenceA');
+    expect(event.getHeading()).toBe('HeadingA');
+    expect(event.getPlace()).toBe('PlaceA');
+    expect(event.getPrimaryActor()).toBe('ActorA');
+    expect(event.getSecondaryActor()).toBe('ActorB');
+    expect(event.getMotive()).toBe('MotiveA');
+    expect(event.getDescription()).toBe('DescriptionA');
+    expect(event.getConsequence()).toBe('ConsequenceA');
+    expect(event.getTags()).toBe('TagA');
   });
 
   it('should create an array of Events from JSON', () => {
@@ -37,6 +37,6 @@ describe('Event', () => {
     const events = DataSetEvent.fromJsonArray(json);
     expect(events.length).toBe(2);
     expect(events[0]).toBeInstanceOf(DataSetEvent);
-    expect(events[1].EventName).toBe('NameB');
+    expect(events[1].getEventName()).toBe('NameB');
   });
 });

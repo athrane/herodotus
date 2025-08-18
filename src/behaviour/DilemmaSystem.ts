@@ -42,30 +42,30 @@ export class DilemmaSystem extends System {
     processEntity(entity: Entity): void {
         TypeUtils.ensureInstanceOf(entity, Entity, 'entity must be an Entity instance.');
 
-        // get current state, from the DataSetEvent
+        // Get current state, the event consequence, from the DataSetEvent
         const dataSetEventComponent = entity.getComponent(DataSetEventComponent);
         if (!dataSetEventComponent) return;
 
         const currentDataSetEvent = dataSetEventComponent.getDataSetEvent();        
-        const currentState = currentDataSetEvent.EventConsequence;
+        const currentState = currentDataSetEvent.getEventConsequence();
 
-        // exit if current state isn't defined 
+        // Exit if current state isn't defined 
         if (!currentState || currentState.trim() === '') return;        
 
-        // Step 2: Find Triggers in the global DataSetComponent and filter by trigger
+        // Find triggers in the global DataSetComponent and filter by trigger
         const globalDataSetComponent = this.getEntityManager().getSingletonComponent(DataSetComponent);
         if (!globalDataSetComponent) return; 
 
         // Find all events where EventTrigger matches the player's current state
         const validChoices = globalDataSetComponent.find(event => 
-            event.EventTrigger === currentState
+            event.getEventTrigger() === currentState
         );
 
-        // Step 3: Generate Choices - Update DilemmaComponent with valid choices
+        // Update DilemmaComponent with valid choices
         let dilemmaComponent = entity.getComponent(DilemmaComponent);
         
+        // Create DilemmaComponent if it doesn't exist        
         if (!dilemmaComponent) {
-            // Create DilemmaComponent if it doesn't exist
             dilemmaComponent = DilemmaComponent.create([]);
             entity.addComponent(dilemmaComponent);
         }

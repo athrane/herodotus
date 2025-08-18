@@ -61,9 +61,9 @@ describe('DilemmaResolutionSystem', () => {
             // Assert
             // Should update DataSetEventComponent with first choice
             const updatedDataSetEvent = dataSetEventComponent.getDataSetEvent();
-            expect(updatedDataSetEvent.EventName).toBe('Choice One');
-            expect(updatedDataSetEvent.EventTrigger).toBe('CHOICE_1');
-            expect(updatedDataSetEvent.EventConsequence).toBe('Result of choice one');
+            expect(updatedDataSetEvent.getEventName()).toBe('Choice One');
+            expect(updatedDataSetEvent.getEventTrigger()).toBe('CHOICE_1');
+            expect(updatedDataSetEvent.getEventConsequence()).toBe('Result of choice one');
 
             // Should clear DilemmaComponent choices but keep the component
             expect(entity.hasComponent(DilemmaComponent)).toBe(true);
@@ -91,8 +91,8 @@ describe('DilemmaResolutionSystem', () => {
             // Assert
             // DataSetEventComponent should remain unchanged
             const unchangedDataSetEvent = dataSetEventComponent.getDataSetEvent();
-            expect(unchangedDataSetEvent.EventName).toBe('Initial Event');
-            expect(unchangedDataSetEvent.EventTrigger).toBe('INITIAL_STATE');
+            expect(unchangedDataSetEvent.getEventName()).toBe('Initial Event');
+            expect(unchangedDataSetEvent.getEventTrigger()).toBe('INITIAL_STATE');
 
             // No components should be removed
             expect(entity.hasComponent(DataSetEventComponent)).toBe(true);
@@ -146,7 +146,7 @@ describe('DilemmaResolutionSystem', () => {
             
             // DataSetEventComponent should remain unchanged
             const unchangedDataSetEvent = dataSetEventComponent.getDataSetEvent();
-            expect(unchangedDataSetEvent.EventName).toBe('Initial Event');
+            expect(unchangedDataSetEvent.getEventName()).toBe('Initial Event');
             expect(entity.hasComponent(DataSetEventComponent)).toBe(true);
         });
 
@@ -181,9 +181,9 @@ describe('DilemmaResolutionSystem', () => {
             // Assert
             // Should select the first choice (index 0)
             const updatedDataSetEvent = dataSetEventComponent.getDataSetEvent();
-            expect(updatedDataSetEvent.EventName).toBe('Choice 0');
-            expect(updatedDataSetEvent.EventTrigger).toBe('CHOICE_0');
-            expect(updatedDataSetEvent.EventConsequence).toBe('Result of choice 0');
+            expect(updatedDataSetEvent.getEventName()).toBe('Choice 0');
+            expect(updatedDataSetEvent.getEventTrigger()).toBe('CHOICE_0');
+            expect(updatedDataSetEvent.getEventConsequence()).toBe('Result of choice 0');
 
             // Should clear DilemmaComponent choices but keep the component
             expect(entity.hasComponent(DilemmaComponent)).toBe(true);
@@ -251,17 +251,17 @@ describe('DilemmaResolutionSystem', () => {
             expect(entity1.hasComponent(DilemmaComponent)).toBe(true);
             const entity1DilemmaComponent = entity1.getComponent(DilemmaComponent);
             expect(entity1DilemmaComponent.getChoiceCount()).toBe(0);
-            expect(entity1.getComponent(DataSetEventComponent).getDataSetEvent().EventName).toBe('Choice A');
+            expect(entity1.getComponent(DataSetEventComponent).getDataSetEvent().getEventName()).toBe('Choice A');
 
             // Entity 2 should be processed
             expect(entity2.hasComponent(DilemmaComponent)).toBe(true);
             const entity2DilemmaComponent = entity2.getComponent(DilemmaComponent);
             expect(entity2DilemmaComponent.getChoiceCount()).toBe(0);
-            expect(entity2.getComponent(DataSetEventComponent).getDataSetEvent().EventName).toBe('Choice B');
+            expect(entity2.getComponent(DataSetEventComponent).getDataSetEvent().getEventName()).toBe('Choice B');
 
             // Entity 3 should not be processed (still has original state)
             expect(entity3.hasComponent(DataSetEventComponent)).toBe(true);
-            expect(entity3.getComponent(DataSetEventComponent).getDataSetEvent().EventName).toBe('State 1');
+            expect(entity3.getComponent(DataSetEventComponent).getDataSetEvent().getEventName()).toBe('State 1');
         });
     });
 });

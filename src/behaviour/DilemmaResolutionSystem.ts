@@ -5,6 +5,13 @@ import { DilemmaComponent } from './DilemmaComponent';
 import { DataSetEventComponent } from '../data/DataSetEventComponent';
 import { DataSetEvent } from '../data/DataSetEvent';
 import { TypeUtils } from '../util/TypeUtils';
+import { ChronicleComponent } from '../chronicle/ChronicleComponent';
+import { ChronicleEvent } from '../chronicle/ChronicleEvent';
+import { TimeComponent } from '../time/TimeComponent';
+import { WorldComponent } from '../geography/WorldComponent';
+import { EventType } from '../chronicle/EventType';
+import { EventCategory } from '../chronicle/EventCategory';
+import { Place } from '../generator/Place';
 
 /**
  * The DilemmaResolutionSystem processes entities with DilemmaComponents to resolve
@@ -25,6 +32,7 @@ export class DilemmaResolutionSystem extends System {
     /**
      * Processes an entity with a DilemmaComponent by making a choice and updating
      * the entity's DataSetEventComponent with the chosen event.
+     * Also creates a chronicle event to record the decision.
      * @param entity - The entity to process.
      */
     processEntity(entity: Entity): void {
@@ -33,25 +41,21 @@ export class DilemmaResolutionSystem extends System {
         const dilemmaComponent = entity.getComponent(DilemmaComponent);
         const dataSetEventComponent = entity.getComponent(DataSetEventComponent);
 
-        if (!dilemmaComponent || !dataSetEventComponent) {
-            // Skip entities that don't have both required components
-            return;
-        }
+        // Exit if components are missing
+        if (!dilemmaComponent || !dataSetEventComponent) return;
 
-        // Get available choices from the dilemma
+        // Get available choices, exit if no choices are available
         const choices = dilemmaComponent.getChoices();
-        if (choices.length === 0) {
-            // No choices available, nothing to do
-            return;
-        }
+        if (choices.length === 0) return;
 
         // Make a choice (for now, we'll use simple logic - first choice)
-        // In a real game, this could be based on AI decision-making,
-        // player input, or other game mechanics
         const chosenEvent = this.makeChoice(choices);
 
-        // Update the entity's DataSetEventComponent with the chosen event
+        // Update the entity's DataSetEventComponent with the choice
         dataSetEventComponent.setDataSetEvent(chosenEvent);
+
+        // Record the decision in the chronicle
+        this.recordDecisionInChronicle(chosenEvent, choices.length);
 
         // Clear the choices in DilemmaComponent to prepare for the next cycle
         dilemmaComponent.clearChoices();
@@ -74,5 +78,69 @@ export class DilemmaResolutionSystem extends System {
         // - AI decision-making algorithms
         // - Player preference patterns
         return choices[0];
+    }
+
+    /**
+     * Records the decision made in the chronicle for historical tracking.
+     * @param chosenEvent - The DataSetEvent that was chosen.
+     * @param totalChoices - The total number of choices that were available.
+     */
+    private recordDecisionInChronicle(chosenEvent: DataSetEvent, totalChoices: number): void {
+        // Get the required singleton components
+        const chronicleComponent = this.getEntityManager().getSingletonComponent(ChronicleComponent);
+        const timeComponent = this.getEntityManager().getSingletonComponent(TimeComponent);
+        const worldComponent = this.getEntityManager().getSingletonComponent(WorldComponent);
+
+        // Exit if any required components are missing
+        if (!chronicleComponent || !timeComponent || !worldComponent) return;
+        
+        // Get the current time
+        const currentTime = timeComponent.getTime();
+        
+        // Get a place from the world
+        const place = this.computeDecisionPlace(worldComponent.get());
+
+        // Create an event type for the decision
+        const eventType = EventType.create(EventCategory.SOCIAL, 'Player Decision');
+
+        // Create the chronicle event
+        const heading = `Decision made: ${chosenEvent.getEventName()}`;
+        const description = `A crucial decision was made, selecting "${chosenEvent.getEventName()}" from ${totalChoices} available options. ` +
+                          `This choice will shape the course of events going forward. ` +
+                          `Event trigger: ${chosenEvent.getEventTrigger()}`;
+
+        const chronicleEvent = ChronicleEvent.create(
+            heading,
+            eventType,
+            currentTime,
+            place,
+            description,
+            null // No specific historical figure associated with player decisions
+        );
+
+        // Add the event to the chronicle
+        chronicleComponent.addEvent(chronicleEvent);
+    }
+
+    /**
+     * Computes a place for the decision event.
+     * This method retrieves a random geographical feature from the world.
+     * @param world - The world instance to get a random place from.
+     * @returns A Place instance representing the location where the decision was made.
+     */
+    private computeDecisionPlace(world: any): Place {
+        // For now, we'll use a generic location for decisions
+        // This could be enhanced to use the player's current location or
+        // a contextually relevant location based on the decision type
+        if (world && typeof world.getRandomContinent === 'function') {
+            const continent = world.getRandomContinent();
+            if (continent && typeof continent.getRandomFeature === 'function') {
+                const randomFeature = continent.getRandomFeature();
+                if (randomFeature && typeof randomFeature.getName === 'function') {
+                    return Place.create(randomFeature.getName());
+                }
+            }
+        }
+        return Place.create('The Council Chambers');
     }
 }
