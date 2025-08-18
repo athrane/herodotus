@@ -1,6 +1,6 @@
-import { DilemmaResolutionSystem } from '../../src/data/DilemmaResolutionSystem';
+import { DilemmaResolutionSystem } from '../../src/behaviour/DilemmaResolutionSystem';
 import { EntityManager } from '../../src/ecs/EntityManager';
-import { DilemmaComponent } from '../../src/data/DilemmaComponent';
+import { DilemmaComponent } from '../../src/behaviour/DilemmaComponent';
 import { DataSetEventComponent } from '../../src/data/DataSetEventComponent';
 import { DataSetEvent } from '../../src/data/DataSetEvent';
 

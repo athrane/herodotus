@@ -3,7 +3,7 @@ import { EntityManager } from '../ecs/EntityManager';
 import { Entity } from '../ecs/Entity';
 import { DataSetEventComponent } from '../data/DataSetEventComponent';
 import { DataSetComponent } from '../data/DataSetComponent';
-import { DilemmaComponent } from '../data/DilemmaComponent';
+import { DilemmaComponent } from './DilemmaComponent';
 import { TypeUtils } from '../util/TypeUtils';
 
 /**

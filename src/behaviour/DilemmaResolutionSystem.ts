@@ -2,8 +2,8 @@ import { System } from '../ecs/System';
 import { EntityManager } from '../ecs/EntityManager';
 import { Entity } from '../ecs/Entity';
 import { DilemmaComponent } from './DilemmaComponent';
-import { DataSetEventComponent } from './DataSetEventComponent';
-import { DataSetEvent } from './DataSetEvent';
+import { DataSetEventComponent } from '../data/DataSetEventComponent';
+import { DataSetEvent } from '../data/DataSetEvent';
 import { TypeUtils } from '../util/TypeUtils';
 
 /**

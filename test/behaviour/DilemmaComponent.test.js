@@ -1,4 +1,4 @@
-import { DilemmaComponent } from '../../src/data/DilemmaComponent';
+import { DilemmaComponent } from '../../src/behaviour/DilemmaComponent';
 import { DataSetEvent } from '../../src/data/DataSetEvent';
 import { Component } from '../../src/ecs/Component';
 

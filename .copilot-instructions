@@ -18,6 +18,10 @@
 - Create unit tests using mocks
 - Create unit test for each method in a class
 - Create integration tests without mocks, but with usage of classes included in the project
+- Prior to completing a task, verify the ESLint pre-commit check doesn't fails.
+
+## Documentation 
+- Prior to completing a task, update the class documentation in the README file
 
 ## Pull Requests
 - Reference related issues or discussions in your PR descriptions.

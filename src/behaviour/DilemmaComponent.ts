@@ -1,5 +1,5 @@
 import { Component } from '../ecs/Component';
-import { DataSetEvent } from './DataSetEvent';
+import { DataSetEvent } from '../data/DataSetEvent';
 import { TypeUtils } from '../util/TypeUtils';
 
 /**

@@ -1,9 +1,9 @@
-import { DilemmaSystem } from '../../src/data/DilemmaSystem';
+import { DilemmaSystem } from '../../src/behaviour/DilemmaSystem';
 import { EntityManager } from '../../src/ecs/EntityManager';
 import { Entity } from '../../src/ecs/Entity';
 import { DataSetEventComponent } from '../../src/data/DataSetEventComponent';
 import { DataSetComponent } from '../../src/data/DataSetComponent';
-import { DilemmaComponent } from '../../src/data/DilemmaComponent';
+import { DilemmaComponent } from '../../src/behaviour/DilemmaComponent';
 import { DataSetEvent } from '../../src/data/DataSetEvent';
 import { System } from '../../src/ecs/System';
 

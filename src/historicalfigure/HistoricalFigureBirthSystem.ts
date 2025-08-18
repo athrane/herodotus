@@ -16,7 +16,7 @@ import { EventType } from '../chronicle/EventType';
 import { Place } from '../generator/Place';
 import { DataSetEvent } from '../data/DataSetEvent';
 import { DataSetEventComponent } from '../data/DataSetEventComponent';
-import { DilemmaComponent } from '../data/DilemmaComponent';
+import { DilemmaComponent } from '../behaviour/DilemmaComponent';
 
 /**
  * Manages the birth of historical figures.

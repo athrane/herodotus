@@ -19,9 +19,9 @@ import { loadEvents } from '../../data/loadEvents';
 import { DataSetComponent } from '../../data/DataSetComponent';
 import { DataSetEvent } from '../../data/DataSetEvent';
 import { DataSetEventComponent } from '../../data/DataSetEventComponent';
-import { DilemmaSystem } from '../../data/DilemmaSystem';
-import { DilemmaResolutionSystem } from '../../data/DilemmaResolutionSystem';
-import { DilemmaComponent } from '../../data/DilemmaComponent';
+import { DilemmaSystem } from '../../behaviour/DilemmaSystem';
+import { DilemmaResolutionSystem } from '../../behaviour/DilemmaResolutionSystem';
+import { DilemmaComponent } from '../../behaviour/DilemmaComponent';
 import { PlayerComponent } from '../../ecs/PlayerComponent';
 
 /**
