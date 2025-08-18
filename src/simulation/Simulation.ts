@@ -81,11 +81,13 @@ export class Simulation {
 
         // Calculate the time in milliseconds since the last tick
         const currentTime = performance.now();
-        const deltaTime = (currentTime - this.lastTickTime) / 1000; // Convert to seconds
+        //const deltaTime = (currentTime - this.lastTickTime) / 1000; // Convert to seconds
         this.lastTickTime = currentTime;
 
         // Update all systems
-        this.systemManager.update(deltaTime);
+        // this.systemManager.update(deltaTime);
+        // Hack: Hard code deltaTime = 0.1 sec == 1 year
+        this.systemManager.update(0.1);
     }
 
     /**
