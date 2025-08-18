@@ -76,13 +76,16 @@ describe('DilemmaComponent', () => {
       expect(component.getChoiceCount()).toBe(0);
     });
 
-    it('should freeze the choices array to prevent modification', () => {
+    it('should protect internal state from external modification', () => {
       const component = new DilemmaComponent(choices);
       const retrievedChoices = component.getChoices();
       
-      expect(() => {
-        retrievedChoices.push(dataSetEvent1);
-      }).toThrow();
+      // Modifying the returned array should not affect the component's internal state
+      retrievedChoices.push(dataSetEvent1);
+      
+      // Component should still have original number of choices
+      expect(component.getChoiceCount()).toBe(3);
+      expect(component.getChoices().length).toBe(3);
     });
 
     it('should create a copy of the input array to prevent external modifications', () => {
@@ -132,12 +135,15 @@ describe('DilemmaComponent', () => {
       expect(Array.isArray(retrievedChoices)).toBe(true);
     });
 
-    it('should return the same reference on multiple calls', () => {
+    it('should return a new array on each call to prevent external modifications', () => {
       const component = new DilemmaComponent(choices);
       const choices1 = component.getChoices();
       const choices2 = component.getChoices();
       
-      expect(choices1).toBe(choices2);
+      // Should return different references (defensive copies)
+      expect(choices1).not.toBe(choices2);
+      // But with the same content
+      expect(choices1).toEqual(choices2);
     });
   });
 
@@ -239,6 +245,62 @@ describe('DilemmaComponent', () => {
       expect(component.getChoice(0).EventType).toBe("Political");
       expect(component.getChoice(1).EventType).toBe("Military");
       expect(component.getChoice(2).EventType).toBe("Economic");
+    });
+  });
+
+  describe('setChoices', () => {
+    it('should replace existing choices with new ones', () => {
+      const component = new DilemmaComponent(choices);
+      expect(component.getChoiceCount()).toBe(3);
+
+      const newChoices = [dataSetEvent3];
+      component.setChoices(newChoices);
+
+      expect(component.getChoiceCount()).toBe(1);
+      expect(component.getChoice(0).EventType).toBe("Economic");
+    });
+
+    it('should validate that new choices are DataSetEvent instances', () => {
+      const component = new DilemmaComponent(choices);
+      
+      expect(() => {
+        component.setChoices([{}]);
+      }).toThrow('All choices must be DataSetEvent instances.');
+    });
+
+    it('should validate that input is an array', () => {
+      const component = new DilemmaComponent(choices);
+      
+      expect(() => {
+        component.setChoices(null);
+      }).toThrow('newChoices must be an array.');
+    });
+
+    it('should allow setting empty choices array', () => {
+      const component = new DilemmaComponent(choices);
+      expect(component.getChoiceCount()).toBe(3);
+
+      component.setChoices([]);
+      expect(component.getChoiceCount()).toBe(0);
+    });
+  });
+
+  describe('clearChoices', () => {
+    it('should clear all choices', () => {
+      const component = new DilemmaComponent(choices);
+      expect(component.getChoiceCount()).toBe(3);
+
+      component.clearChoices();
+      expect(component.getChoiceCount()).toBe(0);
+      expect(component.getChoices()).toEqual([]);
+    });
+
+    it('should work correctly when already empty', () => {
+      const component = new DilemmaComponent([]);
+      expect(component.getChoiceCount()).toBe(0);
+
+      component.clearChoices();
+      expect(component.getChoiceCount()).toBe(0);
     });
   });
 });

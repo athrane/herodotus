@@ -21,6 +21,7 @@ import { DataSetEvent } from '../../data/DataSetEvent';
 import { DataSetEventComponent } from '../../data/DataSetEventComponent';
 import { DilemmaSystem } from '../../data/DilemmaSystem';
 import { DilemmaResolutionSystem } from '../../data/DilemmaResolutionSystem';
+import { DilemmaComponent } from '../../data/DilemmaComponent';
 import { PlayerComponent } from '../../ecs/PlayerComponent';
 
 /**
@@ -100,6 +101,7 @@ export class SimulationBuilder extends Builder {
             new NameComponent("Player"),
             new HistoricalFigureComponent("Player Character", 0, 70, "Unknown", "Ruler"),
             DataSetEventComponent.create(initialEvent),
+            DilemmaComponent.create([]), // Start with empty choices, will be populated by DilemmaSystem
             PlayerComponent.create()
         );
 

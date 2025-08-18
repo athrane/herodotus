@@ -65,8 +65,10 @@ describe('DilemmaResolutionSystem', () => {
             expect(updatedDataSetEvent.EventTrigger).toBe('CHOICE_1');
             expect(updatedDataSetEvent.EventConsequence).toBe('Result of choice one');
 
-            // Should remove DilemmaComponent
-            expect(entity.hasComponent(DilemmaComponent)).toBe(false);
+            // Should clear DilemmaComponent choices but keep the component
+            expect(entity.hasComponent(DilemmaComponent)).toBe(true);
+            const resultDilemmaComponent = entity.getComponent(DilemmaComponent);
+            expect(resultDilemmaComponent.getChoiceCount()).toBe(0);
             expect(entity.hasComponent(DataSetEventComponent)).toBe(true);
         });
 
@@ -137,8 +139,10 @@ describe('DilemmaResolutionSystem', () => {
             system.processEntity(entity);
 
             // Assert
-            // Should remove DilemmaComponent
-            expect(entity.hasComponent(DilemmaComponent)).toBe(false);
+            // Should keep DilemmaComponent but it should still be empty
+            expect(entity.hasComponent(DilemmaComponent)).toBe(true);
+            const resultDilemmaComp = entity.getComponent(DilemmaComponent);
+            expect(resultDilemmaComp.getChoiceCount()).toBe(0);
             
             // DataSetEventComponent should remain unchanged
             const unchangedDataSetEvent = dataSetEventComponent.getDataSetEvent();
@@ -181,8 +185,10 @@ describe('DilemmaResolutionSystem', () => {
             expect(updatedDataSetEvent.EventTrigger).toBe('CHOICE_0');
             expect(updatedDataSetEvent.EventConsequence).toBe('Result of choice 0');
 
-            // Should remove DilemmaComponent
-            expect(entity.hasComponent(DilemmaComponent)).toBe(false);
+            // Should clear DilemmaComponent choices but keep the component
+            expect(entity.hasComponent(DilemmaComponent)).toBe(true);
+            const finalDilemmaComponent = entity.getComponent(DilemmaComponent);
+            expect(finalDilemmaComponent.getChoiceCount()).toBe(0);
         });
 
         it('should throw error for invalid entity', () => {
@@ -242,11 +248,15 @@ describe('DilemmaResolutionSystem', () => {
 
             // Assert
             // Entity 1 should be processed
-            expect(entity1.hasComponent(DilemmaComponent)).toBe(false);
+            expect(entity1.hasComponent(DilemmaComponent)).toBe(true);
+            const entity1DilemmaComponent = entity1.getComponent(DilemmaComponent);
+            expect(entity1DilemmaComponent.getChoiceCount()).toBe(0);
             expect(entity1.getComponent(DataSetEventComponent).getDataSetEvent().EventName).toBe('Choice A');
 
             // Entity 2 should be processed
-            expect(entity2.hasComponent(DilemmaComponent)).toBe(false);
+            expect(entity2.hasComponent(DilemmaComponent)).toBe(true);
+            const entity2DilemmaComponent = entity2.getComponent(DilemmaComponent);
+            expect(entity2DilemmaComponent.getChoiceCount()).toBe(0);
             expect(entity2.getComponent(DataSetEventComponent).getDataSetEvent().EventName).toBe('Choice B');
 
             // Entity 3 should not be processed (still has original state)

@@ -41,8 +41,7 @@ export class DilemmaResolutionSystem extends System {
         // Get available choices from the dilemma
         const choices = dilemmaComponent.getChoices();
         if (choices.length === 0) {
-            // No choices available, remove the dilemma component
-            entity.removeComponent(DilemmaComponent);
+            // No choices available, nothing to do
             return;
         }
 
@@ -54,8 +53,8 @@ export class DilemmaResolutionSystem extends System {
         // Update the entity's DataSetEventComponent with the chosen event
         dataSetEventComponent.setDataSetEvent(chosenEvent);
 
-        // Remove the DilemmaComponent to prepare for the next cycle
-        entity.removeComponent(DilemmaComponent);
+        // Clear the choices in DilemmaComponent to prepare for the next cycle
+        dilemmaComponent.clearChoices();
     }
 
     /**

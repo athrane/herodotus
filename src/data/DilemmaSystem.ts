@@ -61,14 +61,16 @@ export class DilemmaSystem extends System {
             event.EventTrigger === currentState
         );
 
-        // Step 3: Generate Choices - Create DilemmaComponent with valid choices
-        if (validChoices.length > 0) {
-            // Remove existing DilemmaComponent if it exists (replace old choices)
-            entity.removeComponent(DilemmaComponent);
-            
-            // Create and attach new DilemmaComponent with the valid choices
-            const dilemmaComponent = DilemmaComponent.create(validChoices);
+        // Step 3: Generate Choices - Update DilemmaComponent with valid choices
+        let dilemmaComponent = entity.getComponent(DilemmaComponent);
+        
+        if (!dilemmaComponent) {
+            // Create DilemmaComponent if it doesn't exist
+            dilemmaComponent = DilemmaComponent.create([]);
             entity.addComponent(dilemmaComponent);
         }
+
+        // Set the new choices (or empty array if no valid choices)
+        dilemmaComponent.setChoices(validChoices);
     }
 }

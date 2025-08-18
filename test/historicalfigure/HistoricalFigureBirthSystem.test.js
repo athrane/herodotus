@@ -367,13 +367,19 @@ describe('HistoricalFigureBirthSystem', () => {
             expect(entityManager.createEntity).toHaveBeenCalledTimes(1);
             
             const createEntityCall = entityManager.createEntity.mock.calls[0];
-            expect(createEntityCall).toHaveLength(3); // NameComponent, HistoricalFigureComponent, DataSetEventComponent
+            expect(createEntityCall).toHaveLength(4); // NameComponent, HistoricalFigureComponent, DataSetEventComponent, DilemmaComponent
             
             // Verify DataSetEventComponent is included
             const dataSetEventComponent = createEntityCall.find(component => 
                 component.constructor.name === 'DataSetEventComponent'
             );
             expect(dataSetEventComponent).toBeDefined();
+            
+            // Verify DilemmaComponent is included
+            const dilemmaComponent = createEntityCall.find(component => 
+                component.constructor.name === 'DilemmaComponent'
+            );
+            expect(dilemmaComponent).toBeDefined();
         });
 
         it('should create DataSetEvent with correct Social event type', () => {

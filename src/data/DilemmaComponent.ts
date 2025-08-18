@@ -11,7 +11,7 @@ export class DilemmaComponent extends Component {
     /**
      * Array of DataSetEvent choices available for the current dilemma.
      */
-    private readonly choices: ReadonlyArray<DataSetEvent>;
+    private choices: DataSetEvent[];
 
     /**
      * Creates an instance of DilemmaComponent.
@@ -26,7 +26,7 @@ export class DilemmaComponent extends Component {
             TypeUtils.ensureInstanceOf(choice, DataSetEvent, 'All choices must be DataSetEvent instances.');
         }
 
-        this.choices = Object.freeze([...choices]);
+        this.choices = [...choices];
     }
 
     /**
@@ -34,7 +34,29 @@ export class DilemmaComponent extends Component {
      * @returns A readonly array of DataSetEvent choices.
      */
     getChoices(): ReadonlyArray<DataSetEvent> {
-        return this.choices;
+        return [...this.choices];
+    }
+
+    /**
+     * Sets new choices for the dilemma, replacing any existing choices.
+     * @param newChoices - The new array of DataSetEvent choices.
+     */
+    setChoices(newChoices: DataSetEvent[]): void {
+        TypeUtils.ensureArray(newChoices, 'newChoices must be an array.');
+        
+        // Validate each choice is a DataSetEvent instance
+        for (const choice of newChoices) {
+            TypeUtils.ensureInstanceOf(choice, DataSetEvent, 'All choices must be DataSetEvent instances.');
+        }
+
+        this.choices = [...newChoices];
+    }
+
+    /**
+     * Clears all choices from the dilemma.
+     */
+    clearChoices(): void {
+        this.choices = [];
     }
 
     /**

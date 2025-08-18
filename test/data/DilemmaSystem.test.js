@@ -209,7 +209,9 @@ describe('DilemmaSystem', () => {
 
         dilemmaSystem.processEntity(playerEntity);
         
-        expect(playerEntity.getComponent(DilemmaComponent)).toBeUndefined();
+        const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
+        expect(dilemmaComponent).toBeDefined();
+        expect(dilemmaComponent.getChoiceCount()).toBe(0);
       });
 
       it('should replace existing DilemmaComponent with new choices', () => {
@@ -223,7 +225,7 @@ describe('DilemmaSystem', () => {
         dilemmaSystem.processEntity(playerEntity);
         
         const newDilemmaComponent = playerEntity.getComponent(DilemmaComponent);
-        expect(newDilemmaComponent).not.toBe(oldDilemmaComponent);
+        expect(newDilemmaComponent).toBe(oldDilemmaComponent); // Same instance, different choices
         expect(newDilemmaComponent.getChoiceCount()).toBe(2);
         expect(newDilemmaComponent.getChoices()).not.toContain(unrelatedEvent);
       });
@@ -252,7 +254,9 @@ describe('DilemmaSystem', () => {
         dilemmaSystem.processEntity(playerEntity);
         
         // Should not match due to case sensitivity
-        expect(playerEntity.getComponent(DilemmaComponent)).toBeUndefined();
+        const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
+        expect(dilemmaComponent).toBeDefined();
+        expect(dilemmaComponent.getChoiceCount()).toBe(0);
       });
 
       it('should handle special characters in trigger states', () => {
@@ -310,7 +314,9 @@ describe('DilemmaSystem', () => {
 
         dilemmaSystem.processEntity(playerEntity);
         
-        expect(playerEntity.getComponent(DilemmaComponent)).toBeUndefined();
+        const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
+        expect(dilemmaComponent).toBeDefined();
+        expect(dilemmaComponent.getChoiceCount()).toBe(0);
       });
 
       it('should handle multiple entities correctly', () => {
