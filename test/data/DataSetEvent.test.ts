@@ -5,7 +5,7 @@ describe('Event', () => {
     "Event Type": "TypeA",
     "Event Trigger": "TriggerA",
     "Event Name": "NameA",
-    "DataSetEvent Consequence": "ConsequenceA",
+    "Event Consequence": "ConsequenceA",
     "Heading": "HeadingA",
     "Place": "PlaceA",
     "Primary Actor": "ActorA",
@@ -33,7 +33,7 @@ describe('Event', () => {
   });
 
   it('should create an array of Events from JSON', () => {
-    const json = { a: sample, b: { ...sample, "DataSetEvent Name": "NameB" } };
+    const json = { a: sample, b: { ...sample, "Event Name": "NameB" } };
     const events = DataSetEvent.fromJsonArray(json);
     expect(events.length).toBe(2);
     expect(events[0]).toBeInstanceOf(DataSetEvent);

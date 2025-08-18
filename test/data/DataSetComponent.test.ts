@@ -33,17 +33,19 @@ describe('DataSetComponent', () => {
     expect(list[0].EventName).toBe('Name1');
   });
 
-  it('stores events keyed by EventTrigger (unique, first wins)', () => {
+  it('stores multiple events with the same EventTrigger', () => {
     const dup = new DataSetEvent(raw(99, 'Trigger2')); // duplicate trigger of events[1]
     const comp = DataSetComponent.create([...events, dup]);
-    expect(comp.getEvents().length).toBe(3); // duplicate ignored
+    expect(comp.getEvents().length).toBe(4); // all events kept including duplicate
     const byTrigger = comp.getByTrigger('Trigger2');
-    expect(byTrigger?.EventName).toBe('Name2'); // original retained
+    expect(byTrigger.length).toBe(2); // both events with Trigger2
+    expect(byTrigger[0]?.EventName).toBe('Name2'); // original first
+    expect(byTrigger[1]?.EventName).toBe('Name99'); // duplicate second
   });
 
-  it('getByTrigger returns undefined for missing key', () => {
+  it('getByTrigger returns empty array for missing key', () => {
     const comp = DataSetComponent.create(events);
-    expect(comp.getByTrigger('Nope')).toBeUndefined();
+    expect(comp.getByTrigger('Nope')).toEqual([]);
   });
 
   it('find filters events by predicate', () => {

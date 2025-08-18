@@ -45,6 +45,14 @@ export class System {
   }
 
   /**
+   * Returns the required components for this system.
+   * @returns An array of component classes that entities must have for this system to process them.
+   */
+  getRequiredComponents(): Array<new (...args: any[]) => Component> {
+    return this.requiredComponents;
+  }
+
+  /**
    * Processes a single entity. This method is intended to be overridden by concrete system implementations.
    * @param entity The entity to process.
    * @param args Additional arguments passed from the update method.

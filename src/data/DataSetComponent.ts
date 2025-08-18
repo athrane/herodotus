@@ -4,14 +4,14 @@ import { DataSetEvent } from './DataSetEvent';
 
 /**
  * Component holding all loaded data set events (immutable snapshot at load time).
- * Stored internally as a Map keyed by EventTrigger.
+ * Stored internally as a Map keyed by EventTrigger, supporting multiple events per trigger.
  */
 export class DataSetComponent extends Component {
 
   /**
-   * Map of EventTrigger to DataSetEvent.
+   * Map of EventTrigger to array of DataSetEvents.
    */
-  private readonly eventMap: Map<string, DataSetEvent>;
+  private readonly eventMap: Map<string, DataSetEvent[]>;
 
   /**
    * Immutable array of all Events.
@@ -22,11 +22,11 @@ export class DataSetComponent extends Component {
    * Private constructor to enforce usage of factory method.
    * @param events - Array of DataSetEvent instances.
    */
-  private constructor(events: DataSetEvent[]) {
+  constructor(events: DataSetEvent[]) {
     super();
     // Narrow to DataSetEvent[] and validate shape of items
     TypeUtils.ensureArray<DataSetEvent>(events, 'events must be an array of DataSetEvent');
-    const map = new Map<string, DataSetEvent>();
+    const map = new Map<string, DataSetEvent[]>();
 
     for (const e of events as unknown[]) {
       // Keep an explicit instance check to preserve error semantics expected by tests
@@ -34,13 +34,14 @@ export class DataSetComponent extends Component {
       const evt = e as DataSetEvent; // narrowed by assertion above
       TypeUtils.ensureNonEmptyString(evt.EventTrigger, 'Each DataSetEvent must have a non-empty EventTrigger string');
       
-      // add if event with same trigger doesn't exist
+      // Add event to array for this trigger
       if (!map.has(evt.EventTrigger)) {
-        map.set(evt.EventTrigger, evt);
+        map.set(evt.EventTrigger, []);
       }
+      map.get(evt.EventTrigger)!.push(evt);
     }
     this.eventMap = map;
-    this.events = Object.freeze(Array.from(map.values()));
+    this.events = Object.freeze(events.slice()); // Keep all original events in order
   }
 
   /**
@@ -53,20 +54,20 @@ export class DataSetComponent extends Component {
 
   /** 
    * Get underlying map (do not mutate)
-   * @returns {ReadonlyMap<string, DataSetEvent>} - Immutable map of events
+   * @returns {ReadonlyMap<string, DataSetEvent[]>} - Immutable map of event arrays
    */
-  getEventMap(): ReadonlyMap<string, DataSetEvent> {
+  getEventMap(): ReadonlyMap<string, DataSetEvent[]> {
     return this.eventMap;
   }
 
   /**
-   * Retrieve an DataSetEvent by its EventTrigger
+   * Retrieve all DataSetEvents by their EventTrigger
    * @param trigger - The EventTrigger string
-   * @returns The DataSetEvent associated with the trigger, or undefined if not found
+   * @returns Array of DataSetEvents associated with the trigger, or empty array if not found
    */
-  getByTrigger(trigger: string): DataSetEvent | undefined {
+  getByTrigger(trigger: string): DataSetEvent[] {
     TypeUtils.ensureString(trigger, 'trigger must be a string');
-    return this.eventMap.get(trigger);
+    return this.eventMap.get(trigger) || [];
   }
 
   /**

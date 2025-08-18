@@ -21,10 +21,10 @@ export class DataSetEvent {
      */
   constructor(data: any) {
 // Prefer DataSetEvent-specific keys to allow overrides, then "Event X", then short variants
-    this.EventType = data["DataSetEvent Type"] ?? data["Event Type"] ?? data["Type"];
-    this.EventTrigger = data["DataSetEvent Trigger"] ?? data["Event Trigger"] ?? data["Trigger"];
-    this.EventName = data["DataSetEvent Name"] ?? data["Event Name"] ?? data["Name"];
-    this.EventConsequence = data["DataSetEvent Consequence"] ?? data["Event Consequence"] ?? data["Consequence"];
+    this.EventType = data["Event Type"];
+    this.EventTrigger = data["Event Trigger"];
+    this.EventName = data["Event Name"];
+    this.EventConsequence = data["Event Consequence"];
     this.Heading = data["Heading"];
     this.Place = data["Place"];
     this.PrimaryActor = data["Primary Actor"];

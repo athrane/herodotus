@@ -116,14 +116,17 @@ This module provides the classes for creating and managing historical events in 
 *   **`ChronicleEvent`**: Represents a single, discrete entry in the chronicle, describing a historical event.
 *   **`ChronicleComponent`**: A component to store a logbook of significant historical events. This component is typically attached to the primary World entity.
 *   **`EventType`**: Represents the type of a historical event, including its category and specific name.
+*   **`EventCategory`**: Defines categories for historical events (Political, Social, Economic, Technological, Cultural/Religious, Military, Natural).
 
 #### `data`
 
 This module contains classes for loading and accessing event data.
 
-*   **`DataSetComponent`**: A component that holds all loaded event data.
-*   **`DataSetEvent`**: Data-set specific event class that maps raw JSON into strongly-typed fields; includes a helper to construct an array from a JSON object map.
-*   **`Event`**: Base event class with tolerant field mapping from raw JSON (supports legacy key variants).
+*   **`DataSetComponent`**: Component holding all loaded data set events (immutable snapshot at load time). Stored internally as a Map keyed by EventTrigger, supporting multiple events per trigger.
+*   **`DataSetEvent`**: Represents a data-driven event that can occur during gameplay.
+*   **`DataSetEventComponent`**: Component storing the current state of data-driven events on an entity.
+*   **`DilemmaComponent`**: Component representing a player choice scenario with multiple options.
+*   **`DilemmaSystem`**: The engine of the dilemma loop, responsible for generating choices based on the player's current state. Implements the read_state → find_triggers → generate_choices sequence.
 *   **`loadEvents`**: A function that loads events from a JSON file.
 
 #### `ecs`
@@ -134,6 +137,7 @@ This module implements an Entity-Component-System (ECS) architecture, a design p
 *   **`Entity`**: Represents an entity in the Entity-Component-System (ECS) architecture. An entity is essentially a container for components, identified by a unique ID. It acts as a lightweight wrapper that groups various components, which hold the actual data.
 *   **`EntityManager`**: Manages the lifecycle of entities in the ECS architecture. It is responsible for creating, retrieving, destroying, and querying entities.
 *   **`NameComponent`**: A component that provides a human-readable name.
+*   **`PlayerComponent`**: A marker component to identify an entity as the player.
 *   **`System`**: A base class for all systems in the Entity-Component-System (ECS) architecture. Systems contain the logic that operates on entities possessing a specific set of components.
 *   **`SystemManager`**: Manages the registration, lifecycle, and execution of all systems in the ECS. This class orchestrates the logic updates for the simulation.
 
@@ -177,6 +181,7 @@ This module provides a flexible and powerful system for procedurally generating 
 
 *   **`MarkovChain`**: Represents a Markov chain for procedural name generation. This class learns from a set of example names and can generate new names that mimic the patterns found in the input data. It is particularly useful for creating names that have a consistent linguistic feel. The chain is built by analyzing the frequency of character sequences (of a specified order) in the training data. It can then generate new sequences by making probabilistic choices based on the learned frequencies.
 *   **`NameGenerator`**: Provides a flexible and powerful system for procedurally generating names. This class supports multiple generation strategies, including syllable-based combination and Markov chains, allowing for a wide range of linguistic styles. It is designed to be the central point for all name generation needs within the application, from continents and geographical features to historical figures and settlements.
+*   **`SyllableSets`**: Defines collections of syllable sets for procedural name generation, categorized by linguistic characteristics, allowing creation of names with distinct cultural or geographical flavors.
 
 #### `simulation`
 

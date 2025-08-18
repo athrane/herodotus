@@ -19,6 +19,7 @@ import { loadEvents } from '../../data/loadEvents';
 import { DataSetComponent } from '../../data/DataSetComponent';
 import { DataSetEvent } from '../../data/DataSetEvent';
 import { DataSetEventComponent } from '../../data/DataSetEventComponent';
+import { DilemmaSystem } from '../../data/DilemmaSystem';
 import { PlayerComponent } from '../../ecs/PlayerComponent';
 
 /**
@@ -118,6 +119,7 @@ export class SimulationBuilder extends Builder {
         systemManager.register(new HistoricalFigureBirthSystem(entityManager));
         systemManager.register(new HistoricalFigureLifecycleSystem(entityManager));
         systemManager.register(new HistoricalFigureInfluenceSystem(entityManager));
+        systemManager.register(new DilemmaSystem(entityManager));
     }
 
     /**

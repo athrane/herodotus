@@ -4,6 +4,8 @@ import { WorldGenerator } from '../../../src/generator/world/WorldGenerator';
 import { TimeSystem } from '../../../src/time/TimeSystem';
 import { HistoricalFigureLifecycleSystem } from '../../../src/historicalfigure/HistoricalFigureLifecycleSystem';
 import { HistoricalFigureInfluenceSystem } from '../../../src/historicalfigure/HistoricalFigureInfluenceSystem';
+import { HistoricalFigureBirthSystem } from '../../../src/historicalfigure/HistoricalFigureBirthSystem';
+import { DilemmaSystem } from '../../../src/data/DilemmaSystem';
 import { DataSetComponent } from '../../../src/data/DataSetComponent.ts';
 import { DataSetEventComponent } from '../../../src/data/DataSetEventComponent.ts';
 import { HistoricalFigureComponent } from '../../../src/historicalfigure/HistoricalFigureComponent.ts';
@@ -62,10 +64,12 @@ describe('SimulationBuilder', () => {
     it('should build systems correctly', () => {
         builder.buildSystems();
 
-        expect(systemManager.register).toHaveBeenCalledTimes(4);
+        expect(systemManager.register).toHaveBeenCalledTimes(5);
         expect(systemManager.register).toHaveBeenCalledWith(expect.any(TimeSystem));
+        expect(systemManager.register).toHaveBeenCalledWith(expect.any(HistoricalFigureBirthSystem));
         expect(systemManager.register).toHaveBeenCalledWith(expect.any(HistoricalFigureLifecycleSystem));
         expect(systemManager.register).toHaveBeenCalledWith(expect.any(HistoricalFigureInfluenceSystem));
+        expect(systemManager.register).toHaveBeenCalledWith(expect.any(DilemmaSystem));
     });
 
     it('should have an empty buildGeographicalFeatures method', () => {
@@ -91,8 +95,8 @@ describe('SimulationBuilder', () => {
         const dsComp = firstCall.find(arg => arg instanceof DataSetComponent);
         expect(dsComp).toBeInstanceOf(DataSetComponent);
         expect(dsComp.getEvents()).toHaveLength(2);
-        expect(dsComp.getByTrigger('EVT_1')).toBeDefined();
-        expect(dsComp.getByTrigger('EVT_2')).toBeDefined();
+        expect(dsComp.getByTrigger('EVT_1').length).toBeGreaterThan(0);
+        expect(dsComp.getByTrigger('EVT_2').length).toBeGreaterThan(0);
 
         // Check that the second call (Player entity) includes both HistoricalFigureComponent and DataSetEventComponent
         const secondCall = entityManager.createEntity.mock.calls[1];
