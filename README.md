@@ -127,6 +127,7 @@ This module contains classes for loading and accessing event data.
 *   **`DataSetEventComponent`**: Component storing the current state of data-driven events on an entity.
 *   **`DilemmaComponent`**: Component representing a player choice scenario with multiple options.
 *   **`DilemmaSystem`**: The engine of the dilemma loop, responsible for generating choices based on the player's current state. Implements the read_state → find_triggers → generate_choices sequence.
+*   **`DilemmaResolutionSystem`**: Processes entities with DilemmaComponents to resolve player choices. Selects one of the available choices, updates the entity's DataSetEventComponent, and removes the DilemmaComponent to prepare for the next cycle.
 *   **`loadEvents`**: A function that loads events from a JSON file.
 
 #### `ecs`
