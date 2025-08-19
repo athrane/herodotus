@@ -426,7 +426,7 @@ describe('HistoricalFigureBirthSystem', () => {
             const birthEvent = dataSetEventComponent.getDataSetEvent();
             
             expect(birthEvent.getEventName()).toBe('Birth of TestName');
-            expect(birthEvent.getEventConsequence()).toBe('A new historical figure has emerged');
+            expect(birthEvent.getEventConsequence()).toBe('Birth');
             expect(birthEvent.getHeading()).toBe('A New Figure Emerges');
             expect(birthEvent.getPlace()).toBe('TestPlace');
             expect(birthEvent.getPrimaryActor()).toBe('TestName');

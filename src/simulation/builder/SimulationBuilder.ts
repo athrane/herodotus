@@ -86,7 +86,7 @@ export class SimulationBuilder extends Builder {
             "Event Type": "Political",
             "Event Trigger": "PLAYER_START",
             "Event Name": "Rise to Power",
-            "Event Consequence": "The player begins their reign as a new ruler",
+            "Event Consequence": "Coronation",
             "Heading": "A New Dawn Rises",
             "Place": "Capital",
             "Primary Actor": "Player",

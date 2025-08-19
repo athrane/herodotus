@@ -102,7 +102,7 @@ export class HistoricalFigureBirthSystem extends System {
             "Event Type": "Social",
             "Event Trigger": `NPC_BIRTH_${year}_${Math.floor(Math.random() * 10000)}`,
             "Event Name": `Birth of ${name}`,
-            "Event Consequence": `A new historical figure has emerged`,
+            "Event Consequence": `Birth`,
             "Heading": "A New Figure Emerges",
             "Place": place.getName(),
             "Primary Actor": name,
