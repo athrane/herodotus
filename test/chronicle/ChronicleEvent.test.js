@@ -16,7 +16,7 @@ describe('ChronicleEvent', () => {
     heading = 'Birth, Herodotus';
     eventType = new EventType('Political', 'Birth');
     time = new Time(484);
-    figure = new HistoricalFigure('Herodotus');
+    figure = HistoricalFigure.create('Herodotus', -484, 59, 'Greek', 'Historian');
     place = new Place('Halicarnassus');
     description = 'The birth of the Father of History.';
   });

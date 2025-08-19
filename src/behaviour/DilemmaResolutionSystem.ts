@@ -12,6 +12,8 @@ import { WorldComponent } from '../geography/WorldComponent';
 import { EventType } from '../chronicle/EventType';
 import { EventCategory } from '../chronicle/EventCategory';
 import { Place } from '../generator/Place';
+import { HistoricalFigureComponent } from '../historicalfigure/HistoricalFigureComponent';
+import { HistoricalFigure } from '../historicalfigure/HistoricalFigure';
 
 /**
  * The DilemmaResolutionSystem processes entities with DilemmaComponents to resolve
@@ -20,6 +22,17 @@ import { Place } from '../generator/Place';
  * to prepare for the next dilemma generation cycle.
  */
 export class DilemmaResolutionSystem extends System {
+    
+    /**
+     * A constant representing an unknown historical figure used when no HistoricalFigureComponent is found.
+     */
+    private static readonly UNKNOWN_HISTORICAL_FIGURE: HistoricalFigure = HistoricalFigure.create(
+        "Unknown",
+        0,
+        50,
+        "Unknown",
+        "Unknown"
+    );
 
     /**
      * Creates a new DilemmaResolutionSystem.
@@ -55,7 +68,7 @@ export class DilemmaResolutionSystem extends System {
         dataSetEventComponent.setDataSetEvent(chosenEvent);
 
         // Record the decision in the chronicle
-        this.recordDecisionInChronicle(chosenEvent, choices.length);
+        this.recordDecisionInChronicle(entity, chosenEvent, choices.length);
 
         // Clear the choices in DilemmaComponent to prepare for the next cycle
         dilemmaComponent.clearChoices();
@@ -82,10 +95,11 @@ export class DilemmaResolutionSystem extends System {
 
     /**
      * Records the decision made in the chronicle for historical tracking.
+     * @param entity - The entity that made the decision.
      * @param chosenEvent - The DataSetEvent that was chosen.
      * @param totalChoices - The total number of choices that were available.
      */
-    private recordDecisionInChronicle(chosenEvent: DataSetEvent, totalChoices: number): void {
+    private recordDecisionInChronicle(entity: Entity, chosenEvent: DataSetEvent, totalChoices: number): void {
         // Get the required singleton components
         const chronicleComponent = this.getEntityManager().getSingletonComponent(ChronicleComponent);
         const timeComponent = this.getEntityManager().getSingletonComponent(TimeComponent);
@@ -103,6 +117,9 @@ export class DilemmaResolutionSystem extends System {
         // Create an event type for the decision
         const eventType = EventType.create(EventCategory.SOCIAL, 'Player Decision');
 
+        // Determine the historical figure making the decision
+        const historicalFigure = this.getHistoricalFigureFromEntity(entity);
+
         // Create the chronicle event
         const heading = `Decision made: ${chosenEvent.getEventName()}`;
         const description = `A crucial decision was made, selecting "${chosenEvent.getEventName()}" from ${totalChoices} available options. ` +
@@ -115,7 +132,7 @@ export class DilemmaResolutionSystem extends System {
             currentTime,
             place,
             description,
-            null // No specific historical figure associated with player decisions
+            historicalFigure
         );
 
         // Add the event to the chronicle
@@ -142,5 +159,22 @@ export class DilemmaResolutionSystem extends System {
             }
         }
         return Place.create('The Council Chambers');
+    }
+
+    /**
+     * Extracts a HistoricalFigure from the given entity.
+     * If the entity has a HistoricalFigureComponent, it returns the contained HistoricalFigure.
+     * @param entity - The entity to extract the historical figure from.
+     * @returns A HistoricalFigure representing the entity, or an unknown HistoricalFigure if no HistoricalFigureComponent is found.
+     */
+    private getHistoricalFigureFromEntity(entity: Entity): HistoricalFigure {
+        // Check if entity has HistoricalFigureComponent
+        const historicalFigureComponent = entity.getComponent(HistoricalFigureComponent);
+        if (historicalFigureComponent) {
+            return historicalFigureComponent.getHistoricalFigure();
+        }
+
+        // Return the unknown historical figure constant if entity has no HistoricalFigureComponent
+        return DilemmaResolutionSystem.UNKNOWN_HISTORICAL_FIGURE;
     }
 }

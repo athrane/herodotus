@@ -25,7 +25,7 @@ describe('HistoricalFigureInfluenceSystem', () => {
     });
 
     test('should process active historical figures and add events to chronicle', () => {
-        const figureEntity = entityManager.createEntity(new HistoricalFigureComponent('Test Figure', 1000, 50, 'Test Culture', 'King')); // 1050-1000 = 50 years lifespan
+        const figureEntity = entityManager.createEntity(HistoricalFigureComponent.create('Test Figure', 1000, 50, 'Test Culture', 'King')); // 1050-1000 = 50 years lifespan
 
         system.processEntity(figureEntity, 1025);
 
@@ -41,7 +41,7 @@ describe('HistoricalFigureInfluenceSystem', () => {
     });
 
     test('should not add event if historical figure is not active', () => {
-        const figureEntity = entityManager.createEntity(new HistoricalFigureComponent('Test Figure', 1000, 50, 'Test Culture', 'King')); // 1050-1000 = 50 years lifespan
+        const figureEntity = entityManager.createEntity(HistoricalFigureComponent.create('Test Figure', 1000, 50, 'Test Culture', 'King')); // 1050-1000 = 50 years lifespan
 
         system.processEntity(figureEntity, 999); // Before birthYear
         system.processEntity(figureEntity, 1051); // After deathYear

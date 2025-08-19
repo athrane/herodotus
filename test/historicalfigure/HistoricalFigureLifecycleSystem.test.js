@@ -19,7 +19,7 @@ describe('HistoricalFigureLifecycleSystem', () => {
     });
 
     test('should process birth year correctly', () => {
-        const entity = entityManager.createEntity(new HistoricalFigureComponent('Test Figure', 100, 50, 'culture', 'occupation')); // 150-100 = 50 years lifespan
+        const entity = entityManager.createEntity(HistoricalFigureComponent.create('Test Figure', 100, 50, 'culture', 'occupation')); // 150-100 = 50 years lifespan
 
         const time = new Time(100);
         const timeComponent = new TimeComponent(time);
@@ -31,7 +31,7 @@ describe('HistoricalFigureLifecycleSystem', () => {
     });
 
     test('should process death year correctly', () => {
-        const entity = entityManager.createEntity(new HistoricalFigureComponent('Test Figure', 100, 50, 'culture', 'occupation')); // 150-100 = 50 years lifespan
+        const entity = entityManager.createEntity(HistoricalFigureComponent.create('Test Figure', 100, 50, 'culture', 'occupation')); // 150-100 = 50 years lifespan
 
         const time = new Time(100);
         const timeComponent = new TimeComponent(time);
@@ -48,7 +48,7 @@ describe('HistoricalFigureLifecycleSystem', () => {
     });
 
     test('should not process entity if time component is missing', () => {
-        const entity = entityManager.createEntity(new HistoricalFigureComponent('Test Figure', 100, 50, 'culture', 'occupation')); // 150-100 = 50 years lifespan
+        const entity = entityManager.createEntity(HistoricalFigureComponent.create('Test Figure', 100, 50, 'culture', 'occupation')); // 150-100 = 50 years lifespan
 
         console.log = jest.fn();
 
@@ -58,7 +58,7 @@ describe('HistoricalFigureLifecycleSystem', () => {
     });
 
     test('should record detailed death information', () => {
-        const entity = entityManager.createEntity(new HistoricalFigureComponent('Famous Ruler', 1200, 80, 'Ancient Empire', 'Emperor')); // 1280-1200 = 80 years lifespan
+        const entity = entityManager.createEntity(HistoricalFigureComponent.create('Famous Ruler', 1200, 80, 'Ancient Empire', 'Emperor')); // 1280-1200 = 80 years lifespan
 
         const time = new Time(1200);
         const timeComponent = new TimeComponent(time);
@@ -74,7 +74,7 @@ describe('HistoricalFigureLifecycleSystem', () => {
     });
 
     test('should not process entity when current year is not birth or death year', () => {
-        const entity = entityManager.createEntity(new HistoricalFigureComponent('Test Figure', 100, 50, 'culture', 'occupation')); // 150-100 = 50 years lifespan
+        const entity = entityManager.createEntity(HistoricalFigureComponent.create('Test Figure', 100, 50, 'culture', 'occupation')); // 150-100 = 50 years lifespan
 
         const time = new Time(100);
         const timeComponent = new TimeComponent(time);

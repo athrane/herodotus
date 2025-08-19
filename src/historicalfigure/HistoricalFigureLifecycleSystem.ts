@@ -11,7 +11,6 @@ import { EventCategory } from '../chronicle/EventCategory';
 import { Time } from '../time/Time';
 import { Place } from '../generator/Place';
 import { WorldComponent } from '../geography/WorldComponent';
-import { HistoricalFigure } from './HistoricalFigure';
 import { World } from '../geography/World';
 
 /**
@@ -137,8 +136,8 @@ export class HistoricalFigureLifecycleSystem extends System {
             const time = Time.create(deathYear);
             const place = this.computePlace(worldComponent.get());
             
-            // Create the historical figure instance for the chronicle event
-            const historicalFigureInstance = HistoricalFigure.create(historicalFigure.name);
+            // Get the historical figure instance from the component
+            const historicalFigureInstance = historicalFigure.getHistoricalFigure();
             
             // Create the event type for death
             const eventType = EventType.create(EventCategory.SOCIAL, 'Historical Figure Death');

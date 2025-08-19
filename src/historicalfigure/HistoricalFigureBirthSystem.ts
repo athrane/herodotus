@@ -7,7 +7,6 @@ import { TypeUtils } from '../util/TypeUtils';
 import { World } from '../geography/World';
 import { WorldComponent } from '../geography/WorldComponent';
 import { ChronicleComponent } from '../chronicle/ChronicleComponent';
-import { HistoricalFigure } from './HistoricalFigure';
 import { NameGenerator } from '../naming/NameGenerator';
 import { NameComponent } from '../ecs/NameComponent';
 import { ChronicleEvent } from '../chronicle/ChronicleEvent';
@@ -89,9 +88,6 @@ export class HistoricalFigureBirthSystem extends System {
         // Get a random place for the historical figure
         const place = this.computePlace(worldComponent.get());
 
-        // create historical figure
-        const historicalFigure = HistoricalFigure.create(name);
-
         // Create a HistoricalFigureComponent with a random lifespan    
         const historicalFigureComponent = HistoricalFigureComponent.create(
             name,
@@ -133,7 +129,7 @@ export class HistoricalFigureBirthSystem extends System {
             time,
             place,
             `The historical figure named ${name} was born in the year ${year}. They will live for approximately ${lifespanYears} years.`,
-            historicalFigure);
+            historicalFigureComponent.getHistoricalFigure());
         chronicleComponent.addEvent(event);
     }
 

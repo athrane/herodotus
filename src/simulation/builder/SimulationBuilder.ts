@@ -99,7 +99,7 @@ export class SimulationBuilder extends Builder {
 
         entityManager.createEntity(
             new NameComponent("Player"),
-            new HistoricalFigureComponent("Player Character", 0, 70, "Unknown", "Ruler"),
+            HistoricalFigureComponent.create("Player Character", 0, 70, "Unknown", "Ruler"),
             DataSetEventComponent.create(initialEvent),
             DilemmaComponent.create([]), // Start with empty choices, will be populated by DilemmaSystem
             PlayerComponent.create()
@@ -108,7 +108,7 @@ export class SimulationBuilder extends Builder {
         // Create a sample historical figure
         entityManager.createEntity(
             new NameComponent("Herodotus"),
-            new HistoricalFigureComponent("Herodotus", -484, 59, "Greek", "Historian")
+            HistoricalFigureComponent.create("Herodotus", -484, 59, "Greek", "Historian")
         );
     }
 

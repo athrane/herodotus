@@ -17,7 +17,7 @@ describe('ChronicleComponent', () => {
   beforeEach(() => {
     eventType = new EventType(EventCategory.POLITICAL, 'Birth');
     time = new Time(484);
-    figure = new HistoricalFigure('Herodotus');
+    figure = HistoricalFigure.create('Herodotus', -484, 59, 'Greek', 'Historian');
     place = new Place('Halicarnassus');
     
     sampleEvent1 = new ChronicleEvent(
