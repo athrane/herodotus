@@ -68,7 +68,7 @@ export class DilemmaResolutionSystem extends System {
         dataSetEventComponent.setDataSetEvent(chosenEvent);
 
         // Record the decision in the chronicle
-        this.recordDecisionInChronicle(entity, chosenEvent, choices.length);
+        this.recordDecisionInChronicle(entity, chosenEvent);
 
         // Clear the choices in DilemmaComponent to prepare for the next cycle
         dilemmaComponent.clearChoices();
@@ -77,29 +77,24 @@ export class DilemmaResolutionSystem extends System {
     /**
      * Makes a choice from the available DataSetEvents.
      * This is where the decision-making logic would be implemented.
-     * Currently uses simple logic (first choice), but can be extended
+     * Currently uses random selection, but can be extended
      * for more sophisticated decision-making.
      * 
      * @param choices - Array of available DataSetEvent choices.
      * @returns The chosen DataSetEvent.
      */
     private makeChoice(choices: readonly DataSetEvent[]): DataSetEvent {
-        // Simple choice logic: select the first choice
-        // This can be extended to include:
-        // - Random selection
-        // - Weighted selection based on game state
-        // - AI decision-making algorithms
-        // - Player preference patterns
-        return choices[0];
+        // Random choice logic: select a random choice from available options
+        const randomIndex = Math.floor(Math.random() * choices.length);
+        return choices[randomIndex];
     }
 
     /**
      * Records the decision made in the chronicle for historical tracking.
      * @param entity - The entity that made the decision.
      * @param chosenEvent - The DataSetEvent that was chosen.
-     * @param totalChoices - The total number of choices that were available.
      */
-    private recordDecisionInChronicle(entity: Entity, chosenEvent: DataSetEvent, totalChoices: number): void {
+    private recordDecisionInChronicle(entity: Entity, chosenEvent: DataSetEvent): void {
         // Get the required singleton components
         const chronicleComponent = this.getEntityManager().getSingletonComponent(ChronicleComponent);
         const timeComponent = this.getEntityManager().getSingletonComponent(TimeComponent);
@@ -122,9 +117,7 @@ export class DilemmaResolutionSystem extends System {
 
         // Create the chronicle event
         const heading = `Decision made: ${chosenEvent.getEventName()}`;
-        const description = `A crucial decision was made, selecting "${chosenEvent.getEventName()}" from ${totalChoices} available options. ` +
-                          `This choice will shape the course of events going forward. ` +
-                          `Event trigger: ${chosenEvent.getEventTrigger()}`;
+        const description = chosenEvent.getDescription();
 
         const chronicleEvent = ChronicleEvent.create(
             heading,

@@ -26,7 +26,7 @@ describe('DilemmaResolutionSystem', () => {
     });
 
     describe('processEntity', () => {
-        it('should resolve dilemma by selecting first choice and updating DataSetEventComponent', () => {
+        it('should resolve dilemma by selecting a choice and updating DataSetEventComponent', () => {
             // Arrange
             const choice1 = new DataSetEvent({
                 'Event Type': 'Political',
@@ -59,11 +59,10 @@ describe('DilemmaResolutionSystem', () => {
             system.processEntity(entity);
 
             // Assert
-            // Should update DataSetEventComponent with first choice
+            // Should update DataSetEventComponent with one of the available choices
             const updatedDataSetEvent = dataSetEventComponent.getDataSetEvent();
-            expect(updatedDataSetEvent.getEventName()).toBe('Choice One');
-            expect(updatedDataSetEvent.getEventTrigger()).toBe('CHOICE_1');
-            expect(updatedDataSetEvent.getEventConsequence()).toBe('Result of choice one');
+            const validChoices = ['Choice One', 'Choice Two'];
+            expect(validChoices).toContain(updatedDataSetEvent.getEventName());
 
             // Should clear DilemmaComponent choices but keep the component
             expect(entity.hasComponent(DilemmaComponent)).toBe(true);
@@ -150,7 +149,7 @@ describe('DilemmaResolutionSystem', () => {
             expect(entity.hasComponent(DataSetEventComponent)).toBe(true);
         });
 
-        it('should handle multiple choices correctly by selecting the first', () => {
+        it('should handle multiple choices correctly by selecting one of them', () => {
             // Arrange
             const choices = [];
             for (let i = 0; i < 5; i++) {
@@ -179,11 +178,10 @@ describe('DilemmaResolutionSystem', () => {
             system.processEntity(entity);
 
             // Assert
-            // Should select the first choice (index 0)
+            // Should select one of the available choices
             const updatedDataSetEvent = dataSetEventComponent.getDataSetEvent();
-            expect(updatedDataSetEvent.getEventName()).toBe('Choice 0');
-            expect(updatedDataSetEvent.getEventTrigger()).toBe('CHOICE_0');
-            expect(updatedDataSetEvent.getEventConsequence()).toBe('Result of choice 0');
+            const validChoiceNames = ['Choice 0', 'Choice 1', 'Choice 2', 'Choice 3', 'Choice 4'];
+            expect(validChoiceNames).toContain(updatedDataSetEvent.getEventName());
 
             // Should clear DilemmaComponent choices but keep the component
             expect(entity.hasComponent(DilemmaComponent)).toBe(true);
