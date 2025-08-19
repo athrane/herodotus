@@ -10,7 +10,7 @@ import { ChronicleEvent } from '../chronicle/ChronicleEvent';
 import { TimeComponent } from '../time/TimeComponent';
 import { WorldComponent } from '../geography/WorldComponent';
 import { EventType } from '../chronicle/EventType';
-import { EventCategory } from '../chronicle/EventCategory';
+import { getEventCategoryFromString } from '../chronicle/EventCategory';
 import { Place } from '../generator/Place';
 import { HistoricalFigureComponent } from '../historicalfigure/HistoricalFigureComponent';
 import { HistoricalFigure } from '../historicalfigure/HistoricalFigure';
@@ -109,10 +109,11 @@ export class DilemmaResolutionSystem extends System {
         // Get a place from the world
         const place = this.computeDecisionPlace(worldComponent.get());
 
-        // Create an event type for the decision
-        const eventType = EventType.create(EventCategory.SOCIAL, 'Player Decision');
+        // Create an event type for the decision using the chosen event's type
+        const eventCategory = getEventCategoryFromString(chosenEvent.getEventType());
+        const eventType = EventType.create(eventCategory, chosenEvent.getEventName());
 
-        // Determine the historical figure making the decision
+        // Get the historical figure making the decision
         const historicalFigure = this.getHistoricalFigureFromEntity(entity);
 
         // Create the chronicle event
