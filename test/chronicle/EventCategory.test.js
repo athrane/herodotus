@@ -23,6 +23,7 @@ describe('EventCategory', () => {
       // We'll test that the value doesn't actually change
       try {
         EventCategory.POLITICAL = 'Modified';
+      // eslint-disable-next-line no-unused-vars
       } catch (e) {
         // Expected in strict mode
       }

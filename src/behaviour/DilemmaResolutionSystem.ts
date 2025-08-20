@@ -14,6 +14,7 @@ import { getEventCategoryFromString } from '../chronicle/EventCategory';
 import { Place } from '../generator/Place';
 import { HistoricalFigureComponent } from '../historicalfigure/HistoricalFigureComponent';
 import { HistoricalFigure } from '../historicalfigure/HistoricalFigure';
+import { PlayerComponent } from '../ecs/PlayerComponent';
 
 /**
  * The DilemmaResolutionSystem processes entities with DilemmaComponents to resolve
@@ -46,6 +47,7 @@ export class DilemmaResolutionSystem extends System {
      * Processes an entity with a DilemmaComponent by making a choice and updating
      * the entity's DataSetEventComponent with the chosen event.
      * Also creates a chronicle event to record the decision.
+     * For player entities, the choice must be made via the GUI before processing.
      * @param entity - The entity to process.
      */
     processEntity(entity: Entity): void {
@@ -57,11 +59,36 @@ export class DilemmaResolutionSystem extends System {
         // Exit if components are missing
         if (!dilemmaComponent || !dataSetEventComponent) return;
 
+        // Check if this is a player entity
+        const isPlayerEntity = entity.hasComponent(PlayerComponent);
+
         // Get available choices, exit if no choices are available
         const choices = dilemmaComponent.getChoices();
         if (choices.length === 0) return;
 
-        // Make a choice (for now, we'll use simple logic - first choice)
+        // For player entities, check if a choice has already been made via GUI
+        if (isPlayerEntity) {
+            // Check if the current DataSetEvent is one of the available choices
+            const currentEvent = dataSetEventComponent.getDataSetEvent();
+            const isChoiceMade = choices.some(choice => 
+                choice.getEventName() === currentEvent?.getEventName() &&
+                choice.getDescription() === currentEvent?.getDescription()
+            );
+
+            // If no choice has been made yet, return early (wait for GUI input)
+            if (!isChoiceMade) {
+                return;
+            }
+
+            // Record the player's decision in the chronicle
+            this.recordDecisionInChronicle(entity, currentEvent!);
+
+            // Clear the choices in DilemmaComponent to prepare for the next cycle
+            dilemmaComponent.clearChoices();
+            return;
+        }
+
+        // For non-player entities, make an automatic choice
         const chosenEvent = this.makeChoice(choices);
 
         // Update the entity's DataSetEventComponent with the choice
@@ -77,8 +104,8 @@ export class DilemmaResolutionSystem extends System {
     /**
      * Makes a choice from the available DataSetEvents.
      * This is where the decision-making logic would be implemented.
-     * Currently uses random selection, but can be extended
-     * for more sophisticated decision-making.
+     * For player entities, this method will wait for player input via the GUI.
+     * For non-player entities, it uses random selection.
      * 
      * @param choices - Array of available DataSetEvent choices.
      * @returns The chosen DataSetEvent.

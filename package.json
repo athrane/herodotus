@@ -6,9 +6,11 @@
   "type": "module",
   "scripts": {
     "build": "esbuild src/main.ts --bundle --outfile=dist/bundle.js --format=esm --platform=node --tsconfig=tsconfig.json",
+    "build:gui": "esbuild src/mainGUI.ts --bundle --outfile=dist/bundle-gui.js --format=esm --platform=node --tsconfig=tsconfig.json",
     "prestart:bundle": "npm run build",
     "start": "npm run start:bundle",
     "start:bundle": "node dist/bundle.js",
+    "start:gui": "tsx src/mainGUI.ts --gui",
     "start:main": "tsx src/main.ts",
     "dev": "tsx src/main.ts",
     "start:ts": "tsx src/main.ts",
