@@ -18,6 +18,9 @@ export class TextBasedGUI {
     private isRunning: boolean = false;
     private tickInterval: NodeJS.Timeout | null = null;
     private hasNotifiedOfDilemma: boolean = false;
+    private isInDetailScreen: boolean = false;
+    private shouldAutoNavigateToChoices: boolean = false;
+    private isWaitingForInput: boolean = false;
 
     constructor(simulation: Simulation) {
         this.simulation = simulation;
@@ -41,6 +44,22 @@ export class TextBasedGUI {
     private displayMainInterface(): void {
         this.clearScreen();
         
+        this.displayHeader();
+        
+        console.log('='.repeat(60));
+        
+        // Check for and display any pending dilemmas
+        this.displayPendingDilemmasInline();
+        
+        console.log('='.repeat(60));
+        console.log('Commands: [H]elp [S]tatus [C]hoices Ch[r]onicle [Q]uit');
+        console.log('='.repeat(60));
+    }
+
+    /**
+     * Displays the header with current game status.
+     */
+    private displayHeader(): void {
         // Get current year, simulation state, player info, and status for header
         const entityManager = this.simulation.getEntityManager();
         const timeComponent = entityManager.getSingletonComponent(TimeComponent);
@@ -65,18 +84,8 @@ export class TextBasedGUI {
             }
         }
         
-        console.log('='.repeat(60));
         console.log(`Year: ${currentYear} | Simulation: ${simulationState} | Player: ${playerName} | Status: ${statusText} | Herodotus 1.0.0`);
-        console.log('='.repeat(60));
-        
-        console.log('='.repeat(60));
-        
-        // Check for and display any pending dilemmas
-        this.displayPendingDilemmasInline();
-        
-        console.log('='.repeat(60));
-        console.log('Commands: [H]elp [S]tatus [C]hoices Ch[r]onicle [Q]uit');
-        console.log('='.repeat(60));
+        console.log('-'.repeat(80));
     }
 
     /**
@@ -145,7 +154,9 @@ export class TextBasedGUI {
                 this.simulation.tick();
                 await this.checkForDilemmas();
                 // Refresh the interface every tick
-                this.displayMainInterface();
+                if (!this.isWaitingForInput && !this.shouldAutoNavigateToChoices) {
+                    this.displayMainInterface();
+                }
             }
         }, 2000); // Tick every 2 seconds (slower for better readability)
     }
@@ -155,11 +166,29 @@ export class TextBasedGUI {
      */
     private async mainLoop(): Promise<void> {
         while (this.isRunning) {
+            // Check if we should auto-navigate to choices screen
+            if (this.shouldAutoNavigateToChoices) {
+                this.shouldAutoNavigateToChoices = false;
+                this.clearScreen();
+                console.log('Decision required! Navigating to choices...');
+                await new Promise(resolve => setTimeout(resolve, 500)); // Brief pause
+                await this.displayAndHandleChoices();
+                continue; // Skip the normal command input for this iteration
+            }
+            
+            this.isWaitingForInput = true;
             const command = await this.askQuestion('\nCommand: ');
+            this.isWaitingForInput = false;
+            
+            // If command is empty and we should auto-navigate, do it now
+            if (!command.trim() && this.shouldAutoNavigateToChoices) {
+                continue; // Go back to start of loop to handle auto-navigation
+            }
+            
             await this.processCommand(command.toLowerCase().trim());
             
             // Refresh the interface after each command
-            if (this.isRunning) {
+            if (this.isRunning && !this.shouldAutoNavigateToChoices) {
                 this.displayMainInterface();
             }
         }
@@ -172,13 +201,11 @@ export class TextBasedGUI {
         switch (command) {
             case 'help':
             case 'h':
-                this.showHelp();
-                await this.askQuestion('Press Enter to continue...');
+                await this.showHelp();
                 break;
             case 'status':
             case 's':
-                this.displayDetailedStatus();
-                await this.askQuestion('Press Enter to continue...');
+                await this.displayDetailedStatus();
                 break;
             case 'choices':
             case 'c':
@@ -186,8 +213,7 @@ export class TextBasedGUI {
                 break;
             case 'chronicle':
             case 'r':
-                this.displayChronicle();
-                await this.askQuestion('Press Enter to continue...');
+                await this.displayChronicle();
                 break;
             case 'quit':
             case 'q':
@@ -202,13 +228,32 @@ export class TextBasedGUI {
     }
 
     /**
-     * Shows help information.
+     * Shows help information and pauses both simulation and interface updates.
      */
-    private showHelp(): void {
+    private async showHelp(): Promise<void> {
+        // Mark that we're in a detail screen to prevent interruptions
+        this.isInDetailScreen = true;
+        
+        // Remember the simulation state and pause both simulation and interface updates
+        const wasSimulationRunning = this.simulation.getIsRunning();
+        
+        if (wasSimulationRunning) {
+            this.simulation.stop(); // Pause the actual simulation
+        }
+        
+        if (this.tickInterval) {
+            clearInterval(this.tickInterval);
+            this.tickInterval = null;
+        }
+
         this.clearScreen();
-        console.log('='.repeat(60));
+        
+        // Display the header at the top
+        this.displayHeader();
+        
+        console.log('='.repeat(80));
         console.log('                       HELP');
-        console.log('='.repeat(60));
+        console.log('='.repeat(80));
         console.log('[H]elp        - Show this help message');
         console.log('[S]tatus      - Display detailed simulation status');
         console.log('[C]hoices     - Show and handle current dilemma choices');
@@ -217,17 +262,49 @@ export class TextBasedGUI {
         console.log('');
         console.log('You can type the full command or just press the bracketed letter.');
         console.log('The main screen shows current status and any pending decisions.');
+        console.log('');
+        console.log('NOTE: The simulation is paused while viewing help.');
         console.log('='.repeat(60));
+        
+        await this.askQuestion('Press Enter to continue...');
+        
+        // Resume both simulation and interface updates if they were running before
+        if (wasSimulationRunning) {
+            this.simulation.start(); // Resume the actual simulation
+        }
+        this.startSimulationLoop();
+        
+        // Mark that we're no longer in a detail screen
+        this.isInDetailScreen = false;
     }
 
     /**
-     * Displays detailed simulation status (full screen).
+     * Displays detailed simulation status (full screen) and pauses both simulation and interface updates.
      */
-    private displayDetailedStatus(): void {
+    private async displayDetailedStatus(): Promise<void> {
+        // Mark that we're in a detail screen to prevent interruptions
+        this.isInDetailScreen = true;
+        
+        // Remember the simulation state and pause both simulation and interface updates
+        const wasSimulationRunning = this.simulation.getIsRunning();
+        
+        if (wasSimulationRunning) {
+            this.simulation.stop(); // Pause the actual simulation
+        }
+        
+        if (this.tickInterval) {
+            clearInterval(this.tickInterval);
+            this.tickInterval = null;
+        }
+
         this.clearScreen();
-        console.log('='.repeat(60));
+        
+        // Display the header at the top
+        this.displayHeader();
+        
+        console.log('='.repeat(80));
         console.log('                   DETAILED STATUS');
-        console.log('='.repeat(60));
+        console.log('='.repeat(80));
         
         const entityManager = this.simulation.getEntityManager();
         const playerEntity = this.getPlayerEntity();
@@ -262,17 +339,53 @@ export class TextBasedGUI {
         }
 
         console.log(`Simulation Running: ${this.simulation.getIsRunning()}`);
-        console.log('='.repeat(60));
+        console.log('');
+        console.log('NOTE: The simulation is paused while viewing status.');
+        console.log('='.repeat(80));
+        
+        await this.askQuestion('Press Enter to continue...');
+        
+        // Resume both simulation and interface updates if they were running before
+        if (wasSimulationRunning) {
+            this.simulation.start(); // Resume the actual simulation
+        }
+        this.startSimulationLoop();
+        
+        // Mark that we're no longer in a detail screen
+        this.isInDetailScreen = false;
     }
 
     /**
-     * Displays current dilemma choices and handles player selection.
+     * Displays current dilemma choices and handles player selection, pausing both simulation and interface updates.
      */
     private async displayAndHandleChoices(): Promise<void> {
+        // Mark that we're in a detail screen to prevent interruptions
+        this.isInDetailScreen = true;
+        
+        // Remember the simulation state and pause both simulation and interface updates
+        const wasSimulationRunning = this.simulation.getIsRunning();
+        
+        if (wasSimulationRunning) {
+            this.simulation.stop(); // Pause the actual simulation
+        }
+        
+        if (this.tickInterval) {
+            clearInterval(this.tickInterval);
+            this.tickInterval = null;
+        }
+
         const playerEntity = this.getPlayerEntity();
         if (!playerEntity) {
             console.log('Player entity not found!');
             await this.askQuestion('Press Enter to continue...');
+            
+            // Resume simulation and interface if they were running before
+            if (wasSimulationRunning) {
+                this.simulation.start();
+            }
+            this.startSimulationLoop();
+            this.isInDetailScreen = false;
+            this.shouldAutoNavigateToChoices = false;
             return;
         }
 
@@ -280,6 +393,14 @@ export class TextBasedGUI {
         if (!dilemmaComponent) {
             console.log('No dilemma component found on player entity.');
             await this.askQuestion('Press Enter to continue...');
+            
+            // Resume simulation and interface if they were running before
+            if (wasSimulationRunning) {
+                this.simulation.start();
+            }
+            this.startSimulationLoop();
+            this.isInDetailScreen = false;
+            this.shouldAutoNavigateToChoices = false;
             return;
         }
 
@@ -287,10 +408,22 @@ export class TextBasedGUI {
         if (choices.length === 0) {
             console.log('No pending decisions at this time.');
             await this.askQuestion('Press Enter to continue...');
+            
+            // Resume simulation and interface if they were running before
+            if (wasSimulationRunning) {
+                this.simulation.start();
+            }
+            this.startSimulationLoop();
+            this.isInDetailScreen = false;
+            this.shouldAutoNavigateToChoices = false;
             return;
         }
 
         this.clearScreen();
+        
+        // Display the header at the top
+        this.displayHeader();
+        
         console.log('='.repeat(60));
         console.log('                    DECISION REQUIRED');
         console.log('='.repeat(60));
@@ -305,11 +438,22 @@ export class TextBasedGUI {
             console.log('');
         });
 
+        console.log('');
+        console.log('NOTE: The simulation is paused while making decisions.');
+        console.log('='.repeat(60));
+        console.log(`Available choices: 1-${choices.length} (select decision) | [b]ack (return to main)`);
         console.log('='.repeat(60));
         
-        const selection = await this.askQuestion(`Choose your decision (1-${choices.length}), or 'back': `);
+        const selection = await this.askQuestion(`Choose your decision (1-${choices.length}), or '[b]ack': `);
         
-        if (selection.toLowerCase() === 'back') {
+        if (selection.toLowerCase() === 'b' || selection.toLowerCase() === 'back') {
+            // Resume simulation and interface if they were running before
+            if (wasSimulationRunning) {
+                this.simulation.start();
+            }
+            this.startSimulationLoop();
+            this.isInDetailScreen = false;
+            this.shouldAutoNavigateToChoices = false;
             return;
         }
 
@@ -320,6 +464,14 @@ export class TextBasedGUI {
             console.log('Invalid choice. Please try again.');
             await this.askQuestion('Press Enter to continue...');
         }
+        
+        // Resume simulation and interface if they were running before
+        if (wasSimulationRunning) {
+            this.simulation.start();
+        }
+        this.startSimulationLoop();
+        this.isInDetailScreen = false;
+        this.shouldAutoNavigateToChoices = false;
     }
 
     /**
@@ -339,9 +491,6 @@ export class TextBasedGUI {
 
         const chosenEvent = choices[choiceIndex];
         
-        console.log(`\nYou chose: ${chosenEvent.getEventName()}`);
-        console.log(`This decision will shape your reign...`);
-
         // Update the entity's DataSetEventComponent with the choice
         dataSetEventComponent.setDataSetEvent(chosenEvent);
 
@@ -351,43 +500,72 @@ export class TextBasedGUI {
         // Reset the notification flag so we get notified of future dilemmas
         this.hasNotifiedOfDilemma = false;
 
-        await this.askQuestion('Press Enter to continue...');
-
         // The DilemmaResolutionSystem will handle recording this in the chronicle
         // when it processes the entity during the next tick
     }
 
     /**
-     * Displays recent chronicle events.
+     * Displays recent chronicle events and pauses both simulation and interface updates.
      */
-    private displayChronicle(): void {
+    private async displayChronicle(): Promise<void> {
+        // Mark that we're in a detail screen to prevent interruptions
+        this.isInDetailScreen = true;
+        
+        // Remember the simulation state and pause both simulation and interface updates
+        const wasSimulationRunning = this.simulation.getIsRunning();
+        
+        if (wasSimulationRunning) {
+            this.simulation.stop(); // Pause the actual simulation
+        }
+        
+        if (this.tickInterval) {
+            clearInterval(this.tickInterval);
+            this.tickInterval = null;
+        }
+
         const entityManager = this.simulation.getEntityManager();
         const chronicleComponent = entityManager.getSingletonComponent(ChronicleComponent);
         
         this.clearScreen();
+        
+        // Display the header at the top
+        this.displayHeader();
+        
         console.log('='.repeat(60));
         console.log('                    RECENT HISTORY');
         console.log('='.repeat(60));
         
         if (!chronicleComponent) {
             console.log('No chronicle component found.');
-            return;
-        }
-
-        const events = chronicleComponent.getEvents();
-        const recentEvents = events.slice(-10); // Show last 10 events
-
-        if (recentEvents.length === 0) {
-            console.log('No historical events recorded yet.');
         } else {
-            recentEvents.forEach((event, index) => {
-                console.log(`${index + 1}. [Year ${event.getTime().getYear()}] ${event.getHeading()}`);
-                console.log(`   Location: ${event.getPlace().getName()}`);
-                console.log(`   ${event.getDescription()}`);
-                console.log('');
-            });
+            const events = chronicleComponent.getEvents();
+            const recentEvents = events.slice(-10); // Show last 10 events
+
+            if (recentEvents.length === 0) {
+                console.log('No historical events recorded yet.');
+            } else {
+                recentEvents.forEach((event, index) => {
+                    console.log(`${index + 1}. [Year ${event.getTime().getYear()}] ${event.getHeading()}`);
+                    console.log(`   Location: ${event.getPlace().getName()}`);
+                    console.log(`   ${event.getDescription()}`);
+                    console.log('');
+                });
+            }
         }
+        console.log('');
+        console.log('NOTE: The simulation is paused while viewing chronicle.');
         console.log('='.repeat(60));
+        
+        await this.askQuestion('Press Enter to continue...');
+        
+        // Resume both simulation and interface updates if they were running before
+        if (wasSimulationRunning) {
+            this.simulation.start(); // Resume the actual simulation
+        }
+        this.startSimulationLoop();
+        
+        // Mark that we're no longer in a detail screen
+        this.isInDetailScreen = false;
     }
 
     /**
@@ -425,7 +603,7 @@ export class TextBasedGUI {
     }
 
     /**
-     * Checks for new dilemmas and notifies the player.
+     * Checks for new dilemmas and sets flag for automatic navigation.
      */
     private async checkForDilemmas(): Promise<void> {
         const playerEntity = this.getPlayerEntity();
@@ -434,12 +612,21 @@ export class TextBasedGUI {
         const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
         const hasPendingChoices = dilemmaComponent && dilemmaComponent.getChoices().length > 0;
         
-        if (hasPendingChoices && !this.hasNotifiedOfDilemma) {
-            // Just set the flag - the main interface will show the pending dilemmas
+        if (hasPendingChoices && !this.hasNotifiedOfDilemma && !this.isInDetailScreen) {
+            // Set the flag to prevent repeated notifications
             this.hasNotifiedOfDilemma = true;
+            
+            // Set flag to auto-navigate to choices screen
+            this.shouldAutoNavigateToChoices = true;
+            
+            // If we're waiting for input, interrupt it by sending a newline
+            if (this.isWaitingForInput) {
+                process.stdin.emit('keypress', '\n', { name: 'return' });
+            }
         } else if (!hasPendingChoices && this.hasNotifiedOfDilemma) {
             // Reset the flag when there are no more pending choices
             this.hasNotifiedOfDilemma = false;
+            this.shouldAutoNavigateToChoices = false;
         }
     }
 
