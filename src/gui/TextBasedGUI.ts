@@ -1,12 +1,12 @@
 import * as readline from 'readline';
 import { Simulation } from '../simulation/Simulation';
-import { PlayerComponent } from '../ecs/PlayerComponent';
 import { DilemmaComponent } from '../behaviour/DilemmaComponent';
 import { NameComponent } from '../ecs/NameComponent';
 import { DataSetEventComponent } from '../data/DataSetEventComponent';
 import { ChronicleComponent } from '../chronicle/ChronicleComponent';
 import { TimeComponent } from '../time/TimeComponent';
 import { HistoricalFigureComponent } from '../historicalfigure/HistoricalFigureComponent';
+import { GuiHelper } from './GuiHelper';
 
 /**
  * A simple text-based GUI for interacting with the Herodotus simulation.
@@ -31,25 +31,17 @@ export class TextBasedGUI {
     }
 
     /**
-     * Clears the terminal screen.
-     */
-    private clearScreen(): void {
-        // ANSI escape codes to clear screen and move cursor to top-left
-        process.stdout.write('\x1b[2J\x1b[0f');
-    }
-
-    /**
      * Displays the main interface screen.
      */
     private displayMainInterface(): void {
-        this.clearScreen();
+        GuiHelper.clearScreen();
         
-        this.displayHeader();
+        GuiHelper.displayHeader(this.simulation);
         
         console.log('='.repeat(60));
         
         // Check for and display any pending dilemmas
-        this.displayPendingDilemmasInline();
+        GuiHelper.displayPendingDilemmasInline(this.simulation);
         
         console.log('='.repeat(60));
         console.log('Commands: [H]elp [S]tatus [C]hoices Ch[r]onicle [Q]uit');
@@ -59,62 +51,6 @@ export class TextBasedGUI {
     /**
      * Displays the header with current game status.
      */
-    private displayHeader(): void {
-        // Get current year, simulation state, player info, and status for header
-        const entityManager = this.simulation.getEntityManager();
-        const timeComponent = entityManager.getSingletonComponent(TimeComponent);
-        const currentYear = timeComponent ? timeComponent.getTime().getYear().toString().padStart(4, '0') : '0000';
-        const simulationState = this.simulation.getIsRunning() ? 'Running' : 'Stopped';
-        
-        const playerEntity = this.getPlayerEntity();
-        let playerName = 'Unknown';
-        let statusText = 'No pending decisions';
-        
-        if (playerEntity) {
-            const historicalFigureComponent = playerEntity.getComponent(HistoricalFigureComponent);
-            if (historicalFigureComponent) {
-                const figure = historicalFigureComponent.getHistoricalFigure();
-                playerName = figure.getName();
-            }
-
-            // Get status for header
-            const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
-            if (dilemmaComponent && dilemmaComponent.getChoices().length > 0) {
-                statusText = `${dilemmaComponent.getChoices().length} pending decision(s)`;
-            }
-        }
-        
-        console.log(`Year: ${currentYear} | Simulation: ${simulationState} | Player: ${playerName} | Status: ${statusText} | Herodotus 1.0.0`);
-        console.log('-'.repeat(80));
-    }
-
-    /**
-     * Displays pending dilemmas inline.
-     */
-    private displayPendingDilemmasInline(): void {
-        const playerEntity = this.getPlayerEntity();
-        if (!playerEntity) return;
-
-        const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
-        if (!dilemmaComponent) return;
-
-        const choices = dilemmaComponent.getChoices();
-        if (choices.length === 0) {
-            console.log('No current dilemmas.');
-            return;
-        }
-
-        console.log('*** DECISION REQUIRED ***');
-        choices.forEach((choice, index) => {
-            console.log(`[${index + 1}] ${choice.getEventName()}`);
-            console.log(`    ${choice.getDescription()}`);
-            if (choice.getConsequence && choice.getConsequence()) {
-                console.log(`    → ${choice.getConsequence()}`);
-            }
-            console.log('');
-        });
-    }
-
     /**
      * Starts the text-based GUI.
      */
@@ -169,7 +105,7 @@ export class TextBasedGUI {
             // Check if we should auto-navigate to choices screen
             if (this.shouldAutoNavigateToChoices) {
                 this.shouldAutoNavigateToChoices = false;
-                this.clearScreen();
+                GuiHelper.clearScreen();
                 console.log('Decision required! Navigating to choices...');
                 await new Promise(resolve => setTimeout(resolve, 500)); // Brief pause
                 await this.displayAndHandleChoices();
@@ -177,7 +113,7 @@ export class TextBasedGUI {
             }
             
             this.isWaitingForInput = true;
-            const command = await this.askQuestion('\nCommand: ');
+            const command = await GuiHelper.askQuestion(this.readline, '\nCommand: ');
             this.isWaitingForInput = false;
             
             // If command is empty and we should auto-navigate, do it now
@@ -218,12 +154,12 @@ export class TextBasedGUI {
             case 'quit':
             case 'q':
                 this.isRunning = false;
-                this.clearScreen();
+                GuiHelper.clearScreen();
                 console.log('Thank you for playing Herodotus!');
                 break;
             default:
                 console.log('Unknown command. Type "h" for help.');
-                await this.askQuestion('Press Enter to continue...');
+                await GuiHelper.askQuestion(this.readline, 'Press Enter to continue...');
         }
     }
 
@@ -246,10 +182,10 @@ export class TextBasedGUI {
             this.tickInterval = null;
         }
 
-        this.clearScreen();
+        GuiHelper.clearScreen();
         
         // Display the header at the top
-        this.displayHeader();
+        GuiHelper.displayHeader(this.simulation);
         
         console.log('='.repeat(80));
         console.log('                       HELP');
@@ -266,7 +202,7 @@ export class TextBasedGUI {
         console.log('NOTE: The simulation is paused while viewing help.');
         console.log('='.repeat(60));
         
-        await this.askQuestion('Press Enter to continue...');
+        await GuiHelper.askQuestion(this.readline, 'Press Enter to continue...');
         
         // Resume both simulation and interface updates if they were running before
         if (wasSimulationRunning) {
@@ -297,17 +233,17 @@ export class TextBasedGUI {
             this.tickInterval = null;
         }
 
-        this.clearScreen();
+        GuiHelper.clearScreen();
         
         // Display the header at the top
-        this.displayHeader();
+        GuiHelper.displayHeader(this.simulation);
         
         console.log('='.repeat(80));
         console.log('                   DETAILED STATUS');
         console.log('='.repeat(80));
         
         const entityManager = this.simulation.getEntityManager();
-        const playerEntity = this.getPlayerEntity();
+        const playerEntity = GuiHelper.getPlayerEntity(this.simulation);
         const timeComponent = entityManager.getSingletonComponent(TimeComponent);
 
         if (timeComponent) {
@@ -343,7 +279,7 @@ export class TextBasedGUI {
         console.log('NOTE: The simulation is paused while viewing status.');
         console.log('='.repeat(80));
         
-        await this.askQuestion('Press Enter to continue...');
+        await GuiHelper.askQuestion(this.readline, 'Press Enter to continue...');
         
         // Resume both simulation and interface updates if they were running before
         if (wasSimulationRunning) {
@@ -374,10 +310,10 @@ export class TextBasedGUI {
             this.tickInterval = null;
         }
 
-        const playerEntity = this.getPlayerEntity();
+        const playerEntity = GuiHelper.getPlayerEntity(this.simulation);
         if (!playerEntity) {
             console.log('Player entity not found!');
-            await this.askQuestion('Press Enter to continue...');
+            await GuiHelper.askQuestion(this.readline, 'Press Enter to continue...');
             
             // Resume simulation and interface if they were running before
             if (wasSimulationRunning) {
@@ -392,7 +328,7 @@ export class TextBasedGUI {
         const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
         if (!dilemmaComponent) {
             console.log('No dilemma component found on player entity.');
-            await this.askQuestion('Press Enter to continue...');
+            await GuiHelper.askQuestion(this.readline, 'Press Enter to continue...');
             
             // Resume simulation and interface if they were running before
             if (wasSimulationRunning) {
@@ -407,7 +343,7 @@ export class TextBasedGUI {
         const choices = dilemmaComponent.getChoices();
         if (choices.length === 0) {
             console.log('No pending decisions at this time.');
-            await this.askQuestion('Press Enter to continue...');
+            await GuiHelper.askQuestion(this.readline, 'Press Enter to continue...');
             
             // Resume simulation and interface if they were running before
             if (wasSimulationRunning) {
@@ -419,10 +355,10 @@ export class TextBasedGUI {
             return;
         }
 
-        this.clearScreen();
+        GuiHelper.clearScreen();
         
         // Display the header at the top
-        this.displayHeader();
+        GuiHelper.displayHeader(this.simulation);
         
         console.log('='.repeat(60));
         console.log('                    DECISION REQUIRED');
@@ -444,7 +380,7 @@ export class TextBasedGUI {
         console.log(`Available choices: 1-${choices.length} (select decision) | [b]ack (return to main)`);
         console.log('='.repeat(60));
         
-        const selection = await this.askQuestion(`Choose your decision (1-${choices.length}), or '[b]ack': `);
+        const selection = await GuiHelper.askQuestion(this.readline, `Choose your decision (1-${choices.length}), or '[b]ack': `);
         
         if (selection.toLowerCase() === 'b' || selection.toLowerCase() === 'back') {
             // Resume simulation and interface if they were running before
@@ -462,7 +398,7 @@ export class TextBasedGUI {
             await this.makePlayerChoice(choiceIndex);
         } else {
             console.log('Invalid choice. Please try again.');
-            await this.askQuestion('Press Enter to continue...');
+            await GuiHelper.askQuestion(this.readline, 'Press Enter to continue...');
         }
         
         // Resume simulation and interface if they were running before
@@ -478,7 +414,7 @@ export class TextBasedGUI {
      * Makes a player choice for the current dilemma.
      */
     private async makePlayerChoice(choiceIndex: number): Promise<void> {
-        const playerEntity = this.getPlayerEntity();
+        const playerEntity = GuiHelper.getPlayerEntity(this.simulation);
         if (!playerEntity) return;
 
         const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
@@ -526,10 +462,10 @@ export class TextBasedGUI {
         const entityManager = this.simulation.getEntityManager();
         const chronicleComponent = entityManager.getSingletonComponent(ChronicleComponent);
         
-        this.clearScreen();
+        GuiHelper.clearScreen();
         
         // Display the header at the top
-        this.displayHeader();
+        GuiHelper.displayHeader(this.simulation);
         
         console.log('='.repeat(60));
         console.log('                    RECENT HISTORY');
@@ -556,7 +492,7 @@ export class TextBasedGUI {
         console.log('NOTE: The simulation is paused while viewing chronicle.');
         console.log('='.repeat(60));
         
-        await this.askQuestion('Press Enter to continue...');
+        await GuiHelper.askQuestion(this.readline, 'Press Enter to continue...');
         
         // Resume both simulation and interface updates if they were running before
         if (wasSimulationRunning) {
@@ -572,7 +508,7 @@ export class TextBasedGUI {
      * Displays current dilemma choices and prompts for input.
      */
     private async displayChoicesOnly(): Promise<void> {
-        const playerEntity = this.getPlayerEntity();
+        const playerEntity = GuiHelper.getPlayerEntity(this.simulation);
         if (!playerEntity) return;
 
         const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
@@ -592,7 +528,7 @@ export class TextBasedGUI {
         });
         console.log('\n=======================');
         
-        const selection = await this.askQuestion(`\nChoose your decision (1-${choices.length}): `);
+        const selection = await GuiHelper.askQuestion(this.readline, `\nChoose your decision (1-${choices.length}): `);
         
         const choiceIndex = parseInt(selection) - 1;
         if (choiceIndex >= 0 && choiceIndex < choices.length) {
@@ -606,7 +542,7 @@ export class TextBasedGUI {
      * Checks for new dilemmas and sets flag for automatic navigation.
      */
     private async checkForDilemmas(): Promise<void> {
-        const playerEntity = this.getPlayerEntity();
+        const playerEntity = GuiHelper.getPlayerEntity(this.simulation);
         if (!playerEntity) return;
 
         const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
@@ -628,24 +564,6 @@ export class TextBasedGUI {
             this.hasNotifiedOfDilemma = false;
             this.shouldAutoNavigateToChoices = false;
         }
-    }
-
-    /**
-     * Gets the player entity from the simulation.
-     */
-    private getPlayerEntity() {
-        const entityManager = this.simulation.getEntityManager();
-        const playerEntities = entityManager.getEntitiesWithComponents(PlayerComponent);
-        return playerEntities.length > 0 ? playerEntities[0] : null;
-    }
-
-    /**
-     * Prompts the user for input.
-     */
-    private askQuestion(question: string): Promise<string> {
-        return new Promise((resolve) => {
-            this.readline.question(question, resolve);
-        });
     }
 
     /**
