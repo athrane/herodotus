@@ -417,6 +417,7 @@ This module contains classes for loading and accessing event data.
 This module implements an Entity-Component-System (ECS) architecture, a design pattern that promotes data-oriented design and flexible composition over deep inheritance hierarchies.
 
 *   **`Component`**: A base class for all components in the Entity-Component-System (ECS) architecture. Components are simple data containers. They should not contain any logic. This class serves as a marker to identify objects as components.
+*   **`Ecs`**: A convenience core ECS class that provides centralized initialization and unified management of EntityManager and SystemManager. This class acts as a unified facade for the ECS architecture, offering a static factory method for creation and convenient methods for system management. Use this class when you need a simple, all-in-one ECS setup with integrated entity and system management.
 *   **`Entity`**: Represents an entity in the Entity-Component-System (ECS) architecture. An entity is essentially a container for components, identified by a unique ID. It acts as a lightweight wrapper that groups various components, which hold the actual data.
 *   **`EntityManager`**: Manages the lifecycle of entities in the ECS architecture. It is responsible for creating, retrieving, destroying, and querying entities.
 *   **`NameComponent`**: A component that provides a human-readable name.
