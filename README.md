@@ -204,8 +204,8 @@ Each screen is implemented as a separate entity with appropriate components:
 - Maps screen names to entity IDs
 - Initializes screens with appropriate components
 
-**ECSTextBasedGUI** (`src/gui/ECSTextBasedGUI.ts`)
-- Main GUI class that replaces the original TextBasedGUI
+**TextBasedGUI** (`src/gui/TextBasedGUI.ts`)
+- Main GUI class using ECS architecture for screen management
 - Uses the ECS system for screen management
 - Handles global navigation commands
 - Manages the screen render system and screen manager
@@ -267,7 +267,7 @@ The simulation creates a dedicated player entity with:
 ### Architecture
 
 #### Key Files
-- `src/gui/ECSTextBasedGUI.ts` - Main GUI implementation using ECS architecture
+- `src/gui/TextBasedGUI.ts` - Main GUI implementation using ECS architecture
 - `src/gui/ScreenRenderSystem.ts` - System for rendering active screens
 - `src/gui/ScreenManager.ts` - Manages screen entities and their lifecycle
 - `src/gui/IsActiveComponent.ts` - Component marking the active screen
@@ -449,7 +449,7 @@ This module provides the interactive text-based user interface for the simulatio
 
 **Screen Management:**
 *   **`ScreenManager`**: Creates and manages all screen entities, mapping screen names to entity IDs.
-*   **`ECSTextBasedGUI`**: Main GUI class that replaces the original TextBasedGUI, using the ECS system for screen management.
+*   **`TextBasedGUI`**: Main GUI class using the ECS system for screen management with modular screen entities.
 
 **Screen Implementations:**
 *   **`MainInterfaceScreen`**: Main menu screen with navigation options and pending dilemmas display.

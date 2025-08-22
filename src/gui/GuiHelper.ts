@@ -4,8 +4,8 @@ import { TimeComponent } from '../time/TimeComponent';
 import { DilemmaComponent } from '../behaviour/DilemmaComponent';
 
 /**
- * Helper class containing stateless utility functions for the TextBasedGUI.
- * Extracted to minimize the size of the main TextBasedGUI class.
+ * Helper class containing stateless utility functions for the GUI system.
+ * Provides common GUI functionality used by both ECS and non-ECS implementations.
  */
 export class GuiHelper {
     
