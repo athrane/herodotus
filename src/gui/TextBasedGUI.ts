@@ -360,29 +360,22 @@ export class TextBasedGUI {
         // Display the header at the top
         GuiHelper.displayHeader(this.simulation);
         
-        console.log('='.repeat(60));
+        console.log('='.repeat(80));
         console.log('                    DECISION REQUIRED');
-        console.log('='.repeat(60));
+        console.log('='.repeat(80));
         
         choices.forEach((choice, index) => {
             console.log(`[${index + 1}] ${choice.getEventName()}`);
             console.log(`    Type: ${choice.getEventType()}`);
             console.log(`    Description: ${choice.getDescription()}`);
-            if (choice.getConsequence && choice.getConsequence()) {
-                console.log(`    Consequence: ${choice.getConsequence()}`);
-            }
+            console.log(`    Consequence: ${choice.getConsequence()}`);
             console.log('');
         });
 
-        console.log('');
-        console.log('NOTE: The simulation is paused while making decisions.');
-        console.log('='.repeat(60));
-        console.log(`Available choices: 1-${choices.length} (select decision) | [b]ack (return to main)`);
-        console.log('='.repeat(60));
+        console.log('-'.repeat(80));        
+        const selection = await GuiHelper.askQuestion(this.readline, `Available choices: 1-${choices.length} (select decision) | [b]ack (return to main): `);
         
-        const selection = await GuiHelper.askQuestion(this.readline, `Choose your decision (1-${choices.length}), or '[b]ack': `);
-        
-        if (selection.toLowerCase() === 'b' || selection.toLowerCase() === 'back') {
+        if (selection.toLowerCase() === 'b') {
             // Resume simulation and interface if they were running before
             if (wasSimulationRunning) {
                 this.simulation.start();

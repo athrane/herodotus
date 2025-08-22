@@ -1,7 +1,6 @@
 import { Simulation } from '../simulation/Simulation';
 import { PlayerComponent } from '../ecs/PlayerComponent';
 import { TimeComponent } from '../time/TimeComponent';
-import { HistoricalFigureComponent } from '../historicalfigure/HistoricalFigureComponent';
 import { DilemmaComponent } from '../behaviour/DilemmaComponent';
 
 /**
@@ -39,26 +38,8 @@ export class GuiHelper {
         const timeComponent = entityManager.getSingletonComponent(TimeComponent);
         const currentYear = timeComponent ? timeComponent.getTime().getYear().toString().padStart(4, '0') : '0000';
         const simulationState = simulation.getIsRunning() ? 'Running' : 'Stopped';
-        
-        const playerEntity = GuiHelper.getPlayerEntity(simulation);
-        let playerName = 'Unknown';
-        let statusText = 'No pending decisions';
-        
-        if (playerEntity) {
-            const historicalFigureComponent = playerEntity.getComponent(HistoricalFigureComponent);
-            if (historicalFigureComponent) {
-                const figure = historicalFigureComponent.getHistoricalFigure();
-                playerName = figure.getName();
-            }
 
-            // Get status for header
-            const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
-            if (dilemmaComponent && dilemmaComponent.getChoices().length > 0) {
-                statusText = `${dilemmaComponent.getChoices().length} pending decision(s)`;
-            }
-        }
-        
-        console.log(`Year: ${currentYear} | Simulation: ${simulationState} | Player: ${playerName} | Status: ${statusText} | Herodotus 1.0.0`);
+        console.log(`Year: ${currentYear} | Simulation: ${simulationState} | Herodotus 1.0.0`);
         console.log('-'.repeat(80));
     }
 
