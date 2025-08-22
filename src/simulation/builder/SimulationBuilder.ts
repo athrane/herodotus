@@ -14,7 +14,6 @@ import { HistoricalFigureInfluenceSystem } from '../../historicalfigure/Historic
 import { HistoricalFigureBirthSystem } from '../../historicalfigure/HistoricalFigureBirthSystem';
 import { NameGenerator } from '../../naming/NameGenerator';
 import { EntityManager } from '../../ecs/EntityManager';
-import { SystemManager } from '../../ecs/SystemManager';
 import { loadEvents } from '../../data/loadEvents';
 import { DataSetComponent } from '../../data/DataSetComponent';
 import { DataSetEvent } from '../../data/DataSetEvent';
@@ -116,14 +115,16 @@ export class SimulationBuilder extends Builder {
      * @override
      */
     buildSystems(): void {
-        const entityManager: EntityManager = this.simulation.getEntityManager();
-        const systemManager: SystemManager = this.simulation.getSystemManager();
-        systemManager.register(new TimeSystem(entityManager));
-        systemManager.register(new HistoricalFigureBirthSystem(entityManager));
-        systemManager.register(new HistoricalFigureLifecycleSystem(entityManager));
-        systemManager.register(new HistoricalFigureInfluenceSystem(entityManager));
-        systemManager.register(new DilemmaSystem(entityManager));
-        systemManager.register(new DilemmaResolutionSystem(entityManager));
+        const ecs = this.simulation.getEcs();
+        const entityManager: EntityManager = ecs.getEntityManager();
+        
+        // Register systems using the Ecs facade
+        ecs.registerSystem(new TimeSystem(entityManager));
+        ecs.registerSystem(new HistoricalFigureBirthSystem(entityManager));
+        ecs.registerSystem(new HistoricalFigureLifecycleSystem(entityManager));
+        ecs.registerSystem(new HistoricalFigureInfluenceSystem(entityManager));
+        ecs.registerSystem(new DilemmaSystem(entityManager));
+        ecs.registerSystem(new DilemmaResolutionSystem(entityManager));
     }
 
     /**

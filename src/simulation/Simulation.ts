@@ -1,22 +1,22 @@
-import { SystemManager } from '../ecs/SystemManager';
+import { Ecs } from '../ecs/Ecs';
 import { EntityManager } from '../ecs/EntityManager';
+import { SystemManager } from '../ecs/SystemManager';
 
 /**
  * The `Simulation` class orchestrates an Entity-Component-System (ECS) based simulation.
  * It manages all entities and systems, and drives the main simulation loop.
  */
 export class Simulation {
-    private readonly entityManager: EntityManager;
-    private readonly systemManager: SystemManager;
+    private readonly ecs: Ecs;
     private isRunning: boolean;
     private lastTickTime: number;
 
     /**
      * Creates an instance of Simulation.
+     * @param ecs Optional Ecs instance. If not provided, a new one will be created.
      */
-    constructor() {
-        this.entityManager = EntityManager.create();
-        this.systemManager = SystemManager.create(this.entityManager);
+    constructor(ecs?: Ecs) {
+        this.ecs = ecs || Ecs.create();
         this.isRunning = false;
         this.lastTickTime = 0;
     }
@@ -34,7 +34,7 @@ export class Simulation {
      * @returns The EntityManager.
      */
     getEntityManager(): EntityManager {
-        return this.entityManager;
+        return this.ecs.getEntityManager();
     }
 
     /**
@@ -42,7 +42,15 @@ export class Simulation {
      * @returns The SystemManager.
      */
     getSystemManager(): SystemManager {
-        return this.systemManager;
+        return this.ecs.getSystemManager();
+    }
+
+    /**
+     * Gets the Ecs instance used by this simulation.
+     * @returns The Ecs instance.
+     */
+    getEcs(): Ecs {
+        return this.ecs;
     }
 
     /**
@@ -85,9 +93,9 @@ export class Simulation {
         this.lastTickTime = currentTime;
 
         // Update all systems
-        // this.systemManager.update(deltaTime);
+        // this.ecs.update(deltaTime);
         // Hack: Hard code deltaTime = 0.1 sec == 1 year
-        this.systemManager.update(0.1);
+        this.ecs.update(0.1);
     }
 
     /**
