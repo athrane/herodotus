@@ -3,7 +3,7 @@ import { SimulationDirector } from './simulation/builder/SimulationDirector';
 import { SimulationBuilder } from './simulation/builder/SimulationBuilder';
 import { WorldComponent } from './geography/WorldComponent';
 import { ChronicleComponent } from './chronicle/ChronicleComponent';
-import { TextBasedGUI } from './gui/TextBasedGUI';
+import { ECSTextBasedGUI } from './gui/ECSTextBasedGUI';
 
 /**
  * The main entry point for the interactive chronicle generation application.
@@ -24,7 +24,7 @@ async function mainWithGUI(): Promise<void> {
   }
 
   // Create and start the GUI
-  const gui = TextBasedGUI.create(simulation);
+  const gui = ECSTextBasedGUI.create(simulation);
   
   try {
     await gui.start();
