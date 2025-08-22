@@ -109,17 +109,18 @@ All available npm scripts and what they do. Commands below are for PowerShell.
 
 ## Text-Based GUI
 
-The Herodotus simulation includes an interactive text-based GUI that allows you to control your player character and make decisions that shape history.
+The Herodotus simulation includes an interactive text-based GUI built on an Entity-Component-System (ECS) architecture. Each screen is implemented as an entity with components, providing a modular and extensible interface for controlling your player character and making decisions that shape history.
 
 ### Features
 
-The text-based GUI provides the following functionality:
+The ECS-based GUI provides the following functionality:
 
 - **Interactive Decision Making**: Make choices for your player character when dilemmas arise
 - **Real-time Simulation Control**: View live simulation updates with automatic screen refresh
-- **Compact Status Display**: All key information displayed in a single header line
+- **Modular Screen System**: Each screen is a separate entity with its own components
 - **Chronicle Viewing**: Review recent historical events and decisions
 - **Clean Interface**: Screen-clearing display that avoids scrolling for better readability
+- **Extensible Architecture**: Easy to add new screens using the ECS pattern
 
 ### Running the GUI
 
@@ -162,6 +163,61 @@ Commands: [H]elp [S]tatus [C]hoices Ch[r]onicle [Q]uit
 ============================================================
 ```
 
+### ECS Architecture
+
+The GUI system is built using the Entity-Component-System (ECS) pattern, where each screen is implemented as an entity with specific components:
+
+#### Components
+
+**IsActiveComponent** (`src/gui/IsActiveComponent.ts`)
+- Marks an entity as the currently active screen
+- Only one entity should have this component at a time
+- Used by the ScreenRenderSystem to determine which screen to render
+
+**ScreenComponent** (`src/gui/ScreenComponent.ts`)
+- Contains the render logic and input handling for a screen
+- Takes two functions: `renderFunction` and `handleInputFunction`
+- Provides `render()` and `handleInput()` methods
+
+#### Systems
+
+**ScreenRenderSystem** (`src/gui/ScreenRenderSystem.ts`)
+- System responsible for rendering the currently active screen
+- Key methods:
+  - `renderActiveScreen()`: Renders the entity with IsActiveComponent
+  - `handleActiveScreenInput()`: Routes input to the active screen
+  - `setActiveScreen()`: Changes which screen is active
+
+#### Screen Entities
+
+Each screen is implemented as a separate entity with appropriate components:
+
+- **MainInterfaceScreen**: Main menu with navigation options and pending dilemmas
+- **StatusScreen**: Displays detailed simulation status and historical figures
+- **ChoicesScreen**: Handles dilemma choice selection and validation
+- **ChronicleScreen**: Displays recent historical events from the chronicle
+
+#### Management Classes
+
+**ScreenManager** (`src/gui/ScreenManager.ts`)
+- Creates and manages all screen entities
+- Maps screen names to entity IDs
+- Initializes screens with appropriate components
+
+**ECSTextBasedGUI** (`src/gui/ECSTextBasedGUI.ts`)
+- Main GUI class that replaces the original TextBasedGUI
+- Uses the ECS system for screen management
+- Handles global navigation commands
+- Manages the screen render system and screen manager
+
+### Architecture Benefits
+
+1. **Modularity**: Each screen is a separate entity with its own components
+2. **Extensibility**: Easy to add new screens by creating new entities
+3. **Consistency**: All screens follow the same ECS pattern
+4. **Separation of Concerns**: Render logic separated from input handling
+5. **Testability**: Individual screens can be tested in isolation
+
 ### Available Commands
 
 The GUI accepts both full commands and single-letter shortcuts:
@@ -174,7 +230,12 @@ The GUI accepts both full commands and single-letter shortcuts:
 
 ### How It Works
 
-#### Compact Header Display
+#### ECS Integration
+The GUI integrates seamlessly with the existing ECS architecture:
+- Each screen is an entity with `ScreenComponent` and optionally `IsActiveComponent`
+- The `ScreenRenderSystem` queries for active screen entities
+- Screen entities can be created, modified, and destroyed dynamically
+- All screen logic is encapsulated in their respective component functions
 The header shows all essential information in one line:
 - **Year**: Current simulation year (zero-padded to 4 digits)
 - **Simulation**: Running/Stopped status
@@ -182,7 +243,7 @@ The header shows all essential information in one line:
 - **Status**: Number of pending decisions or "No pending decisions"
 - **App Title**: "Herodotus 1.0.0"
 
-#### Player Entity
+#### Player Integration
 The simulation creates a dedicated player entity with:
 - `PlayerComponent` - Marks the entity as player-controlled
 - `DilemmaComponent` - Contains available choices when decisions are needed
@@ -206,18 +267,28 @@ The simulation creates a dedicated player entity with:
 ### Architecture
 
 #### Key Files
-- `src/gui/TextBasedGUI.ts` - Main GUI implementation with screen management
+- `src/gui/ECSTextBasedGUI.ts` - Main GUI implementation using ECS architecture
+- `src/gui/ScreenRenderSystem.ts` - System for rendering active screens
+- `src/gui/ScreenManager.ts` - Manages screen entities and their lifecycle
+- `src/gui/IsActiveComponent.ts` - Component marking the active screen
+- `src/gui/ScreenComponent.ts` - Component containing screen logic
+- `src/gui/screens/` - Directory containing individual screen implementations
 - `src/mainGUI.ts` - Entry point for GUI mode
-- `src/behaviour/DilemmaResolutionSystem.ts` - Modified to support player input
-- `src/ecs/PlayerComponent.ts` - Marker component for player entities
+
+#### Screen Implementations
+- `MainInterfaceScreen.ts` - Main menu with navigation and pending dilemmas
+- `StatusScreen.ts` - Detailed simulation status display
+- `ChoicesScreen.ts` - Dilemma choice selection and processing
+- `ChronicleScreen.ts` - Historical events display
 
 #### Integration Points
-The GUI integrates with the existing ECS architecture by:
-- Querying for entities with `PlayerComponent`
+The ECS GUI integrates with the existing simulation by:
+- Using entities with `PlayerComponent` for player interaction
 - Reading/writing to `DilemmaComponent` and `DataSetEventComponent`
 - Monitoring simulation state through singleton components
-- Using the existing chronicle system for event recording
-- Clearing and redrawing the screen for a clean interface
+- Utilizing the existing chronicle system for event recording
+- Providing clean screen management through the ECS pattern
+- Maintaining backward compatibility with existing systems
 
 ### Example Session
 
@@ -367,9 +438,26 @@ This module is responsible for generating the initial world, including its geogr
 
 #### `gui`
 
-This module provides the interactive text-based user interface for the simulation.
+This module provides the interactive text-based user interface for the simulation using Entity-Component-System (ECS) architecture.
 
-*   **`TextBasedGUI`**: A clean, screen-clearing text-based interface for interacting with the Herodotus simulation. Provides real-time status display, interactive decision-making for player dilemmas, chronicle viewing, and comprehensive simulation control. Features a compact header display, automatic screen refresh, and single-letter command shortcuts for efficient navigation.
+**Components:**
+*   **`IsActiveComponent`**: Marks an entity as the currently active screen. Only one entity should have this component at a time.
+*   **`ScreenComponent`**: Contains the render logic and input handling for a screen. Takes render and input handling functions as parameters.
+
+**Systems:**
+*   **`ScreenRenderSystem`**: System responsible for rendering the currently active screen and routing input to it.
+
+**Screen Management:**
+*   **`ScreenManager`**: Creates and manages all screen entities, mapping screen names to entity IDs.
+*   **`ECSTextBasedGUI`**: Main GUI class that replaces the original TextBasedGUI, using the ECS system for screen management.
+
+**Screen Implementations:**
+*   **`MainInterfaceScreen`**: Main menu screen with navigation options and pending dilemmas display.
+*   **`StatusScreen`**: Displays detailed simulation status including time, player status, and historical figures.
+*   **`ChoicesScreen`**: Handles dilemma choice selection, validation, and processing.
+*   **`ChronicleScreen`**: Displays recent historical events from the chronicle.
+
+The ECS-based GUI provides a modular, extensible architecture where each screen is a separate entity with its own components, making it easy to add new screens and maintain separation of concerns.
 
 #### `geography`
 
