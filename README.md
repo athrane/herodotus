@@ -199,10 +199,11 @@ Each screen is implemented as a separate entity with appropriate components:
 
 #### Management Classes
 
-**ScreenManager** (`src/gui/ScreenManager.ts`)
-- Creates and manages all screen entities
-- Maps screen names to entity IDs
-- Initializes screens with appropriate components
+**GuiEcsManager** (`src/gui/GuiEcsManager.ts`)
+- Manages a separate ECS instance specifically for GUI components and systems
+- Creates and manages all screen entities with their components
+- Maps screen names to entity IDs and handles screen initialization
+- Provides independent update frequency from the simulation
 
 **TextBasedGui2** (`src/gui/TextBasedGui2.ts`)
 - Advanced GUI class using separate ECS architecture for screen management
@@ -268,9 +269,8 @@ The simulation creates a dedicated player entity with:
 
 #### Key Files
 - `src/gui/TextBasedGui2.ts` - Advanced GUI implementation using separate ECS architecture
-- `src/gui/GuiEcsManager.ts` - Manages separate GUI ECS instance and systems
+- `src/gui/GuiEcsManager.ts` - Manages separate GUI ECS instance, systems, and screen entities
 - `src/gui/ScreenRenderSystem.ts` - System for rendering active screens
-- `src/gui/ScreenManager.ts` - Manages screen entities and their lifecycle
 - `src/gui/IsActiveComponent.ts` - Component marking the active screen
 - `src/gui/ScreenComponent.ts` - Component containing screen logic
 - `src/gui/screens/` - Directory containing individual screen implementations
@@ -451,8 +451,7 @@ This module provides the interactive text-based user interface for the simulatio
 *   **`ScreenRenderSystem`**: System responsible for rendering the currently active screen and routing input to it.
 
 **Screen Management:**
-*   **`ScreenManager`**: Creates and manages all screen entities, mapping screen names to entity IDs.
-*   **`GuiEcsManager`**: Manages separate ECS instance for GUI with independent update cycles from simulation.
+*   **`GuiEcsManager`**: Manages separate ECS instance for GUI with independent update cycles from simulation. Creates and manages all screen entities, mapping screen names to entity IDs.
 *   **`TextBasedGui2`**: Advanced GUI class using separate ECS system for screen management with decoupled architecture.
 
 **Screen Implementations:**

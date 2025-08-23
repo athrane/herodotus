@@ -2,7 +2,13 @@ import { Ecs } from '../ecs/Ecs';
 import { EntityManager } from '../ecs/EntityManager';
 import { SystemManager } from '../ecs/SystemManager';
 import { ScreenRenderSystem } from './ScreenRenderSystem';
-import { ScreenManager } from './ScreenManager';
+import { ScreenComponent } from './ScreenComponent';
+import { IsActiveComponent } from './IsActiveComponent';
+import { NameComponent } from '../ecs/NameComponent';
+import { renderMainInterface, handleMainInterfaceInput } from './screens/MainInterfaceScreen';
+import { renderStatusScreen, handleStatusScreenInput } from './screens/StatusScreen';
+import { renderChoicesScreen, handleChoicesScreenInput } from './screens/ChoicesScreen';
+import { renderChronicleScreen, handleChronicleScreenInput } from './screens/ChronicleScreen';
 import { Simulation } from '../simulation/Simulation';
 import * as readline from 'readline';
 
@@ -13,7 +19,7 @@ import * as readline from 'readline';
 export class GuiEcsManager {
     private readonly ecs: Ecs;
     private readonly screenRenderSystem: ScreenRenderSystem;
-    private readonly screenManager: ScreenManager;
+    private readonly screens: Map<string, string> = new Map(); // screen name -> entity ID
     private readonly readline: readline.Interface;
     private guiUpdateInterval: NodeJS.Timeout | null = null;
     private isRunning: boolean = false;
@@ -26,7 +32,6 @@ export class GuiEcsManager {
         
         // Initialize GUI-specific systems
         this.screenRenderSystem = new ScreenRenderSystem(this.ecs.getEntityManager(), this.readline);
-        this.screenManager = new ScreenManager(this.ecs.getEntityManager());
         
         // Register systems
         this.ecs.registerSystem(this.screenRenderSystem);
@@ -36,8 +41,32 @@ export class GuiEcsManager {
      * Initializes the GUI ECS system.
      */
     initialize(): void {
-        // Initialize all screens
-        this.screenManager.initializeScreens(this.readline);
+        // Initialize all screens as entities in the ECS system
+        
+        // Create main interface screen
+        const mainScreen = this.ecs.getEntityManager().createEntity();
+        mainScreen.addComponent(new NameComponent('MainInterface'));
+        mainScreen.addComponent(new ScreenComponent(renderMainInterface, handleMainInterfaceInput));
+        mainScreen.addComponent(new IsActiveComponent()); // Start with main screen active
+        this.screens.set('main', mainScreen.getId());
+
+        // Create status screen
+        const statusScreen = this.ecs.getEntityManager().createEntity();
+        statusScreen.addComponent(new NameComponent('Status'));
+        statusScreen.addComponent(new ScreenComponent(renderStatusScreen, handleStatusScreenInput));
+        this.screens.set('status', statusScreen.getId());
+
+        // Create choices screen
+        const choicesScreen = this.ecs.getEntityManager().createEntity();
+        choicesScreen.addComponent(new NameComponent('Choices'));
+        choicesScreen.addComponent(new ScreenComponent(renderChoicesScreen, handleChoicesScreenInput));
+        this.screens.set('choices', choicesScreen.getId());
+
+        // Create chronicle screen
+        const chronicleScreen = this.ecs.getEntityManager().createEntity();
+        chronicleScreen.addComponent(new NameComponent('Chronicle'));
+        chronicleScreen.addComponent(new ScreenComponent(renderChronicleScreen, handleChronicleScreenInput));
+        this.screens.set('chronicle', chronicleScreen.getId());
     }
 
     /**
@@ -99,7 +128,7 @@ export class GuiEcsManager {
      * Gets the entity ID for a screen by name.
      */
     getScreenEntityId(screenName: string): string | undefined {
-        return this.screenManager.getScreenEntityId(screenName);
+        return this.screens.get(screenName);
     }
 
     /**
@@ -128,12 +157,5 @@ export class GuiEcsManager {
      */
     getScreenRenderSystem(): ScreenRenderSystem {
         return this.screenRenderSystem;
-    }
-
-    /**
-     * Gets the screen manager.
-     */
-    getScreenManager(): ScreenManager {
-        return this.screenManager;
     }
 }

@@ -125,7 +125,6 @@ describe('GuiEcsManager', () => {
   describe('component access', () => {
     test('should provide access to GUI systems', () => {
       expect(guiEcsManager.getScreenRenderSystem()).toBeDefined();
-      expect(guiEcsManager.getScreenManager()).toBeDefined();
     });
   });
 });
