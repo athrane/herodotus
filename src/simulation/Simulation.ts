@@ -13,10 +13,9 @@ export class Simulation {
 
     /**
      * Creates an instance of Simulation.
-     * @param ecs Optional Ecs instance. If not provided, a new one will be created.
      */
-    constructor(ecs?: Ecs) {
-        this.ecs = ecs || Ecs.create();
+    constructor() {
+        this.ecs = Ecs.create();
         this.isRunning = false;
         this.lastTickTime = 0;
     }

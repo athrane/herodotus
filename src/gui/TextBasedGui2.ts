@@ -1,20 +1,19 @@
 import * as readline from 'readline';
 import { Simulation } from '../simulation/Simulation';
 import { GuiHelper } from './GuiHelper';
-import { ScreenRenderSystem } from './ScreenRenderSystem';
-import { ScreenManager } from './ScreenManager';
+import { GuiEcsManager } from './GuiEcsManager';
 
 /**
- * A text-based GUI using the ECS system for screen management.
+ * A text-based GUI using a separate ECS system for screen management.
  * Each screen is implemented as an entity with ScreenComponent and IsActiveComponent.
+ * The GUI has its own ECS instance, decoupled from the simulation ECS.
  */
-export class TextBasedGUI {
+export class TextBasedGui2 {
     private readonly simulation: Simulation;
     private readonly readline: readline.Interface;
-    private screenRenderSystem: ScreenRenderSystem;
-    private screenManager: ScreenManager;
+    private readonly guiEcsManager: GuiEcsManager;
     private isRunning: boolean = false;
-    private tickInterval: NodeJS.Timeout | null = null;
+    private simulationTickInterval: NodeJS.Timeout | null = null;
     private isWaitingForInput: boolean = false;
 
     constructor(simulation: Simulation) {
@@ -24,29 +23,28 @@ export class TextBasedGUI {
             output: process.stdout
         });
 
-        const entityManager = this.simulation.getEntityManager();
-        this.screenRenderSystem = new ScreenRenderSystem(entityManager, this.readline);
-        this.screenManager = new ScreenManager(entityManager);
-        
-        // Register the screen render system
-        this.simulation.getSystemManager().register(this.screenRenderSystem);
+        // Initialize the separate GUI ECS manager
+        this.guiEcsManager = new GuiEcsManager(this.readline);
     }
 
     /**
-     * Starts the ECS-based GUI.
+     * Starts the ECS-based GUI with separate update frequencies for GUI and simulation.
      */
     async start(): Promise<void> {
         this.isRunning = true;
+        
+        // Initialize and start the GUI ECS system (fast updates for responsive UI)
+        this.guiEcsManager.initialize();
+        this.guiEcsManager.start(100); // GUI updates every 100ms
+        
+        // Start the simulation
         this.simulation.start();
 
-        // Initialize all screens
-        this.screenManager.initializeScreens(this.readline);
-
-        // Start the simulation tick loop
+        // Start the simulation tick loop (slower updates for game logic)
         this.startSimulationLoop();
 
         // Render the initial active screen
-        await this.screenRenderSystem.renderActiveScreen(this.simulation);
+        await this.guiEcsManager.renderActiveScreen(this.simulation);
         
         // Start the main GUI loop
         await this.mainLoop();
@@ -57,27 +55,29 @@ export class TextBasedGUI {
      */
     stop(): void {
         this.isRunning = false;
-        if (this.tickInterval) {
-            clearInterval(this.tickInterval);
-            this.tickInterval = null;
+        if (this.simulationTickInterval) {
+            clearInterval(this.simulationTickInterval);
+            this.simulationTickInterval = null;
         }
+        this.guiEcsManager.stop();
         this.simulation.stop();
         this.readline.close();
     }
 
     /**
      * Starts the simulation tick loop that runs in the background.
+     * This runs at a different frequency than the GUI updates.
      */
     private startSimulationLoop(): void {
-        this.tickInterval = setInterval(async () => {
+        this.simulationTickInterval = setInterval(async () => {
             if (this.simulation.getIsRunning()) {
                 this.simulation.tick();
-                // Refresh the active screen periodically
+                // Refresh the active screen after simulation updates (only when not waiting for input)
                 if (!this.isWaitingForInput) {
-                    await this.screenRenderSystem.renderActiveScreen(this.simulation);
+                    await this.guiEcsManager.renderActiveScreen(this.simulation);
                 }
             }
-        }, 2000); // Tick every 2 seconds
+        }, 2000); // Simulation ticks every 2 seconds
     }
 
     /**
@@ -99,7 +99,7 @@ export class TextBasedGUI {
             }
             
             // Try to handle the command with the active screen first
-            const handledByScreen = await this.screenRenderSystem.handleActiveScreenInput(normalizedCommand, this.simulation);
+            const handledByScreen = await this.guiEcsManager.handleActiveScreenInput(normalizedCommand, this.simulation);
             
             if (!handledByScreen) {
                 // Handle global navigation commands
@@ -108,7 +108,7 @@ export class TextBasedGUI {
             
             // Refresh the active screen after command processing
             if (this.isRunning) {
-                await this.screenRenderSystem.renderActiveScreen(this.simulation);
+                await this.guiEcsManager.renderActiveScreen(this.simulation);
             }
         }
     }
@@ -120,32 +120,32 @@ export class TextBasedGUI {
         switch (command) {
             case 'status':
             case 's':
-                const statusScreenId = this.screenManager.getScreenEntityId('status');
+                const statusScreenId = this.guiEcsManager.getScreenEntityId('status');
                 if (statusScreenId) {
-                    this.screenRenderSystem.setActiveScreen(statusScreenId);
+                    this.guiEcsManager.setActiveScreen(statusScreenId);
                 }
                 break;
             case 'choices':
             case 'c':
-                const choicesScreenId = this.screenManager.getScreenEntityId('choices');
+                const choicesScreenId = this.guiEcsManager.getScreenEntityId('choices');
                 if (choicesScreenId) {
-                    this.screenRenderSystem.setActiveScreen(choicesScreenId);
+                    this.guiEcsManager.setActiveScreen(choicesScreenId);
                 }
                 break;
             case 'chronicle':
             case 'r':
-                const chronicleScreenId = this.screenManager.getScreenEntityId('chronicle');
+                const chronicleScreenId = this.guiEcsManager.getScreenEntityId('chronicle');
                 if (chronicleScreenId) {
-                    this.screenRenderSystem.setActiveScreen(chronicleScreenId);
+                    this.guiEcsManager.setActiveScreen(chronicleScreenId);
                 }
                 break;
             case 'main':
             case 'm':
             case 'back':
             case 'b':
-                const mainScreenId = this.screenManager.getScreenEntityId('main');
+                const mainScreenId = this.guiEcsManager.getScreenEntityId('main');
                 if (mainScreenId) {
-                    this.screenRenderSystem.setActiveScreen(mainScreenId);
+                    this.guiEcsManager.setActiveScreen(mainScreenId);
                 }
                 break;
             default:
@@ -156,9 +156,9 @@ export class TextBasedGUI {
     }
 
     /**
-     * Creates a new instance of TextBasedGUI.
+     * Creates a new instance of TextBasedGui2.
      */
-    static create(simulation: Simulation): TextBasedGUI {
-        return new TextBasedGUI(simulation);
+    static create(simulation: Simulation): TextBasedGui2 {
+        return new TextBasedGui2(simulation);
     }
 }

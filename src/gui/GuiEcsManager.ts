@@ -1,3 +1,4 @@
+import { Ecs } from '../ecs/Ecs';
 import { EntityManager } from '../ecs/EntityManager';
 import { SystemManager } from '../ecs/SystemManager';
 import { ScreenRenderSystem } from './ScreenRenderSystem';
@@ -10,8 +11,7 @@ import * as readline from 'readline';
  * This allows the GUI to have its own update frequency independent of the simulation.
  */
 export class GuiEcsManager {
-    private readonly entityManager: EntityManager;
-    private readonly systemManager: SystemManager;
+    private readonly ecs: Ecs;
     private readonly screenRenderSystem: ScreenRenderSystem;
     private readonly screenManager: ScreenManager;
     private readonly readline: readline.Interface;
@@ -21,16 +21,15 @@ export class GuiEcsManager {
     constructor(readline: readline.Interface) {
         this.readline = readline;
         
-        // Create separate ECS instances for GUI
-        this.entityManager = new EntityManager();
-        this.systemManager = new SystemManager(this.entityManager);
+        // Create separate ECS instance for GUI
+        this.ecs = Ecs.create();
         
         // Initialize GUI-specific systems
-        this.screenRenderSystem = new ScreenRenderSystem(this.entityManager, this.readline);
-        this.screenManager = new ScreenManager(this.entityManager);
+        this.screenRenderSystem = new ScreenRenderSystem(this.ecs.getEntityManager(), this.readline);
+        this.screenManager = new ScreenManager(this.ecs.getEntityManager());
         
         // Register systems
-        this.systemManager.register(this.screenRenderSystem);
+        this.ecs.registerSystem(this.screenRenderSystem);
     }
 
     /**
@@ -71,9 +70,8 @@ export class GuiEcsManager {
      * Updates all GUI systems.
      */
     private update(): void {
-        // For now, GUI systems don't need regular updates
-        // The screen rendering is done explicitly via renderActiveScreen
-        // But this provides a framework for future GUI systems that might need updates
+        // Update the GUI ECS systems
+        this.ecs.update();
     }
 
     /**
@@ -105,17 +103,24 @@ export class GuiEcsManager {
     }
 
     /**
+     * Gets the GUI ECS instance.
+     */
+    getEcs(): Ecs {
+        return this.ecs;
+    }
+
+    /**
      * Gets the GUI entity manager.
      */
     getEntityManager(): EntityManager {
-        return this.entityManager;
+        return this.ecs.getEntityManager();
     }
 
     /**
      * Gets the GUI system manager.
      */
     getSystemManager(): SystemManager {
-        return this.systemManager;
+        return this.ecs.getSystemManager();
     }
 
     /**

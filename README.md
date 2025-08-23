@@ -204,11 +204,11 @@ Each screen is implemented as a separate entity with appropriate components:
 - Maps screen names to entity IDs
 - Initializes screens with appropriate components
 
-**TextBasedGUI** (`src/gui/TextBasedGUI.ts`)
-- Main GUI class using ECS architecture for screen management
-- Uses the ECS system for screen management
-- Handles global navigation commands
-- Manages the screen render system and screen manager
+**TextBasedGui2** (`src/gui/TextBasedGui2.ts`)
+- Advanced GUI class using separate ECS architecture for screen management
+- Uses its own ECS instance decoupled from the simulation ECS
+- Handles global navigation commands with independent update frequencies
+- Manages GUI systems through GuiEcsManager for responsive UI
 
 ### Architecture Benefits
 
@@ -267,7 +267,8 @@ The simulation creates a dedicated player entity with:
 ### Architecture
 
 #### Key Files
-- `src/gui/TextBasedGUI.ts` - Main GUI implementation using ECS architecture
+- `src/gui/TextBasedGui2.ts` - Advanced GUI implementation using separate ECS architecture
+- `src/gui/GuiEcsManager.ts` - Manages separate GUI ECS instance and systems
 - `src/gui/ScreenRenderSystem.ts` - System for rendering active screens
 - `src/gui/ScreenManager.ts` - Manages screen entities and their lifecycle
 - `src/gui/IsActiveComponent.ts` - Component marking the active screen
@@ -282,13 +283,14 @@ The simulation creates a dedicated player entity with:
 - `ChronicleScreen.ts` - Historical events display
 
 #### Integration Points
-The ECS GUI integrates with the existing simulation by:
-- Using entities with `PlayerComponent` for player interaction
-- Reading/writing to `DilemmaComponent` and `DataSetEventComponent`
-- Monitoring simulation state through singleton components
-- Utilizing the existing chronicle system for event recording
-- Providing clean screen management through the ECS pattern
-- Maintaining backward compatibility with existing systems
+The GUI uses a dual-ECS architecture:
+- **Simulation ECS**: Handles game logic, entities with `PlayerComponent`, `DilemmaComponent`, etc.
+- **GUI ECS**: Separate instance for screen management with independent update frequencies
+- Reads/writes simulation state through the main ECS instance
+- Monitors simulation state through singleton components
+- Utilizes the existing chronicle system for event recording
+- Provides clean screen management through the separate GUI ECS pattern
+- Maintains decoupled architecture with responsive UI updates
 
 ### Example Session
 
@@ -450,7 +452,8 @@ This module provides the interactive text-based user interface for the simulatio
 
 **Screen Management:**
 *   **`ScreenManager`**: Creates and manages all screen entities, mapping screen names to entity IDs.
-*   **`TextBasedGUI`**: Main GUI class using the ECS system for screen management with modular screen entities.
+*   **`GuiEcsManager`**: Manages separate ECS instance for GUI with independent update cycles from simulation.
+*   **`TextBasedGui2`**: Advanced GUI class using separate ECS system for screen management with decoupled architecture.
 
 **Screen Implementations:**
 *   **`MainInterfaceScreen`**: Main menu screen with navigation options and pending dilemmas display.

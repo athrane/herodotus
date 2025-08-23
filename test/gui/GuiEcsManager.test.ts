@@ -1,6 +1,7 @@
 import { GuiEcsManager } from '../../src/gui/GuiEcsManager';
 import * as readline from 'readline';
 import { Simulation } from '../../src/simulation/Simulation';
+import { Ecs } from '../../src/ecs/Ecs';
 import { EntityManager } from '../../src/ecs/EntityManager';
 import { SystemManager } from '../../src/ecs/SystemManager';
 
@@ -22,12 +23,12 @@ describe('GuiEcsManager', () => {
 
   beforeEach(() => {
     // Create a mock simulation with necessary methods
-    const mockEntityManager = new EntityManager();
-    const mockSystemManager = new SystemManager(mockEntityManager);
+    const mockEcs = Ecs.create();
     
     mockSimulation = {
-      getEntityManager: () => mockEntityManager,
-      getSystemManager: () => mockSystemManager,
+      getEcs: () => mockEcs,
+      getEntityManager: () => mockEcs.getEntityManager(),
+      getSystemManager: () => mockEcs.getSystemManager(),
       getIsRunning: () => true,
       start: jest.fn(),
       stop: jest.fn(),
@@ -42,13 +43,19 @@ describe('GuiEcsManager', () => {
   });
 
   describe('constructor', () => {
-    test('should create GUI ECS manager with separate entity and system managers', () => {
+    test('should create GUI ECS manager with separate Ecs instance', () => {
       expect(guiEcsManager).toBeInstanceOf(GuiEcsManager);
+      expect(guiEcsManager.getEcs()).toBeInstanceOf(Ecs);
       expect(guiEcsManager.getEntityManager()).toBeInstanceOf(EntityManager);
       expect(guiEcsManager.getSystemManager()).toBeInstanceOf(SystemManager);
     });
 
     test('should have separate ECS instances from simulation', () => {
+      const guiEcs = guiEcsManager.getEcs();
+      const simulationEcs = mockSimulation.getEcs();
+      
+      expect(guiEcs).not.toBe(simulationEcs);
+      
       const guiEntityManager = guiEcsManager.getEntityManager();
       const simulationEntityManager = mockSimulation.getEntityManager();
       
