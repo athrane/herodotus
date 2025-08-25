@@ -14,9 +14,10 @@ import { TypeUtils } from '../util/TypeUtils';
 import { RenderSystem } from './rendering/RenderSystem';
 import { ScreenBufferComponent } from './rendering/ScreenBufferComponent';
 import * as readline from 'readline';
-import { PositionComponent } from './PositionComponent';
+import { PositionComponent } from './rendering/PositionComponent';
 import { IsVisibleComponent } from './rendering/IsVisibleComponent';
 import { TextComponent } from './rendering/TextComponent';
+import { ScreenBufferTextUpdateSystem } from './rendering/ScreenBufferTextUpdateSystem';
 
 /**
  * Manages a separate ECS instance specifically for GUI components and systems.
@@ -38,13 +39,15 @@ export class GuiEcsManager {
 
         // Create separate ECS instance for GUI
         this.ecs = Ecs.create();
-        
-        // Create and register ECS systems 
-        this.screenRenderSystem = new ScreenRenderSystem(this.ecs.getEntityManager(), this.readline);
+
+        // Create and register ECS systems
+        const entityManager = this.ecs.getEntityManager();
+        this.ecs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
+
+        this.screenRenderSystem = ScreenRenderSystem.create(entityManager, this.readline);
         this.ecs.registerSystem(this.screenRenderSystem);
 
-        const renderSystem = RenderSystem.create(this.ecs.getEntityManager());
-        this.ecs.registerSystem(renderSystem);
+        this.ecs.registerSystem(RenderSystem.create(entityManager));
     }
 
     /**

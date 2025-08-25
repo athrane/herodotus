@@ -12,6 +12,9 @@ export class ScreenBufferComponent extends Component {
     private cursorRow: number;
     private cursorCol: number;
 
+    /**
+     * Creates a new ScreenBufferComponent.
+     */
     constructor() {
         super();
         this.buffer = this.createEmptyBuffer();

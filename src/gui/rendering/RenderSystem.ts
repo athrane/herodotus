@@ -10,6 +10,10 @@ import { Simulation } from '../../simulation/Simulation';
 export class RenderSystem extends System {
     private lastRenderedBuffer: string[] | null = null;
 
+    /**
+     * Constructor for the RenderSystem.
+     * @param entityManager The entity manager to use for querying entities.
+     */
     constructor(entityManager: EntityManager) {
         super(entityManager, [ScreenBufferComponent]);
     }

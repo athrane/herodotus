@@ -86,4 +86,14 @@ export class ScreenRenderSystem extends System {
             targetEntity.addComponent(new IsActiveComponent());
         }
     }
+
+    /**
+     * Creates a new instance of the ScreenRenderSystem.
+     * @param entityManager The entity manager to use for querying entities.
+     * @param readline The readline interface for handling user input.
+     * @returns A new instance of the ScreenRenderSystem.
+     */
+    static create(entityManager: EntityManager, readline: readline.Interface): ScreenRenderSystem {
+        return new ScreenRenderSystem(entityManager, readline);
+    }
 }
