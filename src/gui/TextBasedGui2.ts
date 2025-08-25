@@ -2,6 +2,7 @@ import * as readline from 'readline';
 import { Simulation } from '../simulation/Simulation';
 import { GuiHelper } from './GuiHelper';
 import { GuiEcsManager } from './GuiEcsManager';
+import { TypeUtils } from 'util/TypeUtils';
 
 /**
  * A text-based GUI using a separate ECS system for screen management.
@@ -17,22 +18,25 @@ export class TextBasedGui2 {
     private isWaitingForInput: boolean = false;
 
     constructor(simulation: Simulation) {
+        TypeUtils.ensureInstanceOf(simulation, Simulation, "Expected simulation to be an instance of Simulation");
         this.simulation = simulation;
+
+        // Create readline interface for user input
         this.readline = readline.createInterface({
             input: process.stdin,
             output: process.stdout
         });
 
-        // Initialize the separate GUI ECS manager
-        this.guiEcsManager = new GuiEcsManager(this.readline);
+        // Initialize the GUI ECS
+        this.guiEcsManager = new GuiEcsManager(this.readline, this.simulation);
     }
 
     /**
      * Starts the ECS-based GUI with separate update frequencies for GUI and simulation.
      */
     async start(): Promise<void> {
-        this.isRunning = true;
-        
+        this.startGuiRunning();
+
         // Initialize and start the GUI ECS system (fast updates for responsive UI)
         this.guiEcsManager.initialize();
         this.guiEcsManager.start(100); // GUI updates every 100ms
@@ -54,7 +58,9 @@ export class TextBasedGui2 {
      * Stops the GUI and cleans up resources.
      */
     stop(): void {
-        this.isRunning = false;
+        this.stopGuiRunning();
+
+        // Stop the simulation tick loop
         if (this.simulationTickInterval) {
             clearInterval(this.simulationTickInterval);
             this.simulationTickInterval = null;
@@ -153,6 +159,27 @@ export class TextBasedGui2 {
                 console.log('Type "help" or "h" for available commands.');
                 break;
         }
+    }
+
+    /**
+     * Sets the running state of the GUI to running.
+     */
+    startGuiRunning(): void {
+        this.isRunning = true;
+    }
+
+    /**
+     * Sets the running state of the GUI to not running.
+     */
+    stopGuiRunning(): void {
+        this.isRunning = false;
+    }
+
+    /**
+     * Returns true if the GUI is currently running.
+     */
+    isGuiRunning(): boolean {
+        return this.isRunning;
     }
 
     /**

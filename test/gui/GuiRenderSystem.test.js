@@ -1,8 +1,8 @@
-import { GuiRenderSystem } from '../../src/gui/GuiRenderSystem';
+import { GuiRenderSystem } from '../../src/gui/rendering/TextRenderSystem';
 import { EntityManager } from '../../src/ecs/EntityManager';
 import { PositionComponent } from '../../src/gui/PositionComponent';
-import { TextComponent } from '../../src/gui/TextComponent';
-import { IsVisibleComponent } from '../../src/gui/IsVisibleComponent';
+import { TextComponent } from '../../src/gui/rendering/TextComponent';
+import { IsVisibleComponent } from '../../src/gui/rendering/IsVisibleComponent';
 import { GuiHelper } from '../../src/gui/GuiHelper';
 import { Simulation } from '../../src/simulation/Simulation';
 

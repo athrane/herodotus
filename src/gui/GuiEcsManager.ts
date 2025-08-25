@@ -10,7 +10,13 @@ import { renderStatusScreen, handleStatusScreenInput } from './screens/StatusScr
 import { renderChoicesScreen, handleChoicesScreenInput } from './screens/ChoicesScreen';
 import { renderChronicleScreen, handleChronicleScreenInput } from './screens/ChronicleScreen';
 import { Simulation } from '../simulation/Simulation';
+import { TypeUtils } from '../util/TypeUtils';
+import { RenderSystem } from './rendering/RenderSystem';
+import { ScreenBufferComponent } from './rendering/ScreenBufferComponent';
 import * as readline from 'readline';
+import { PositionComponent } from './PositionComponent';
+import { IsVisibleComponent } from './rendering/IsVisibleComponent';
+import { TextComponent } from './rendering/TextComponent';
 
 /**
  * Manages a separate ECS instance specifically for GUI components and systems.
@@ -21,20 +27,24 @@ export class GuiEcsManager {
     private readonly screenRenderSystem: ScreenRenderSystem;
     private readonly screens: Map<string, string> = new Map(); // screen name -> entity ID
     private readonly readline: readline.Interface;
+    private readonly simulation: Simulation;
     private guiUpdateInterval: NodeJS.Timeout | null = null;
     private isRunning: boolean = false;
 
-    constructor(readline: readline.Interface) {
+    constructor(readline: readline.Interface, simulation: Simulation) { 
+        TypeUtils.ensureInstanceOf(simulation, Simulation, "Expected simulation to be an instance of Simulation");
         this.readline = readline;
-        
+        this.simulation = simulation;
+
         // Create separate ECS instance for GUI
         this.ecs = Ecs.create();
         
-        // Initialize GUI-specific systems
+        // Create and register ECS systems 
         this.screenRenderSystem = new ScreenRenderSystem(this.ecs.getEntityManager(), this.readline);
-        
-        // Register systems
         this.ecs.registerSystem(this.screenRenderSystem);
+
+        const renderSystem = RenderSystem.create(this.ecs.getEntityManager());
+        this.ecs.registerSystem(renderSystem);
     }
 
     /**
@@ -67,6 +77,18 @@ export class GuiEcsManager {
         chronicleScreen.addComponent(new NameComponent('Chronicle'));
         chronicleScreen.addComponent(new ScreenComponent(renderChronicleScreen, handleChronicleScreenInput));
         this.screens.set('chronicle', chronicleScreen.getId());
+
+        // Create Screen buffer entity
+        const screenBufferEntity = this.ecs.getEntityManager().createEntity();
+        screenBufferEntity.addComponent(new NameComponent('ScreenBuffer'));
+        screenBufferEntity.addComponent(new ScreenBufferComponent());
+
+        // Create global Header entity
+        const headerEntity = this.ecs.getEntityManager().createEntity();
+        headerEntity.addComponent(new NameComponent('Header'));
+        headerEntity.addComponent(new PositionComponent(0, 0));
+        headerEntity.addComponent(new IsVisibleComponent(true));
+        headerEntity.addComponent(new TextComponent('Header Line 1'));
     }
 
     /**
@@ -96,10 +118,9 @@ export class GuiEcsManager {
     }
 
     /**
-     * Updates all GUI systems.
+     * Updates all GUI ECS systems.
      */
     private update(): void {
-        // Update the GUI ECS systems
         this.ecs.update();
     }
 
