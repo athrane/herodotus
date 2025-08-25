@@ -19,6 +19,7 @@ import { IsVisibleComponent } from './rendering/IsVisibleComponent';
 import { TextComponent } from './rendering/TextComponent';
 import { ScreenBufferTextUpdateSystem } from './rendering/ScreenBufferTextUpdateSystem';
 import { HeaderUpdateSystem } from './rendering/HeaderUpdateSystem';
+import { FooterUpdateSystem } from './rendering/FooterUpdateSystem';
 
 /**
  * Manages a separate ECS instance specifically for GUI components and systems.
@@ -45,6 +46,7 @@ export class GuiEcsManager {
         const entityManager = this.ecs.getEntityManager();
 
         this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, this.simulation));
+        this.ecs.registerSystem(FooterUpdateSystem.create(entityManager));
         this.ecs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
 
         this.screenRenderSystem = ScreenRenderSystem.create(entityManager, this.readline);

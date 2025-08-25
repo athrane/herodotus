@@ -39,8 +39,8 @@ export class TextBasedGui2 {
 
         // Initialize and start the GUI ECS system (fast updates for responsive UI)
         this.guiEcsManager.initialize();
-        this.guiEcsManager.start(100); // GUI updates every 100ms
-        
+        this.guiEcsManager.start(500); // GUI updates every 500ms
+
         // Start the simulation
         this.simulation.start();
 
