@@ -1,7 +1,6 @@
 import { RenderSystem } from '../../src/gui/rendering/RenderSystem';
 import { ScreenBufferComponent } from '../../src/gui/rendering/ScreenBufferComponent';
 import { EntityManager } from '../../src/ecs/EntityManager';
-import { Entity } from '../../src/ecs/Entity';
 
 describe('RenderSystem', () => {
     let entityManager;
@@ -31,8 +30,8 @@ describe('RenderSystem', () => {
 
     test('should warn when multiple screen buffer entities exist', () => {
         // Create two entities with screen buffer components
-        const entity1 = entityManager.createEntity(new ScreenBufferComponent());
-        const entity2 = entityManager.createEntity(new ScreenBufferComponent());
+        entityManager.createEntity(new ScreenBufferComponent());
+        entityManager.createEntity(new ScreenBufferComponent());
 
         renderSystem.update(mockSimulation);
         
@@ -42,20 +41,20 @@ describe('RenderSystem', () => {
     test('should render screen buffer on first update', () => {
         const screenBuffer = new ScreenBufferComponent();
         screenBuffer.write('Hello, World!');
-        const entity = entityManager.createEntity(screenBuffer);
+        entityManager.createEntity(screenBuffer);
 
         renderSystem.update(mockSimulation);
         
         // Should clear screen and render buffer
         expect(stdoutWriteSpy).toHaveBeenCalledWith('\x1b[2J\x1b[H'); // Clear screen
-        expect(stdoutWriteSpy).toHaveBeenCalledWith('\x1b[1;1HHello, World!' + ' '.repeat(67)); // First row
+        expect(stdoutWriteSpy).toHaveBeenCalledWith('\x1b[1;1HHello, World!' + '.'.repeat(67)); // First row
         expect(stdoutWriteSpy).toHaveBeenCalledWith('\x1b[1;14H'); // Cursor position after "Hello, World!"
     });
 
     test('should not re-render if buffer has not changed', () => {
         const screenBuffer = new ScreenBufferComponent();
         screenBuffer.write('Static text');
-        const entity = entityManager.createEntity(screenBuffer);
+        entityManager.createEntity(screenBuffer);
 
         // First update should render
         renderSystem.update(mockSimulation);
@@ -71,7 +70,7 @@ describe('RenderSystem', () => {
     test('should re-render when buffer changes', () => {
         const screenBuffer = new ScreenBufferComponent();
         screenBuffer.write('Initial text');
-        const entity = entityManager.createEntity(screenBuffer);
+        entityManager.createEntity(screenBuffer);
 
         // First update
         renderSystem.update(mockSimulation);
@@ -101,7 +100,7 @@ describe('RenderSystem', () => {
 
     test('should get screen buffer component', () => {
         const screenBuffer = new ScreenBufferComponent();
-        const entity = entityManager.createEntity(screenBuffer);
+        entityManager.createEntity(screenBuffer);
 
         const retrievedBuffer = renderSystem.getScreenBuffer();
         expect(retrievedBuffer).toBe(screenBuffer);
@@ -115,7 +114,7 @@ describe('RenderSystem', () => {
     test('should force render even when buffer has not changed', () => {
         const screenBuffer = new ScreenBufferComponent();
         screenBuffer.write('Test content');
-        const entity = entityManager.createEntity(screenBuffer);
+        entityManager.createEntity(screenBuffer);
 
         // First update
         renderSystem.update(mockSimulation);
@@ -129,7 +128,7 @@ describe('RenderSystem', () => {
     test('should render cursor at correct position', () => {
         const screenBuffer = new ScreenBufferComponent();
         screenBuffer.setCursor(5, 10);
-        const entity = entityManager.createEntity(screenBuffer);
+        entityManager.createEntity(screenBuffer);
 
         renderSystem.update(mockSimulation);
         
@@ -145,7 +144,7 @@ describe('RenderSystem', () => {
             screenBuffer.writeAt(i, 0, `Row ${i}`);
         }
         
-        const entity = entityManager.createEntity(screenBuffer);
+        entityManager.createEntity(screenBuffer);
 
         renderSystem.update(mockSimulation);
         

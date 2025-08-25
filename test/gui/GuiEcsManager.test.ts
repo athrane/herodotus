@@ -22,20 +22,10 @@ describe('GuiEcsManager', () => {
   let mockSimulation: Simulation;
 
   beforeEach(() => {
-    // Create a mock simulation with necessary methods
-    const mockEcs = Ecs.create();
-    
-    mockSimulation = {
-      getEcs: () => mockEcs,
-      getEntityManager: () => mockEcs.getEntityManager(),
-      getSystemManager: () => mockEcs.getSystemManager(),
-      getIsRunning: () => true,
-      start: jest.fn(),
-      stop: jest.fn(),
-      tick: jest.fn()
-    } as any;
+    // Create a real simulation instance instead of mock
+    mockSimulation = Simulation.create();
 
-    guiEcsManager = new GuiEcsManager(mockReadlineInterface);
+    guiEcsManager = new GuiEcsManager(mockReadlineInterface, mockSimulation);
   });
 
   afterEach(() => {

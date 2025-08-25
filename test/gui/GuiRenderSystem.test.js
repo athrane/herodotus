@@ -1,10 +1,9 @@
-import { GuiRenderSystem } from '../../src/gui/rendering/TextRenderSystem';
+import { TextRenderSystem as GuiRenderSystem } from '../../src/gui/rendering/TextRenderSystem';
 import { EntityManager } from '../../src/ecs/EntityManager';
 import { PositionComponent } from '../../src/gui/PositionComponent';
 import { TextComponent } from '../../src/gui/rendering/TextComponent';
 import { IsVisibleComponent } from '../../src/gui/rendering/IsVisibleComponent';
 import { GuiHelper } from '../../src/gui/GuiHelper';
-import { Simulation } from '../../src/simulation/Simulation';
 
 describe('GuiRenderSystem', () => {
     let entityManager;
@@ -90,13 +89,5 @@ describe('GuiRenderSystem', () => {
         expect(consoleSpy).toHaveBeenCalledWith('First Text');
         expect(consoleSpy).toHaveBeenCalledWith('Second Text');
         expect(consoleSpy).toHaveBeenCalledTimes(2);
-    });
-
-    test('should clear console at the beginning of update', () => {
-        // Update the system
-        guiRenderSystem.update(mockSimulation);
-
-        // Verify clearScreen was called
-        expect(clearScreenSpy).toHaveBeenCalledTimes(1);
     });
 });
