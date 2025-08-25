@@ -4,7 +4,7 @@ import { Component } from '../../ecs/Component';
  * Component that stores text content for GUI elements.
  */
 export class TextComponent extends Component {
-    public readonly text: string;
+    public text: string;
 
     /**
      * Constructor for the TextComponent.
@@ -21,5 +21,13 @@ export class TextComponent extends Component {
      */
     getText(): string {
         return this.text;
+    }
+
+    /**
+     * Sets the text content of the component.
+     * @param text The new text content.
+     */
+    setText(text: string): void {
+        this.text = text;
     }
 }

@@ -45,7 +45,6 @@ export class DilemmaSystem extends System {
         // Get current state, the event consequence, from the DataSetEvent
         const dataSetEventComponent = entity.getComponent(DataSetEventComponent);
         if (!dataSetEventComponent) return;
-
         const currentDataSetEvent = dataSetEventComponent.getDataSetEvent();        
         const currentState = currentDataSetEvent.getEventConsequence();
 

@@ -18,6 +18,7 @@ import { PositionComponent } from './rendering/PositionComponent';
 import { IsVisibleComponent } from './rendering/IsVisibleComponent';
 import { TextComponent } from './rendering/TextComponent';
 import { ScreenBufferTextUpdateSystem } from './rendering/ScreenBufferTextUpdateSystem';
+import { HeaderUpdateSystem } from './rendering/HeaderUpdateSystem';
 
 /**
  * Manages a separate ECS instance specifically for GUI components and systems.
@@ -42,6 +43,8 @@ export class GuiEcsManager {
 
         // Create and register ECS systems
         const entityManager = this.ecs.getEntityManager();
+
+        this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, this.simulation));
         this.ecs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
 
         this.screenRenderSystem = ScreenRenderSystem.create(entityManager, this.readline);
@@ -86,14 +89,14 @@ export class GuiEcsManager {
         screenBufferEntity.addComponent(new NameComponent('ScreenBuffer'));
         screenBufferEntity.addComponent(new ScreenBufferComponent());
 
-        // Create global GUI Header entity
+        // Create global GUI Header entity, positioned at the top
         const headerEntity = this.ecs.getEntityManager().createEntity();
-        headerEntity.addComponent(new NameComponent('Header'));
+        headerEntity.addComponent(new NameComponent(HeaderUpdateSystem.HEADER_ENTITY_NAME));
         headerEntity.addComponent(new PositionComponent(0, 0));
         headerEntity.addComponent(new IsVisibleComponent(true));
         headerEntity.addComponent(new TextComponent('Header Line 1'));
 
-        // Create global GUI Footer entity
+        // Create global GUI Footer entity, positioned at the bottom
         const footerEntity = this.ecs.getEntityManager().createEntity();
         footerEntity.addComponent(new NameComponent('Footer'));
         footerEntity.addComponent(new PositionComponent(0, 23));
