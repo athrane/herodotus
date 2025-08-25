@@ -12,6 +12,9 @@ import { TimeComponent } from '../../time/TimeComponent';
 export class HeaderUpdateSystem extends System {
     private simulation: Simulation;
 
+    /**
+     * Name of the header entity.
+     */
     public static HEADER_ENTITY_NAME = 'Header';
 
     /**
