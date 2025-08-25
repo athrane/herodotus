@@ -1,13 +1,13 @@
 import { System } from '../../ecs/System';
 import { EntityManager } from '../../ecs/EntityManager';
 import { ScreenBufferComponent } from './ScreenBufferComponent';
-import { Simulation } from '../../simulation/Simulation';
+import { Entity } from 'ecs/Entity';
 
 /**
  * System responsible for rendering the screen buffer to the terminal.
  * Handles a singleton entity that contains a ScreenBufferComponent for TTY rendering.
  */
-export class RenderSystem extends System {
+export class ScreenBufferRenderSystem extends System {
     private lastRenderedBuffer: string[] | null = null;
 
     /**
@@ -18,30 +18,13 @@ export class RenderSystem extends System {
         super(entityManager, [ScreenBufferComponent]);
     }
 
-    /**
-     * Updates the render system. Renders the screen buffer if it has changed.
-     */
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    update(simulation: Simulation): void {
-        const entities = this.getEntityManager().getEntitiesWithComponents(ScreenBufferComponent);
-        
-        // Should be a singleton entity with screen buffer
-        if (entities.length === 0) {
-            return; // No screen buffer entity found
-        }
-
-        if (entities.length > 1) {
-            console.warn('Multiple screen buffer entities found, using the first one');
-        }
-
-        const entity = entities[0];
+    processEntity(entity: Entity): void {
         const screenBuffer = entity.getComponent(ScreenBufferComponent);
-        
-        if (screenBuffer) {
-            this.renderBuffer(screenBuffer);
-        }
-    }
+        if (!screenBuffer) return;
 
+        this.renderBuffer(screenBuffer);
+    }
+    
     /**
      * Renders the screen buffer to the console if it has changed.
      */
@@ -143,8 +126,8 @@ export class RenderSystem extends System {
      * @param EntityManager The entity manager to use.
      * @returns A new instance of the RenderSystem.
      */
-    static create(EntityManager: EntityManager): RenderSystem {
-        return new RenderSystem(EntityManager);
+    static create(EntityManager: EntityManager): ScreenBufferRenderSystem {
+        return new ScreenBufferRenderSystem(EntityManager);
     }
 
 }

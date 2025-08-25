@@ -11,7 +11,7 @@ import { renderChoicesScreen, handleChoicesScreenInput } from './screens/Choices
 import { renderChronicleScreen, handleChronicleScreenInput } from './screens/ChronicleScreen';
 import { Simulation } from '../simulation/Simulation';
 import { TypeUtils } from '../util/TypeUtils';
-import { RenderSystem } from './rendering/RenderSystem';
+import { ScreenBufferRenderSystem } from './rendering/ScreenBufferRenderSystem';
 import { ScreenBufferComponent } from './rendering/ScreenBufferComponent';
 import * as readline from 'readline';
 import { PositionComponent } from './rendering/PositionComponent';
@@ -47,7 +47,7 @@ export class GuiEcsManager {
         this.screenRenderSystem = ScreenRenderSystem.create(entityManager, this.readline);
         this.ecs.registerSystem(this.screenRenderSystem);
 
-        this.ecs.registerSystem(RenderSystem.create(entityManager));
+        this.ecs.registerSystem(ScreenBufferRenderSystem.create(entityManager));
     }
 
     /**
@@ -86,12 +86,19 @@ export class GuiEcsManager {
         screenBufferEntity.addComponent(new NameComponent('ScreenBuffer'));
         screenBufferEntity.addComponent(new ScreenBufferComponent());
 
-        // Create global Header entity
+        // Create global GUI Header entity
         const headerEntity = this.ecs.getEntityManager().createEntity();
         headerEntity.addComponent(new NameComponent('Header'));
         headerEntity.addComponent(new PositionComponent(0, 0));
         headerEntity.addComponent(new IsVisibleComponent(true));
         headerEntity.addComponent(new TextComponent('Header Line 1'));
+
+        // Create global GUI Footer entity
+        const footerEntity = this.ecs.getEntityManager().createEntity();
+        footerEntity.addComponent(new NameComponent('Footer'));
+        footerEntity.addComponent(new PositionComponent(0, 23));
+        footerEntity.addComponent(new IsVisibleComponent(true));
+        footerEntity.addComponent(new TextComponent('Footer Line 1'));
     }
 
     /**

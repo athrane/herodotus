@@ -36,7 +36,7 @@ export class ScreenBufferTextUpdateSystem extends System {
 
         // If visible, the render
         if(visibilityComponent.isVisible()) {
-            screenBufferComponent.writeAt(positionComponent.getX(), positionComponent.getY(), textComponent.getText());
+            screenBufferComponent.writeAt(positionComponent.getY(), positionComponent.getX(), textComponent.getText());
         }
     }
 
