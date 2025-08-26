@@ -10,20 +10,24 @@ describe('MenuComponent (menu folder)', () => {
 
     const menu = new MenuComponent(items);
 
-    // The implementation exposes getters instead of public fields
-    expect(menu.getSelectedItemIndex()).toBe(0);
-    const selected = menu.getSelectedItem();
-    expect(selected).toBeDefined();
-    expect(selected!.getText()).toBe('Start');
-    expect(selected!.getActionID()).toBe('start');
+  // The implementation exposes getters instead of public fields
+  expect(menu.getSelectedItemIndex()).toBe(0);
+  const itemsOut = menu.getItems();
+  expect(itemsOut.length).toBe(2);
+  const selected = itemsOut[menu.getSelectedItemIndex()];
+  expect(selected).toBeDefined();
+  expect(selected!.getText()).toBe('Start');
+  expect(selected!.getActionID()).toBe('start');
   });
 
   test('empty items returns undefined for selected item', () => {
     const items: MenuItem[] = [];
     const menu = new MenuComponent(items);
 
-    expect(menu.getSelectedItemIndex()).toBe(0);
-    expect(menu.getSelectedItem()).toBeUndefined();
+  expect(menu.getSelectedItemIndex()).toBe(0);
+  const itemsOut = menu.getItems();
+  expect(itemsOut.length).toBe(0);
+  expect(itemsOut[menu.getSelectedItemIndex()]).toBeUndefined();
   });
 
   test('constructor throws when items is not an array', () => {

@@ -23,12 +23,12 @@ export class MenuComponent extends Component {
   }
 
   /**
-   * Gets the currently selected menu item.
+   * Gets the menu items.
+   * @returns The menu items.
    */
-  getSelectedItem(): MenuItem | undefined {
-    if (!this.items || this.items.length === 0) return undefined;
-    return this.items[this.selectedIndex];
-  }
+  getItems(): MenuItem[] {
+    return this.items;
+  } 
 
   /**
    * Gets the index of the currently selected menu item.
