@@ -443,22 +443,41 @@ This module is responsible for generating the initial world, including its geogr
 
 This module provides the interactive text-based user interface for the simulation using Entity-Component-System (ECS) architecture.
 
-**Components:**
-*   **`IsActiveComponent`**: Marks an entity as the currently active screen. Only one entity should have this component at a time.
-*   **`ScreenComponent`**: Contains the render logic and input handling for a screen. Takes render and input handling functions as parameters.
-
-**Systems:**
-*   **`ScreenRenderSystem`**: System responsible for rendering the currently active screen and routing input to it.
-
-**Screen Management:**
+**Core Management:**
 *   **`GuiEcsManager`**: Manages separate ECS instance for GUI with independent update cycles from simulation. Creates and manages all screen entities, mapping screen names to entity IDs.
+*   **`GuiHelper`**: Helper class providing utilities for GUI operations.
 *   **`TextBasedGui2`**: Advanced GUI class using separate ECS system for screen management with decoupled architecture.
 
-**Screen Implementations:**
-*   **`MainInterfaceScreen`**: Main menu screen with navigation options and pending dilemmas display.
-*   **`StatusScreen`**: Displays detailed simulation status including time, player status, and historical figures.
-*   **`ChoicesScreen`**: Handles dilemma choice selection, validation, and processing.
-*   **`ChronicleScreen`**: Displays recent historical events from the chronicle.
+**Components:**
+*   **`ScreenComponent`**: Contains the render logic and input handling for a screen. Takes render and input handling functions as parameters.
+
+**Screen System:**
+*   **`ScreenRenderSystem`**: System responsible for rendering the currently active screen and routing input to it.
+*   **`IsActiveScreenComponent`**: Marks an entity as the currently active screen. Only one entity should have this component at a time.
+
+#### `gui/menu`
+
+This module provides menu-related components and functionality.
+
+*   **`MenuComponent`**: Component for handling menu items and selected index with runtime validation.
+*   **`MenuItem`**: Class representing a menu item with text and action identifier, accessible through getter methods.
+
+#### `gui/rendering`
+
+This module contains rendering components and systems for the GUI.
+
+**Components:**
+*   **`DynamicTextComponent`**: Component for text that must be dynamically generated from the simulation's state. Contains a function that takes a Simulation instance and returns a string.
+*   **`IsVisibleComponent`**: Component that marks whether an entity should be visible in rendering.
+*   **`PositionComponent`**: Component storing position information for rendering elements.
+*   **`ScreenBufferComponent`**: Component managing a screen buffer for text-based rendering.
+*   **`TextComponent`**: Component containing static text content for display.
+
+**Systems:**
+*   **`FooterUpdateSystem`**: System responsible for updating footer content in the GUI.
+*   **`HeaderUpdateSystem`**: System responsible for updating header content in the GUI.
+*   **`ScreenBufferRenderSystem`**: System that renders content to screen buffers.
+*   **`ScreenBufferTextUpdateSystem`**: System that updates text content in screen buffers.
 
 The ECS-based GUI provides a modular, extensible architecture where each screen is a separate entity with its own components, making it easy to add new screens and maintain separation of concerns.
 

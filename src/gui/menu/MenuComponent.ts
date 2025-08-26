@@ -1,16 +1,16 @@
+import { TypeUtils } from '../../util/TypeUtils';
 import { Component } from '../../ecs/Component';
+import { MenuItem } from './MenuItem';
 
-export interface MenuItem {
-  text: string;
-  actionId: string;
-}
-
+/**
+ * Represents a menu item in the menu.
+ */
 /**
  * Represents a menu component that holds menu items and manages the selected item. 
  */
 export class MenuComponent extends Component {
-  public items: MenuItem[];
-  public selectedIndex: number = 0;
+  private items: MenuItem[];
+  private selectedIndex: number = 0;
 
   /**
    * Constructs a MenuComponent with the given menu items.
@@ -18,15 +18,17 @@ export class MenuComponent extends Component {
    */
   constructor(items: MenuItem[]) {
     super();
+    TypeUtils.ensureArray(items, "items must be an array");
     this.items = items;
   }
 
   /**
    * Gets the currently selected menu item.
    */
-  getSelectedItem(): MenuItem {
+  getSelectedItem(): MenuItem | undefined {
+    if (!this.items || this.items.length === 0) return undefined;
     return this.items[this.selectedIndex];
-  } 
+  }
 
   /**
    * Gets the index of the currently selected menu item.
