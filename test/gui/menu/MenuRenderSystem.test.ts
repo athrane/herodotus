@@ -56,4 +56,63 @@ describe('MenuRenderSystem', () => {
     const textComp = entity.getComponent(TextComponent)!;
     expect(textComp.getText()).toBe('');
   });
+
+  test('does nothing when TextComponent is missing', () => {
+    const em = EntityManager.create();
+    const entity = em.createEntity();
+
+    const items = [new MenuItem('Hidden', 'hidden')];
+    entity.addComponent(new MenuComponent(items));
+    // Intentionally do NOT add TextComponent
+    entity.addComponent(new IsVisibleComponent(true));
+
+    const system = new MenuRenderSystem(em);
+    // Should not throw
+    system.update();
+
+    // Ensure no TextComponent was created implicitly
+    const textComp = entity.getComponent(TextComponent);
+    expect(textComp).toBeUndefined();
+  });
+
+  test('clears text when IsVisibleComponent is missing', () => {
+    const em = EntityManager.create();
+    const entity = em.createEntity();
+
+    const items = [new MenuItem('One', 'one')];
+    entity.addComponent(new MenuComponent(items));
+    entity.addComponent(new TextComponent('keep-me'));
+    // Intentionally do NOT add IsVisibleComponent
+
+    const system = new MenuRenderSystem(em);
+    system.update();
+
+    const textComp = entity.getComponent(TextComponent)!;
+  // When visibility component is missing the system should not process the entity
+  expect(textComp.getText()).toBe('keep-me');
+  });
+
+  test('renders selected indicator at non-zero selected index', () => {
+    const em = EntityManager.create();
+    const entity = em.createEntity();
+
+    const items = [
+      new MenuItem('First', 'first'),
+      new MenuItem('Second', 'second'),
+      new MenuItem('Third', 'third'),
+    ];
+
+    const menu = new MenuComponent(items);
+    menu.setSelectedItemIndex(2); // select 'Third'
+
+    entity.addComponent(menu);
+    entity.addComponent(new TextComponent(''));
+    entity.addComponent(new IsVisibleComponent(true));
+
+    const system = new MenuRenderSystem(em);
+    system.update();
+
+    const textComp = entity.getComponent(TextComponent)!;
+    expect(textComp.getText()).toBe('  First\n  Second\n> Third');
+  });
 });

@@ -2,7 +2,8 @@ import * as readline from 'readline';
 import { Simulation } from '../simulation/Simulation';
 import { GuiHelper } from './GuiHelper';
 import { GuiEcsManager } from './GuiEcsManager';
-import { TypeUtils } from 'util/TypeUtils';
+import { TypeUtils } from '../util/TypeUtils';
+import { InputComponent } from './menu/InputComponent';
 
 /**
  * A text-based GUI using a separate ECS system for screen management.
@@ -47,9 +48,6 @@ export class TextBasedGui2 {
         // Start the simulation tick loop (slower updates for game logic)
         this.startSimulationLoop();
 
-        // Render the initial active screen
-        await this.guiEcsManager.renderActiveScreen(this.simulation);
-        
         // Start the main GUI loop
         await this.mainLoop();
     }
@@ -76,12 +74,8 @@ export class TextBasedGui2 {
      */
     private startSimulationLoop(): void {
         this.simulationTickInterval = setInterval(async () => {
-            if (this.simulation.getIsRunning()) {
+            if (this.simulation.getIsRunning() && !this.isWaitingForInput) {
                 this.simulation.tick();
-                // Refresh the active screen after simulation updates (only when not waiting for input)
-                if (!this.isWaitingForInput) {
-                    await this.guiEcsManager.renderActiveScreen(this.simulation);
-                }
             }
         }, 2000); // Simulation ticks every 2 seconds
     }
@@ -90,75 +84,48 @@ export class TextBasedGui2 {
      * Main GUI interaction loop.
      */
     private async mainLoop(): Promise<void> {
-        while (this.isRunning) {
-            this.isWaitingForInput = true;
-            const command = await GuiHelper.askQuestion(this.readline, '\nCommand: ');
-            this.isWaitingForInput = false;
-            
-            const normalizedCommand = command.toLowerCase().trim();
-            
-            // Handle quit command globally
-            if (normalizedCommand === 'quit' || normalizedCommand === 'q') {
-                console.log('Goodbye!');
-                this.stop();
-                break;
-            }
-            
-            // Try to handle the command with the active screen first
-            const handledByScreen = await this.guiEcsManager.handleActiveScreenInput(normalizedCommand, this.simulation);
-            
-            if (!handledByScreen) {
-                // Handle global navigation commands
-                await this.handleGlobalCommands(normalizedCommand);
-            }
-            
-            // Refresh the active screen after command processing
-            if (this.isRunning) {
-                await this.guiEcsManager.renderActiveScreen(this.simulation);
-            }
-        }
-    }
+        while (this.isGuiRunning()) {
 
-    /**
-     * Handles global navigation commands that can switch between screens.
-     */
-    private async handleGlobalCommands(command: string): Promise<void> {
-        switch (command) {
-            case 'status':
-            case 's':
-                const statusScreenId = this.guiEcsManager.getScreenEntityId('status');
-                if (statusScreenId) {
-                    this.guiEcsManager.setActiveScreen(statusScreenId);
-                }
-                break;
-            case 'choices':
-            case 'c':
-                const choicesScreenId = this.guiEcsManager.getScreenEntityId('choices');
-                if (choicesScreenId) {
-                    this.guiEcsManager.setActiveScreen(choicesScreenId);
-                }
-                break;
-            case 'chronicle':
-            case 'r':
-                const chronicleScreenId = this.guiEcsManager.getScreenEntityId('chronicle');
-                if (chronicleScreenId) {
-                    this.guiEcsManager.setActiveScreen(chronicleScreenId);
-                }
-                break;
-            case 'main':
-            case 'm':
-            case 'back':
-            case 'b':
-                const mainScreenId = this.guiEcsManager.getScreenEntityId('main');
-                if (mainScreenId) {
-                    this.guiEcsManager.setActiveScreen(mainScreenId);
-                }
-                break;
-            default:
-                console.log(`Unknown command: ${command}`);
-                console.log('Type "help" or "h" for available commands.');
-                break;
+            // Wait for user input and get the command
+            this.isWaitingForInput = true;
+            const command = await GuiHelper.askQuestion(this.readline, "> ");
+            this.isWaitingForInput = false;
+
+            // Exit if GUI has been stopped during input
+            if (!this.isRunning) break;
+
+            // Normalize the command
+            const normalizedCommand = command.toLowerCase().trim();
+
+            // Get the input component for processing commands
+            const inputComponent = this.guiEcsManager.getEntityManager().getSingletonComponent(InputComponent);
+            if (!inputComponent) continue;
+
+            switch (normalizedCommand) {
+                case 'w':
+                case 'up':
+                    inputComponent.setLastInput('w');
+                    break;
+                case 's':
+                case 'down':
+                    inputComponent.setLastInput('s');
+                    break;
+                case '':
+                case 'enter':
+                    inputComponent.setLastInput('enter');
+                    break;
+                case 'q':
+                case 'quit':
+                    this.stop();
+                    break;
+                default:
+                    // Optional: provide feedback for unknown commands
+                    break;
+            }
         }
+
+        // Stop the GUI
+        this.stop();
     }
 
     /**

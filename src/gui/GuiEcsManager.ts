@@ -1,14 +1,7 @@
 import { Ecs } from '../ecs/Ecs';
 import { EntityManager } from '../ecs/EntityManager';
 import { SystemManager } from '../ecs/SystemManager';
-import { ScreenRenderSystem } from './screens/ScreenRenderSystem';
-import { ScreenComponent } from './ScreenComponent';
-import { IsActiveScreenComponent } from './screens/IsActiveScreenComponent';
 import { NameComponent } from '../ecs/NameComponent';
-import { renderMainInterface, handleMainInterfaceInput } from './screens/MainInterfaceScreen';
-import { renderStatusScreen, handleStatusScreenInput } from './screens/StatusScreen';
-import { renderChoicesScreen, handleChoicesScreenInput } from './screens/ChoicesScreen';
-import { renderChronicleScreen, handleChronicleScreenInput } from './screens/ChronicleScreen';
 import { Simulation } from '../simulation/Simulation';
 import { TypeUtils } from '../util/TypeUtils';
 import { ScreenBufferRenderSystem } from './rendering/ScreenBufferRenderSystem';
@@ -17,9 +10,19 @@ import * as readline from 'readline';
 import { PositionComponent } from './rendering/PositionComponent';
 import { IsVisibleComponent } from './rendering/IsVisibleComponent';
 import { TextComponent } from './rendering/TextComponent';
+import { DynamicTextComponent } from './rendering/DynamicTextComponent';
 import { ScreenBufferTextUpdateSystem } from './rendering/ScreenBufferTextUpdateSystem';
 import { HeaderUpdateSystem } from './rendering/HeaderUpdateSystem';
 import { FooterUpdateSystem } from './rendering/FooterUpdateSystem';
+import { DynamicTextRenderSystem } from './rendering/DynamicTextRenderSystem';
+import { MenuComponent } from './menu/MenuComponent';
+import { MenuItem } from './menu/MenuItem';
+import { InputComponent } from './menu/InputComponent';
+import { ActionSystem } from './menu/ActionSystem';
+import { MenuInputSystem } from './menu/MenuInputSystem';
+import { MenuRenderSystem } from './menu/MenuRenderSystem';
+import { DilemmaComponent } from '../behaviour/DilemmaComponent';
+import { GuiHelper } from './GuiHelper';
 
 /**
  * Manages a separate ECS instance specifically for GUI components and systems.
@@ -27,7 +30,7 @@ import { FooterUpdateSystem } from './rendering/FooterUpdateSystem';
  */
 export class GuiEcsManager {
     private readonly ecs: Ecs;
-    private readonly screenRenderSystem: ScreenRenderSystem;
+    private readonly actionSystem: ActionSystem;
     private readonly screens: Map<string, string> = new Map(); // screen name -> entity ID
     private readonly readline: readline.Interface;
     private readonly simulation: Simulation;
@@ -45,13 +48,17 @@ export class GuiEcsManager {
         // Create and register ECS systems
         const entityManager = this.ecs.getEntityManager();
 
+        // Create the ActionSystem first since MenuInputSystem depends on it
+        this.actionSystem = ActionSystem.create(entityManager, this);
+
+        // Register all systems
         this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, this.simulation));
         this.ecs.registerSystem(FooterUpdateSystem.create(entityManager));
         this.ecs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
-
-        this.screenRenderSystem = ScreenRenderSystem.create(entityManager, this.readline);
-        this.ecs.registerSystem(this.screenRenderSystem);
-
+        this.ecs.registerSystem(DynamicTextRenderSystem.create(entityManager, this.simulation));
+        this.ecs.registerSystem(MenuRenderSystem.create(entityManager));
+        this.ecs.registerSystem(MenuInputSystem.create(entityManager, this.actionSystem));
+        this.ecs.registerSystem(this.actionSystem);
         this.ecs.registerSystem(ScreenBufferRenderSystem.create(entityManager));
     }
 
@@ -59,51 +66,87 @@ export class GuiEcsManager {
      * Initializes the GUI ECS system.
      */
     initialize(): void {
-        // Initialize all screens as entities in the ECS system
-        
-        // Create main interface screen
-        const mainScreen = this.ecs.getEntityManager().createEntity();
-        mainScreen.addComponent(new NameComponent('MainInterface'));
-        mainScreen.addComponent(new ScreenComponent(renderMainInterface, handleMainInterfaceInput));
-        mainScreen.addComponent(new IsActiveScreenComponent()); // Start with main screen active
-        this.screens.set('main', mainScreen.getId());
+        const entityManager = this.ecs.getEntityManager();
 
-        // Create status screen
-        const statusScreen = this.ecs.getEntityManager().createEntity();
-        statusScreen.addComponent(new NameComponent('Status'));
-        statusScreen.addComponent(new ScreenComponent(renderStatusScreen, handleStatusScreenInput));
-        this.screens.set('status', statusScreen.getId());
-
-        // Create choices screen
-        const choicesScreen = this.ecs.getEntityManager().createEntity();
-        choicesScreen.addComponent(new NameComponent('Choices'));
-        choicesScreen.addComponent(new ScreenComponent(renderChoicesScreen, handleChoicesScreenInput));
-        this.screens.set('choices', choicesScreen.getId());
-
-        // Create chronicle screen
-        const chronicleScreen = this.ecs.getEntityManager().createEntity();
-        chronicleScreen.addComponent(new NameComponent('Chronicle'));
-        chronicleScreen.addComponent(new ScreenComponent(renderChronicleScreen, handleChronicleScreenInput));
-        this.screens.set('chronicle', chronicleScreen.getId());
-
-        // Create Screen buffer entity
-        const screenBufferEntity = this.ecs.getEntityManager().createEntity();
+        // Create singleton components
+        const screenBufferEntity = entityManager.createEntity();
         screenBufferEntity.addComponent(new NameComponent('ScreenBuffer'));
         screenBufferEntity.addComponent(new ScreenBufferComponent());
 
+        const inputEntity = entityManager.createEntity();
+        inputEntity.addComponent(new NameComponent('Input'));
+        inputEntity.addComponent(new InputComponent());
+
         // Create global GUI Header entity, positioned at the top
-        const headerEntity = this.ecs.getEntityManager().createEntity();
+        const headerEntity = entityManager.createEntity();
         headerEntity.addComponent(new NameComponent(HeaderUpdateSystem.HEADER_ENTITY_NAME));
         headerEntity.addComponent(new PositionComponent(0, 0));
         headerEntity.addComponent(new IsVisibleComponent(true));
-        headerEntity.addComponent(new TextComponent('Header Line 1'));
+        headerEntity.addComponent(new TextComponent(''));
 
         // Create global GUI Footer entity, positioned at the bottom
-        const footerEntity = this.ecs.getEntityManager().createEntity();
-        footerEntity.addComponent(new NameComponent('Footer'));
+        const footerEntity = entityManager.createEntity();
+        footerEntity.addComponent(new NameComponent(FooterUpdateSystem.FOOTER_ENTITY_NAME));
         footerEntity.addComponent(new PositionComponent(0, 23));
         footerEntity.addComponent(new IsVisibleComponent(true));
-        footerEntity.addComponent(new TextComponent('Footer Line 1'));
+        footerEntity.addComponent(new TextComponent(''));
+
+        // Create main menu entity
+        const mainMenuItems = [
+            new MenuItem('Status', 'NAV_STATUS'),
+            new MenuItem('Choices', 'NAV_CHOICES'),
+            new MenuItem('Chronicle', 'NAV_CHRONICLE'),
+            new MenuItem('Quit', 'QUIT')
+        ];
+        const mainMenuEntity = entityManager.createEntity();
+        mainMenuEntity.addComponent(new NameComponent('MainMenu'));
+        mainMenuEntity.addComponent(new MenuComponent(mainMenuItems));
+        mainMenuEntity.addComponent(new TextComponent(''));
+        mainMenuEntity.addComponent(new PositionComponent(2, 5));
+        mainMenuEntity.addComponent(new IsVisibleComponent(true));
+
+        // Create dilemma text entity (dynamic text that shows current dilemma info)
+        const dilemmaTextEntity = entityManager.createEntity();
+        dilemmaTextEntity.addComponent(new NameComponent('DilemmaText'));
+        dilemmaTextEntity.addComponent(new DynamicTextComponent((sim) => {
+            // Get dilemma info from simulation
+            const playerEntity = GuiHelper.getPlayerEntity(sim);
+            if (!playerEntity) return 'No player found';
+
+            // Get the DilemmaComponent from the player entity
+            const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
+            if (!dilemmaComponent) return 'No dilemma found';
+
+            if(dilemmaComponent.getChoiceCount() === 0) {
+                return 'No pending dilemmas';
+            }
+
+            const header = "*** DECISION REQUIRED ***";
+            const choices = dilemmaComponent.getChoices().map(choice => `- ${choice.getEventName()}`).join('\n');
+
+            // This would need to be implemented based on your dilemma system
+            return `${header}\n${choices}`;
+        }));
+        dilemmaTextEntity.addComponent(new TextComponent(''));
+        dilemmaTextEntity.addComponent(new PositionComponent(2, 15));
+        dilemmaTextEntity.addComponent(new IsVisibleComponent(false));
+
+        // Create status text entity (dynamic text for status screen)
+        const statusTextEntity = entityManager.createEntity();
+        statusTextEntity.addComponent(new NameComponent('StatusText'));
+        statusTextEntity.addComponent(new DynamicTextComponent((sim) => {
+            // Simple status text - can be enhanced later
+            return `Simulation is ${sim.getIsRunning() ? 'running' : 'stopped'}`;
+        }));
+        statusTextEntity.addComponent(new TextComponent(''));
+        statusTextEntity.addComponent(new PositionComponent(2, 5));
+        statusTextEntity.addComponent(new IsVisibleComponent(false));
+
+        // Map screen names to their primary interactive entities
+        this.screens.set('main', mainMenuEntity.getId());
+        this.screens.set('status', statusTextEntity.getId());
+        this.screens.set('choices', dilemmaTextEntity.getId());
+        this.screens.set('chronicle', dilemmaTextEntity.getId()); // Reuse for now
     }
 
     /**
@@ -140,24 +183,54 @@ export class GuiEcsManager {
     }
 
     /**
-     * Renders the currently active screen.
+     * Sets the active screen by name.
+     * Hides all other UI elements except header and footer.
+     * Shows the UI elements associated with the target screen.
+     * @param screenName The name of the screen to activate.
      */
-    async renderActiveScreen(simulation: Simulation): Promise<void> {
-        await this.screenRenderSystem.renderActiveScreen(simulation);
-    }
+    setActiveScreen(screenName: string): void {
+        const entityManager = this.ecs.getEntityManager();
+        
+        // Get all entities with IsVisibleComponent
+        const allVisibleEntities = entityManager.getEntitiesWithComponents(IsVisibleComponent);
 
-    /**
-     * Handles input for the currently active screen.
-     */
-    async handleActiveScreenInput(command: string, simulation: Simulation): Promise<boolean> {
-        return await this.screenRenderSystem.handleActiveScreenInput(command, simulation);
-    }
+        // Hide all visible UI elements
+        allVisibleEntities.forEach(entity => {
+            const visibleComponent = entity.getComponent(IsVisibleComponent);
+            if (visibleComponent) {
+                visibleComponent.setVisibility(false);
+            }
+        });
 
-    /**
-     * Sets the active screen.
-     */
-    setActiveScreen(entityId: string): void {
-        this.screenRenderSystem.setActiveScreen(entityId);
+        // set Header visible
+        const headerEntity = entityManager.getEntitiesWithComponents(NameComponent).find(e => e.getComponent(NameComponent)?.getText() === HeaderUpdateSystem.HEADER_ENTITY_NAME);
+        if (headerEntity) {
+            const headerVisibleComponent = headerEntity.getComponent(IsVisibleComponent);
+            if (headerVisibleComponent) {
+                headerVisibleComponent.setVisibility(true);
+            }
+        }
+
+        // Set footer visible
+        const footerEntity = entityManager.getEntitiesWithComponents(NameComponent).find(e => e.getComponent(NameComponent)?.getText() === FooterUpdateSystem.FOOTER_ENTITY_NAME);
+        if (footerEntity) {
+            const footerVisibleComponent = footerEntity.getComponent(IsVisibleComponent);
+            if (footerVisibleComponent) {
+                footerVisibleComponent.setVisibility(true);
+            }
+        }
+        
+        // Show the entities associated with the target screen
+        const targetEntityId = this.screens.get(screenName);
+        if (targetEntityId) {
+            const targetEntity = entityManager.getEntity(targetEntityId);
+            if (targetEntity) {
+                const visibleComponent = targetEntity.getComponent(IsVisibleComponent);
+                if (visibleComponent) {
+                    visibleComponent.setVisibility(true);
+                }
+            }
+        }
     }
 
     /**
@@ -189,9 +262,9 @@ export class GuiEcsManager {
     }
 
     /**
-     * Gets the screen render system.
+     * Gets the action system.
      */
-    getScreenRenderSystem(): ScreenRenderSystem {
-        return this.screenRenderSystem;
+    getActionSystem(): ActionSystem {
+        return this.actionSystem;
     }
 }

@@ -4,7 +4,7 @@ import { Component } from '../../ecs/Component';
  * Component that indicates whether a GUI element should be visible and rendered.
  */
 export class IsVisibleComponent extends Component {
-    public visible: boolean;
+    private visible: boolean;
 
     /**
      * Constructor for the IsVisibleComponent.
@@ -22,4 +22,13 @@ export class IsVisibleComponent extends Component {
     isVisible(): boolean {
         return this.visible;
     }   
+
+    /**
+     * Sets the visibility of the element.
+     * @param visible Whether the element should be visible.
+     */
+    setVisibility(visible: boolean): void {
+        this.visible = visible;
+    }
+
 }

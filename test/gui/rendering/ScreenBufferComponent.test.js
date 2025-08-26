@@ -1,4 +1,4 @@
-import { ScreenBufferComponent } from '../../src/gui/rendering/ScreenBufferComponent';
+import { ScreenBufferComponent } from '../../../src/gui/rendering/ScreenBufferComponent';
 
 describe('ScreenBufferComponent', () => {
     let screenBuffer;

@@ -52,4 +52,13 @@ export class MenuRenderSystem extends System {
         // Update the text component with the menu string
         textComp.setText(menuString);
     }
+
+    /**
+     * Creates a new MenuRenderSystem.
+     * @param entityManager The entity manager for managing entities.
+     * @returns A new instance of MenuRenderSystem.
+     */
+    static create(entityManager: EntityManager): MenuRenderSystem {
+        return new MenuRenderSystem(entityManager);
+    }
 }
