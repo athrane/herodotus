@@ -309,6 +309,7 @@ This section lists exported classes found in the codebase grouped by area (file 
 - `src/gui/rendering/ScreenBufferTextUpdateSystem.ts` — Updates text entries in the screen buffer
 - `src/gui/rendering/HeaderUpdateSystem.ts` — Updates header area each tick
 - `src/gui/rendering/FooterUpdateSystem.ts` — Updates footer/status area
+ - `src/gui/rendering/DynamicTextRenderSystem.ts`  Updates `TextComponent` values by calling `DynamicTextComponent.getText(simulation)` for visible entities
 
 #### Menu components & systems
 - `src/gui/menu/MenuItem.ts` — Menu item model (text + action id)
