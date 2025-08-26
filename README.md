@@ -316,6 +316,7 @@ This section lists exported classes found in the codebase grouped by area (file 
 - `src/gui/menu/ActionComponent.ts` — Component storing an action identifier for menu items
 - `src/gui/menu/InputComponent.ts` — Stores last user input for menu screens
 - `src/gui/menu/ActionSystem.ts` — System that handles UI action IDs (navigation and quit)
+- `src/gui/menu/ActionQueueComponent.ts` — Singleton component holding a queue of pending UI action IDs
 
 #### Simulation & Time
 - `src/simulation/Simulation.ts` — Main simulation (run loop and global state)
