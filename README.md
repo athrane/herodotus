@@ -276,76 +276,78 @@ The simulation creates a dedicated player entity with:
 - `src/gui/screens/` - Directory containing individual screen implementations
 - `src/mainGUI.ts` - Entry point for GUI mode
 
+
 ### Class Documentation
 
-Below is a concise reference of exported classes found in the codebase grouped by area (file path shown). Each entry is a one-line description to help navigate the implementation.
+This section lists exported classes found in the codebase grouped by area (file path shown) with a short description.
 
 #### Core ECS
 - `src/ecs/Component.ts` — Component base class (marker for entity components)
 - `src/ecs/System.ts` — Base System class (logic executed against entities)
-- `src/ecs/SystemManager.ts` — Manages systems lifecycle
-- `src/ecs/Entity.ts` — Entity abstraction
+- `src/ecs/SystemManager.ts` — Manages systems lifecycle and registration
+- `src/ecs/Entity.ts` — Entity abstraction (id and components)
 - `src/ecs/EntityManager.ts` — Manages entities and their components
-- `src/ecs/Ecs.ts` — High-level ECS facade
-- `src/ecs/NameComponent.ts` — Component storing a name string
+- `src/ecs/Ecs.ts` — High-level ECS facade (factory and orchestration)
+- `src/ecs/NameComponent.ts` — Component storing a human-readable name
 - `src/ecs/PlayerComponent.ts` — Marks an entity as the player
 
 #### GUI / Rendering
-- `src/gui/TextBasedGui2.ts` — Text-based GUI main class (entry for interactive mode)
-- `src/gui/GuiEcsManager.ts` — Manages GUI-specific ECS, screens and systems
-- `src/gui/GuiHelper.ts` — Helper utilities for rendering and input
+- `src/gui/TextBasedGui2.ts` — Text-based GUI main class (interactive mode entry)
+- `src/gui/GuiEcsManager.ts` — Manages GUI-specific ECS instance, screens and systems
+- `src/gui/GuiHelper.ts` — Helper utilities for rendering and input handling
 - `src/gui/ScreenComponent.ts` — Component holding render and input handlers for a screen
-- `src/gui/screens/ScreenRenderSystem.ts` — System that renders the active screen
-- `src/gui/screens/IsActiveScreenComponent.ts` — Marks the currently active screen entity
+- `src/gui/screens/ScreenRenderSystem.ts` — System that renders and routes input for the active screen
+- `src/gui/screens/IsActiveScreenComponent.ts` — Component marking the active screen entity
 
 ##### Rendering primitives
-- `src/gui/rendering/TextComponent.ts` — Simple static text component
-- `src/gui/rendering/DynamicTextComponent.ts` — Provides runtime-generated text via a callback
-- `src/gui/rendering/ScreenBufferComponent.ts` — Holds a buffer of screen text to render
-- `src/gui/rendering/PositionComponent.ts` — Positioning for rendered elements
+- `src/gui/rendering/TextComponent.ts` — Static text display component
+- `src/gui/rendering/DynamicTextComponent.ts` — Runtime-generated text via callback
+- `src/gui/rendering/ScreenBufferComponent.ts` — Holds terminal buffer content for rendering
+- `src/gui/rendering/PositionComponent.ts` — Positioning data for UI elements
 - `src/gui/rendering/IsVisibleComponent.ts` — Visibility flag for renderable elements
-- `src/gui/rendering/ScreenBufferRenderSystem.ts` — Renders the screen buffer to the terminal
-- `src/gui/rendering/ScreenBufferTextUpdateSystem.ts` — Updates text content in the screen buffer
-- `src/gui/rendering/HeaderUpdateSystem.ts` — Updates the header area each tick
+- `src/gui/rendering/ScreenBufferRenderSystem.ts` — Renders the screen buffer to terminal
+- `src/gui/rendering/ScreenBufferTextUpdateSystem.ts` — Updates text entries in the screen buffer
+- `src/gui/rendering/HeaderUpdateSystem.ts` — Updates header area each tick
 - `src/gui/rendering/FooterUpdateSystem.ts` — Updates footer/status area
 
-#### Menu components
+#### Menu components & systems
 - `src/gui/menu/MenuItem.ts` — Menu item model (text + action id)
 - `src/gui/menu/MenuComponent.ts` — Holds an ordered list of `MenuItem`s and selection state
 - `src/gui/menu/ActionComponent.ts` — Component storing an action identifier for menu items
 - `src/gui/menu/InputComponent.ts` — Stores last user input for menu screens
+- `src/gui/menu/ActionSystem.ts` — System that handles UI action IDs (navigation and quit)
 
 #### Simulation & Time
-- `src/simulation/Simulation.ts` — Main simulation class (controls run loop and state)
-- `src/simulation/builder/SimulationBuilder.ts` — Builds simulation instances
+- `src/simulation/Simulation.ts` — Main simulation (run loop and global state)
+- `src/simulation/builder/SimulationBuilder.ts` — Builder for simulation instances
 - `src/simulation/builder/SimulationDirector.ts` — High-level construction orchestration
-- `src/time/Time.ts` — Time model for the simulation
-- `src/time/TimeComponent.ts` — Component storing current time state
+- `src/time/Time.ts` — Simulation time model
+- `src/time/TimeComponent.ts` — Component holding current time state
 - `src/time/TimeSystem.ts` — System advancing simulation time
 
-#### Domain: Geography & World Generation
-- `src/geography/World.ts` — World model (holds features and places)
+#### Geography & World Generation
+- `src/geography/World.ts` — World model (collection of places and features)
 - `src/geography/WorldComponent.ts` — Component carrying world instance
 - `src/geography/Continent.ts` — Continent model
 - `src/geography/FeatureType.ts` — Feature type metadata
 - `src/geography/GeographicalFeature.ts` — Geographical feature instances
-- `src/geography/GeographicalFeaturesFactory.ts` — Factory to instantiate features
-- `src/geography/GeographicalFeatureTypeRegistry.ts` — Registry of available feature types
-- `src/generator/Place.ts` — Place entity used when generating the world
+- `src/geography/GeographicalFeaturesFactory.ts` — Factory to create features
+- `src/geography/GeographicalFeatureTypeRegistry.ts` — Registry of feature types
+- `src/generator/Place.ts` — Place model used during generation
 - `src/generator/world/WorldGenerator.ts` — World generator implementation
 
-#### Domain: Data & Chronicle
+#### Data & Chronicle
 - `src/data/DataSetComponent.ts` — Component for dataset storage on entities
-- `src/data/DataSetEvent.ts` — Event model used by dataset flows
+- `src/data/DataSetEvent.ts` — Data-set event model
 - `src/data/DataSetEventComponent.ts` — Component wrapping dataset events
 - `src/chronicle/ChronicleEvent.ts` — Chronicle event model
 - `src/chronicle/ChronicleComponent.ts` — Component that stores chronicle entries
-- `src/chronicle/EventType.ts` — Event type metadata
+- `src/chronicle/EventType.ts` — Event type metadata and helpers
 
-#### Domain: Historical Figures
+#### Historical Figures
 - `src/historicalfigure/HistoricalFigure.ts` — Model for historical figures
-- `src/historicalfigure/HistoricalFigureComponent.ts` — Component for historical figure data
-- `src/historicalfigure/HistoricalFigureBirthSystem.ts` — System that seeds or births figures
+- `src/historicalfigure/HistoricalFigureComponent.ts` — Component storing figure data
+- `src/historicalfigure/HistoricalFigureBirthSystem.ts` — System that seeds/births figures
 - `src/historicalfigure/HistoricalFigureLifecycleSystem.ts` — Manages lifecycle events for figures
 - `src/historicalfigure/HistoricalFigureInfluenceSystem.ts` — Applies influence changes to figures
 
@@ -354,10 +356,10 @@ Below is a concise reference of exported classes found in the codebase grouped b
 - `src/behaviour/DilemmaSystem.ts` — System creating and scheduling dilemmas
 - `src/behaviour/DilemmaResolutionSystem.ts` — Resolves choices and records outcomes
 
-#### Utilities & Naming
+#### Naming & Utilities
 - `src/naming/MarkovChain.ts` — Markov-chain utility used by name generation
 - `src/naming/NameGenerator.ts` — High-level name generator using syllable sets
-- `src/util/TypeUtils.ts` — Runtime type checks and validators (ensureString, ensureFunction, etc.)
+- `src/util/TypeUtils.ts` — Runtime type checks and validators (ensureInstanceOf, ensureString, etc.)
 - `src/util/log/LogHelper.ts` — Simple logging helpers used across the project
 
 
