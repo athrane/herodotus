@@ -38,4 +38,40 @@ export class MenuComponent extends Component {
     return this.selectedIndex;
   }
 
+  /**
+   * Gets the currently selected menu item.
+   */
+  getSelectedItem(): MenuItem | undefined {
+    if (!this.items || this.items.length === 0) return undefined;
+    return this.items[this.selectedIndex];
+  }
+
+  /**
+   * Sets the selected index, wrapping around the items array.
+   * @param index The new selected index.
+   */
+  setSelectedItemIndex(index: number): void {
+    if (!this.items || this.items.length === 0) {
+      this.selectedIndex = 0;
+      return;
+    }
+    const len = this.items.length;
+    // Normalize index with wrap-around
+    this.selectedIndex = ((index % len) + len) % len;
+  }
+
+  /**
+   * Select the next item (wraps around).
+   */
+  selectNext(): void {
+    this.setSelectedItemIndex(this.selectedIndex + 1);
+  }
+
+  /**
+   * Select the previous item (wraps around).
+   */
+  selectPrevious(): void {
+    this.setSelectedItemIndex(this.selectedIndex - 1);
+  }
+
 }

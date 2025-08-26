@@ -319,6 +319,7 @@ This section lists exported classes found in the codebase grouped by area (file 
 - `src/gui/menu/ActionSystem.ts` — System that handles UI action IDs (navigation and quit)
 - `src/gui/menu/ActionQueueComponent.ts` — Singleton component holding a queue of pending UI action IDs
 - `src/gui/menu/MenuRenderSystem.ts` — Renders `MenuComponent` items into a `TextComponent`, showing the selected item
+- `src/gui/menu/MenuInputSystem.ts` — Processes user input for menus (navigation with 'w'/'s' and selection via 'enter', dispatches actions to ActionSystem)
 
 #### Simulation & Time
 - `src/simulation/Simulation.ts` — Main simulation (run loop and global state)
