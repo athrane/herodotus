@@ -1,9 +1,9 @@
 import { Ecs } from '../ecs/Ecs';
 import { EntityManager } from '../ecs/EntityManager';
 import { SystemManager } from '../ecs/SystemManager';
-import { ScreenRenderSystem } from './ScreenRenderSystem';
+import { ScreenRenderSystem } from './screens/ScreenRenderSystem';
 import { ScreenComponent } from './ScreenComponent';
-import { IsActiveComponent } from './IsActiveComponent';
+import { IsActiveScreenComponent } from './screens/IsActiveScreenComponent';
 import { NameComponent } from '../ecs/NameComponent';
 import { renderMainInterface, handleMainInterfaceInput } from './screens/MainInterfaceScreen';
 import { renderStatusScreen, handleStatusScreenInput } from './screens/StatusScreen';
@@ -65,7 +65,7 @@ export class GuiEcsManager {
         const mainScreen = this.ecs.getEntityManager().createEntity();
         mainScreen.addComponent(new NameComponent('MainInterface'));
         mainScreen.addComponent(new ScreenComponent(renderMainInterface, handleMainInterfaceInput));
-        mainScreen.addComponent(new IsActiveComponent()); // Start with main screen active
+        mainScreen.addComponent(new IsActiveScreenComponent()); // Start with main screen active
         this.screens.set('main', mainScreen.getId());
 
         // Create status screen
