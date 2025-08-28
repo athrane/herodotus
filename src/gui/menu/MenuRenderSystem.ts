@@ -7,6 +7,8 @@ import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 
 /**
  * Renders a MenuComponent into a TextComponent for display.
+ * The menu is rendered on a single line.
+ * The currently selected item is indicated with a prefix.
  */
 export class MenuRenderSystem extends System {
 
@@ -47,7 +49,7 @@ export class MenuRenderSystem extends System {
         const menuString = menu.getItems().map((item, index) => {
             const prefix = index === menu.getSelectedItemIndex() ? '> ' : '  ';
             return `${prefix}${item.getText()}`;
-        }).join('\n');
+        }).join(' | ');
 
         // Update the text component with the menu string
         textComp.setText(menuString);

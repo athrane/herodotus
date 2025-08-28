@@ -46,6 +46,25 @@ export class GuiEcsManager {
         this.actionSystem = ActionSystem.create(entityManager, this);
 
         // Register all systems
+        // 1. Input processing first
+        this.ecs.registerSystem(MenuInputSystem.create(entityManager, this.actionSystem));
+        
+        // 2. Action handling
+        this.ecs.registerSystem(this.actionSystem);
+        
+        // 3. Content updates
+        this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, this.simulation));
+        this.ecs.registerSystem(FooterUpdateSystem.create(entityManager));
+        this.ecs.registerSystem(DynamicTextRenderSystem.create(entityManager, this.simulation));
+        this.ecs.registerSystem(MenuRenderSystem.create(entityManager));
+        
+        // 4. Buffer update
+        this.ecs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
+        
+        // 5. Final rendering
+        this.ecs.registerSystem(ScreenBufferRenderSystem.create(entityManager));
+
+        /**
         this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, this.simulation));
         this.ecs.registerSystem(FooterUpdateSystem.create(entityManager));
         this.ecs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
@@ -54,6 +73,7 @@ export class GuiEcsManager {
         this.ecs.registerSystem(MenuRenderSystem.create(entityManager));
         this.ecs.registerSystem(this.actionSystem);
         this.ecs.registerSystem(ScreenBufferRenderSystem.create(entityManager));
+        **/
     }
 
     /**
