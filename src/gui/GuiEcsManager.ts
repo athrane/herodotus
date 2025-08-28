@@ -16,6 +16,7 @@ import { MenuComponent } from './menu/MenuComponent';
 import { MenuItem } from './menu/MenuItem';
 import { InputComponent } from './menu/InputComponent';
 import { ActionSystem } from './menu/ActionSystem';
+import { ActionQueueComponent } from './menu/ActionQueueComponent';
 import { MenuInputSystem } from './menu/MenuInputSystem';
 import { MenuTextUpdateSystem } from './menu/MenuTextUpdateSystem';
 import { DilemmaComponent } from '../behaviour/DilemmaComponent';
@@ -47,7 +48,7 @@ export class GuiEcsManager {
 
         // Register all systems
         // 1. Input processing first
-        this.ecs.registerSystem(MenuInputSystem.create(entityManager, this.actionSystem));
+        this.ecs.registerSystem(MenuInputSystem.create(entityManager));
         
         // 2. Action handling
         this.ecs.registerSystem(this.actionSystem);
@@ -91,6 +92,11 @@ export class GuiEcsManager {
         const inputEntity = entityManager.createEntity();
         inputEntity.addComponent(new NameComponent('Input'));
         inputEntity.addComponent(new InputComponent());
+
+        // create action queue entity
+        const actionQueueEntity = entityManager.createEntity();
+        actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+        actionQueueEntity.addComponent(new ActionQueueComponent());
 
         // Create global GUI Header entity, positioned at the top
         const headerEntity = entityManager.createEntity();
@@ -253,6 +259,13 @@ export class GuiEcsManager {
      */
     getEcs(): Ecs {
         return this.ecs;
+    }
+
+    /**
+     * Gets the screen buffer render system.
+     */
+    getScreenRenderSystem(): ScreenBufferRenderSystem | undefined {
+        return this.ecs.getSystemManager().get('ScreenBufferRenderSystem') as ScreenBufferRenderSystem | undefined;
     }
 
 }

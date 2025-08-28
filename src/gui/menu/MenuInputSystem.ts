@@ -3,25 +3,20 @@ import { EntityManager } from '../../ecs/EntityManager';
 import { InputComponent } from './InputComponent';
 import { MenuComponent } from './MenuComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
-import { ActionSystem } from './ActionSystem';
-import { TypeUtils } from '../../util/TypeUtils';
+import { ActionQueueComponent } from './ActionQueueComponent';
 
 /**
  * Processes user input for menu navigation and selection.
  */
 export class MenuInputSystem extends System {
-    private readonly actionSystem: ActionSystem;
 
     /**
      * Creates an instance of MenuInputSystem.
      * @param entityManager The entity manager for managing entities.
-     * @param actionSystem The action system for handling actions.
      */
-    constructor(entityManager: EntityManager, actionSystem: ActionSystem) {
+    constructor(entityManager: EntityManager) {
         // This system finds entities dynamically; no required components for construction
         super(entityManager, []);
-        TypeUtils.ensureInstanceOf(actionSystem, ActionSystem, "Expected actionSystem to be an instance of ActionSystem");
-        this.actionSystem = actionSystem;
     }
 
     /**
@@ -70,8 +65,11 @@ export class MenuInputSystem extends System {
             case 'enter': {
                 const selected = menuComponent.getSelectedItem();
                 if (selected) {
-                    // call actionSystem with selected action id                     
-                    this.actionSystem.handleAction((selected as any).getActionID());
+                    // Add action to the queue instead of calling actionSystem directly
+                    const actionQueue = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
+                    if (actionQueue) {
+                        actionQueue.addAction((selected as any).getActionID());
+                    }
                 }
                 break;
             }
@@ -87,10 +85,9 @@ export class MenuInputSystem extends System {
     /**
      * Creates a new instance of MenuInputSystem.
      * @param entityManager The entity manager to use.
-     * @param actionSystem The action system to use.
      * @returns A new instance of MenuInputSystem.
      */
-    static create(entityManager: EntityManager, actionSystem: ActionSystem): MenuInputSystem {
-        return new MenuInputSystem(entityManager, actionSystem);
+    static create(entityManager: EntityManager): MenuInputSystem {
+        return new MenuInputSystem(entityManager);
     }
 }

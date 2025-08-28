@@ -1,11 +1,14 @@
 import { ActionSystem } from '../../../src/gui/menu/ActionSystem';
 import { EntityManager } from '../../../src/ecs/EntityManager';
 import { GuiEcsManager } from '../../../src/gui/GuiEcsManager';
+import { ActionQueueComponent } from '../../../src/gui/menu/ActionQueueComponent';
+import { NameComponent } from '../../../src/ecs/NameComponent';
 
 describe('ActionSystem', () => {
   let mockEntityManager: EntityManager;
   let mockGuiManager: jest.Mocked<GuiEcsManager>;
   let system: ActionSystem;
+  let actionQueueComponent: ActionQueueComponent;
 
   beforeEach(() => {
     // Use a real EntityManager instance so runtime instance checks pass
@@ -17,36 +20,80 @@ describe('ActionSystem', () => {
   // Make the plain mock object pass `instanceof GuiEcsManager` checks
   Object.setPrototypeOf(mockGuiManager, GuiEcsManager.prototype);
 
+    // Create action queue entity
+    const actionQueueEntity = mockEntityManager.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    actionQueueComponent = new ActionQueueComponent();
+    actionQueueEntity.addComponent(actionQueueComponent);
+
     system = new ActionSystem(mockEntityManager as any, mockGuiManager as any);
   });
 
-  test('NAV_STATUS navigates to StatusScreen', () => {
-    system.handleAction('NAV_STATUS');
+  test('processes NAV_STATUS action from queue', () => {
+    actionQueueComponent.addAction('NAV_STATUS');
+    system.update();
     expect(mockGuiManager.setActiveScreen).toHaveBeenCalledWith('StatusScreen');
   });
 
-  test('NAV_MAIN navigates to MainInterfaceScreen', () => {
-    system.handleAction('NAV_MAIN');
+  test('processes NAV_MAIN action from queue', () => {
+    actionQueueComponent.addAction('NAV_MAIN');
+    system.update();
     expect(mockGuiManager.setActiveScreen).toHaveBeenCalledWith('MainInterfaceScreen');
   });
 
-  test('NAV_CHRONICLE navigates to ChronicleScreen', () => {
-    system.handleAction('NAV_CHRONICLE');
+  test('processes NAV_CHRONICLE action from queue', () => {
+    actionQueueComponent.addAction('NAV_CHRONICLE');
+    system.update();
     expect(mockGuiManager.setActiveScreen).toHaveBeenCalledWith('ChronicleScreen');
   });
 
-  test('NAV_CHOICES navigates to ChoicesScreen', () => {
-    system.handleAction('NAV_CHOICES');
+  test('processes NAV_CHOICES action from queue', () => {
+    actionQueueComponent.addAction('NAV_CHOICES');
+    system.update();
     expect(mockGuiManager.setActiveScreen).toHaveBeenCalledWith('ChoicesScreen');
   });
 
-  test('QUIT calls guiManager.stop', () => {
-    system.handleAction('QUIT');
+  test('processes QUIT action from queue', () => {
+    actionQueueComponent.addAction('QUIT');
+    system.update();
     expect(mockGuiManager.stop).toHaveBeenCalled();
   });
 
   test('unknown action does not call gui manager', () => {
-    system.handleAction('SOME_UNKNOWN_ACTION');
+    actionQueueComponent.addAction('SOME_UNKNOWN_ACTION');
+    system.update();
+    expect(mockGuiManager.setActiveScreen).not.toHaveBeenCalled();
+    expect(mockGuiManager.stop).not.toHaveBeenCalled();
+  });
+
+  test('processes multiple actions in queue', () => {
+    actionQueueComponent.addAction('NAV_STATUS');
+    actionQueueComponent.addAction('NAV_MAIN');
+    system.update();
+    expect(mockGuiManager.setActiveScreen).toHaveBeenCalledWith('StatusScreen');
+    expect(mockGuiManager.setActiveScreen).toHaveBeenCalledWith('MainInterfaceScreen');
+    expect(mockGuiManager.setActiveScreen).toHaveBeenCalledTimes(2);
+  });
+
+  test('clears queue after processing', () => {
+    actionQueueComponent.addAction('NAV_STATUS');
+    expect(actionQueueComponent.getActions()).toHaveLength(1);
+    system.update();
+    expect(actionQueueComponent.getActions()).toHaveLength(0);
+  });
+
+  test('does nothing when queue is empty', () => {
+    system.update();
+    expect(mockGuiManager.setActiveScreen).not.toHaveBeenCalled();
+    expect(mockGuiManager.stop).not.toHaveBeenCalled();
+  });
+
+  test('does nothing when no ActionQueueComponent exists', () => {
+    // Create a new entity manager without action queue
+    const emptyEntityManager = EntityManager.create();
+    const systemWithoutQueue = new ActionSystem(emptyEntityManager as any, mockGuiManager as any);
+    
+    systemWithoutQueue.update();
     expect(mockGuiManager.setActiveScreen).not.toHaveBeenCalled();
     expect(mockGuiManager.stop).not.toHaveBeenCalled();
   });

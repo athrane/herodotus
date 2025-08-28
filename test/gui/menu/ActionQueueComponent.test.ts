@@ -36,4 +36,79 @@ describe('ActionQueueComponent', () => {
     expect(a.getActions()).toEqual(['A']);
     expect(b.getActions()).toEqual(['B']);
   });
+
+  test('queue maintains FIFO order', () => {
+    const comp = new ActionQueueComponent();
+    const actions = ['FIRST', 'SECOND', 'THIRD', 'FOURTH'];
+    
+    actions.forEach(action => comp.addAction(action));
+    
+    expect(comp.getActions()).toEqual(actions);
+  });
+
+  test('can add duplicate actions', () => {
+    const comp = new ActionQueueComponent();
+    comp.addAction('DUPLICATE');
+    comp.addAction('DUPLICATE');
+    comp.addAction('DIFFERENT');
+    comp.addAction('DUPLICATE');
+
+    expect(comp.getActions()).toEqual(['DUPLICATE', 'DUPLICATE', 'DIFFERENT', 'DUPLICATE']);
+  });
+
+  test('can handle empty string actions', () => {
+    const comp = new ActionQueueComponent();
+    comp.addAction('');
+    comp.addAction('NORMAL');
+    comp.addAction('');
+
+    expect(comp.getActions()).toEqual(['', 'NORMAL', '']);
+  });
+
+  test('getActions returns reference to actual array', () => {
+    const comp = new ActionQueueComponent();
+    comp.addAction('TEST');
+    
+    const actions1 = comp.getActions();
+    const actions2 = comp.getActions();
+    
+    expect(actions1).toBe(actions2); // Same reference
+    expect(actions1).toBe(comp.queue); // References internal queue
+  });
+
+  test('clear can be called multiple times safely', () => {
+    const comp = new ActionQueueComponent();
+    comp.addAction('TEST');
+    
+    comp.clear();
+    expect(comp.getActions()).toEqual([]);
+    
+    comp.clear(); // Should not throw
+    expect(comp.getActions()).toEqual([]);
+    
+    comp.clear(); // Should not throw
+    expect(comp.getActions()).toEqual([]);
+  });
+
+  test('can add actions after clearing', () => {
+    const comp = new ActionQueueComponent();
+    comp.addAction('BEFORE_CLEAR');
+    comp.clear();
+    comp.addAction('AFTER_CLEAR');
+
+    expect(comp.getActions()).toEqual(['AFTER_CLEAR']);
+  });
+
+  test('handles large number of actions', () => {
+    const comp = new ActionQueueComponent();
+    const numActions = 1000;
+    
+    for (let i = 0; i < numActions; i++) {
+      comp.addAction(`ACTION_${i}`);
+    }
+    
+    expect(comp.getActions()).toHaveLength(numActions);
+    expect(comp.getActions()[0]).toBe('ACTION_0');
+    expect(comp.getActions()[numActions - 1]).toBe(`ACTION_${numActions - 1}`);
+  });
 });

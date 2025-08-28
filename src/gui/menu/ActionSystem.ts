@@ -1,6 +1,7 @@
 import { System } from '../../ecs/System';
 import { EntityManager } from '../../ecs/EntityManager';
 import { GuiEcsManager } from '../GuiEcsManager';
+import { ActionQueueComponent } from './ActionQueueComponent';
 import { TypeUtils } from '../../util/TypeUtils';
 
 /*
@@ -24,7 +25,7 @@ export class ActionSystem extends System {
    * Handles a user action.
    * @param actionId The ID of the action to handle.
    */
-  public handleAction(actionId: string): void {
+  private executeAction(actionId: string): void {
   switch (actionId) {
       case 'NAV_STATUS':
     this.guiManager.setActiveScreen('StatusScreen');
@@ -47,8 +48,25 @@ export class ActionSystem extends System {
     }
   }
 
+  /**
+   * Updates the system by processing queued actions.
+   */
   public update(): void {
-  // No periodic work; actions are handled via handleAction
+    // Get the singleton ActionQueueComponent
+    const actionQueue = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
+    if (!actionQueue) return;
+
+    // Get the current actions and check if queue is empty
+    const actions = actionQueue.getActions();
+    if (actions.length === 0) return;
+
+    // Clear the queue immediately to prevent reprocessing
+    actionQueue.clear();
+
+    // Process each action
+    for (const actionId of actions) {
+      this.executeAction(actionId);
+    }
   }
 
   /**

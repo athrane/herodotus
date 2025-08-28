@@ -5,8 +5,8 @@ import { MenuComponent } from '../../../src/gui/menu/MenuComponent';
 import { TextComponent } from '../../../src/gui/rendering/TextComponent';
 import { IsVisibleComponent } from '../../../src/gui/rendering/IsVisibleComponent';
 import { MenuInputSystem } from '../../../src/gui/menu/MenuInputSystem';
-import { ActionSystem } from '../../../src/gui/menu/ActionSystem';
-import { GuiEcsManager } from '../../../src/gui/GuiEcsManager';
+import { ActionQueueComponent } from '../../../src/gui/menu/ActionQueueComponent';
+import { NameComponent } from '../../../src/ecs/NameComponent';
 
 describe('MenuInputSystem', () => {
   test('navigates up and down with wrap-around', () => {
@@ -21,16 +21,12 @@ describe('MenuInputSystem', () => {
     menuEntity.addComponent(new TextComponent(''));
     menuEntity.addComponent(new IsVisibleComponent(true));
 
-    const fakeGui = {
-      setActiveScreen: () => {},
-      stop: () => {}
-    } as unknown as GuiEcsManager;
-    // Make the fake GUI manager pass the instanceof check
-     
-    Object.setPrototypeOf(fakeGui as any, (GuiEcsManager as any).prototype);
+    // Create action queue entity
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    actionQueueEntity.addComponent(new ActionQueueComponent());
 
-    const actionSystem = new ActionSystem(em, fakeGui);
-    const system = new MenuInputSystem(em, actionSystem);
+    const system = new MenuInputSystem(em);
 
     const inputComp = em.getSingletonComponent(InputComponent)!;
     inputComp.setLastInput('s');
@@ -49,7 +45,7 @@ describe('MenuInputSystem', () => {
     expect(menu.getSelectedItemIndex()).toBe(1);
   });
 
-  test('enter triggers actionSystem.handleAction with selected action id', () => {
+  test('enter triggers action queue with selected action id', () => {
     const em = EntityManager.create();
 
     const inputEntity = em.createEntity();
@@ -61,25 +57,133 @@ describe('MenuInputSystem', () => {
     menuEntity.addComponent(new TextComponent(''));
     menuEntity.addComponent(new IsVisibleComponent(true));
 
-    // Fake GuiEcsManager for ActionSystem
-    const fakeGui = {
-      setActiveScreen: jest.fn(),
-      stop: jest.fn()
-    } as unknown as GuiEcsManager;
-    // Make the fake GUI manager pass the instanceof check
-     
-    Object.setPrototypeOf(fakeGui as any, (GuiEcsManager as any).prototype);
+    // Create action queue entity
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    const actionQueue = new ActionQueueComponent();
+    actionQueueEntity.addComponent(actionQueue);
 
-    const actionSystem = new ActionSystem(em, fakeGui);
-    // spy on handleAction
-    const spy = jest.spyOn(actionSystem, 'handleAction');
-
-    const system = new MenuInputSystem(em, actionSystem);
+    const system = new MenuInputSystem(em);
 
     const inputComp = em.getSingletonComponent(InputComponent)!;
     inputComp.setLastInput('enter');
     system.update();
 
-    expect(spy).toHaveBeenCalledWith('ACTION_ONE');
+    expect(actionQueue.getActions()).toContain('ACTION_ONE');
+  });
+
+  test('does nothing when no visible menu exists', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [new MenuItem('One', 'one')];
+    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(new IsVisibleComponent(false)); // Not visible
+
+    // Create action queue entity
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    const actionQueue = new ActionQueueComponent();
+    actionQueueEntity.addComponent(actionQueue);
+
+    const system = new MenuInputSystem(em);
+
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+    inputComp.setLastInput('enter');
+    const initialSelectedIndex = menuEntity.getComponent(MenuComponent)!.getSelectedItemIndex();
+    
+    system.update();
+
+    // Menu should remain unchanged and no action should be queued
+    expect(menuEntity.getComponent(MenuComponent)!.getSelectedItemIndex()).toBe(initialSelectedIndex);
+    expect(actionQueue.getActions()).toHaveLength(0);
+  });
+
+  test('does nothing when no input exists', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [new MenuItem('One', 'one')];
+    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(new IsVisibleComponent(true));
+
+    // Create action queue entity
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    const actionQueue = new ActionQueueComponent();
+    actionQueueEntity.addComponent(actionQueue);
+
+    const system = new MenuInputSystem(em);
+
+    // No input set
+    const initialSelectedIndex = menuEntity.getComponent(MenuComponent)!.getSelectedItemIndex();
+    
+    system.update();
+
+    // Menu should remain unchanged and no action should be queued
+    expect(menuEntity.getComponent(MenuComponent)!.getSelectedItemIndex()).toBe(initialSelectedIndex);
+    expect(actionQueue.getActions()).toHaveLength(0);
+  });
+
+  test('handles unknown input gracefully', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [new MenuItem('One', 'one')];
+    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(new IsVisibleComponent(true));
+
+    // Create action queue entity
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    const actionQueue = new ActionQueueComponent();
+    actionQueueEntity.addComponent(actionQueue);
+
+    const system = new MenuInputSystem(em);
+
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+    inputComp.setLastInput('unknown');
+    const initialSelectedIndex = menuEntity.getComponent(MenuComponent)!.getSelectedItemIndex();
+    
+    system.update();
+
+    // Menu should remain unchanged and no action should be queued
+    expect(menuEntity.getComponent(MenuComponent)!.getSelectedItemIndex()).toBe(initialSelectedIndex);
+    expect(actionQueue.getActions()).toHaveLength(0);
+  });
+
+  test('does nothing when action queue is missing', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [new MenuItem('One', 'ACTION_ONE')];
+    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(new IsVisibleComponent(true));
+
+    // No action queue entity created
+    const system = new MenuInputSystem(em);
+
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+    inputComp.setLastInput('enter');
+    
+    expect(() => {
+      system.update();
+    }).not.toThrow();
   });
 });
