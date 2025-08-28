@@ -34,6 +34,11 @@ export class GuiEcsManager {
     private guiUpdateInterval: NodeJS.Timeout | null = null;
     private isRunning: boolean = false;
 
+    /**
+     * Name of the Debug entity.
+     */
+    public static DEBUG_ENTITY_NAME = 'Debug';
+
     constructor( simulation: Simulation) { 
         TypeUtils.ensureInstanceOf(simulation, Simulation, "Expected simulation to be an instance of Simulation");
         this.simulation = simulation;
@@ -168,6 +173,24 @@ export class GuiEcsManager {
         this.screens.set('status', statusTextEntity.getId());
         this.screens.set('choices', dilemmaTextEntity.getId());
         this.screens.set('chronicle', dilemmaTextEntity.getId()); // Reuse for now
+
+        // Create UI debug entity
+        const debugEntity = entityManager.createEntity();
+        debugEntity.addComponent(new NameComponent(GuiEcsManager.DEBUG_ENTITY_NAME));
+        debugEntity.addComponent(new IsVisibleComponent(true));
+        debugEntity.addComponent(new PositionComponent(0, 21));
+        debugEntity.addComponent(new TextComponent(''));
+        debugEntity.addComponent(new DynamicTextComponent((sim) => {
+
+            // Get ActionQueueComponent
+            const actionQueueComponent = sim.getEntityManager().getSingletonComponent(ActionQueueComponent);
+
+            // Create string representation of action queue
+            const actionQueue = actionQueueComponent?.getActions() ?? [];
+            const actionQueueString = actionQueue.map(action => `- ${action}`).join(',');
+            return `DEBUG: [AQ:${actionQueueString}]`;
+        }));
+
     }
 
     /**
@@ -234,6 +257,15 @@ export class GuiEcsManager {
             }
         }
         
+        // Set Debug info visible
+        const debugEntity = entityManager.getEntitiesWithComponents(NameComponent).find(e => e.getComponent(NameComponent)?.getText() === GuiEcsManager.DEBUG_ENTITY_NAME);
+        if (debugEntity) {
+            const debugVisibleComponent = debugEntity.getComponent(IsVisibleComponent);
+            if (debugVisibleComponent) {
+                debugVisibleComponent.setVisibility(true);
+            }
+        }
+
         // Show the entities associated with the target screen
         const targetEntityId = this.screens.get(screenName);
         if (targetEntityId) {
