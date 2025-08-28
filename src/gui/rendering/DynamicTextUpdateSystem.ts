@@ -34,13 +34,13 @@ export class DynamicTextUpdateSystem extends System {
     if (!visibility || !visibility.isVisible()) return;
 
     // Get the dynamic text and regular text components
-    const dynamic = entity.getComponent(DynamicTextComponent);
-    const text = entity.getComponent(TextComponent);
-    if (!dynamic || !text) return;
+    const dynamicTextComponent = entity.getComponent(DynamicTextComponent);
+    const textComponent = entity.getComponent(TextComponent);
+    if (!dynamicTextComponent || !textComponent) return;
 
     // Compute the new text value and update the TextComponent
-    const newText = dynamic.getText(this.simulation);
-    text.setText(String(newText));
+    const newText = dynamicTextComponent.getText(this.simulation);
+    textComponent.setText(String(newText));
   }
 
   /**
