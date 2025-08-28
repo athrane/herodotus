@@ -117,7 +117,7 @@ export class GuiEcsManager {
         mainMenuEntity.addComponent(new NameComponent('MainMenu'));
         mainMenuEntity.addComponent(new MenuComponent(mainMenuItems));
         mainMenuEntity.addComponent(new TextComponent(''));
-        mainMenuEntity.addComponent(new PositionComponent(2, 5));
+        mainMenuEntity.addComponent(new PositionComponent(0, 22));
         mainMenuEntity.addComponent(new IsVisibleComponent(true));
 
         // Create dilemma text entity (dynamic text that shows current dilemma info)
