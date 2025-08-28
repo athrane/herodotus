@@ -41,4 +41,25 @@ describe('DynamicTextUpdateSystem', () => {
 
     expect(text.getText()).toBe('stay');
   });
+
+  test('invokes dynamic getText with simulation and updates TextComponent for visible entity', () => {
+    const sim = Simulation.create();
+    const em = sim.getEntityManager();
+
+    const entity = em.createEntity();
+
+    const spy = jest.fn(() => 'spy-text');
+    const dynamic = new DynamicTextComponent(spy);
+    const text = new TextComponent('before');
+    const visible = new IsVisibleComponent(true);
+
+    entity.addComponent(dynamic).addComponent(text).addComponent(visible);
+
+    const system = new DynamicTextUpdateSystem(em, sim);
+    system.update();
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(sim);
+    expect(text.getText()).toBe('spy-text');
+  });
 });

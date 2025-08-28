@@ -18,6 +18,21 @@ describe('DynamicTextComponent', () => {
     expect(comp.getText(sim)).toBe('running');
   });
 
+  test('provided getText function is invoked with the same Simulation instance on each call', () => {
+    const sim = Simulation.create();
+
+    const spy = jest.fn(() => 'ok');
+    const comp = new DynamicTextComponent(spy);
+
+    // call getText multiple times
+    expect(comp.getText(sim)).toBe('ok');
+    expect(comp.getText(sim)).toBe('ok');
+
+    // spy should have been called twice with the same simulation instance
+    expect(spy).toHaveBeenCalledTimes(2);
+    expect(spy).toHaveBeenCalledWith(sim);
+  });
+
   test('constructor throws when getText is not a function', () => {
     // @ts-expect-error - intentionally passing wrong type
     expect(() => new DynamicTextComponent(null)).toThrow(TypeError);
