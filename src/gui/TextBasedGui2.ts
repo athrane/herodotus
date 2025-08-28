@@ -89,7 +89,7 @@ export class TextBasedGui2 {
      */
     private startSimulationLoop(): void {
         this.simulationTickInterval = setInterval(async () => {
-            if (this.simulation.getIsRunning() && !this.isWaitingForInput) {
+            if (this.simulation.getIsRunning() ) {
                 this.simulation.tick();
             }
         }, TextBasedGui2.SIMULATION_TICK_INTERVAL_MS);
