@@ -70,8 +70,7 @@ export class MenuInputSystem extends System {
             case 'enter': {
                 const selected = menuComponent.getSelectedItem();
                 if (selected) {
-                    // call actionSystem with selected action id
-                     
+                    // call actionSystem with selected action id                     
                     this.actionSystem.handleAction((selected as any).getActionID());
                 }
                 break;

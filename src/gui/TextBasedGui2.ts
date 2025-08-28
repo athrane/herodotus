@@ -10,6 +10,7 @@ import { InputComponent } from './menu/InputComponent';
  * Each screen is implemented as an entity with ScreenComponent and IsActiveComponent.
  * The GUI has its own ECS instance, decoupled from the simulation ECS.
  */
+
 export class TextBasedGui2 {
     private readonly simulation: Simulation;
     private readonly readline: readline.Interface;
@@ -18,6 +19,20 @@ export class TextBasedGui2 {
     private simulationTickInterval: NodeJS.Timeout | null = null;
     private isWaitingForInput: boolean = false;
 
+    /**
+     * GUI update interval in milliseconds.
+     */
+    static readonly GUI_UPDATE_INTERVAL_MS = 1000;
+
+    /**
+     * Simulation tick interval in milliseconds.
+     */
+    static readonly SIMULATION_TICK_INTERVAL_MS = 2000;
+
+    /**
+     * Creates an instance of TextBasedGui2.
+     * @param simulation The simulation instance to associate with the GUI.
+     */
     constructor(simulation: Simulation) {
         TypeUtils.ensureInstanceOf(simulation, Simulation, "Expected simulation to be an instance of Simulation");
         this.simulation = simulation;
@@ -29,7 +44,7 @@ export class TextBasedGui2 {
         });
 
         // Initialize the GUI ECS
-        this.guiEcsManager = new GuiEcsManager(this.readline, this.simulation);
+        this.guiEcsManager = new GuiEcsManager(this.simulation);
     }
 
     /**
@@ -40,7 +55,7 @@ export class TextBasedGui2 {
 
         // Initialize and start the GUI ECS system (fast updates for responsive UI)
         this.guiEcsManager.initialize();
-        this.guiEcsManager.start(500); // GUI updates every 500ms
+        this.guiEcsManager.start(TextBasedGui2.GUI_UPDATE_INTERVAL_MS); 
 
         // Start the simulation
         this.simulation.start();
@@ -77,7 +92,7 @@ export class TextBasedGui2 {
             if (this.simulation.getIsRunning() && !this.isWaitingForInput) {
                 this.simulation.tick();
             }
-        }, 2000); // Simulation ticks every 2 seconds
+        }, TextBasedGui2.SIMULATION_TICK_INTERVAL_MS);
     }
 
     /**
@@ -98,7 +113,8 @@ export class TextBasedGui2 {
             const normalizedCommand = command.toLowerCase().trim();
 
             // Get the input component for processing commands
-            const inputComponent = this.guiEcsManager.getEntityManager().getSingletonComponent(InputComponent);
+            const entityManager = this.guiEcsManager.getEcs().getEntityManager();
+            const inputComponent = entityManager.getSingletonComponent(InputComponent);
             if (!inputComponent) continue;
 
             switch (normalizedCommand) {
