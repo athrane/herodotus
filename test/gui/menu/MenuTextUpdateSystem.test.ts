@@ -1,11 +1,11 @@
-import { EntityManager } from '../../../src/ecs/EntityManager';
+﻿import { EntityManager } from '../../../src/ecs/EntityManager';
 import { MenuItem } from '../../../src/gui/menu/MenuItem';
 import { MenuComponent } from '../../../src/gui/menu/MenuComponent';
 import { TextComponent } from '../../../src/gui/rendering/TextComponent';
 import { IsVisibleComponent } from '../../../src/gui/rendering/IsVisibleComponent';
-import { MenuRenderSystem } from '../../../src/gui/menu/MenuRenderSystem';
+import { MenuTextUpdateSystem } from '../../../src/gui/menu/MenuTextUpdateSystem';
 
-describe('MenuRenderSystem', () => {
+describe('MenuTextUpdateSystem', () => {
   test('renders menu items with selected indicator when visible', () => {
     const em = EntityManager.create();
     const entity = em.createEntity();
@@ -19,11 +19,11 @@ describe('MenuRenderSystem', () => {
     entity.addComponent(new TextComponent(''));
     entity.addComponent(new IsVisibleComponent(true));
 
-    const system = new MenuRenderSystem(em);
+    const system = new MenuTextUpdateSystem(em);
     system.update();
 
     const textComp = entity.getComponent(TextComponent)!;
-    expect(textComp.getText()).toBe('> Start\n  Load');
+    expect(textComp.getText()).toBe('> Start |   Load');
   });
 
   test('renders menu with one item', () => {
@@ -35,7 +35,7 @@ describe('MenuRenderSystem', () => {
     entity.addComponent(new TextComponent(''));
     entity.addComponent(new IsVisibleComponent(true));
 
-    const system = new MenuRenderSystem(em);
+    const system = new MenuTextUpdateSystem(em);
     system.update();
 
     const textComp = entity.getComponent(TextComponent)!;
@@ -54,11 +54,11 @@ describe('MenuRenderSystem', () => {
     entity.addComponent(new TextComponent(''));
     entity.addComponent(new IsVisibleComponent(true));
 
-    const system = new MenuRenderSystem(em);
+    const system = new MenuTextUpdateSystem(em);
     system.update();
 
     const textComp = entity.getComponent(TextComponent)!;
-    expect(textComp.getText()).toBe('> Start\n  Load');
+    expect(textComp.getText()).toBe('> Start |   Load');
   });
 
   test('renders menu with three items', () => {
@@ -74,11 +74,11 @@ describe('MenuRenderSystem', () => {
     entity.addComponent(new TextComponent(''));
     entity.addComponent(new IsVisibleComponent(true));
 
-    const system = new MenuRenderSystem(em);
+    const system = new MenuTextUpdateSystem(em);
     system.update();
 
     const textComp = entity.getComponent(TextComponent)!;
-    expect(textComp.getText()).toBe('> Start\n  Load\n  Settings');
+    expect(textComp.getText()).toBe('> Start |   Load |   Settings');
   });
 
   test('clears text when not visible', () => {
@@ -90,7 +90,7 @@ describe('MenuRenderSystem', () => {
     entity.addComponent(new TextComponent('keep-me'));
     entity.addComponent(new IsVisibleComponent(false));
 
-    const system = new MenuRenderSystem(em);
+    const system = new MenuTextUpdateSystem(em);
     system.update();
 
     const textComp = entity.getComponent(TextComponent)!;
@@ -105,7 +105,7 @@ describe('MenuRenderSystem', () => {
     entity.addComponent(new TextComponent('initial'));
     entity.addComponent(new IsVisibleComponent(true));
 
-    const system = new MenuRenderSystem(em);
+    const system = new MenuTextUpdateSystem(em);
     system.update();
 
     const textComp = entity.getComponent(TextComponent)!;
@@ -121,7 +121,7 @@ describe('MenuRenderSystem', () => {
     // Intentionally do NOT add TextComponent
     entity.addComponent(new IsVisibleComponent(true));
 
-    const system = new MenuRenderSystem(em);
+    const system = new MenuTextUpdateSystem(em);
     // Should not throw
     system.update();
 
@@ -139,7 +139,7 @@ describe('MenuRenderSystem', () => {
     entity.addComponent(new TextComponent('keep-me'));
     // Intentionally do NOT add IsVisibleComponent
 
-    const system = new MenuRenderSystem(em);
+    const system = new MenuTextUpdateSystem(em);
     system.update();
 
     const textComp = entity.getComponent(TextComponent)!;
@@ -164,10 +164,10 @@ describe('MenuRenderSystem', () => {
     entity.addComponent(new TextComponent(''));
     entity.addComponent(new IsVisibleComponent(true));
 
-    const system = new MenuRenderSystem(em);
+    const system = new MenuTextUpdateSystem(em);
     system.update();
 
     const textComp = entity.getComponent(TextComponent)!;
-    expect(textComp.getText()).toBe('  First\n  Second\n> Third');
+    expect(textComp.getText()).toBe('  First |   Second | > Third');
   });
 });

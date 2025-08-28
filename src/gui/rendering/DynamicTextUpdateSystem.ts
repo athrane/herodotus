@@ -9,11 +9,11 @@ import { Simulation } from '../../simulation/Simulation';
 /**
  * System that updates TextComponent values from DynamicTextComponent callbacks.
  */
-export class DynamicTextRenderSystem extends System {
+export class DynamicTextUpdateSystem extends System {
   private readonly simulation: Simulation;
 
   /**
-   * Creates a new DynamicTextRenderSystem.
+   * Creates a new DynamicTextUpdateSystem.
    * @param entityManager The entity manager for managing entities.
    * @param simulation The simulation instance for accessing simulation state.
    */
@@ -44,13 +44,13 @@ export class DynamicTextRenderSystem extends System {
   }
 
   /**
-   * Creates a new DynamicTextRenderSystem.
+   * Creates a new DynamicTextUpdateSystem.
    * @param entityManager The entity manager for managing entities.
    * @param simulation The simulation instance for accessing simulation state.
-   * @returns A new instance of DynamicTextRenderSystem.
+   * @returns A new instance of DynamicTextUpdateSystem.
    */
-  static create(entityManager: EntityManager, simulation: Simulation): DynamicTextRenderSystem {
-    return new DynamicTextRenderSystem(entityManager, simulation);
+  static create(entityManager: EntityManager, simulation: Simulation): DynamicTextUpdateSystem {
+    return new DynamicTextUpdateSystem(entityManager, simulation);
   } 
 
 }

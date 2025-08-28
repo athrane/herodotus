@@ -1,11 +1,11 @@
-import { Simulation } from '../../../src/simulation/Simulation';
+﻿import { Simulation } from '../../../src/simulation/Simulation';
 import { EntityManager } from '../../../src/ecs/EntityManager';
 import { DynamicTextComponent } from '../../../src/gui/rendering/DynamicTextComponent';
 import { TextComponent } from '../../../src/gui/rendering/TextComponent';
 import { IsVisibleComponent } from '../../../src/gui/rendering/IsVisibleComponent';
-import { DynamicTextRenderSystem } from '../../../src/gui/rendering/DynamicTextRenderSystem';
+import { DynamicTextUpdateSystem } from '../../../src/gui/rendering/DynamicTextUpdateSystem';
 
-describe('DynamicTextRenderSystem', () => {
+describe('DynamicTextUpdateSystem', () => {
   test('updates text for visible entities using the simulation', () => {
     const sim = Simulation.create();
     const em = sim.getEntityManager();
@@ -18,7 +18,7 @@ describe('DynamicTextRenderSystem', () => {
 
     entity.addComponent(dynamic).addComponent(text).addComponent(visible);
 
-    const system = new DynamicTextRenderSystem(em, sim);
+    const system = new DynamicTextUpdateSystem(em, sim);
     system.update();
 
     expect(text.getText()).toBe('dynamic-text');
@@ -36,7 +36,7 @@ describe('DynamicTextRenderSystem', () => {
 
     entity.addComponent(dynamic).addComponent(text).addComponent(visible);
 
-    const system = new DynamicTextRenderSystem(em, sim);
+    const system = new DynamicTextUpdateSystem(em, sim);
     system.update();
 
     expect(text.getText()).toBe('stay');

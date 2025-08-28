@@ -11,13 +11,13 @@ import { DynamicTextComponent } from './rendering/DynamicTextComponent';
 import { ScreenBufferTextUpdateSystem } from './rendering/ScreenBufferTextUpdateSystem';
 import { HeaderUpdateSystem } from './rendering/HeaderUpdateSystem';
 import { FooterUpdateSystem } from './rendering/FooterUpdateSystem';
-import { DynamicTextRenderSystem } from './rendering/DynamicTextRenderSystem';
+import { DynamicTextUpdateSystem } from './rendering/DynamicTextUpdateSystem';
 import { MenuComponent } from './menu/MenuComponent';
 import { MenuItem } from './menu/MenuItem';
 import { InputComponent } from './menu/InputComponent';
 import { ActionSystem } from './menu/ActionSystem';
 import { MenuInputSystem } from './menu/MenuInputSystem';
-import { MenuRenderSystem } from './menu/MenuRenderSystem';
+import { MenuTextUpdateSystem } from './menu/MenuTextUpdateSystem';
 import { DilemmaComponent } from '../behaviour/DilemmaComponent';
 import { GuiHelper } from './GuiHelper';
 
@@ -55,8 +55,8 @@ export class GuiEcsManager {
         // 3. Content updates
         this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, this.simulation));
         this.ecs.registerSystem(FooterUpdateSystem.create(entityManager));
-        this.ecs.registerSystem(DynamicTextRenderSystem.create(entityManager, this.simulation));
-        this.ecs.registerSystem(MenuRenderSystem.create(entityManager));
+        this.ecs.registerSystem(DynamicTextUpdateSystem.create(entityManager, this.simulation));
+        this.ecs.registerSystem(MenuTextUpdateSystem.create(entityManager));
         
         // 4. Buffer update
         this.ecs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
@@ -68,9 +68,9 @@ export class GuiEcsManager {
         this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, this.simulation));
         this.ecs.registerSystem(FooterUpdateSystem.create(entityManager));
         this.ecs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
-        this.ecs.registerSystem(DynamicTextRenderSystem.create(entityManager, this.simulation));
+        this.ecs.registerSystem(DynamicTextUpdateSystem.create(entityManager, this.simulation));
         this.ecs.registerSystem(MenuInputSystem.create(entityManager, this.actionSystem));
-        this.ecs.registerSystem(MenuRenderSystem.create(entityManager));
+        this.ecs.registerSystem(MenuTextUpdateSystem.create(entityManager));
         this.ecs.registerSystem(this.actionSystem);
         this.ecs.registerSystem(ScreenBufferRenderSystem.create(entityManager));
         **/

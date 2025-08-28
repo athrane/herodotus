@@ -6,14 +6,14 @@ import { TextComponent } from '../rendering/TextComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 
 /**
- * Renders a MenuComponent into a TextComponent for display.
+ * Updates a MenuComponent into a TextComponent for display.
  * The menu is rendered on a single line.
  * The currently selected item is indicated with a prefix.
  */
-export class MenuRenderSystem extends System {
+export class MenuTextUpdateSystem extends System {
 
     /**
-     * Creates a new MenuRenderSystem.
+     * Creates a new MenuTextUpdateSystem.
      * @param entityManager The entity manager for managing entities.
      */
     constructor(entityManager: EntityManager) {
@@ -56,11 +56,11 @@ export class MenuRenderSystem extends System {
     }
 
     /**
-     * Creates a new MenuRenderSystem.
+     * Creates a new MenuTextUpdateSystem.
      * @param entityManager The entity manager for managing entities.
-     * @returns A new instance of MenuRenderSystem.
+     * @returns A new instance of MenuTextUpdateSystem.
      */
-    static create(entityManager: EntityManager): MenuRenderSystem {
-        return new MenuRenderSystem(entityManager);
+    static create(entityManager: EntityManager): MenuTextUpdateSystem {
+        return new MenuTextUpdateSystem(entityManager);
     }
 }
