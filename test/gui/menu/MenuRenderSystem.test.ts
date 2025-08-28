@@ -26,6 +26,61 @@ describe('MenuRenderSystem', () => {
     expect(textComp.getText()).toBe('> Start\n  Load');
   });
 
+  test('renders menu with one item', () => {
+    const em = EntityManager.create();
+    const entity = em.createEntity();
+
+    const items = [new MenuItem('Start', 'start')];
+    entity.addComponent(new MenuComponent(items));
+    entity.addComponent(new TextComponent(''));
+    entity.addComponent(new IsVisibleComponent(true));
+
+    const system = new MenuRenderSystem(em);
+    system.update();
+
+    const textComp = entity.getComponent(TextComponent)!;
+    expect(textComp.getText()).toBe('> Start');
+  });
+
+  test('renders menu with two items', () => {
+    const em = EntityManager.create();
+    const entity = em.createEntity();
+
+    const items = [
+      new MenuItem('Start', 'start'),
+      new MenuItem('Load', 'load'),
+    ];
+    entity.addComponent(new MenuComponent(items));
+    entity.addComponent(new TextComponent(''));
+    entity.addComponent(new IsVisibleComponent(true));
+
+    const system = new MenuRenderSystem(em);
+    system.update();
+
+    const textComp = entity.getComponent(TextComponent)!;
+    expect(textComp.getText()).toBe('> Start\n  Load');
+  });
+
+  test('renders menu with three items', () => {
+    const em = EntityManager.create();
+    const entity = em.createEntity();
+
+    const items = [
+      new MenuItem('Start', 'start'),
+      new MenuItem('Load', 'load'),
+      new MenuItem('Settings', 'settings'),
+    ];
+    entity.addComponent(new MenuComponent(items));
+    entity.addComponent(new TextComponent(''));
+    entity.addComponent(new IsVisibleComponent(true));
+
+    const system = new MenuRenderSystem(em);
+    system.update();
+
+    const textComp = entity.getComponent(TextComponent)!;
+    expect(textComp.getText()).toBe('> Start\n  Load\n  Settings');
+  });
+
   test('clears text when not visible', () => {
     const em = EntityManager.create();
     const entity = em.createEntity();
