@@ -33,8 +33,6 @@ export class GuiEcsManager {
     private readonly simulation: Simulation;
     private guiUpdateInterval: NodeJS.Timeout | null = null;
     private isRunning: boolean = false;
-    // mirror of ScreensComponent for convenience and tests
-    private readonly screens: Map<string, string> = new Map();
 
     /**
      * Name of the Debug entity.
@@ -166,12 +164,6 @@ export class GuiEcsManager {
         screensComponent.addScreen('choices', dilemmaTextEntity.getId());
         screensComponent.addScreen('chronicle', dilemmaTextEntity.getId()); // Reuse for now
 
-        // mirror into manager-level map for convenience and tests
-        this.screens.set('main', mainMenuEntity.getId());
-        this.screens.set('status', statusTextEntity.getId());
-        this.screens.set('choices', dilemmaTextEntity.getId());
-        this.screens.set('chronicle', dilemmaTextEntity.getId());
-
         // Create Screens Entity
         const screensEntity = entityManager.createEntity();
         screensEntity.addComponent(new NameComponent('Screens'));
@@ -242,18 +234,22 @@ export class GuiEcsManager {
     }
 
     /**
-     * Test-friendly accessor to retrieve the entity id for a named screen.
-     */
-    getScreenEntityId(screenName: string): string | undefined {
-        return this.screens.get(screenName);
-    }
-
-    /**
-     * Convenience method used by tests and other code to set the active screen.
+     * Convenience method used by TESTS and to set the active screen.
      * Delegates to the internal ActionSystem implementation.
      */
     setActiveScreen(screenName: string): void {
         this.actionSystem.setActiveScreen(screenName);
+    }
+
+    /**
+     * Convenience method used by TESTS and to gets the entity ID for a screen by name.
+     * Retrieves the screen entity ID from the ScreensComponent entity.
+     * @param screenName The name of the screen to get the entity ID for
+     * @returns The entity ID if found, undefined otherwise
+     */
+    getScreenEntityId(screenName: string): string | undefined {
+        const screensComponent = this.ecs.getEntityManager().getSingletonComponent(ScreensComponent);
+        return screensComponent?.getScreen(screenName);
     }
 
 }

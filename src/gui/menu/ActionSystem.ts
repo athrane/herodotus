@@ -89,37 +89,18 @@ export class ActionSystem extends System {
     // Hide all visible UI elements
     allVisibleEntities.forEach(entity => {
       const visibleComponent = entity.getComponent(IsVisibleComponent);
-      if (visibleComponent) {
-        visibleComponent.setVisibility(false);
-      }
+      if (!visibleComponent) return;
+      visibleComponent.setVisibility(false);
     });
 
     // set Header visible
-    const headerEntity = this.getEntityManager().getEntitiesWithComponents(NameComponent).find(e => e.getComponent(NameComponent)?.getText() === HeaderUpdateSystem.HEADER_ENTITY_NAME);
-    if (headerEntity) {
-      const headerVisibleComponent = headerEntity.getComponent(IsVisibleComponent);
-      if (headerVisibleComponent) {
-        headerVisibleComponent.setVisibility(true);
-      }
-    }
+    this.setEntityVisibility(HeaderUpdateSystem.HEADER_ENTITY_NAME, true);
 
     // Set footer visible
-    const footerEntity = this.getEntityManager().getEntitiesWithComponents(NameComponent).find(e => e.getComponent(NameComponent)?.getText() === FooterUpdateSystem.FOOTER_ENTITY_NAME);
-    if (footerEntity) {
-      const footerVisibleComponent = footerEntity.getComponent(IsVisibleComponent);
-      if (footerVisibleComponent) {
-        footerVisibleComponent.setVisibility(true);
-      }
-    }
+    this.setEntityVisibility(FooterUpdateSystem.FOOTER_ENTITY_NAME, true);
 
     // Set Debug info visible
-    const debugEntity = this.getEntityManager().getEntitiesWithComponents(NameComponent).find(e => e.getComponent(NameComponent)?.getText() === GuiEcsManager.DEBUG_ENTITY_NAME);
-    if (debugEntity) {
-      const debugVisibleComponent = debugEntity.getComponent(IsVisibleComponent);
-      if (debugVisibleComponent) {
-        debugVisibleComponent.setVisibility(true);
-      }
-    }
+    this.setEntityVisibility(GuiEcsManager.DEBUG_ENTITY_NAME, true);
 
     // Get screens component
     const screensComponent = this.getEntityManager().getSingletonComponent(ScreensComponent);
@@ -138,6 +119,21 @@ export class ActionSystem extends System {
     if (!visibleComponent) return;
 
     visibleComponent.setVisibility(true);
+  }
+
+  /**
+   * Sets the visibility of a UI entity by name.
+   * @param name The name of the entity to modify.
+   * @param isVisible The visibility state to set.
+   */
+  setEntityVisibility(name: string, isVisible: boolean): void {
+    const entity = this.getEntityManager().getEntitiesWithComponents(NameComponent).find(e => e.getComponent(NameComponent)?.getText() === name);
+    if (!entity) return;
+
+    const visibleComponent = entity.getComponent(IsVisibleComponent);
+    if (!visibleComponent) return;
+
+    visibleComponent.setVisibility(isVisible);
   }
 
   /**
