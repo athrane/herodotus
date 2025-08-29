@@ -31,7 +31,13 @@ describe('GuiEcsManager', () => {
   });
 
   afterEach(() => {
-    guiEcsManager.stop();
+    if (guiEcsManager) {
+      guiEcsManager.stop();
+    }
+    if (mockSimulation) {
+      // Stop simulation to clean up any resources
+      mockSimulation.stop();
+    }
   });
 
   describe('constructor', () => {
@@ -98,6 +104,9 @@ describe('GuiEcsManager', () => {
       
       guiEcsManager.start(updateFrequency);
       expect(guiEcsManager['isRunning']).toBe(true);
+      
+      // Explicitly stop to ensure cleanup
+      guiEcsManager.stop();
     });
   });
 
@@ -143,6 +152,9 @@ describe('GuiEcsManager', () => {
       
       expect(firstInterval).not.toBe(secondInterval);
       expect(guiEcsManager['isRunning']).toBe(true);
+      
+      // Explicitly stop to ensure cleanup
+      guiEcsManager.stop();
     });
 
     test('should handle stop when not running', () => {
