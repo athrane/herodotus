@@ -7,7 +7,8 @@ import { IsVisibleComponent } from './IsVisibleComponent';
 import { Simulation } from '../../simulation/Simulation';
 
 /**
- * System that updates TextComponent values from DynamicTextComponent callbacks.
+ * System that updates TextComponent values from DynamicTextComponent callbacks
+ * for visible entities (only).
  */
 export class DynamicTextUpdateSystem extends System {
   private readonly simulation: Simulation;
@@ -29,14 +30,19 @@ export class DynamicTextUpdateSystem extends System {
    */
   processEntity(entity: Entity): void {
 
-    // Exit if the entity is not visible
-    const visibility = entity.getComponent(IsVisibleComponent);
-    if (!visibility || !visibility.isVisible()) return;
+    // Exit if visible component is not present
+    const visibilityComponent = entity.getComponent(IsVisibleComponent);
+    if (!visibilityComponent) return;
+
+    // Exit if the entity is not visible    
+    if (!visibilityComponent.isVisible()) return;
 
     // Get the dynamic text and regular text components
     const dynamicTextComponent = entity.getComponent(DynamicTextComponent);
+    if (!dynamicTextComponent) return;
+
     const textComponent = entity.getComponent(TextComponent);
-    if (!dynamicTextComponent || !textComponent) return;
+    if (!textComponent) return;
 
     // Compute the new text value and update the TextComponent
     const newText = dynamicTextComponent.getText(this.simulation);

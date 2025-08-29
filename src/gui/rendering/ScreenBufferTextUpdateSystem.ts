@@ -21,20 +21,24 @@ export class ScreenBufferTextUpdateSystem extends System {
     }
     
     processEntity(entity: Entity): void {
-        const positionComponent = entity.getComponent(PositionComponent);
-        if (!positionComponent) return;
 
-        const textComponent = entity.getComponent(TextComponent);
-        if (!textComponent) return;
-        
+        // Get visibility component
         const visibilityComponent = entity.getComponent(IsVisibleComponent);
         if (!visibilityComponent) return;
 
+        // Get position component
+        const positionComponent = entity.getComponent(PositionComponent);
+        if (!positionComponent) return;
+
+        // Get text component
+        const textComponent = entity.getComponent(TextComponent);
+        if (!textComponent) return;
+        
         // Get the screen buffer component
         const screenBufferComponent = this.getEntityManager().getSingletonComponent(ScreenBufferComponent);
         if (!screenBufferComponent) return;
 
-        // If visible, the render
+        // If visible, then render
         if(visibilityComponent.isVisible()) {
             screenBufferComponent.writeAt(positionComponent.getY(), positionComponent.getX(), textComponent.getText());
         }
