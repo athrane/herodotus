@@ -7,7 +7,11 @@ A procedural world-building and his- start:ts — same as `start:main`; runs `sr
 		npm run start:ts
 		```
 
-- start:gui — run the interactive text-based GUI version of the simulation via tsx.
+- start:gui — run the interactive text-based GUI - `src/gui/rendering/ScreenBufferRenderSystem.ts` — Renders the screen buffer to terminal
+- `src/gui/rendering/ScreenBufferTextUpdateSystem.ts` — Updates text entries in the screen buffer
+- `src/gui/rendering/HeaderUpdateSystem.ts` — Updates header area each tick; uses dependency injection pattern with simulation ECS for decoupled access to time data
+- `src/gui/rendering/FooterUpdateSystem.ts` — Updates footer/status area
+- `src/gui/rendering/DynamicTextUpdateSystem.ts` — Updates `TextComponent` values by calling `DynamicTextComponent.getText(guiEntityManager, simulationEntityManager)` for visible entities; uses dependency injection pattern with simulation ECS for decoupled system architectureon of the simulation via tsx.
 	Purpose: launches the GUI interface for interactive gameplay with player decision-making and real-time simulation control.
 	- Run:
 		```powershell
@@ -301,7 +305,7 @@ This section lists exported classes found in the codebase grouped by area (file 
 
 ##### Rendering primitives
 - `src/gui/rendering/TextComponent.ts` — Static text display component
-- `src/gui/rendering/DynamicTextComponent.ts` — Runtime-generated text via callback
+- `src/gui/rendering/DynamicTextComponent.ts` — Runtime-generated text via callback; uses strategy pattern with functions accepting GUI and simulation entity managers
 - `src/gui/rendering/ScreenBufferComponent.ts` — Holds terminal buffer content for rendering
 - `src/gui/rendering/PositionComponent.ts` — Positioning data for UI elements
 - `src/gui/rendering/IsVisibleComponent.ts` — Visibility flag for renderable elements

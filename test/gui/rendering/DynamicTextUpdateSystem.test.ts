@@ -12,13 +12,13 @@ describe('DynamicTextUpdateSystem', () => {
 
     const entity = em.createEntity();
 
-    const dynamic = new DynamicTextComponent(() => 'dynamic-text');
+    const dynamic = new DynamicTextComponent((guiEM, simEM) => 'dynamic-text');
     const text = new TextComponent('initial');
     const visible = new IsVisibleComponent(true);
 
     entity.addComponent(dynamic).addComponent(text).addComponent(visible);
 
-    const system = new DynamicTextUpdateSystem(em, sim);
+    const system = new DynamicTextUpdateSystem(em, sim.getEcs());
     system.update();
 
     expect(text.getText()).toBe('dynamic-text');
@@ -30,13 +30,13 @@ describe('DynamicTextUpdateSystem', () => {
 
     const entity = em.createEntity();
 
-    const dynamic = new DynamicTextComponent(() => 'should-not-see');
+    const dynamic = new DynamicTextComponent((guiEM, simEM) => 'should-not-see');
     const text = new TextComponent('stay');
     const visible = new IsVisibleComponent(false);
 
     entity.addComponent(dynamic).addComponent(text).addComponent(visible);
 
-    const system = new DynamicTextUpdateSystem(em, sim);
+    const system = new DynamicTextUpdateSystem(em, sim.getEcs());
     system.update();
 
     expect(text.getText()).toBe('stay');
@@ -48,18 +48,18 @@ describe('DynamicTextUpdateSystem', () => {
 
     const entity = em.createEntity();
 
-    const spy = jest.fn(() => 'spy-text');
+    const spy = jest.fn((guiEM, simEM) => 'spy-text');
     const dynamic = new DynamicTextComponent(spy);
     const text = new TextComponent('before');
     const visible = new IsVisibleComponent(true);
 
     entity.addComponent(dynamic).addComponent(text).addComponent(visible);
 
-    const system = new DynamicTextUpdateSystem(em, sim);
+    const system = new DynamicTextUpdateSystem(em, sim.getEcs());
     system.update();
 
     expect(spy).toHaveBeenCalledTimes(1);
-    expect(spy).toHaveBeenCalledWith(sim);
+    expect(spy).toHaveBeenCalledWith(em, sim.getEntityManager());
     expect(text.getText()).toBe('spy-text');
   });
 });

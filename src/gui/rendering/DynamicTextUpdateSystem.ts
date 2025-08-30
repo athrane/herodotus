@@ -4,23 +4,23 @@ import { EntityManager } from '../../ecs/EntityManager';
 import { DynamicTextComponent } from './DynamicTextComponent';
 import { TextComponent } from './TextComponent';
 import { IsVisibleComponent } from './IsVisibleComponent';
-import { Simulation } from '../../simulation/Simulation';
+import { Ecs } from '../../ecs/Ecs';
 
 /**
  * System that updates TextComponent values from DynamicTextComponent callbacks
  * for visible entities (only).
  */
 export class DynamicTextUpdateSystem extends System {
-  private readonly simulation: Simulation;
+  private readonly simulationEcs: Ecs;
 
   /**
    * Creates a new DynamicTextUpdateSystem.
    * @param entityManager The entity manager for managing entities.
-   * @param simulation The simulation instance for accessing simulation state.
+   * @param simulationEcs The simulation ECS instance for accessing simulation state.
    */
-  constructor(entityManager: EntityManager, simulation: Simulation) {
+  constructor(entityManager: EntityManager, simulationEcs: Ecs) {
     super(entityManager, [DynamicTextComponent, TextComponent, IsVisibleComponent]);
-    this.simulation = simulation;
+    this.simulationEcs = simulationEcs;
   }
 
   /**
@@ -45,18 +45,18 @@ export class DynamicTextUpdateSystem extends System {
     if (!textComponent) return;
 
     // Compute the new text value and update the TextComponent
-    const newText = dynamicTextComponent.getText(this.simulation);
+    const newText = dynamicTextComponent.getText(this.getEntityManager(), this.simulationEcs.getEntityManager());
     textComponent.setText(String(newText));
   }
 
   /**
    * Creates a new DynamicTextUpdateSystem.
    * @param entityManager The entity manager for managing entities.
-   * @param simulation The simulation instance for accessing simulation state.
+   * @param simulationEcs The simulation ECS instance for accessing simulation state.
    * @returns A new instance of DynamicTextUpdateSystem.
    */
-  static create(entityManager: EntityManager, simulation: Simulation): DynamicTextUpdateSystem {
-    return new DynamicTextUpdateSystem(entityManager, simulation);
+  static create(entityManager: EntityManager, simulationEcs: Ecs): DynamicTextUpdateSystem {
+    return new DynamicTextUpdateSystem(entityManager, simulationEcs);
   } 
 
 }

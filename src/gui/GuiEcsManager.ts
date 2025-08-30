@@ -59,9 +59,9 @@ export class GuiEcsManager {
         this.ecs.registerSystem(this.actionSystem);
 
         // 3. Content updates
-        this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, this.simulation));
+        this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, this.simulation.getEcs()));
         this.ecs.registerSystem(FooterUpdateSystem.create(entityManager));
-        this.ecs.registerSystem(DynamicTextUpdateSystem.create(entityManager, this.simulation));
+        this.ecs.registerSystem(DynamicTextUpdateSystem.create(entityManager, this.simulation.getEcs()));
         this.ecs.registerSystem(MenuTextUpdateSystem.create(entityManager));
 
         // 4. Buffer update
@@ -123,9 +123,10 @@ export class GuiEcsManager {
         // Create dilemma text entity (dynamic text that shows current dilemma info)
         const dilemmaTextEntity = entityManager.createEntity();
         dilemmaTextEntity.addComponent(new NameComponent('DilemmaText'));
-        dilemmaTextEntity.addComponent(new DynamicTextComponent((sim) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        dilemmaTextEntity.addComponent(new DynamicTextComponent((_guiEntityManager, _simulationEntityManager) => {
             // Get dilemma info from simulation
-            const playerEntity = GuiHelper.getPlayerEntity(sim);
+            const playerEntity = GuiHelper.getPlayerEntity(this.simulation);
             if (!playerEntity) return 'No player found';
 
             // Get the DilemmaComponent from the player entity
@@ -149,9 +150,10 @@ export class GuiEcsManager {
         // Create status text entity (dynamic text for status screen)
         const statusTextEntity = entityManager.createEntity();
         statusTextEntity.addComponent(new NameComponent('StatusText'));
-        statusTextEntity.addComponent(new DynamicTextComponent((sim) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        statusTextEntity.addComponent(new DynamicTextComponent((_guiEntityManager, _simulationEntityManager) => {
             // Simple status text - can be enhanced later
-            return `Simulation is ${sim.getIsRunning() ? 'running' : 'stopped'}`;
+            return `Simulation is ${this.simulation.getIsRunning() ? 'running' : 'stopped'}`;
         }));
         statusTextEntity.addComponent(new TextComponent(''));
         statusTextEntity.addComponent(new PositionComponent(2, 5));
@@ -175,16 +177,39 @@ export class GuiEcsManager {
         debugEntity.addComponent(new IsVisibleComponent(true));
         debugEntity.addComponent(new PositionComponent(0, 21));
         debugEntity.addComponent(new TextComponent(''));
-        debugEntity.addComponent(new DynamicTextComponent((sim) => {
+        debugEntity.addComponent(new DynamicTextComponent((_guiEntityManager, simulationEntityManager) => {
 
+            // Get all entities with IsVisibleComponent
+            const allVisibleEntities = simulationEntityManager.getEntitiesWithComponents(IsVisibleComponent);
+
+            const l = allVisibleEntities.length;
+            return `DEBUG: [Visible:${l}]`;
+
+            /** 
+            const visibleNames = allVisibleEntities.map(entity => {
+                const visibleComponent = entity.getComponent(IsVisibleComponent);
+                if (!visibleComponent) return "";
+
+                const nameComponent = entity.getComponent(NameComponent);
+                if (!nameComponent) return "";
+                return nameComponent.getText();
+            }).join('|');            
+            return `DEBUG: [Visible:${visibleNames}]`;
+            **/
+
+            /** 
             // Get ActionQueueComponent
             const actionQueueComponent = sim.getEntityManager().getSingletonComponent(ActionQueueComponent);
 
-            // Create string representation of action queue
+            // Create string representation of visibleaction queue
             const actionQueue = actionQueueComponent?.getActions() ?? [];
             const actionQueueString = actionQueue.map(action => `- ${action}`).join(',');
             return `DEBUG: [AQ:${actionQueueString}]`;
+            **/
+
         }));
+
+
     }
 
     /**
