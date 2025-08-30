@@ -9,12 +9,16 @@ import { Entity } from '../../ecs/Entity';
  */
 export class FooterUpdateSystem extends System {
     private heartbeatPos: number = 0;
-    private readonly heartbeatLength: number = 5; // Number of positions between [ and ]
 
     /**
      * Name of the footer entity.
      */
     public static FOOTER_ENTITY_NAME = 'Footer';
+
+    /**
+     * Number of positions between [ and ]
+     */
+    private static HEARTBEAT_LENGTH = 5;
 
     /**
      * Constructor for the FooterUpdateSystem.
@@ -36,11 +40,8 @@ export class FooterUpdateSystem extends System {
         // Compute heartbeat string
         const heartbeat = this.renderHeartbeat();
 
-        // pad the heartbeat string to the right 
-        const paddedHeartbeat = heartbeat.padStart(80, '.');
-
         // Compute footer string (heartbeat only, as per request)
-        textComponent.setText(paddedHeartbeat);
+        textComponent.setText(heartbeat);
     }
 
     /**
@@ -49,12 +50,12 @@ export class FooterUpdateSystem extends System {
     private renderHeartbeat(): string {
         // Build a string like [....+....]
         let str = '[';
-        for (let i = 0; i < this.heartbeatLength; i++) {
+        for (let i = 0; i < FooterUpdateSystem.HEARTBEAT_LENGTH; i++) {
             str += (i === this.heartbeatPos) ? '+' : '.';
         }
         str += ']';
         // Update position for next frame
-        this.heartbeatPos = (this.heartbeatPos + 1) % this.heartbeatLength;
+        this.heartbeatPos = (this.heartbeatPos + 1) % FooterUpdateSystem.HEARTBEAT_LENGTH;
         return str;
     }
 

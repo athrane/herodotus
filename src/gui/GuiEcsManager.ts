@@ -45,6 +45,7 @@ export class GuiEcsManager {
 
         // Create separate ECS instance for GUI
         this.ecs = Ecs.create();
+        const simulationEcs = this.simulation.getEcs();
 
         // Create and register ECS systems
         // Create the ActionSystem first since MenuInputSystem depends on it
@@ -59,9 +60,9 @@ export class GuiEcsManager {
         this.ecs.registerSystem(this.actionSystem);
 
         // 3. Content updates
-        this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, this.simulation.getEcs()));
+        this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, simulationEcs));
         this.ecs.registerSystem(FooterUpdateSystem.create(entityManager));
-        this.ecs.registerSystem(DynamicTextUpdateSystem.create(entityManager, this.simulation.getEcs()));
+        this.ecs.registerSystem(DynamicTextUpdateSystem.create(entityManager, simulationEcs));
         this.ecs.registerSystem(MenuTextUpdateSystem.create(entityManager));
 
         // 4. Buffer update
@@ -102,7 +103,7 @@ export class GuiEcsManager {
         // Create global GUI Footer entity, positioned at the bottom
         const footerEntity = entityManager.createEntity();
         footerEntity.addComponent(new NameComponent(FooterUpdateSystem.FOOTER_ENTITY_NAME));
-        footerEntity.addComponent(new PositionComponent(0, 23));
+        footerEntity.addComponent(new PositionComponent(73, 23));
         footerEntity.addComponent(new IsVisibleComponent(true));
         footerEntity.addComponent(new TextComponent(''));
 
@@ -117,7 +118,7 @@ export class GuiEcsManager {
         mainMenuEntity.addComponent(new NameComponent('MainMenu'));
         mainMenuEntity.addComponent(new MenuComponent(mainMenuItems));
         mainMenuEntity.addComponent(new TextComponent(''));
-        mainMenuEntity.addComponent(new PositionComponent(0, 22));
+        mainMenuEntity.addComponent(new PositionComponent(0, 23));
         mainMenuEntity.addComponent(new IsVisibleComponent(true));
 
         // Create dilemma text entity (dynamic text that shows current dilemma info)
@@ -175,27 +176,29 @@ export class GuiEcsManager {
         const debugEntity = entityManager.createEntity();
         debugEntity.addComponent(new NameComponent(GuiEcsManager.DEBUG_ENTITY_NAME));
         debugEntity.addComponent(new IsVisibleComponent(true));
-        debugEntity.addComponent(new PositionComponent(0, 21));
+        debugEntity.addComponent(new PositionComponent(0, 22));
         debugEntity.addComponent(new TextComponent(''));
-        debugEntity.addComponent(new DynamicTextComponent((_guiEntityManager, simulationEntityManager) => {
+        debugEntity.addComponent(new DynamicTextComponent((guiEntityManager, simulationEntityManager) => {
+
+            simulationEntityManager.count();
 
             // Get all entities with IsVisibleComponent
-            const allVisibleEntities = simulationEntityManager.getEntitiesWithComponents(IsVisibleComponent);
-
-            const l = allVisibleEntities.length;
-            return `DEBUG: [Visible:${l}]`;
-
-            /** 
-            const visibleNames = allVisibleEntities.map(entity => {
+            const allVisibleGuiEntities = guiEntityManager.getEntitiesWithComponents(IsVisibleComponent);
+            const visibleNames = allVisibleGuiEntities.map(entity => {
                 const visibleComponent = entity.getComponent(IsVisibleComponent);
                 if (!visibleComponent) return "";
 
+                const isVisible = visibleComponent.isVisible();
+                const isVisibleString = isVisible ? "+" : "-";
+
                 const nameComponent = entity.getComponent(NameComponent);
                 if (!nameComponent) return "";
-                return nameComponent.getText();
-            }).join('|');            
-            return `DEBUG: [Visible:${visibleNames}]`;
-            **/
+                const name = nameComponent.getText();
+
+                return `${isVisibleString}${name}`;
+            }).join('|');
+
+            return `[DBG/VIS:${visibleNames}]`;
 
             /** 
             // Get ActionQueueComponent
