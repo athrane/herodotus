@@ -8,6 +8,7 @@ import { NameComponent } from '../../ecs/NameComponent';
 import { HeaderUpdateSystem } from '../rendering/HeaderUpdateSystem';
 import { FooterUpdateSystem } from '../rendering/FooterUpdateSystem';
 import { ScreensComponent } from './ScreensComponent';
+import { GuiHelper } from 'gui/GuiHelper';
 
 /*
  * Action system for handling user actions and updating the GUI.
@@ -35,9 +36,15 @@ export class ActionSystem extends System {
     const actionQueue = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
     if (!actionQueue) return;
 
+    // post message at entity with name 'D2'
+    GuiHelper.postDebugText(this.getEntityManager(), 'A1', `AS:CP1:L=${actionQueue.getActions().length}`);
+
     // Get the current actions and check if queue is empty
     const actions = actionQueue.getActions();
     if (actions.length === 0) return;
+
+    // post debug message
+    GuiHelper.postDebugText(this.getEntityManager(), 'A2', `AS:CP2:Actions= ${actions.join(',')}`);
 
     // Clear the queue immediately to prevent reprocessing
     actionQueue.clear();
@@ -66,7 +73,7 @@ export class ActionSystem extends System {
       case 'NAV_CHRONICLE':
         this.setActiveScreen('ChronicleScreen');
         break;
-      case 'QUIT':
+      case 'NAV_QUIT':
         this.guiManager.stop();
         break;
       default:

@@ -112,7 +112,7 @@ export class GuiEcsManager {
             new MenuItem('Status', 'NAV_STATUS'),
             new MenuItem('Choices', 'NAV_CHOICES'),
             new MenuItem('Chronicle', 'NAV_CHRONICLE'),
-            new MenuItem('Quit', 'QUIT')
+            new MenuItem('Quit', 'NAV_QUIT')
         ];
         const mainMenuEntity = entityManager.createEntity();
         mainMenuEntity.addComponent(new NameComponent('MainMenu'));
@@ -121,11 +121,12 @@ export class GuiEcsManager {
         mainMenuEntity.addComponent(new PositionComponent(0, 23));
         mainMenuEntity.addComponent(new IsVisibleComponent(true));
 
-        // Create dilemma text entity (dynamic text that shows current dilemma info)
-        const dilemmaTextEntity = entityManager.createEntity();
-        dilemmaTextEntity.addComponent(new NameComponent('DilemmaText'));
+        // Create choices screen entity (dynamic text that shows current dilemma info)
+        const choicesScreenEntity = entityManager.createEntity();
+        choicesScreenEntity.addComponent(new NameComponent('ChoicesScreen'));
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        dilemmaTextEntity.addComponent(new DynamicTextComponent((_guiEntityManager, _simulationEntityManager) => {
+        choicesScreenEntity.addComponent(new DynamicTextComponent((_guiEntityManager, _simulationEntityManager) => {
+
             // Get dilemma info from simulation
             const playerEntity = GuiHelper.getPlayerEntity(this.simulation);
             if (!playerEntity) return 'No player found';
@@ -144,28 +145,40 @@ export class GuiEcsManager {
             // This would need to be implemented based on your dilemma system
             return `${header}\n${choices}`;
         }));
-        dilemmaTextEntity.addComponent(new TextComponent(''));
-        dilemmaTextEntity.addComponent(new PositionComponent(2, 15));
-        dilemmaTextEntity.addComponent(new IsVisibleComponent(false));
+        choicesScreenEntity.addComponent(new TextComponent(''));
+        choicesScreenEntity.addComponent(new PositionComponent(0, 3));
+        choicesScreenEntity.addComponent(new IsVisibleComponent(false));
 
-        // Create status text entity (dynamic text for status screen)
-        const statusTextEntity = entityManager.createEntity();
-        statusTextEntity.addComponent(new NameComponent('StatusText'));
+        // Create status screen entity (dynamic text for status screen)
+        const statusScreenEntity = entityManager.createEntity();
+        statusScreenEntity.addComponent(new NameComponent('StatusScreen'));
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        statusTextEntity.addComponent(new DynamicTextComponent((_guiEntityManager, _simulationEntityManager) => {
+        statusScreenEntity.addComponent(new DynamicTextComponent((_guiEntityManager, _simulationEntityManager) => {
             // Simple status text - can be enhanced later
             return `Simulation is ${this.simulation.getIsRunning() ? 'running' : 'stopped'}`;
         }));
-        statusTextEntity.addComponent(new TextComponent(''));
-        statusTextEntity.addComponent(new PositionComponent(2, 5));
-        statusTextEntity.addComponent(new IsVisibleComponent(false));
+        statusScreenEntity.addComponent(new TextComponent(''));
+        statusScreenEntity.addComponent(new PositionComponent(0, 3));
+        statusScreenEntity.addComponent(new IsVisibleComponent(false));
+
+        // Create chronicle screen entity (dynamic text for chronicle screen)
+        const chronicleScreenEntity = entityManager.createEntity();
+        chronicleScreenEntity.addComponent(new NameComponent('ChronicleScreen'));
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        chronicleScreenEntity.addComponent(new DynamicTextComponent((guiEntityManager, simulationEntityManager) => {
+            // Simple chronicle text - can be enhanced later
+            return `Hello Chronicle`;
+        }));
+        chronicleScreenEntity.addComponent(new TextComponent(''));
+        chronicleScreenEntity.addComponent(new PositionComponent(0, 3));
+        chronicleScreenEntity.addComponent(new IsVisibleComponent(false));
 
         // Map screen names to their primary interactive entities
         const screensComponent = ScreensComponent.create()
         screensComponent.addScreen('main', mainMenuEntity.getId());
-        screensComponent.addScreen('status', statusTextEntity.getId());
-        screensComponent.addScreen('choices', dilemmaTextEntity.getId());
-        screensComponent.addScreen('chronicle', dilemmaTextEntity.getId()); // Reuse for now
+        screensComponent.addScreen('status', statusScreenEntity.getId());
+        screensComponent.addScreen('choices', choicesScreenEntity.getId());
+        screensComponent.addScreen('chronicle', choicesScreenEntity.getId()); // Reuse for now
 
         // Create Screens Entity
         const screensEntity = entityManager.createEntity();
@@ -177,7 +190,7 @@ export class GuiEcsManager {
         debugEntity.addComponent(new NameComponent(GuiEcsManager.DEBUG_ENTITY_NAME));
         debugEntity.addComponent(new IsVisibleComponent(true));
         debugEntity.addComponent(new PositionComponent(0, 22));
-        debugEntity.addComponent(new TextComponent(''));
+        debugEntity.addComponent(new TextComponent('UI DEBUG'));
         debugEntity.addComponent(new DynamicTextComponent((guiEntityManager, simulationEntityManager) => {
 
             simulationEntityManager.count();
@@ -212,7 +225,13 @@ export class GuiEcsManager {
 
         }));
 
-
+        // Create passive Debug Entity for the action system
+        let line = 10;
+        GuiHelper.createDebugEntity(entityManager, 'I1', 0, line++);
+        GuiHelper.createDebugEntity(entityManager, 'I2', 0, line++);
+        GuiHelper.createDebugEntity(entityManager, 'A1', 0, line++);
+        GuiHelper.createDebugEntity(entityManager, 'A2', 0, line++);
+        GuiHelper.createDebugEntity(entityManager, 'L1', 0, line++);
     }
 
     /**

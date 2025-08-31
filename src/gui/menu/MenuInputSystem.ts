@@ -4,6 +4,7 @@ import { InputComponent } from './InputComponent';
 import { MenuComponent } from './MenuComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { ActionQueueComponent } from './ActionQueueComponent';
+import { GuiHelper } from 'gui/GuiHelper';
 
 /**
  * Processes user input for menu navigation and selection.
@@ -28,6 +29,9 @@ export class MenuInputSystem extends System {
         const inputComponent = this.getEntityManager().getSingletonComponent(InputComponent);
         if (!inputComponent) return;
 
+        // post debug message
+        GuiHelper.postDebugText(this.getEntityManager(), 'I1', `CP1:Last input=${inputComponent.getLastInput()}`);
+
         // Get the last input
         const lastInput = inputComponent.getLastInput();
         if (lastInput == null) return;
@@ -37,8 +41,8 @@ export class MenuInputSystem extends System {
 
         // Find the active menu entity
         const menuEntity = entities.find(e => {
-            const vis = e.getComponent(IsVisibleComponent);
-            return !!vis && vis.isVisible();
+            const visibleComponent = e.getComponent(IsVisibleComponent);
+            return visibleComponent?.isVisible();
         });
 
         // Exit if no active menu entity is found, reset input
@@ -63,14 +67,19 @@ export class MenuInputSystem extends System {
                 menuComponent.selectNext();
                 break;
             case 'enter': {
-                const selected = menuComponent.getSelectedItem();
-                if (selected) {
-                    // Add action to the queue instead of calling actionSystem directly
-                    const actionQueue = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
-                    if (actionQueue) {
-                        actionQueue.addAction((selected as any).getActionID());
-                    }
-                }
+                const selectedMenuItem = menuComponent.getSelectedItem();
+
+                // post debug message
+                GuiHelper.postDebugText(this.getEntityManager(), 'I2', `CP2:Selected=${selectedMenuItem?.getText()}|${selectedMenuItem?.getActionID()}`);
+
+                // Exit if no menu item is selected
+                if (!selectedMenuItem) return;
+
+                // Add action to the queue instead of calling actionSystem directly
+                const actionQueue = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
+                if (!actionQueue) return;
+
+                actionQueue.addAction(selectedMenuItem.getActionID());
                 break;
             }
             default:

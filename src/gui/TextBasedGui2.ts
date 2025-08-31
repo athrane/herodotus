@@ -80,7 +80,12 @@ export class TextBasedGui2 {
         }
         this.guiEcsManager.stop();
         this.simulation.stop();
-        this.readline.close();
+
+        // Ensure proper cleanup of readline
+        if (this.readline) {
+            this.readline.removeAllListeners();
+            this.readline.close();
+        }
     }
 
     /**
@@ -117,25 +122,24 @@ export class TextBasedGui2 {
             const inputComponent = entityManager.getSingletonComponent(InputComponent);
             if (!inputComponent) continue;
 
+            // post debug message
+            GuiHelper.postDebugText(entityManager, 'L1', `CP1:command=${command}|`);
+
             switch (normalizedCommand) {
                 case 'w':
-                case 'up':
                     inputComponent.setLastInput('w');
                     break;
                 case 's':
-                case 'down':
                     inputComponent.setLastInput('s');
                     break;
                 case '':
-                case 'enter':
                     inputComponent.setLastInput('enter');
                     break;
                 case 'q':
-                case 'quit':
                     this.stop();
                     break;
                 default:
-                    // Optional: provide feedback for unknown commands
+                    // No-op
                     break;
             }
         }
