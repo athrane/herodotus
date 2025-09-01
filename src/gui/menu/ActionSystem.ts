@@ -5,10 +5,8 @@ import { ActionQueueComponent } from './ActionQueueComponent';
 import { TypeUtils } from '../../util/TypeUtils';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { NameComponent } from '../../ecs/NameComponent';
-import { HeaderUpdateSystem } from '../rendering/HeaderUpdateSystem';
-import { FooterUpdateSystem } from '../rendering/FooterUpdateSystem';
 import { ScreensComponent } from './ScreensComponent';
-import { GuiHelper } from 'gui/GuiHelper';
+import { GuiHelper } from '../GuiHelper';
 
 /*
  * Action system for handling user actions and updating the GUI.
@@ -32,22 +30,25 @@ export class ActionSystem extends System {
    */
   public update(): void {
 
-    // Get the singleton ActionQueueComponent
-    const actionQueue = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
-    if (!actionQueue) return;
+    GuiHelper.postDebugText(this.getEntityManager(), 'A1', `[CP1: Hello]`);
+    //GuiHelper.postDebugText(this.getEntityManager(), 'A1', `[CP1:L=${actionQueue.getActions().length}`);
 
-    // post message at entity with name 'D2'
-    GuiHelper.postDebugText(this.getEntityManager(), 'A1', `AS:CP1:L=${actionQueue.getActions().length}`);
+    // Get the singleton ActionQueueComponent
+    const actionQueueComponent = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
+    if (!actionQueueComponent) return;
+
+    GuiHelper.postDebugText(this.getEntityManager(), 'A1', `[CP2: Hello]`);
 
     // Get the current actions and check if queue is empty
-    const actions = actionQueue.getActions();
+    const actions = actionQueueComponent.getActions();
     if (actions.length === 0) return;
 
-    // post debug message
-    GuiHelper.postDebugText(this.getEntityManager(), 'A2', `AS:CP2:Actions= ${actions.join(',')}`);
+    GuiHelper.postDebugText(this.getEntityManager(), 'A2', `[CP3:Actions= ${actions.join(',')}]`);
 
     // Clear the queue immediately to prevent reprocessing
-    actionQueue.clear();
+    actionQueueComponent.clear();
+
+    GuiHelper.postDebugText(this.getEntityManager(), 'A1', `[CP4: Hello]`);
 
     // Process each action
     for (const actionId of actions) {
@@ -62,16 +63,16 @@ export class ActionSystem extends System {
   private executeAction(actionId: string): void {
     switch (actionId) {
       case 'NAV_STATUS':
-        this.setActiveScreen('StatusScreen');
+        this.setActiveScreen('status');
         break;
       case 'NAV_MAIN':
-        this.setActiveScreen('MainInterfaceScreen');
+        this.setActiveScreen('main');
         break;
       case 'NAV_CHOICES':
-        this.setActiveScreen('ChoicesScreen');
+        this.setActiveScreen('choices');
         break;
       case 'NAV_CHRONICLE':
-        this.setActiveScreen('ChronicleScreen');
+        this.setActiveScreen('chronicle');
         break;
       case 'NAV_QUIT':
         this.guiManager.stop();
@@ -84,30 +85,26 @@ export class ActionSystem extends System {
 
   /**
    * Sets the active screen by name.
-   * Hides all other UI elements except header and footer.
    * Shows the UI elements associated with the target screen.
    * @param screenName The name of the screen to activate.
    */
   setActiveScreen(screenName: string): void {
+    GuiHelper.postDebugText(this.getEntityManager(), 'A1', `[CP5: Hello]`);
 
     // Get all entities with IsVisibleComponent
     const allVisibleEntities = this.getEntityManager().getEntitiesWithComponents(IsVisibleComponent);
+
+    GuiHelper.postDebugText(this.getEntityManager(), 'A1', `[CP6: Hello]`);
 
     // Hide all visible UI elements
     allVisibleEntities.forEach(entity => {
       const visibleComponent = entity.getComponent(IsVisibleComponent);
       if (!visibleComponent) return;
+      if (visibleComponent.isImmutable()) return;
       visibleComponent.setVisibility(false);
     });
 
-    // set Header visible
-    this.setEntityVisibility(HeaderUpdateSystem.HEADER_ENTITY_NAME, true);
-
-    // Set footer visible
-    this.setEntityVisibility(FooterUpdateSystem.FOOTER_ENTITY_NAME, true);
-
-    // Set Debug info visible
-    this.setEntityVisibility(GuiEcsManager.DEBUG_ENTITY_NAME, true);
+    GuiHelper.postDebugText(this.getEntityManager(), 'A1', `[CP7: Hello]`);
 
     // Get screens component
     const screensComponent = this.getEntityManager().getSingletonComponent(ScreensComponent);

@@ -29,7 +29,6 @@ import { ScreensComponent } from './menu/ScreensComponent';
  */
 export class GuiEcsManager {
     private readonly ecs: Ecs;
-    private readonly actionSystem: ActionSystem;
     private readonly simulation: Simulation;
     private guiUpdateInterval: NodeJS.Timeout | null = null;
     private isRunning: boolean = false;
@@ -48,16 +47,14 @@ export class GuiEcsManager {
         const simulationEcs = this.simulation.getEcs();
 
         // Create and register ECS systems
-        // Create the ActionSystem first since MenuInputSystem depends on it
         const entityManager = this.ecs.getEntityManager();
-        this.actionSystem = ActionSystem.create(entityManager, this);
 
         // Register all systems
         // 1. Input processing first
         this.ecs.registerSystem(MenuInputSystem.create(entityManager));
 
         // 2. Action handling
-        this.ecs.registerSystem(this.actionSystem);
+        this.ecs.registerSystem(ActionSystem.create(entityManager, this));
 
         // 3. Content updates
         this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, simulationEcs));
@@ -97,22 +94,22 @@ export class GuiEcsManager {
         const headerEntity = entityManager.createEntity();
         headerEntity.addComponent(new NameComponent(HeaderUpdateSystem.HEADER_ENTITY_NAME));
         headerEntity.addComponent(new PositionComponent(0, 0));
-        headerEntity.addComponent(new IsVisibleComponent(true));
+        headerEntity.addComponent(new IsVisibleComponent(true, true)); // Immutable visibility
         headerEntity.addComponent(new TextComponent(''));
 
         // Create global GUI Footer entity, positioned at the bottom
         const footerEntity = entityManager.createEntity();
         footerEntity.addComponent(new NameComponent(FooterUpdateSystem.FOOTER_ENTITY_NAME));
         footerEntity.addComponent(new PositionComponent(73, 23));
-        footerEntity.addComponent(new IsVisibleComponent(true));
+        footerEntity.addComponent(new IsVisibleComponent(true, true)); // Immutable visibility
         footerEntity.addComponent(new TextComponent(''));
 
         // Create main menu entity
         const mainMenuItems = [
-            new MenuItem('Status', 'NAV_STATUS'),
-            new MenuItem('Choices', 'NAV_CHOICES'),
-            new MenuItem('Chronicle', 'NAV_CHRONICLE'),
-            new MenuItem('Quit', 'NAV_QUIT')
+            new MenuItem('Status', 'NAV_STATUS', 's'),
+            new MenuItem('Choices', 'NAV_CHOICES', 'c'),
+            new MenuItem('Chronicle', 'NAV_CHRONICLE', 'r'),
+            new MenuItem('Quit', 'NAV_QUIT', 'q')
         ];
         const mainMenuEntity = entityManager.createEntity();
         mainMenuEntity.addComponent(new NameComponent('MainMenu'));
@@ -178,7 +175,7 @@ export class GuiEcsManager {
         screensComponent.addScreen('main', mainMenuEntity.getId());
         screensComponent.addScreen('status', statusScreenEntity.getId());
         screensComponent.addScreen('choices', choicesScreenEntity.getId());
-        screensComponent.addScreen('chronicle', choicesScreenEntity.getId()); // Reuse for now
+        screensComponent.addScreen('chronicle', chronicleScreenEntity.getId());
 
         // Create Screens Entity
         const screensEntity = entityManager.createEntity();
@@ -186,12 +183,8 @@ export class GuiEcsManager {
         screensEntity.addComponent(screensComponent);
 
         // Create UI debug entity
-        const debugEntity = entityManager.createEntity();
-        debugEntity.addComponent(new NameComponent(GuiEcsManager.DEBUG_ENTITY_NAME));
-        debugEntity.addComponent(new IsVisibleComponent(true));
-        debugEntity.addComponent(new PositionComponent(0, 22));
-        debugEntity.addComponent(new TextComponent('UI DEBUG'));
-        debugEntity.addComponent(new DynamicTextComponent((guiEntityManager, simulationEntityManager) => {
+        const actionDebugEntity = GuiHelper.createDebugEntity(entityManager, 'GuiEcsManager.DEBUG_ENTITY_NAME', 0, 22);
+        actionDebugEntity.addComponent(new DynamicTextComponent((guiEntityManager, simulationEntityManager) => {
 
             simulationEntityManager.count();
 
@@ -211,27 +204,17 @@ export class GuiEcsManager {
                 return `${isVisibleString}${name}`;
             }).join('|');
 
-            return `[DBG/VIS:${visibleNames}]`;
-
-            /** 
-            // Get ActionQueueComponent
-            const actionQueueComponent = sim.getEntityManager().getSingletonComponent(ActionQueueComponent);
-
-            // Create string representation of visibleaction queue
-            const actionQueue = actionQueueComponent?.getActions() ?? [];
-            const actionQueueString = actionQueue.map(action => `- ${action}`).join(',');
-            return `DEBUG: [AQ:${actionQueueString}]`;
-            **/
-
+            return `[D/V:${visibleNames}]`;
         }));
 
         // Create passive Debug Entity for the action system
         let line = 10;
+        GuiHelper.createDebugEntity(entityManager, 'K1', 0, line++);
         GuiHelper.createDebugEntity(entityManager, 'I1', 0, line++);
         GuiHelper.createDebugEntity(entityManager, 'I2', 0, line++);
+        GuiHelper.createDebugEntity(entityManager, 'I3', 0, line++);
         GuiHelper.createDebugEntity(entityManager, 'A1', 0, line++);
         GuiHelper.createDebugEntity(entityManager, 'A2', 0, line++);
-        GuiHelper.createDebugEntity(entityManager, 'L1', 0, line++);
     }
 
     /**
@@ -278,14 +261,6 @@ export class GuiEcsManager {
      */
     getScreenRenderSystem(): ScreenBufferRenderSystem | undefined {
         return this.ecs.getSystemManager().get('ScreenBufferRenderSystem') as ScreenBufferRenderSystem | undefined;
-    }
-
-    /**
-     * Convenience method used by TESTS and to set the active screen.
-     * Delegates to the internal ActionSystem implementation.
-     */
-    setActiveScreen(screenName: string): void {
-        this.actionSystem.setActiveScreen(screenName);
     }
 
     /**

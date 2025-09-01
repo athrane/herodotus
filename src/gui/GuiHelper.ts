@@ -7,6 +7,7 @@ import { NameComponent } from '../ecs/NameComponent';
 import { TextComponent } from './rendering/TextComponent';
 import { IsVisibleComponent } from './rendering/IsVisibleComponent';
 import { PositionComponent } from './rendering/PositionComponent';
+import { Entity } from 'ecs/Entity';
 
 /**
  * Helper class containing stateless utility functions for the GUI system.
@@ -93,12 +94,13 @@ export class GuiHelper {
      * @param x The x position of the entity.
      * @param y The y position of the entity.
      */
-    static createDebugEntity(entityManager: EntityManager, entityName: string, x: number, y: number): void {
+    static createDebugEntity(entityManager: EntityManager, entityName: string, x: number, y: number): Entity {
         const actionDebugEntity = entityManager.createEntity();
         actionDebugEntity.addComponent(new NameComponent(entityName));
-        actionDebugEntity.addComponent(new IsVisibleComponent(true));
+        actionDebugEntity.addComponent(new IsVisibleComponent(true, false));
         actionDebugEntity.addComponent(new PositionComponent(x, y));
         actionDebugEntity.addComponent(new TextComponent(`DEBUG:${entityName}`));
+        return actionDebugEntity;
     }
 
     /**

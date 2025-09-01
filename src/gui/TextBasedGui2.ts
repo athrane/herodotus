@@ -37,11 +37,16 @@ export class TextBasedGui2 {
         TypeUtils.ensureInstanceOf(simulation, Simulation, "Expected simulation to be an instance of Simulation");
         this.simulation = simulation;
 
-        // Create readline interface for user input
+        // Create readline interface for user input with raw mode for direct key capture
         this.readline = readline.createInterface({
             input: process.stdin,
             output: process.stdout
         });
+
+        // Enable raw mode for direct key capture without Enter
+        if (process.stdin.isTTY) {
+            process.stdin.setRawMode(true);
+        }
 
         // Initialize the GUI ECS
         this.guiEcsManager = new GuiEcsManager(this.simulation);
@@ -81,10 +86,15 @@ export class TextBasedGui2 {
         this.guiEcsManager.stop();
         this.simulation.stop();
 
-        // Ensure proper cleanup of readline
+        // Ensure proper cleanup of readline and raw mode
         if (this.readline) {
             this.readline.removeAllListeners();
             this.readline.close();
+        }
+
+        // Restore normal terminal mode
+        if (process.stdin.isTTY) {
+            process.stdin.setRawMode(false);
         }
     }
 
@@ -104,48 +114,97 @@ export class TextBasedGui2 {
      * Main GUI interaction loop.
      */
     private async mainLoop(): Promise<void> {
+        // Set up raw key listener for direct key input
+        process.stdin.on('data', (data) => {
+            if (!this.isWaitingForInput) return;
+            
+            const key = data.toString();
+            this.handleDirectKeyInput(key);
+        });
+
         while (this.isGuiRunning()) {
-
-            // Wait for user input and get the command
+            // Set flag to indicate we're waiting for input
             this.isWaitingForInput = true;
-            const command = await GuiHelper.askQuestion(this.readline, "> ");
-            this.isWaitingForInput = false;
 
-            // Exit if GUI has been stopped during input
+            // Wait for direct key input (processed by the data event handler)
+            await new Promise(resolve => {
+                const checkInput = () => {
+                    if (!this.isWaitingForInput || !this.isRunning) {
+                        resolve(undefined);
+                    } else {
+                        setTimeout(checkInput, 50);
+                    }
+                };
+                checkInput();
+            });
+
+            // Exit if GUI has been stopped
             if (!this.isRunning) break;
-
-            // Normalize the command
-            const normalizedCommand = command.toLowerCase().trim();
-
-            // Get the input component for processing commands
-            const entityManager = this.guiEcsManager.getEcs().getEntityManager();
-            const inputComponent = entityManager.getSingletonComponent(InputComponent);
-            if (!inputComponent) continue;
-
-            // post debug message
-            GuiHelper.postDebugText(entityManager, 'L1', `CP1:command=${command}|`);
-
-            switch (normalizedCommand) {
-                case 'w':
-                    inputComponent.setLastInput('w');
-                    break;
-                case 's':
-                    inputComponent.setLastInput('s');
-                    break;
-                case '':
-                    inputComponent.setLastInput('enter');
-                    break;
-                case 'q':
-                    this.stop();
-                    break;
-                default:
-                    // No-op
-                    break;
-            }
         }
 
         // Stop the GUI
         this.stop();
+    }
+
+    /**
+     * Handles direct key input without requiring Enter.
+     */
+    private handleDirectKeyInput(key: string): void {
+        // Reset waiting flag
+        this.isWaitingForInput = false;
+
+        // post debug message
+        const entityManager = this.guiEcsManager.getEcs().getEntityManager();        
+        GuiHelper.postDebugText(entityManager, 'K1', `[CP1:key=${key}]`);
+
+        // Get the input component for processing commands
+        const inputComponent = entityManager.getSingletonComponent(InputComponent);
+        if (!inputComponent) return;
+
+        // Handle special keys
+        if (key === '\u0003') { // Ctrl+C
+            this.stop();
+            return;
+        }
+
+        if (key === '\u001b') { // Escape key
+            this.stop();
+            return;
+        }
+
+        // Convert key to command
+        const normalizedCommand = key.toLowerCase().trim();
+
+        switch (normalizedCommand) {
+            case 'w':
+                inputComponent.setLastInput('w');
+                break;
+            case 's':
+                inputComponent.setLastInput('s');
+                break;
+            case '\r': // Enter key
+            case '\n': // Line feed
+                inputComponent.setLastInput('enter');
+                break;
+            case 'q':
+                this.stop();
+                break;
+            case 'h':
+                inputComponent.setLastInput('h');
+                break;
+            case 'c':
+                inputComponent.setLastInput('c');
+                break;
+            case 'r':
+                inputComponent.setLastInput('r');
+                break;
+            default:
+                // Handle any other single character input
+                if (normalizedCommand.length === 1) {
+                    inputComponent.setLastInput(normalizedCommand);
+                }
+                break;
+        }
     }
 
     /**

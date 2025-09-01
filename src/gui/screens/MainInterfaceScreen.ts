@@ -32,13 +32,14 @@ export async function handleMainInterfaceInput(
     switch (command) {
         case 'help':
         case 'h':
-            console.log('\nAvailable Commands:');
+            console.log('\nAvailable Commands (direct key press - no Enter needed):');
             console.log('  [H]elp     - Show this help message');
             console.log('  [S]tatus   - Show detailed simulation status');
             console.log('  [C]hoices  - Show and handle dilemma choices');
             console.log('  Ch[r]onicle- View historical events');
             console.log('  [Q]uit     - Exit the application');
-            console.log('\nPress Enter to continue...');
+            console.log('  W/S        - Navigate menu items up/down');
+            console.log('\nPress any key to continue...');
             await GuiHelper.askQuestion(readline, '');
             return true;
         case 'quit':

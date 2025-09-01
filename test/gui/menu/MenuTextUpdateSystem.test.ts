@@ -23,7 +23,7 @@ describe('MenuTextUpdateSystem', () => {
     system.update();
 
     const textComp = entity.getComponent(TextComponent)!;
-    expect(textComp.getText()).toBe('> Start |   Load');
+    expect(textComp.getText()).toBe('> [S]tart |   [L]oad');
   });
 
   test('renders menu with one item', () => {
@@ -39,7 +39,7 @@ describe('MenuTextUpdateSystem', () => {
     system.update();
 
     const textComp = entity.getComponent(TextComponent)!;
-    expect(textComp.getText()).toBe('> Start');
+    expect(textComp.getText()).toBe('> [S]tart');
   });
 
   test('renders menu with two items', () => {
@@ -58,7 +58,7 @@ describe('MenuTextUpdateSystem', () => {
     system.update();
 
     const textComp = entity.getComponent(TextComponent)!;
-    expect(textComp.getText()).toBe('> Start |   Load');
+    expect(textComp.getText()).toBe('> [S]tart |   [L]oad');
   });
 
   test('renders menu with three items', () => {
@@ -78,7 +78,7 @@ describe('MenuTextUpdateSystem', () => {
     system.update();
 
     const textComp = entity.getComponent(TextComponent)!;
-    expect(textComp.getText()).toBe('> Start |   Load |   Settings');
+    expect(textComp.getText()).toBe('> [S]tart |   [L]oad |   [S]ettings');
   });
 
   test('clears text when not visible', () => {
@@ -168,6 +168,6 @@ describe('MenuTextUpdateSystem', () => {
     system.update();
 
     const textComp = entity.getComponent(TextComponent)!;
-    expect(textComp.getText()).toBe('  First |   Second | > Third');
+    expect(textComp.getText()).toBe('  [F]irst |   [S]econd | > [T]hird');
   });
 });

@@ -48,7 +48,7 @@ export class MenuTextUpdateSystem extends System {
         // Build the menu string with selected item indicator
         const menuString = menu.getItems().map((item, index) => {
             const prefix = index === menu.getSelectedItemIndex() ? '> ' : '  ';
-            return `${prefix}${item.getText()}`;
+            return `${prefix}${item.getDisplayText()}`;
         }).join(' | ');
 
         // Update the text component with the menu string
