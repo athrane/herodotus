@@ -257,14 +257,33 @@ export class GuiEcsManager {
     }
 
     /**
-     * Gets the screen buffer render system.
+     * Convenience method used by TESTS to get the screen buffer render system.
+     * @returns The screen buffer render system if it exists, undefined otherwise.
      */
     getScreenRenderSystem(): ScreenBufferRenderSystem | undefined {
         return this.ecs.getSystemManager().get('ScreenBufferRenderSystem') as ScreenBufferRenderSystem | undefined;
     }
 
     /**
-     * Convenience method used by TESTS and to gets the entity ID for a screen by name.
+     * Gets the action system.
+     */
+    getActionSystem(): ActionSystem | undefined {
+        return this.ecs.getSystemManager().get('ActionSystem') as ActionSystem | undefined;
+    }
+
+    /**
+     * Convenience method used by TESTS to set the active screen by delegating to the ActionSystem.
+     * @param screenName The name of the screen to activate
+     */
+    setActiveScreen(screenName: string): void {
+        const actionSystem = this.getActionSystem();
+        if (actionSystem) {
+            actionSystem.setActiveScreen(screenName);
+        }
+    }
+
+    /**
+     * Convenience method used by TESTS to gets the entity ID for a screen by name.
      * Retrieves the screen entity ID from the ScreensComponent entity.
      * @param screenName The name of the screen to get the entity ID for
      * @returns The entity ID if found, undefined otherwise

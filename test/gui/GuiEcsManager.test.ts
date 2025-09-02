@@ -131,7 +131,7 @@ describe('GuiEcsManager', () => {
 
     test('should set active screen', () => {
       expect(() => {
-        guiEcsManager.setActiveScreen('StatusScreen');
+        guiEcsManager.setActiveScreen('status');
       }).not.toThrow();
     });
   });
@@ -170,9 +170,9 @@ describe('GuiEcsManager', () => {
       guiEcsManager.initialize();
       
       expect(() => {
-        guiEcsManager.setActiveScreen('StatusScreen');
-        guiEcsManager.setActiveScreen('MainInterfaceScreen');
-        guiEcsManager.setActiveScreen('ChronicleScreen');
+        guiEcsManager.setActiveScreen('status');
+        guiEcsManager.setActiveScreen('main');
+        guiEcsManager.setActiveScreen('chronicle');
       }).not.toThrow();
     });
   });

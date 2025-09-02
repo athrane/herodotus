@@ -221,6 +221,70 @@ Each screen is implemented as a separate entity with appropriate components:
 4. **Separation of Concerns**: Render logic separated from input handling
 5. **Testability**: Individual screens can be tested in isolation
 
+### Key Menu Systems
+
+#### ActionSystem (`src/gui/menu/ActionSystem.ts`)
+The ActionSystem is responsible for processing UI action IDs and managing application flow:
+
+**Core Functionality:**
+- Processes actions from the `ActionQueueComponent` in FIFO order
+- Handles screen navigation actions (e.g., "goto-main-menu", "goto-status")
+- Manages application lifecycle with "quit" action processing
+- Integrates with `GuiEcsManager` for screen switching operations
+
+**Supported Actions:**
+- **Navigation**: "goto-main-menu", "goto-status", "goto-choices", "goto-chronicle"
+- **Application Control**: "quit" (terminates application)
+- **Extensible**: New actions can be added by extending the switch statement
+
+**Architecture:**
+- Queries entities with `ActionQueueComponent` to find pending actions
+- Processes actions sequentially from the queue using `shift()` method  
+- Delegates screen switching to `GuiEcsManager.setActiveScreen()`
+- Handles unknown actions gracefully with warning messages
+
+**Test Coverage:**
+- Comprehensive test suite with 18+ test cases
+- Tests action processing, screen switching, queue management
+- Includes edge cases: rapid successive actions, large queues, malformed actions
+- Verifies FIFO order processing and proper cleanup
+
+#### MenuInputSystem (`src/gui/menu/MenuInputSystem.ts`)
+The MenuInputSystem handles user input processing for menu navigation and interaction:
+
+**Input Support:**
+- **Navigation**: Both WASD keys ('w'/'s') and arrow keys ('up'/'down') for menu item selection
+- **Selection**: 'enter' key to activate the selected menu item
+- **Wrap-around**: Automatic cycling between first and last menu items
+
+**Core Functionality:**
+- Queries entities with both `MenuComponent` and `InputComponent`
+- Processes navigation input by calling `selectPrevious()`/`selectNext()` on MenuComponent
+- Handles selection input by adding the selected item's action to ActionQueueComponent
+- Maintains menu state and selection index through MenuComponent
+
+**Integration:**
+- Works with `MenuComponent` for menu state management
+- Integrates with `ActionQueueComponent` for action dispatching
+- Filters entities using `IsVisibleComponent` to ensure only active menus respond
+- Coordinates with `ActionSystem` for downstream action processing
+
+**Test Coverage:**
+- Extensive test suite covering navigation, selection, and edge cases
+- Tests single-item menus, many-item navigation patterns
+- Verifies wrap-around behavior and state preservation
+- Includes rapid input processing and error handling scenarios
+
+### Architecture Benefits
+
+Both systems follow the Entity-Component-System pattern providing:
+
+1. **Modularity**: Each system has a single, well-defined responsibility
+2. **Testability**: Systems can be tested in isolation with mocked components
+3. **Extensibility**: New actions and input types can be added easily
+4. **Performance**: Efficient querying using component filters
+5. **Reliability**: Comprehensive test coverage ensures stable behavior
+
 ### Available Commands
 
 The GUI accepts both full commands and single-letter shortcuts:
@@ -317,13 +381,13 @@ This section lists exported classes found in the codebase grouped by area (file 
 
 #### Menu components & systems
 - `src/gui/menu/MenuItem.ts` — Menu item model (text + action id)
-- `src/gui/menu/MenuComponent.ts` — Holds an ordered list of `MenuItem`s and selection state
+- `src/gui/menu/MenuComponent.ts` — Holds an ordered list of `MenuItem`s and selection state with wrap-around navigation
 - `src/gui/menu/ActionComponent.ts` — Component storing an action identifier for menu items
 - `src/gui/menu/InputComponent.ts` — Stores last user input for menu screens
-- `src/gui/menu/ActionSystem.ts` — System that handles UI action IDs (navigation and quit)
-- `src/gui/menu/ActionQueueComponent.ts` — Singleton component holding a queue of pending UI action IDs
+- `src/gui/menu/ActionSystem.ts` — System that processes UI action IDs from queue with screen switching and application lifecycle management
+- `src/gui/menu/ActionQueueComponent.ts` — Singleton component holding a FIFO queue of pending UI action IDs
 - `src/gui/menu/MenuRenderSystem.ts` — Renders `MenuComponent` items into a `TextComponent`, showing the selected item
-- `src/gui/menu/MenuInputSystem.ts` — Processes user input for menus (navigation with 'w'/'s' and selection via 'enter', dispatches actions to ActionSystem)
+- `src/gui/menu/MenuInputSystem.ts` — Processes user input for menus with navigation support for both WASD ('w'/'s') and arrow keys ('up'/'down'), plus 'enter' selection that dispatches actions to ActionSystem
 
 #### Simulation & Time
 - `src/simulation/Simulation.ts` — Main simulation (run loop and global state)

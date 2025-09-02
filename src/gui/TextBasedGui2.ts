@@ -1,6 +1,5 @@
 import * as readline from 'readline';
 import { Simulation } from '../simulation/Simulation';
-import { GuiHelper } from './GuiHelper';
 import { GuiEcsManager } from './GuiEcsManager';
 import { TypeUtils } from '../util/TypeUtils';
 import { InputComponent } from './menu/InputComponent';
@@ -155,7 +154,6 @@ export class TextBasedGui2 {
 
         // post debug message
         const entityManager = this.guiEcsManager.getEcs().getEntityManager();        
-        GuiHelper.postDebugText(entityManager, 'K1', `[CP1:key=${key}]`);
 
         // Get the input component for processing commands
         const inputComponent = entityManager.getSingletonComponent(InputComponent);

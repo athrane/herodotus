@@ -4,7 +4,6 @@ import { InputComponent } from './InputComponent';
 import { MenuComponent } from './MenuComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { ActionQueueComponent } from './ActionQueueComponent';
-import { GuiHelper } from '../GuiHelper';
 
 /**
  * Processes user input for menu navigation and selection.
@@ -28,9 +27,6 @@ export class MenuInputSystem extends System {
         // Get the input component
         const inputComponent = this.getEntityManager().getSingletonComponent(InputComponent);
         if (!inputComponent) return;
-
-        // post debug message
-        GuiHelper.postDebugText(this.getEntityManager(), 'I1', `[CP1:Last input=${inputComponent.getLastInput()}]`);
 
         // Get the last input
         const lastInput = inputComponent.getLastInput();
@@ -57,11 +53,8 @@ export class MenuInputSystem extends System {
         // Exit if input was processed by menu navigation 
         const isMenuProcessed = this.processInputWithActiveMenuNavigation(lastInput, menuComponent);
 
-        GuiHelper.postDebugText(this.getEntityManager(), 'I2', `[CP2:isMenuProcessed=${isMenuProcessed}]`);
-
+        // If menu was processed, then consume input and exit
         if (isMenuProcessed) {
-
-            // consume input and exit 
             inputComponent.setLastInput(null);
             return;
         }
@@ -69,7 +62,7 @@ export class MenuInputSystem extends System {
         // Post action if input was not processed by menu navigation
         this.postAction(lastInput, menuComponent);
 
-        // consume input
+        // Consume input
         inputComponent.setLastInput(null);
     }
 
@@ -81,13 +74,22 @@ export class MenuInputSystem extends System {
     processInputWithActiveMenuNavigation(lastInput: string, menuComponent: MenuComponent): boolean {
         switch (lastInput) {
             case 'w':
+            case 'up':
                 menuComponent.selectPrevious();
                 return true;
             case 's':
+            case 'down':
                 menuComponent.selectNext();
                 return true;
             case 'enter': {
-                //menuComponent.activateSelected();
+                // Get the selected menu item and add its action to the queue
+                const selectedItem = menuComponent.getSelectedItem();
+                if (selectedItem) {
+                    const actionQueueComponent = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
+                    if (actionQueueComponent) {
+                        actionQueueComponent.addAction(selectedItem.getActionID());
+                    }
+                }
                 return true;
             }
             default: {
@@ -102,29 +104,17 @@ export class MenuInputSystem extends System {
      * @param menuComponent The menu component to check against.
      */
     postAction(lastInput: string, menuComponent: MenuComponent): void {
-        GuiHelper.postDebugText(this.getEntityManager(), 'I3', `[CP3:lastInput=${lastInput}]`);
 
         // Check if the input matches any menu item hotkey
         const menuItems = menuComponent.getItems();
         const matchingItem = menuItems.find(item => item.getHotkey() === lastInput);
 
         // Exit if no matching item is found
-        if (!matchingItem) {
-            GuiHelper.postDebugText(this.getEntityManager(), 'I3', `[CP4:No matching hotkey for input=${lastInput}]`);
-            return;
-        }
-
-        GuiHelper.postDebugText(this.getEntityManager(), 'I3', `[CP5:Hotkey=${lastInput}|Action=${matchingItem.getActionID()}]`);
+        if (!matchingItem) return;
 
         // Add action to the queue
         const actionQueueComponent = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
-        if (!actionQueueComponent) {
-            GuiHelper.postDebugText(this.getEntityManager(), 'I3', `[CP6:ActionQueueComponent not found]`);
-            return;
-        }
-
-        GuiHelper.postDebugText(this.getEntityManager(), 'I3', `[CP7:Adding action=${matchingItem.getActionID()}]`);
-
+        if (!actionQueueComponent) return;
         actionQueueComponent.addAction(matchingItem.getActionID());
     }
 

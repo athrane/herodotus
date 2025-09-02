@@ -14,7 +14,6 @@ describe('ActionSystem', () => {
     // Use a real EntityManager instance so runtime instance checks pass
     mockEntityManager = EntityManager.create();
     mockGuiManager = {
-      setActiveScreen: jest.fn(),
       stop: jest.fn(),
     } as unknown as jest.Mocked<GuiEcsManager>;
   // Make the plain mock object pass `instanceof GuiEcsManager` checks
@@ -35,29 +34,29 @@ describe('ActionSystem', () => {
   test('processes NAV_STATUS action from queue', () => {
     actionQueueComponent.addAction('NAV_STATUS');
     system.update();
-    expect(system.setActiveScreen).toHaveBeenCalledWith('StatusScreen');
+    expect(system.setActiveScreen).toHaveBeenCalledWith('status');
   });
 
   test('processes NAV_MAIN action from queue', () => {
     actionQueueComponent.addAction('NAV_MAIN');
     system.update();
-    expect(system.setActiveScreen).toHaveBeenCalledWith('MainInterfaceScreen');
+    expect(system.setActiveScreen).toHaveBeenCalledWith('main');
   });
 
   test('processes NAV_CHRONICLE action from queue', () => {
     actionQueueComponent.addAction('NAV_CHRONICLE');
     system.update();
-    expect(system.setActiveScreen).toHaveBeenCalledWith('ChronicleScreen');
+    expect(system.setActiveScreen).toHaveBeenCalledWith('chronicle');
   });
 
   test('processes NAV_CHOICES action from queue', () => {
     actionQueueComponent.addAction('NAV_CHOICES');
     system.update();
-    expect(system.setActiveScreen).toHaveBeenCalledWith('ChoicesScreen');
+    expect(system.setActiveScreen).toHaveBeenCalledWith('choices');
   });
 
-  test('processes QUIT action from queue', () => {
-    actionQueueComponent.addAction('QUIT');
+  test('processes NAV_QUIT action from queue', () => {
+    actionQueueComponent.addAction('NAV_QUIT');
     system.update();
     expect(mockGuiManager.stop).toHaveBeenCalled();
   });
@@ -73,8 +72,8 @@ describe('ActionSystem', () => {
     actionQueueComponent.addAction('NAV_STATUS');
     actionQueueComponent.addAction('NAV_MAIN');
     system.update();
-    expect(system.setActiveScreen).toHaveBeenCalledWith('StatusScreen');
-    expect(system.setActiveScreen).toHaveBeenCalledWith('MainInterfaceScreen');
+    expect(system.setActiveScreen).toHaveBeenCalledWith('status');
+    expect(system.setActiveScreen).toHaveBeenCalledWith('main');
     expect(system.setActiveScreen).toHaveBeenCalledTimes(2);
   });
 
@@ -87,8 +86,86 @@ describe('ActionSystem', () => {
 
   test('does nothing when queue is empty', () => {
     system.update();
-    expect(mockGuiManager.setActiveScreen).not.toHaveBeenCalled();
+    expect(system.setActiveScreen).not.toHaveBeenCalled();
     expect(mockGuiManager.stop).not.toHaveBeenCalled();
+  });
+
+  test('handles rapid successive actions', () => {
+    const actions = ['NAV_STATUS', 'NAV_MAIN', 'NAV_CHRONICLE', 'NAV_STATUS'];
+    const expectedScreens = ['status', 'main', 'chronicle', 'status'];
+    
+    actions.forEach(action => actionQueueComponent.addAction(action));
+    system.update();
+    
+    expectedScreens.forEach(screen => {
+      expect(system.setActiveScreen).toHaveBeenCalledWith(screen);
+    });
+    expect(system.setActiveScreen).toHaveBeenCalledTimes(4);
+  });
+
+  test('processes FIFO order correctly', () => {
+    actionQueueComponent.addAction('NAV_MAIN');
+    actionQueueComponent.addAction('NAV_STATUS');
+    actionQueueComponent.addAction('NAV_CHRONICLE');
+    
+    const calls: string[] = [];
+    jest.mocked(system.setActiveScreen).mockImplementation((screen: string) => {
+      calls.push(screen);
+    });
+    
+    system.update();
+    expect(calls).toEqual(['main', 'status', 'chronicle']);
+  });
+
+  test('handles mixed navigation and quit actions', () => {
+    actionQueueComponent.addAction('NAV_MAIN');
+    actionQueueComponent.addAction('NAV_QUIT');
+    actionQueueComponent.addAction('NAV_STATUS'); // This should still be processed
+    
+    system.update();
+    
+    expect(system.setActiveScreen).toHaveBeenCalledWith('main');
+    expect(mockGuiManager.stop).toHaveBeenCalled();
+    expect(system.setActiveScreen).toHaveBeenCalledWith('status');
+  });
+
+  test('action queue state consistency after processing', () => {
+    const initialLength = actionQueueComponent.getActions().length;
+    expect(initialLength).toBe(0);
+    
+    actionQueueComponent.addAction('NAV_STATUS');
+    actionQueueComponent.addAction('NAV_MAIN');
+    expect(actionQueueComponent.getActions()).toHaveLength(2);
+    
+    system.update();
+    expect(actionQueueComponent.getActions()).toHaveLength(0);
+  });
+
+  test('error handling with malformed actions', () => {
+    // Test with undefined/null actions (edge case)
+    actionQueueComponent.addAction('');
+    actionQueueComponent.addAction('NAV_STATUS');
+    
+    system.update();
+    
+    // Should still process the valid action
+    expect(system.setActiveScreen).toHaveBeenCalledWith('status');
+    expect(system.setActiveScreen).toHaveBeenCalledTimes(1);
+  });
+
+  test('performance with large action queues', () => {
+    // Add many actions to test performance
+    const actionCount = 100;
+    for (let i = 0; i < actionCount; i++) {
+      actionQueueComponent.addAction('NAV_STATUS');
+    }
+    
+    const startTime = Date.now();
+    system.update();
+    const endTime = Date.now();
+    
+    expect(system.setActiveScreen).toHaveBeenCalledTimes(actionCount);
+    expect(endTime - startTime).toBeLessThan(100); // Should process quickly
   });
 
   test('does nothing when no ActionQueueComponent exists', () => {
@@ -97,7 +174,7 @@ describe('ActionSystem', () => {
     const systemWithoutQueue = new ActionSystem(emptyEntityManager as any, mockGuiManager as any);
     
     systemWithoutQueue.update();
-    expect(mockGuiManager.setActiveScreen).not.toHaveBeenCalled();
+    expect(system.setActiveScreen).not.toHaveBeenCalled();
     expect(mockGuiManager.stop).not.toHaveBeenCalled();
   });
 });

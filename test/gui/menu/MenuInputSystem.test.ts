@@ -186,4 +186,194 @@ describe('MenuInputSystem', () => {
       system.update();
     }).not.toThrow();
   });
+
+  test('handles menu with single item', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [new MenuItem('Single Item', 'SINGLE_ACTION')];
+    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(new IsVisibleComponent(true));
+
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    const actionQueue = new ActionQueueComponent();
+    actionQueueEntity.addComponent(actionQueue);
+
+    const system = new MenuInputSystem(em);
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+    const menu = menuEntity.getComponent(MenuComponent)!;
+
+    // Test down/up navigation on single item (should do nothing)
+    inputComp.setLastInput('down');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(0);
+
+    inputComp.setLastInput('up');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(0);
+
+    // Test enter on single item
+    inputComp.setLastInput('enter');
+    system.update();
+    expect(actionQueue.getActions()).toContain('SINGLE_ACTION');
+  });
+
+  test('handles menu with many items navigation', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [
+      new MenuItem('Item 1', 'ACTION_1'),
+      new MenuItem('Item 2', 'ACTION_2'),
+      new MenuItem('Item 3', 'ACTION_3'),
+      new MenuItem('Item 4', 'ACTION_4'),
+      new MenuItem('Item 5', 'ACTION_5')
+    ];
+    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(new IsVisibleComponent(true));
+
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    const actionQueue = new ActionQueueComponent();
+    actionQueueEntity.addComponent(actionQueue);
+
+    const system = new MenuInputSystem(em);
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+    const menu = menuEntity.getComponent(MenuComponent)!;
+
+    // Navigate through all items down
+    expect(menu.getSelectedItemIndex()).toBe(0); // Start at first item
+    for (let i = 0; i < items.length; i++) {
+      inputComp.setLastInput('down');
+      system.update();
+      expect(menu.getSelectedItemIndex()).toBe((i + 1) % items.length);
+    }
+    // Should wrap to first item
+    expect(menu.getSelectedItemIndex()).toBe(0);
+
+    // Navigate up to last item
+    inputComp.setLastInput('up');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(items.length - 1);
+  });
+
+  test('handles rapid input changes', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [
+      new MenuItem('Item 1', 'ACTION_1'),
+      new MenuItem('Item 2', 'ACTION_2'),
+      new MenuItem('Item 3', 'ACTION_3')
+    ];
+    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(new IsVisibleComponent(true));
+
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    const actionQueue = new ActionQueueComponent();
+    actionQueueEntity.addComponent(actionQueue);
+
+    const system = new MenuInputSystem(em);
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+    const menu = menuEntity.getComponent(MenuComponent)!;
+
+    // Check initial state
+    expect(menu.getSelectedItemIndex()).toBe(0);
+
+    // Step-by-step navigation to debug the logic
+    inputComp.setLastInput('down');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(1); // After first down
+
+    inputComp.setLastInput('down');
+    system.update(); 
+    expect(menu.getSelectedItemIndex()).toBe(2); // After second down
+
+    inputComp.setLastInput('up');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(1); // After up - should be back to index 1
+
+    inputComp.setLastInput('enter');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(1); // Should still be at index 1 after enter
+    expect(actionQueue.getActions()).toContain('ACTION_2'); // Should queue ACTION_2
+  });
+
+  test('preserves menu state when no visible menus', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [
+      new MenuItem('Item 1', 'ACTION_1'),
+      new MenuItem('Item 2', 'ACTION_2')
+    ];
+    const menu = new MenuComponent(items);
+    menu.setSelectedItemIndex(1); // Set to second item
+    menuEntity.addComponent(menu);
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(new IsVisibleComponent(false)); // Not visible
+
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    const actionQueue = new ActionQueueComponent();
+    actionQueueEntity.addComponent(actionQueue);
+
+    const system = new MenuInputSystem(em);
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+
+    inputComp.setLastInput('down');
+    system.update();
+
+    // Menu state should remain unchanged
+    expect(menu.getSelectedItemIndex()).toBe(1);
+    expect(actionQueue.getActions()).toHaveLength(0);
+  });
+
+  test('handles empty input gracefully', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [new MenuItem('Item', 'ACTION')];
+    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(new IsVisibleComponent(true));
+
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    const actionQueue = new ActionQueueComponent();
+    actionQueueEntity.addComponent(actionQueue);
+
+    const system = new MenuInputSystem(em);
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+
+    // Set empty input
+    inputComp.setLastInput('');
+    const initialState = menuEntity.getComponent(MenuComponent)!.getSelectedItemIndex();
+    
+    system.update();
+
+    // Nothing should change
+    expect(menuEntity.getComponent(MenuComponent)!.getSelectedItemIndex()).toBe(initialState);
+    expect(actionQueue.getActions()).toHaveLength(0);
+  });
 });

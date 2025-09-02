@@ -4,9 +4,8 @@ import { GuiEcsManager } from '../GuiEcsManager';
 import { ActionQueueComponent } from './ActionQueueComponent';
 import { TypeUtils } from '../../util/TypeUtils';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
-import { NameComponent } from '../../ecs/NameComponent';
 import { ScreensComponent } from './ScreensComponent';
-import { GuiHelper } from '../GuiHelper';
+import { IsActiveScreenComponent } from '../rendering/IsActiveScreenComponent';
 
 /*
  * Action system for handling user actions and updating the GUI.
@@ -30,25 +29,16 @@ export class ActionSystem extends System {
    */
   public update(): void {
 
-    GuiHelper.postDebugText(this.getEntityManager(), 'A1', `[CP1: Hello]`);
-    //GuiHelper.postDebugText(this.getEntityManager(), 'A1', `[CP1:L=${actionQueue.getActions().length}`);
-
     // Get the singleton ActionQueueComponent
     const actionQueueComponent = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
     if (!actionQueueComponent) return;
-
-    GuiHelper.postDebugText(this.getEntityManager(), 'A1', `[CP2: Hello]`);
 
     // Get the current actions and check if queue is empty
     const actions = actionQueueComponent.getActions();
     if (actions.length === 0) return;
 
-    GuiHelper.postDebugText(this.getEntityManager(), 'A2', `[CP3:Actions= ${actions.join(',')}]`);
-
     // Clear the queue immediately to prevent reprocessing
     actionQueueComponent.clear();
-
-    GuiHelper.postDebugText(this.getEntityManager(), 'A1', `[CP4: Hello]`);
 
     // Process each action
     for (const actionId of actions) {
@@ -85,59 +75,35 @@ export class ActionSystem extends System {
 
   /**
    * Sets the active screen by name.
+   * Hides all other UI elements except header and footer.
    * Shows the UI elements associated with the target screen.
    * @param screenName The name of the screen to activate.
    */
   setActiveScreen(screenName: string): void {
-    GuiHelper.postDebugText(this.getEntityManager(), 'A1', `[CP5: Hello]`);
+    const entityManager = this.getEntityManager();
 
-    // Get all entities with IsVisibleComponent
-    const allVisibleEntities = this.getEntityManager().getEntitiesWithComponents(IsVisibleComponent);
+    // Deactivate the current screen
+    const activeScreenEntities = entityManager.getEntitiesWithComponents(IsActiveScreenComponent, IsVisibleComponent);
+    if (activeScreenEntities.length > 0) {
+        const currentScreenEntity = activeScreenEntities[0];
+        currentScreenEntity.getComponent(IsVisibleComponent)?.setVisibility(false);
+        currentScreenEntity.removeComponent(IsActiveScreenComponent);
+    }
 
-    GuiHelper.postDebugText(this.getEntityManager(), 'A1', `[CP6: Hello]`);
-
-    // Hide all visible UI elements
-    allVisibleEntities.forEach(entity => {
-      const visibleComponent = entity.getComponent(IsVisibleComponent);
-      if (!visibleComponent) return;
-      if (visibleComponent.isImmutable()) return;
-      visibleComponent.setVisibility(false);
-    });
-
-    GuiHelper.postDebugText(this.getEntityManager(), 'A1', `[CP7: Hello]`);
-
-    // Get screens component
-    const screensComponent = this.getEntityManager().getSingletonComponent(ScreensComponent);
+    // Activate the new screen
+    const screensComponent = entityManager.getSingletonComponent(ScreensComponent);
     if (!screensComponent) return;
 
-    // Get the ID of the target screen entity
-    const screenEntityId = screensComponent.getScreen(screenName);
-    if (!screenEntityId) return;
+    const newScreenEntityId = screensComponent.getScreen(screenName);
+    if (!newScreenEntityId) return;
 
-    // set the entity associated with the target screen as visible
-    const screenEntity = this.getEntityManager().getEntity(screenEntityId);
-    if (!screenEntity) return;
+    const newScreenEntity = entityManager.getEntity(newScreenEntityId);
+    if (!newScreenEntity) return;
 
-    // set entity visibility
-    const visibleComponent = screenEntity.getComponent(IsVisibleComponent);
-    if (!visibleComponent) return;
-
-    visibleComponent.setVisibility(true);
-  }
-
-  /**
-   * Sets the visibility of a UI entity by name.
-   * @param name The name of the entity to modify.
-   * @param isVisible The visibility state to set.
-   */
-  setEntityVisibility(name: string, isVisible: boolean): void {
-    const entity = this.getEntityManager().getEntitiesWithComponents(NameComponent).find(e => e.getComponent(NameComponent)?.getText() === name);
-    if (!entity) return;
-
-    const visibleComponent = entity.getComponent(IsVisibleComponent);
-    if (!visibleComponent) return;
-
-    visibleComponent.setVisibility(isVisible);
+    newScreenEntity.getComponent(IsVisibleComponent)?.setVisibility(true);
+    if (!newScreenEntity.hasComponent(IsActiveScreenComponent)) {
+        newScreenEntity.addComponent(new IsActiveScreenComponent());
+    }
   }
 
   /**
