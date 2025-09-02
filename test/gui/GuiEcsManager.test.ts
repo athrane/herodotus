@@ -6,6 +6,7 @@ import { EntityManager } from '../../src/ecs/EntityManager';
 import { SystemManager } from '../../src/ecs/SystemManager';
 import { NameComponent } from '../../src/ecs/NameComponent';
 import { ActionQueueComponent } from '../../src/gui/menu/ActionQueueComponent';
+import { ScreenBufferRenderSystem } from '../../src/gui/rendering/ScreenBufferRenderSystem';
 
 // Mock readline
 const mockReadlineInterface = {
@@ -138,7 +139,9 @@ describe('GuiEcsManager', () => {
 
   describe('component access', () => {
     test('should provide access to GUI systems', () => {
-      expect(guiEcsManager.getScreenRenderSystem()).toBeDefined();
+      const ecs = guiEcsManager.getEcs();
+      const system = ecs.getSystemManager().get('ScreenBufferRenderSystem') as ScreenBufferRenderSystem;
+      expect(system).toBeDefined();
     });
   });
 

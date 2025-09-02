@@ -77,6 +77,7 @@ export class GuiHelper {
     }
 
     /**
+     * @deprecated Delete Choices screen then this method
      * Creates a promise-based wrapper for readline question.
      * This allows for cleaner async/await usage in the GUI.
      * @returns A promise that resolves with the user's input.
@@ -118,7 +119,5 @@ export class GuiHelper {
 
         textComponent.setText(`DEBUG/${entityName}:${message}`);
     }
-
-
 
 }

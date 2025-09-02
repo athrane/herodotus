@@ -257,14 +257,6 @@ export class GuiEcsManager {
     }
 
     /**
-     * Convenience method used by TESTS to get the screen buffer render system.
-     * @returns The screen buffer render system if it exists, undefined otherwise.
-     */
-    getScreenRenderSystem(): ScreenBufferRenderSystem | undefined {
-        return this.ecs.getSystemManager().get('ScreenBufferRenderSystem') as ScreenBufferRenderSystem | undefined;
-    }
-
-    /**
      * Gets the action system.
      */
     getActionSystem(): ActionSystem | undefined {
