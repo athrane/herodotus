@@ -275,6 +275,20 @@ The MenuInputSystem handles user input processing for menu navigation and intera
 - Verifies wrap-around behavior and state preservation
 - Includes rapid input processing and error handling scenarios
 
+### Scrollable Choice Menu
+
+This project now includes a scrollable choice menu used by the main interface to present player dilemmas. Key points:
+
+- Displays only 3 choices at a time and automatically scrolls to keep the selected item visible.
+- Navigation: A/D keys or Left/Right arrow keys to move between choices; Enter to select.
+- Choices are read from the player's `DilemmaComponent` (simulation ECS) and converted to menu items by `ChoiceMenuSystem`.
+- Each visible choice is shown with a numbered shortcut (`[1]`, `[2]`, `[3]`) for quick selection; selection actions are emitted as `CHOICE_SELECT_<index>`.
+- Rendering is handled by `ScrollableMenuTextUpdateSystem`, which shows headers, numbered lines, selection highlight, and scroll indicators.
+- Implementation files: `src/gui/menu/ScrollableMenuComponent.ts`, `src/gui/menu/ScrollableMenuTextUpdateSystem.ts`, `src/gui/menu/ChoiceMenuSystem.ts`.
+- Tests cover scrolling logic, formatting, and integration with `DilemmaComponent`.
+
+For developer notes and full design details see `SCROLLABLE_CHOICE_IMPLEMENTATION.md`.
+
 ### Architecture Benefits
 
 Both systems follow the Entity-Component-System pattern providing:

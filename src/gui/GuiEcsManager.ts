@@ -19,7 +19,9 @@ import { ActionSystem } from './menu/ActionSystem';
 import { ActionQueueComponent } from './menu/ActionQueueComponent';
 import { MenuInputSystem } from './menu/MenuInputSystem';
 import { MenuTextUpdateSystem } from './menu/MenuTextUpdateSystem';
-import { DilemmaComponent } from '../behaviour/DilemmaComponent';
+import { ScrollableMenuTextUpdateSystem } from './menu/ScrollableMenuTextUpdateSystem';
+import { ChoiceMenuSystem } from './menu/ChoiceMenuSystem';
+import { ScrollableMenuComponent } from './menu/ScrollableMenuComponent';
 import { GuiHelper } from './GuiHelper';
 import { ScreensComponent } from './menu/ScreensComponent';
 
@@ -61,6 +63,8 @@ export class GuiEcsManager {
         this.ecs.registerSystem(FooterUpdateSystem.create(entityManager));
         this.ecs.registerSystem(DynamicTextUpdateSystem.create(entityManager, simulationEcs));
         this.ecs.registerSystem(MenuTextUpdateSystem.create(entityManager));
+        this.ecs.registerSystem(ScrollableMenuTextUpdateSystem.create(entityManager));
+        this.ecs.registerSystem(ChoiceMenuSystem.create(entityManager, simulationEcs.getEntityManager()));
 
         // 4. Buffer update
         this.ecs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
@@ -118,30 +122,11 @@ export class GuiEcsManager {
         mainMenuEntity.addComponent(new PositionComponent(0, 23));
         mainMenuEntity.addComponent(new IsVisibleComponent(true));
 
-        // Create choices screen entity (dynamic text that shows current dilemma info)
+        // Create choices screen entity (scrollable menu for dilemma choices)
         const choicesScreenEntity = entityManager.createEntity();
         choicesScreenEntity.addComponent(new NameComponent('ChoicesScreen'));
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        choicesScreenEntity.addComponent(new DynamicTextComponent((_guiEntityManager, _simulationEntityManager) => {
-
-            // Get dilemma info from simulation
-            const playerEntity = GuiHelper.getPlayerEntity(this.simulation);
-            if (!playerEntity) return 'No player found';
-
-            // Get the DilemmaComponent from the player entity
-            const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
-            if (!dilemmaComponent) return 'No dilemma found';
-
-            if (dilemmaComponent.getChoiceCount() === 0) {
-                return 'No pending dilemmas';
-            }
-
-            const header = "*** DECISION REQUIRED ***";
-            const choices = dilemmaComponent.getChoices().map(choice => `- ${choice.getEventName()}`).join('\n');
-
-            // This would need to be implemented based on your dilemma system
-            return `${header}\n${choices}`;
-        }));
+        // Initialize with empty menu items - ChoiceMenuSystem will populate them
+        choicesScreenEntity.addComponent(ScrollableMenuComponent.create([], 3));
         choicesScreenEntity.addComponent(new TextComponent(''));
         choicesScreenEntity.addComponent(new PositionComponent(0, 3));
         choicesScreenEntity.addComponent(new IsVisibleComponent(false));
@@ -208,8 +193,13 @@ export class GuiEcsManager {
         }));
 
         // Create passive Debug Entity for the action system
-        let line = 10;
+        let line = 15;
         GuiHelper.createDebugEntity(entityManager, 'D1', 0, line++);
+        GuiHelper.createDebugEntity(entityManager, 'D2', 0, line++);
+        GuiHelper.createDebugEntity(entityManager, 'D3', 0, line++);
+        GuiHelper.createDebugEntity(entityManager, 'D4', 0, line++);
+        GuiHelper.createDebugEntity(entityManager, 'D5', 0, line++);
+        GuiHelper.createDebugEntity(entityManager, 'D6', 0, line++);
     }
 
     /**
