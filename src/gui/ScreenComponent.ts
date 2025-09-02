@@ -3,6 +3,7 @@ import { Simulation } from '../simulation/Simulation';
 import * as readline from 'readline';
 
 /**
+ * @deprecated Delete this class, it is not used.
  * Component that contains the render logic for a screen.
  * Each screen entity should have this component.
  */

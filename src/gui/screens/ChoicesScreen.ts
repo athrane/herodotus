@@ -3,7 +3,8 @@ import { GuiHelper } from '../GuiHelper';
 import { DilemmaComponent } from '../../behaviour/DilemmaComponent';
 import * as readline from 'readline';
 
-/**
+/** 
+ * @deprecated Delete when logic is implemented elsewhere.
  * Choices screen renderer function.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -4,6 +4,7 @@ import { ChronicleComponent } from '../../chronicle/ChronicleComponent';
 import * as readline from 'readline';
 
 /**
+ * @deprecated Delete when logic is implemented elsewhere
  * Chronicle screen renderer function.
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

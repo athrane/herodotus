@@ -209,12 +209,7 @@ export class GuiEcsManager {
 
         // Create passive Debug Entity for the action system
         let line = 10;
-        GuiHelper.createDebugEntity(entityManager, 'K1', 0, line++);
-        GuiHelper.createDebugEntity(entityManager, 'I1', 0, line++);
-        GuiHelper.createDebugEntity(entityManager, 'I2', 0, line++);
-        GuiHelper.createDebugEntity(entityManager, 'I3', 0, line++);
-        GuiHelper.createDebugEntity(entityManager, 'A1', 0, line++);
-        GuiHelper.createDebugEntity(entityManager, 'A2', 0, line++);
+        GuiHelper.createDebugEntity(entityManager, 'D1', 0, line++);
     }
 
     /**
