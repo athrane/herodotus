@@ -29,17 +29,17 @@ describe('MenuInputSystem', () => {
     const system = new MenuInputSystem(em);
 
     const inputComp = em.getSingletonComponent(InputComponent)!;
-    inputComp.setLastInput('s');
+  inputComp.setLastInput('d');
     system.update();
     const menu = menuEntity.getComponent(MenuComponent)!;
     expect(menu.getSelectedItemIndex()).toBe(1);
 
-    inputComp.setLastInput('s');
+  inputComp.setLastInput('d');
     system.update();
     // wraps to 0
     expect(menu.getSelectedItemIndex()).toBe(0);
 
-    inputComp.setLastInput('w');
+  inputComp.setLastInput('a');
     system.update();
     // wraps to last index
     expect(menu.getSelectedItemIndex()).toBe(1);
@@ -66,7 +66,7 @@ describe('MenuInputSystem', () => {
     const system = new MenuInputSystem(em);
 
     const inputComp = em.getSingletonComponent(InputComponent)!;
-    inputComp.setLastInput('enter');
+  inputComp.setLastInput('enter');
     system.update();
 
     expect(actionQueue.getActions()).toContain('ACTION_ONE');
@@ -93,7 +93,7 @@ describe('MenuInputSystem', () => {
     const system = new MenuInputSystem(em);
 
     const inputComp = em.getSingletonComponent(InputComponent)!;
-    inputComp.setLastInput('enter');
+  inputComp.setLastInput('enter');
     const initialSelectedIndex = menuEntity.getComponent(MenuComponent)!.getSelectedItemIndex();
     
     system.update();
@@ -154,7 +154,7 @@ describe('MenuInputSystem', () => {
     const system = new MenuInputSystem(em);
 
     const inputComp = em.getSingletonComponent(InputComponent)!;
-    inputComp.setLastInput('unknown');
+  inputComp.setLastInput('unknown');
     const initialSelectedIndex = menuEntity.getComponent(MenuComponent)!.getSelectedItemIndex();
     
     system.update();
@@ -180,7 +180,7 @@ describe('MenuInputSystem', () => {
     const system = new MenuInputSystem(em);
 
     const inputComp = em.getSingletonComponent(InputComponent)!;
-    inputComp.setLastInput('enter');
+  inputComp.setLastInput('enter');
     
     expect(() => {
       system.update();
@@ -209,11 +209,11 @@ describe('MenuInputSystem', () => {
     const menu = menuEntity.getComponent(MenuComponent)!;
 
     // Test down/up navigation on single item (should do nothing)
-    inputComp.setLastInput('down');
+  inputComp.setLastInput('d');
     system.update();
     expect(menu.getSelectedItemIndex()).toBe(0);
 
-    inputComp.setLastInput('up');
+  inputComp.setLastInput('a');
     system.update();
     expect(menu.getSelectedItemIndex()).toBe(0);
 
@@ -253,15 +253,15 @@ describe('MenuInputSystem', () => {
     // Navigate through all items down
     expect(menu.getSelectedItemIndex()).toBe(0); // Start at first item
     for (let i = 0; i < items.length; i++) {
-      inputComp.setLastInput('down');
+      inputComp.setLastInput('d');
       system.update();
       expect(menu.getSelectedItemIndex()).toBe((i + 1) % items.length);
     }
     // Should wrap to first item
     expect(menu.getSelectedItemIndex()).toBe(0);
 
-    // Navigate up to last item
-    inputComp.setLastInput('up');
+    // Navigate left/up to last item
+    inputComp.setLastInput('a');
     system.update();
     expect(menu.getSelectedItemIndex()).toBe(items.length - 1);
   });
@@ -295,15 +295,15 @@ describe('MenuInputSystem', () => {
     expect(menu.getSelectedItemIndex()).toBe(0);
 
     // Step-by-step navigation to debug the logic
-    inputComp.setLastInput('down');
+  inputComp.setLastInput('d');
     system.update();
     expect(menu.getSelectedItemIndex()).toBe(1); // After first down
 
-    inputComp.setLastInput('down');
+  inputComp.setLastInput('d');
     system.update(); 
     expect(menu.getSelectedItemIndex()).toBe(2); // After second down
 
-    inputComp.setLastInput('up');
+  inputComp.setLastInput('a');
     system.update();
     expect(menu.getSelectedItemIndex()).toBe(1); // After up - should be back to index 1
 
@@ -338,7 +338,7 @@ describe('MenuInputSystem', () => {
     const system = new MenuInputSystem(em);
     const inputComp = em.getSingletonComponent(InputComponent)!;
 
-    inputComp.setLastInput('down');
+  inputComp.setLastInput('d');
     system.update();
 
     // Menu state should remain unchanged

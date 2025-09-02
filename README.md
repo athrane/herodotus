@@ -253,7 +253,7 @@ The ActionSystem is responsible for processing UI action IDs and managing applic
 The MenuInputSystem handles user input processing for menu navigation and interaction:
 
 **Input Support:**
-- **Navigation**: Both WASD keys ('w'/'s') and arrow keys ('up'/'down') for menu item selection
+- **Navigation**: A/D keys ('a'/'d') and arrow keys ('left'/'right') for menu item selection (was previously W/S)
 - **Selection**: 'enter' key to activate the selected menu item
 - **Wrap-around**: Automatic cycling between first and last menu items
 
@@ -294,6 +294,8 @@ The GUI accepts both full commands and single-letter shortcuts:
 - **[C]hoices** / `c` - View and make decisions for current dilemmas
 - **Ch[r]onicle** / `r` - Display recent historical events (last 10)
 - **[Q]uit** / `q` - Exit the simulation
+
+Navigation note: The main menu now uses the A and D keys for scrolling between menu items (or left/right arrow keys); previous W/S navigation has been replaced.
 
 ### How It Works
 

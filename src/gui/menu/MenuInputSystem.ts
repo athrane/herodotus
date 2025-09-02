@@ -73,12 +73,12 @@ export class MenuInputSystem extends System {
      */
     processInputWithActiveMenuNavigation(lastInput: string, menuComponent: MenuComponent): boolean {
         switch (lastInput) {
-            case 'w':
-            case 'up':
+            case 'a':
+            case 'left':
                 menuComponent.selectPrevious();
                 return true;
-            case 's':
-            case 'down':
+            case 'd':
+            case 'right':
                 menuComponent.selectNext();
                 return true;
             case 'enter': {

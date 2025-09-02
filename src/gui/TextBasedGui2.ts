@@ -165,7 +165,30 @@ export class TextBasedGui2 {
             return;
         }
 
-        if (key === '\u001b') { // Escape key
+        // Arrow keys and other ANSI escape sequences start with ESC ('\u001b').
+        // Typical sequences: '\u001b[A' (up), '\u001b[B' (down), '\u001b[C' (right), '\u001b[D' (left)
+        if (key.startsWith('\u001b[') && key.length >= 3) {
+            const code = key[2];
+            switch (code) {
+                case 'A': // up
+                    inputComponent.setLastInput('up');
+                    return;
+                case 'B': // down
+                    inputComponent.setLastInput('down');
+                    return;
+                case 'C': // right
+                    inputComponent.setLastInput('right');
+                    return;
+                case 'D': // left
+                    inputComponent.setLastInput('left');
+                    return;
+                default:
+                    // Unknown escape sequence - ignore and continue
+                    break;
+            }
+        }
+
+        if (key === '\u001b') { // plain Escape key
             this.stop();
             return;
         }
@@ -174,11 +197,11 @@ export class TextBasedGui2 {
         const normalizedCommand = key.toLowerCase().trim();
 
         switch (normalizedCommand) {
-            case 'w':
-                inputComponent.setLastInput('w');
+            case 'a':
+                inputComponent.setLastInput('a');
                 break;
-            case 's':
-                inputComponent.setLastInput('s');
+            case 'd':
+                inputComponent.setLastInput('d');
                 break;
             case '\r': // Enter key
             case '\n': // Line feed
