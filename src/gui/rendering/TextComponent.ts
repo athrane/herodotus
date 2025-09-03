@@ -4,23 +4,43 @@ import { Component } from '../../ecs/Component';
  * Component that stores text content for GUI elements.
  */
 export class TextComponent extends Component {
-    public text: string;
+    public lines: string[];
 
     /**
      * Constructor for the TextComponent.
-     * @param text The text content.
+     * If the text is empty, it initializes with a empty string.
+     * @param text The text content. If the string contains newlines, they are split into separate lines.
      */
     constructor(text: string = '') {
         super();
-        this.text = text;
+        this.lines = text.split('\n');
+        if (this.lines.length === 0) {
+            this.lines.push('');
+        }
     }
 
     /**
-     * Gets the text content of the component.
+     * Gets the number of lines in the text content.
+     * @returns The number of lines.
+     */
+    getLineCount(): number {
+        return this.lines.length;
+    }
+
+    /**
+     * Gets the text content of the component as an array of strings.
      * @returns The text content.
      */
-    getText(): string {
-        return this.text;
+    getText(): string[] {
+        return this.lines;
+    }
+
+    /**
+     * Sets the text content of the component from an array of strings.
+     * @param lines The new text content.
+     */
+    setTexts(lines: string[]): void {
+        this.lines = lines;
     }
 
     /**
@@ -28,6 +48,6 @@ export class TextComponent extends Component {
      * @param text The new text content.
      */
     setText(text: string): void {
-        this.text = text;
+        this.lines = text.split('\n');
     }
 }

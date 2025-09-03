@@ -4,7 +4,6 @@ import { EntityManager } from '../../ecs/EntityManager';
 import { ScrollableMenuComponent } from './ScrollableMenuComponent';
 import { TextComponent } from '../rendering/TextComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
-import { GuiHelper } from 'gui/GuiHelper';
 
 /**
  * Updates a ScrollableMenuComponent into a TextComponent for display.
@@ -47,7 +46,7 @@ export class ScrollableMenuTextUpdateSystem extends System {
 
         // Build the menu display
         const menuText = this.buildMenuText(menuComponent);
-        textComponent.setText(menuText);
+        textComponent.setTexts(menuText);
     }
 
     /**
@@ -55,13 +54,13 @@ export class ScrollableMenuTextUpdateSystem extends System {
      * @param menu The scrollable menu component.
      * @returns The formatted menu text.
      */
-    private buildMenuText(menu: ScrollableMenuComponent): string {
+    private buildMenuText(menu: ScrollableMenuComponent): string[] {
         const visibleItems = menu.getVisibleItems();
         const visibleIndices = menu.getVisibleIndices();
         const selectedIndex = menu.getSelectedItemIndex();
         
         if (visibleItems.length === 0) {
-            return 'No choices available';
+            return ['No choices available'];
         }
 
         const lines: string[] = [];
@@ -92,20 +91,7 @@ export class ScrollableMenuTextUpdateSystem extends System {
             lines.push(footer);
         }
 
-        const l = lines.length;
-        const t1 = (l > 0) ? lines[0] : 'No menu items';
-        const t2 = (l > 1) ? lines[1] : 'No menu items';
-        const t3 = (l > 2) ? lines[2] : 'No menu items';
-        const t4 = (l > 3) ? lines[3] : 'No menu items';
-        const t5 = (l > 4) ? lines[4] : 'No menu items';
-        GuiHelper.postDebugText(this.getEntityManager(),"D1", `l: ${l}`);
-        GuiHelper.postDebugText(this.getEntityManager(),"D2", `t1: ${t1}`);
-        GuiHelper.postDebugText(this.getEntityManager(),"D3", `t2: ${t2}`);
-        GuiHelper.postDebugText(this.getEntityManager(),"D4", `t3: ${t3}`);
-        GuiHelper.postDebugText(this.getEntityManager(),"D5", `t4: ${t4}`);
-        GuiHelper.postDebugText(this.getEntityManager(),"D6", `t5: ${t5}`);
-
-        return lines.join('\n');
+        return lines;
     }
 
     /**
