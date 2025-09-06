@@ -25,7 +25,6 @@ export class ActionSystem extends System {
    */
   constructor(entityManager: EntityManager) {
     TypeUtils.ensureInstanceOf(entityManager, EntityManager);
-    // Require entities that have an ActionQueueComponent so processEntity is called for them
     super(entityManager, [ActionQueueComponent]);
   }
 
