@@ -1,5 +1,5 @@
 import { EntityManager } from '../../../src/ecs/EntityManager';
-import { ChoiceMenuSystem } from '../../../src/gui/menu/ChoiceMenuSystem';
+import { ChoiceMenuUpdateSystem as ChoiceMenuSystem } from '../../../src/gui/menu/ChoiceMenuUpdateSystem';
 import { ScrollableMenuComponent } from '../../../src/gui/menu/ScrollableMenuComponent';
 import { MenuItem } from '../../../src/gui/menu/MenuItem';
 import { IsVisibleComponent } from '../../../src/gui/rendering/IsVisibleComponent';
@@ -8,7 +8,7 @@ import { DilemmaComponent } from '../../../src/behaviour/DilemmaComponent';
 import { DataSetEvent } from '../../../src/data/DataSetEvent';
 import { NameComponent } from '../../../src/ecs/NameComponent';
 
-describe('ChoiceMenuSystem', () => {
+describe('ChoiceMenuUpdateSystem', () => {
     let guiEntityManager: EntityManager;
     let simulationEntityManager: EntityManager;
     let system: ChoiceMenuSystem;
@@ -16,7 +16,7 @@ describe('ChoiceMenuSystem', () => {
     beforeEach(() => {
         guiEntityManager = EntityManager.create();
         simulationEntityManager = EntityManager.create();
-        system = ChoiceMenuSystem.create(guiEntityManager, simulationEntityManager);
+    system = ChoiceMenuSystem.create(guiEntityManager, simulationEntityManager);
     });
 
     function createTestDataSetEvent(name: string, description?: string): DataSetEvent {

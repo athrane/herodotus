@@ -6,6 +6,7 @@ import { InputComponent } from './InputComponent';
 import { MenuComponent } from './MenuComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { ActionQueueComponent } from './ActionQueueComponent';
+import { GuiHelper } from '../GuiHelper';
 
 /**
  * Processes user input for menu navigation and selection.
@@ -100,6 +101,8 @@ export class MenuInputSystem extends System {
         // Check if the input matches any menu item hotkey
         const menuItems = menuComponent.getItems();
         const matchingItem = menuItems.find(item => item.getHotkey() === lastInput);
+
+        GuiHelper.postDebugText(this.getEntityManager(), "D1", `MenuInputSystem: lastInput='${lastInput}', matchingItem=${matchingItem ? matchingItem.getHotkey() : 'none'}`);
 
         // Exit if no matching item is found
         if (!matchingItem) return;

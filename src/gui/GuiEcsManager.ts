@@ -20,7 +20,7 @@ import { ActionQueueComponent } from './menu/ActionQueueComponent';
 import { MenuInputSystem } from './menu/MenuInputSystem';
 import { MenuTextUpdateSystem } from './menu/MenuTextUpdateSystem';
 import { ScrollableMenuTextUpdateSystem } from './menu/ScrollableMenuTextUpdateSystem';
-import { ChoiceMenuSystem } from './menu/ChoiceMenuSystem';
+import { ChoiceMenuUpdateSystem } from './menu/ChoiceMenuUpdateSystem';
 import { ScrollableMenuComponent } from './menu/ScrollableMenuComponent';
 import { GuiHelper } from './GuiHelper';
 import { ScreensComponent } from './menu/ScreensComponent';
@@ -64,7 +64,7 @@ export class GuiEcsManager {
         this.ecs.registerSystem(DynamicTextUpdateSystem.create(entityManager, simulationEcs));
         this.ecs.registerSystem(MenuTextUpdateSystem.create(entityManager));
         this.ecs.registerSystem(ScrollableMenuTextUpdateSystem.create(entityManager));
-        this.ecs.registerSystem(ChoiceMenuSystem.create(entityManager, simulationEcs.getEntityManager()));
+    this.ecs.registerSystem(ChoiceMenuUpdateSystem.create(entityManager, simulationEcs.getEntityManager()));
 
         // 4. Buffer update
         this.ecs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
@@ -190,17 +190,13 @@ export class GuiEcsManager {
                 return `${isVisibleString}${name}`;
             }).join('|');
 
-            return `[D/V:${visibleNames}]`;
+            return `[V:${visibleNames}]`;
         }));
 
         // Create passive Debug Entity for the action system
         let line = 15;
         GuiHelper.createDebugEntity(entityManager, 'D1', 0, line++);
         GuiHelper.createDebugEntity(entityManager, 'D2', 0, line++);
-        GuiHelper.createDebugEntity(entityManager, 'D3', 0, line++);
-        GuiHelper.createDebugEntity(entityManager, 'D4', 0, line++);
-        GuiHelper.createDebugEntity(entityManager, 'D5', 0, line++);
-        GuiHelper.createDebugEntity(entityManager, 'D6', 0, line++);
     }
 
     /**

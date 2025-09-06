@@ -12,7 +12,7 @@ import { DataSetEvent } from '../../data/DataSetEvent';
  * System that populates choice menu items from the player's DilemmaComponent.
  * Updates ScrollableMenuComponent with current available choices from the simulation.
  */
-export class ChoiceMenuSystem extends System {
+export class ChoiceMenuUpdateSystem extends System {
     private readonly simulationEntityManager: EntityManager;
 
     /**
@@ -21,7 +21,7 @@ export class ChoiceMenuSystem extends System {
     private readonly MAX_DESC_LENGTH = 60;
     
     /**
-     * Creates a new ChoiceMenuSystem.
+    * Creates a new ChoiceMenuUpdateSystem.
      * @param guiEntityManager The GUI entity manager.
      * @param simulationEntityManager The simulation entity manager to read choices from.
      */
@@ -168,12 +168,12 @@ export class ChoiceMenuSystem extends System {
     }
 
     /**
-     * Creates a new ChoiceMenuSystem.
+     * Creates a new ChoiceMenuUpdateSystem.
      * @param guiEntityManager The GUI entity manager.
      * @param simulationEntityManager The simulation entity manager.
-     * @returns A new ChoiceMenuSystem instance.
+     * @returns A new ChoiceMenuUpdateSystem instance.
      */
-    static create(guiEntityManager: EntityManager, simulationEntityManager: EntityManager): ChoiceMenuSystem {
-        return new ChoiceMenuSystem(guiEntityManager, simulationEntityManager);
+    static create(guiEntityManager: EntityManager, simulationEntityManager: EntityManager): ChoiceMenuUpdateSystem {
+        return new ChoiceMenuUpdateSystem(guiEntityManager, simulationEntityManager);
     }
 }

@@ -30,8 +30,7 @@ export class ActionSystem extends System {
 
   /**
    * Updates the system by processing queued actions.
-   */
-   
+   */   
   processEntity(entity: Entity): void {
     const actionQueueComponent = entity.getComponent(ActionQueueComponent);
     if (!actionQueueComponent) return;
