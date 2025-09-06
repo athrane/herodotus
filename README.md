@@ -229,19 +229,19 @@ The ActionSystem is responsible for processing UI action IDs and managing applic
 **Core Functionality:**
 - Processes actions from the `ActionQueueComponent` in FIFO order
 - Handles screen navigation actions (e.g., "goto-main-menu", "goto-status")
-- Manages application lifecycle with "quit" action processing
-- Integrates with `GuiEcsManager` for screen switching operations
+- Delegates screen switching operations
 
 **Supported Actions:**
 - **Navigation**: "goto-main-menu", "goto-status", "goto-choices", "goto-chronicle"
-- **Application Control**: "quit" (terminates application)
 - **Extensible**: New actions can be added by extending the switch statement
 
 **Architecture:**
 - Queries entities with `ActionQueueComponent` to find pending actions
 - Processes actions sequentially from the queue using `shift()` method  
-- Delegates screen switching to `GuiEcsManager.setActiveScreen()`
-- Handles unknown actions gracefully with warning messages
+- Delegates screen switching via internal `setActiveScreen()` method
+- Handles unknown actions gracefully (no-op)
+
+**Note:** Application termination (quit) is handled directly by `TextBasedGui2` key input processing, not through the action system.
 
 **Test Coverage:**
 - Comprehensive test suite with 18+ test cases

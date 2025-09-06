@@ -1,8 +1,6 @@
 import { System } from '../../ecs/System';
 import { EntityManager } from '../../ecs/EntityManager';
-import { GuiEcsManager } from '../GuiEcsManager';
 import { ActionQueueComponent } from './ActionQueueComponent';
-import { TypeUtils } from '../../util/TypeUtils';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { ScreensComponent } from './ScreensComponent';
 import { IsActiveScreenComponent } from '../rendering/IsActiveScreenComponent';
@@ -11,17 +9,13 @@ import { IsActiveScreenComponent } from '../rendering/IsActiveScreenComponent';
  * Action system for handling user actions and updating the GUI.
  */
 export class ActionSystem extends System {
-  private guiManager: GuiEcsManager;
 
   /**
    * Constructs the ActionSystem.
    * @param entityManager The entity manager for managing entities.
-   * @param guiManager The GUI manager for updating the user interface.
    */
-  constructor(entityManager: EntityManager, guiManager: GuiEcsManager) {
+  constructor(entityManager: EntityManager) {
     super(entityManager, []);
-    TypeUtils.ensureInstanceOf(guiManager, GuiEcsManager, "Expected guiManager to be an instance of GuiEcsManager");
-    this.guiManager = guiManager;
   }
 
   /**
@@ -63,9 +57,6 @@ export class ActionSystem extends System {
         break;
       case 'NAV_CHRONICLE':
         this.setActiveScreen('chronicle');
-        break;
-      case 'NAV_QUIT':
-        this.guiManager.stop();
         break;
       default:
         // unknown action - no-op
@@ -109,10 +100,9 @@ export class ActionSystem extends System {
   /**
    * Creates a new ActionSystem.
    * @param entityManager The entity manager for managing entities.
-   * @param guiManager The GUI manager for updating the user interface.
    * @returns A new instance of ActionSystem.
    */
-  static create(entityManager: EntityManager, guiManager: GuiEcsManager): ActionSystem {
-    return new ActionSystem(entityManager, guiManager);
+  static create(entityManager: EntityManager): ActionSystem {
+    return new ActionSystem(entityManager);
   }
 }

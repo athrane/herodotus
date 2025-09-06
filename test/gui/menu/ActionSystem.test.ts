@@ -1,23 +1,16 @@
 import { ActionSystem } from '../../../src/gui/menu/ActionSystem';
 import { EntityManager } from '../../../src/ecs/EntityManager';
-import { GuiEcsManager } from '../../../src/gui/GuiEcsManager';
 import { ActionQueueComponent } from '../../../src/gui/menu/ActionQueueComponent';
 import { NameComponent } from '../../../src/ecs/NameComponent';
 
 describe('ActionSystem', () => {
   let mockEntityManager: EntityManager;
-  let mockGuiManager: jest.Mocked<GuiEcsManager>;
   let system: ActionSystem;
   let actionQueueComponent: ActionQueueComponent;
 
   beforeEach(() => {
     // Use a real EntityManager instance so runtime instance checks pass
     mockEntityManager = EntityManager.create();
-    mockGuiManager = {
-      stop: jest.fn(),
-    } as unknown as jest.Mocked<GuiEcsManager>;
-  // Make the plain mock object pass `instanceof GuiEcsManager` checks
-  Object.setPrototypeOf(mockGuiManager, GuiEcsManager.prototype);
 
     // Create action queue entity
     const actionQueueEntity = mockEntityManager.createEntity();
@@ -25,7 +18,7 @@ describe('ActionSystem', () => {
     actionQueueComponent = new ActionQueueComponent();
     actionQueueEntity.addComponent(actionQueueComponent);
 
-    system = new ActionSystem(mockEntityManager as any, mockGuiManager as any);
+    system = new ActionSystem(mockEntityManager as any);
     
     // Spy on the system's setActiveScreen method to avoid needing full ECS setup
     jest.spyOn(system, 'setActiveScreen').mockImplementation(() => {});
@@ -55,17 +48,17 @@ describe('ActionSystem', () => {
     expect(system.setActiveScreen).toHaveBeenCalledWith('choices');
   });
 
-  test('processes NAV_QUIT action from queue', () => {
+  test('NAV_QUIT action is ignored (handled by TextBasedGui2)', () => {
     actionQueueComponent.addAction('NAV_QUIT');
     system.update();
-    expect(mockGuiManager.stop).toHaveBeenCalled();
+    // NAV_QUIT should be a no-op in ActionSystem since stopping is handled by TextBasedGui2
+    expect(system.setActiveScreen).not.toHaveBeenCalled();
   });
 
-  test('unknown action does not call gui manager', () => {
+  test('unknown action does not call setActiveScreen', () => {
     actionQueueComponent.addAction('SOME_UNKNOWN_ACTION');
     system.update();
     expect(system.setActiveScreen).not.toHaveBeenCalled();
-    expect(mockGuiManager.stop).not.toHaveBeenCalled();
   });
 
   test('processes multiple actions in queue', () => {
@@ -87,7 +80,6 @@ describe('ActionSystem', () => {
   test('does nothing when queue is empty', () => {
     system.update();
     expect(system.setActiveScreen).not.toHaveBeenCalled();
-    expect(mockGuiManager.stop).not.toHaveBeenCalled();
   });
 
   test('handles rapid successive actions', () => {
@@ -120,13 +112,14 @@ describe('ActionSystem', () => {
   test('handles mixed navigation and quit actions', () => {
     actionQueueComponent.addAction('NAV_MAIN');
     actionQueueComponent.addAction('NAV_QUIT');
-    actionQueueComponent.addAction('NAV_STATUS'); // This should still be processed
+    actionQueueComponent.addAction('NAV_STATUS');
     
     system.update();
     
     expect(system.setActiveScreen).toHaveBeenCalledWith('main');
-    expect(mockGuiManager.stop).toHaveBeenCalled();
+    // NAV_QUIT should be ignored by ActionSystem
     expect(system.setActiveScreen).toHaveBeenCalledWith('status');
+    expect(system.setActiveScreen).toHaveBeenCalledTimes(2);
   });
 
   test('action queue state consistency after processing', () => {
@@ -171,10 +164,9 @@ describe('ActionSystem', () => {
   test('does nothing when no ActionQueueComponent exists', () => {
     // Create a new entity manager without action queue
     const emptyEntityManager = EntityManager.create();
-    const systemWithoutQueue = new ActionSystem(emptyEntityManager as any, mockGuiManager as any);
+    const systemWithoutQueue = new ActionSystem(emptyEntityManager as any);
     
     systemWithoutQueue.update();
     expect(system.setActiveScreen).not.toHaveBeenCalled();
-    expect(mockGuiManager.stop).not.toHaveBeenCalled();
   });
 });

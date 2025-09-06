@@ -56,7 +56,7 @@ export class GuiEcsManager {
         this.ecs.registerSystem(MenuInputSystem.create(entityManager));
 
         // 2. Action handling
-        this.ecs.registerSystem(ActionSystem.create(entityManager, this));
+        this.ecs.registerSystem(ActionSystem.create(entityManager));
 
         // 3. Content updates
         this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, simulationEcs));
