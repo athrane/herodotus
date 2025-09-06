@@ -1,5 +1,7 @@
 import { System } from '../../ecs/System';
 import { EntityManager } from '../../ecs/EntityManager';
+import { Entity } from '../../ecs/Entity';
+import { TypeUtils } from '../../util/TypeUtils';
 import { ActionQueueComponent } from './ActionQueueComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { ScreensComponent } from './ScreensComponent';
@@ -22,19 +24,19 @@ export class ActionSystem extends System {
    * @param entityManager The entity manager for managing entities.
    */
   constructor(entityManager: EntityManager) {
-    super(entityManager, []);
+    TypeUtils.ensureInstanceOf(entityManager, EntityManager);
+    // Require entities that have an ActionQueueComponent so processEntity is called for them
+    super(entityManager, [ActionQueueComponent]);
   }
 
   /**
    * Updates the system by processing queued actions.
    */
-  public update(): void {
-
-    // Get the singleton ActionQueueComponent
-    const actionQueueComponent = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
+   
+  processEntity(entity: Entity): void {
+    const actionQueueComponent = entity.getComponent(ActionQueueComponent);
     if (!actionQueueComponent) return;
 
-    // Get the current actions and check if queue is empty
     const actions = actionQueueComponent.getActions();
     if (actions.length === 0) return;
 
