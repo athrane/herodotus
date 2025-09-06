@@ -7,6 +7,7 @@ import { SystemManager } from '../../src/ecs/SystemManager';
 import { NameComponent } from '../../src/ecs/NameComponent';
 import { ActionQueueComponent } from '../../src/gui/menu/ActionQueueComponent';
 import { ScreenBufferRenderSystem } from '../../src/gui/rendering/ScreenBufferRenderSystem';
+import { DynamicTextComponent } from '../../src/gui/rendering/DynamicTextComponent';
 
 // Mock readline
 const mockReadlineInterface = {
@@ -177,6 +178,22 @@ describe('GuiEcsManager', () => {
         guiEcsManager.setActiveScreen('main');
         guiEcsManager.setActiveScreen('chronicle');
       }).not.toThrow();
+    });
+
+    test('should generate chronicle screen content', () => {
+      guiEcsManager.initialize();
+      
+      // Get the chronicle screen entity ID
+      const chronicleScreenId = guiEcsManager.getScreenEntityId('chronicle');
+      expect(chronicleScreenId).toBeDefined();
+      
+      // Should have a chronicle screen entity with DynamicTextComponent
+      const guiEntityManager = guiEcsManager.getEcs().getEntityManager();
+      const chronicleEntity = guiEntityManager.getEntity(chronicleScreenId!);
+      expect(chronicleEntity).toBeDefined();
+      
+      const nameComponent = chronicleEntity!.getComponent(NameComponent);
+      expect(nameComponent?.getText()).toBe('ChronicleScreen');
     });
   });
 });

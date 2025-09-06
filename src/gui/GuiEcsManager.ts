@@ -24,6 +24,8 @@ import { ChoiceMenuUpdateSystem } from './menu/ChoiceMenuUpdateSystem';
 import { ScrollableMenuComponent } from './menu/ScrollableMenuComponent';
 import { GuiHelper } from './GuiHelper';
 import { ScreensComponent } from './menu/ScreensComponent';
+import { ChronicleComponent } from '../chronicle/ChronicleComponent';
+import { EntityManager } from '../ecs/EntityManager';
 
 /**
  * Manages a separate ECS instance specifically for GUI components and systems.
@@ -147,10 +149,8 @@ export class GuiEcsManager {
         // Create chronicle screen entity (dynamic text for chronicle screen)
         const chronicleScreenEntity = entityManager.createEntity();
     chronicleScreenEntity.addComponent(new NameComponent('ChronicleScreen'));
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         chronicleScreenEntity.addComponent(new DynamicTextComponent((guiEntityManager, simulationEntityManager) => {
-            // Simple chronicle text - can be enhanced later
-            return `Hello Chronicle`;
+            return this.generateChronicleScreenContent(simulationEntityManager);
         }));
     chronicleScreenEntity.addComponent(new TextComponent(''));
     chronicleScreenEntity.addComponent(new PositionComponent(0, 3));
@@ -265,6 +265,65 @@ export class GuiEcsManager {
     getScreenEntityId(screenName: string): string | undefined {
         const screensComponent = this.ecs.getEntityManager().getSingletonComponent(ScreensComponent);
         return screensComponent?.getScreen(screenName);
+    }
+
+    /**
+     * Generates the content for the chronicle screen.
+     * @param simulationEntityManager The simulation entity manager to retrieve chronicle data from
+     * @returns Formatted chronicle content as a string
+     */
+    private generateChronicleScreenContent(simulationEntityManager: EntityManager): string {
+        const chronicleEntities = simulationEntityManager.getEntitiesWithComponents(ChronicleComponent);
+        
+        const lines: string[] = [];
+        lines.push('='.repeat(80));
+        lines.push('CHRONICLE OF EVENTS');
+        lines.push('='.repeat(80));
+        
+        if (chronicleEntities.length === 0) {
+            lines.push('No chronicle entities found.');
+        } else {
+            // Collect all events from all chronicle entities
+            let allEvents: any[] = [];
+            chronicleEntities.forEach(entity => {
+                const chronicleComponent = entity.getComponent(ChronicleComponent);
+                if (chronicleComponent) {
+                    const events = chronicleComponent.getEvents();
+                    allEvents = allEvents.concat(Array.from(events));
+                }
+            });
+            
+            if (allEvents.length === 0) {
+                lines.push('No chronicle events recorded yet.');
+            } else {
+                lines.push(`Total Events: ${allEvents.length}`);
+                lines.push('');
+                
+                // Show the most recent 10 events
+                const recentEvents = allEvents.slice(-10);
+                
+                lines.push('Recent Events:');
+                lines.push('-'.repeat(40));
+                
+                recentEvents.forEach((event, index) => {
+                    lines.push(`${index + 1}. Year ${event.getTime().getYear()}: ${event.getHeading()}`);
+                    lines.push(`   Description: ${event.getDescription()}`);
+                    lines.push(`   Type: ${event.getEventType().getName()}`);
+                    lines.push(`   Category: ${event.getEventType().getCategory()}`);
+                    const figure = event.getFigure();
+                    if (figure) {
+                        lines.push(`   Figure: ${figure.getName()}`);
+                    }
+                    lines.push(`   Place: ${event.getPlace().getName()}`);
+                    lines.push('');
+                });
+            }
+        }
+        
+        lines.push('='.repeat(80));
+        lines.push('Press Enter to return to main menu...');
+        
+        return lines.join('\n');
     }
 
 }
