@@ -18,7 +18,7 @@ class S1 extends System {
 }
 
 describe('System component matching with inheritance', () => {
-  it('processes entities with exact component C1 but not entities with subclass C2', () => {
+  it('processes entities that have C1 or any subclass (C2) when requiring C1', () => {
     const em = EntityManager.create();
 
     const e1 = em.createEntity(new C1());
@@ -28,7 +28,7 @@ describe('System component matching with inheritance', () => {
     s1.update();
 
     expect(s1.processed).toContain(e1.getId());
-    expect(s1.processed).not.toContain(e2.getId());
-    expect(s1.processed.length).toBe(1);
+    expect(s1.processed).toContain(e2.getId());
+    expect(s1.processed.length).toBe(2);
   });
 });

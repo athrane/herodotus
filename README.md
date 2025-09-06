@@ -375,6 +375,12 @@ This section lists exported classes found in the codebase grouped by area (file 
 - `src/ecs/NameComponent.ts` — Component storing a human-readable name
 - `src/ecs/PlayerComponent.ts` — Marks an entity as the player
 
+##### Component matching and inheritance
+Entity component queries now use instanceof semantics with an exact-match preference:
+- `Entity.hasComponent(Base)` returns true if the entity has a `Base` component or any subclass instance.
+- `Entity.getComponent(Base)` first returns an exact `Base` instance when present; otherwise it returns the first component that is an instance of `Base` (e.g., a subclass).
+- Systems that declare `requiredComponents: [Base]` will process entities with `Base` or any subclass (e.g., `SubBase extends Base`). If you need stricter filtering, add a guard inside `processEntity()`.
+
 #### GUI / Rendering
 - `src/gui/TextBasedGui2.ts` — Text-based GUI main class (interactive mode entry)
 - `src/gui/GuiEcsManager.ts` — Manages GUI-specific ECS instance, screens and systems
@@ -555,7 +561,8 @@ npm run lint      # report issues
 npm run lint:fix  # attempt automatic fixes
 ```
 
-Notes:
+ Notes:
 - Rules are intentionally lenient to ease adoption (e.g., fewer errors in tests and JS unused-vars shown as warnings). Tightening can be done later in `eslint.config.mjs`.
 - For best DX, install the "ESLint" extension in VS Code to see problems inline and auto-fix on save.
+
 

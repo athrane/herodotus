@@ -5,6 +5,11 @@ import { Component } from './Component';
  * Represents an entity in the Entity-Component-System (ECS) architecture.
  * An entity is essentially a container for components, identified by a unique ID.
  * It acts as a lightweight wrapper that groups various components, which hold the actual data.
+ *
+ * Component matching behavior:
+ * - hasComponent(Foo) returns true if the entity has a Foo component OR any subclass of Foo (instanceof semantics).
+ * - getComponent(Foo) prefers an exact Foo instance when present; otherwise returns the first component that is an instance of Foo (e.g., a subclass).
+ * - Systems that require [Foo] will process entities with Foo or subclasses. Use guards inside processEntity if stricter filtering is needed.
  */
 export class Entity {
   private readonly id: string;
@@ -49,22 +54,40 @@ export class Entity {
 
   /**
    * Retrieves a component from the entity by its class.
-   * @param ComponentClass The class (constructor function) of the component to retrieve.
-   * @returns The component instance, or undefined if not found.
+  * Matching rules:
+  * - Exact class match is preferred when available.
+  * - If no exact match is found, the first component that is an instanceof the requested class is returned.
+  * @param ComponentClass The class (constructor function) of the component to retrieve.
+  * @returns The component instance (exact or subclass), or undefined if not found.
    */
   getComponent<T extends Component>(ComponentClass: new (...args: any[]) => T): T | undefined {
     TypeUtils.ensureFunction(ComponentClass, 'ComponentClass must be a class constructor.');
-  return this.components.get(ComponentClass.name) as T | undefined;
+    // Prefer exact match if present
+    const exact = this.components.get(ComponentClass.name) as T | undefined;
+    if (exact) return exact;
+
+    // Fallback: return the first component that is an instance of the requested class (supports inheritance)
+    for (const comp of this.components.values()) {
+      if (comp instanceof ComponentClass) {
+        return comp as T;
+      }
+    }
+    return undefined;
   }
 
   /**
    * Checks if the entity has a component of a given class.
-   * @param ComponentClass The class (constructor function) of the component to check for.
-   * @returns True if the component exists, false otherwise.
+  * Uses instanceof semantics: returns true for exact type or any subclass instance.
+  * @param ComponentClass The class (constructor function) of the component to check for.
+  * @returns True if a matching component exists, false otherwise.
    */
   hasComponent(ComponentClass: new (...args: any[]) => Component): boolean {
     TypeUtils.ensureFunction(ComponentClass, 'ComponentClass must be a class constructor.');
-  return this.components.has(ComponentClass.name);
+    if (this.components.has(ComponentClass.name)) return true;
+    for (const comp of this.components.values()) {
+      if (comp instanceof ComponentClass) return true;
+    }
+    return false;
   }
 
   /**
