@@ -25,7 +25,7 @@ describe('ScreenBufferTextUpdateSystem Integration Tests', () => {
         const textEntity = entityManager.createEntity();
         textEntity.addComponent(new PositionComponent(5, 2));
         textEntity.addComponent(new TextComponent('Hello World'));
-        textEntity.addComponent(new IsVisibleComponent(true));
+        textEntity.addComponent(IsVisibleComponent.create(true));
 
         // Process the system with all entities
         system.update();
@@ -40,7 +40,7 @@ describe('ScreenBufferTextUpdateSystem Integration Tests', () => {
         const textEntity = entityManager.createEntity();
         textEntity.addComponent(new PositionComponent(0, 0));
         textEntity.addComponent(new TextComponent('Line 1\nLine 2\nLine 3'));
-        textEntity.addComponent(new IsVisibleComponent(true));
+        textEntity.addComponent(IsVisibleComponent.create(true));
 
         // Process the system
         system.update();
@@ -57,17 +57,17 @@ describe('ScreenBufferTextUpdateSystem Integration Tests', () => {
         const entity1 = entityManager.createEntity();
         entity1.addComponent(new PositionComponent(0, 0));
         entity1.addComponent(new TextComponent('Top Left'));
-        entity1.addComponent(new IsVisibleComponent(true));
+        entity1.addComponent(IsVisibleComponent.create(true));
 
         const entity2 = entityManager.createEntity();
         entity2.addComponent(new PositionComponent(10, 5));
         entity2.addComponent(new TextComponent('Middle'));
-        entity2.addComponent(new IsVisibleComponent(true));
+        entity2.addComponent(IsVisibleComponent.create(true));
 
         const entity3 = entityManager.createEntity();
         entity3.addComponent(new PositionComponent(70, 23));
         entity3.addComponent(new TextComponent('Bottom'));
-        entity3.addComponent(new IsVisibleComponent(true));
+        entity3.addComponent(IsVisibleComponent.create(true));
 
         // Process the system
         system.update();
@@ -84,7 +84,7 @@ describe('ScreenBufferTextUpdateSystem Integration Tests', () => {
         const textEntity = entityManager.createEntity();
         textEntity.addComponent(new PositionComponent(0, 0));
         textEntity.addComponent(new TextComponent('Visible Text'));
-        const visibilityComponent = new IsVisibleComponent(true);
+        const visibilityComponent = IsVisibleComponent.create(true);
         textEntity.addComponent(visibilityComponent);
 
         // First update - should render
@@ -108,7 +108,7 @@ describe('ScreenBufferTextUpdateSystem Integration Tests', () => {
         const headerEntity = entityManager.createEntity();
         headerEntity.addComponent(new PositionComponent(0, 0));
         headerEntity.addComponent(new TextComponent('Year: 0003 | Simulation: Running | Herodotus 1.0.0'));
-        headerEntity.addComponent(new IsVisibleComponent(true));
+        headerEntity.addComponent(IsVisibleComponent.create(true));
 
         // Process the system
         system.update();

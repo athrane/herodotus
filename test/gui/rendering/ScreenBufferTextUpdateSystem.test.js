@@ -26,7 +26,7 @@ describe('ScreenBufferTextUpdateSystem', () => {
         const entity = new Entity();
         const textComponent = new TextComponent('Hello World');
         const positionComponent = new PositionComponent(0, 0);
-        const visibilityComponent = new IsVisibleComponent(true);
+    const visibilityComponent = IsVisibleComponent.create(true);
         
         entity.addComponent(textComponent);
         entity.addComponent(positionComponent);
@@ -44,7 +44,7 @@ describe('ScreenBufferTextUpdateSystem', () => {
         const entity = new Entity();
         const textComponent = new TextComponent('Line 1\nLine 2\nLine 3');
         const positionComponent = new PositionComponent(0, 0);
-        const visibilityComponent = new IsVisibleComponent(true);
+    const visibilityComponent = IsVisibleComponent.create(true);
         
         entity.addComponent(textComponent);
         entity.addComponent(positionComponent);
@@ -64,7 +64,7 @@ describe('ScreenBufferTextUpdateSystem', () => {
         const entity = new Entity();
         const textComponent = new TextComponent('Positioned Text');
         const positionComponent = new PositionComponent(10, 5); // x=10, y=5
-        const visibilityComponent = new IsVisibleComponent(true);
+    const visibilityComponent = IsVisibleComponent.create(true);
         
         entity.addComponent(textComponent);
         entity.addComponent(positionComponent);
@@ -82,7 +82,7 @@ describe('ScreenBufferTextUpdateSystem', () => {
         const entity = new Entity();
         const textComponent = new TextComponent('Invisible Text');
         const positionComponent = new PositionComponent(0, 0);
-        const visibilityComponent = new IsVisibleComponent(false);
+    const visibilityComponent = IsVisibleComponent.create(false);
         
         entity.addComponent(textComponent);
         entity.addComponent(positionComponent);
@@ -98,12 +98,12 @@ describe('ScreenBufferTextUpdateSystem', () => {
     test('should skip entities without required components', () => {
         // Create entities missing various components
         const entityNoText = new Entity();
-        entityNoText.addComponent(new PositionComponent(0, 0));
-        entityNoText.addComponent(new IsVisibleComponent(true));
+    entityNoText.addComponent(new PositionComponent(0, 0));
+    entityNoText.addComponent(IsVisibleComponent.create(true));
         
         const entityNoPosition = new Entity();
-        entityNoPosition.addComponent(new TextComponent('Test'));
-        entityNoPosition.addComponent(new IsVisibleComponent(true));
+    entityNoPosition.addComponent(new TextComponent('Test'));
+    entityNoPosition.addComponent(IsVisibleComponent.create(true));
         
         const entityNoVisibility = new Entity();
         entityNoVisibility.addComponent(new TextComponent('Test'));
@@ -122,7 +122,7 @@ describe('ScreenBufferTextUpdateSystem', () => {
         const entity = new Entity();
         const textComponent = new TextComponent('');
         const positionComponent = new PositionComponent(0, 0);
-        const visibilityComponent = new IsVisibleComponent(true);
+    const visibilityComponent = IsVisibleComponent.create(true);
         
         entity.addComponent(textComponent);
         entity.addComponent(positionComponent);
@@ -138,7 +138,7 @@ describe('ScreenBufferTextUpdateSystem', () => {
         const headerText = 'Year: 0003 | Simulation: Running | Herodotus 1.0.0';
         const textComponent = new TextComponent(headerText);
         const positionComponent = new PositionComponent(0, 0);
-        const visibilityComponent = new IsVisibleComponent(true);
+    const visibilityComponent = IsVisibleComponent.create(true);
         
         entity.addComponent(textComponent);
         entity.addComponent(positionComponent);

@@ -18,8 +18,8 @@ describe('MenuInputSystem', () => {
     const menuEntity = em.createEntity();
     const items = [new MenuItem('One', 'one'), new MenuItem('Two', 'two')];
     menuEntity.addComponent(new MenuComponent(items));
-    menuEntity.addComponent(new TextComponent(''));
-    menuEntity.addComponent(new IsVisibleComponent(true));
+  menuEntity.addComponent(new TextComponent(''));
+  menuEntity.addComponent(IsVisibleComponent.create(true));
 
     // Create action queue entity
     const actionQueueEntity = em.createEntity();
@@ -54,8 +54,8 @@ describe('MenuInputSystem', () => {
     const menuEntity = em.createEntity();
     const items = [new MenuItem('One', 'ACTION_ONE')];
     menuEntity.addComponent(new MenuComponent(items));
-    menuEntity.addComponent(new TextComponent(''));
-    menuEntity.addComponent(new IsVisibleComponent(true));
+  menuEntity.addComponent(new TextComponent(''));
+  menuEntity.addComponent(IsVisibleComponent.create(true));
 
     // Create action queue entity
     const actionQueueEntity = em.createEntity();
@@ -81,8 +81,8 @@ describe('MenuInputSystem', () => {
     const menuEntity = em.createEntity();
     const items = [new MenuItem('One', 'one')];
     menuEntity.addComponent(new MenuComponent(items));
-    menuEntity.addComponent(new TextComponent(''));
-    menuEntity.addComponent(new IsVisibleComponent(false)); // Not visible
+  menuEntity.addComponent(new TextComponent(''));
+  menuEntity.addComponent(IsVisibleComponent.create(false)); // Not visible
 
     // Create action queue entity
     const actionQueueEntity = em.createEntity();
@@ -112,8 +112,8 @@ describe('MenuInputSystem', () => {
     const menuEntity = em.createEntity();
     const items = [new MenuItem('One', 'one')];
     menuEntity.addComponent(new MenuComponent(items));
-    menuEntity.addComponent(new TextComponent(''));
-    menuEntity.addComponent(new IsVisibleComponent(true));
+  menuEntity.addComponent(new TextComponent(''));
+  menuEntity.addComponent(IsVisibleComponent.create(true));
 
     // Create action queue entity
     const actionQueueEntity = em.createEntity();
@@ -142,8 +142,8 @@ describe('MenuInputSystem', () => {
     const menuEntity = em.createEntity();
     const items = [new MenuItem('One', 'one')];
     menuEntity.addComponent(new MenuComponent(items));
-    menuEntity.addComponent(new TextComponent(''));
-    menuEntity.addComponent(new IsVisibleComponent(true));
+  menuEntity.addComponent(new TextComponent(''));
+  menuEntity.addComponent(IsVisibleComponent.create(true));
 
     // Create action queue entity
     const actionQueueEntity = em.createEntity();
@@ -173,8 +173,8 @@ describe('MenuInputSystem', () => {
     const menuEntity = em.createEntity();
     const items = [new MenuItem('One', 'ACTION_ONE')];
     menuEntity.addComponent(new MenuComponent(items));
-    menuEntity.addComponent(new TextComponent(''));
-    menuEntity.addComponent(new IsVisibleComponent(true));
+  menuEntity.addComponent(new TextComponent(''));
+  menuEntity.addComponent(IsVisibleComponent.create(true));
 
     // No action queue entity created
     const system = new MenuInputSystem(em);
@@ -196,8 +196,8 @@ describe('MenuInputSystem', () => {
     const menuEntity = em.createEntity();
     const items = [new MenuItem('Single Item', 'SINGLE_ACTION')];
     menuEntity.addComponent(new MenuComponent(items));
-    menuEntity.addComponent(new TextComponent(''));
-    menuEntity.addComponent(new IsVisibleComponent(true));
+  menuEntity.addComponent(new TextComponent(''));
+  menuEntity.addComponent(IsVisibleComponent.create(true));
 
     const actionQueueEntity = em.createEntity();
     actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
@@ -238,8 +238,8 @@ describe('MenuInputSystem', () => {
       new MenuItem('Item 5', 'ACTION_5')
     ];
     menuEntity.addComponent(new MenuComponent(items));
-    menuEntity.addComponent(new TextComponent(''));
-    menuEntity.addComponent(new IsVisibleComponent(true));
+  menuEntity.addComponent(new TextComponent(''));
+  menuEntity.addComponent(IsVisibleComponent.create(true));
 
     const actionQueueEntity = em.createEntity();
     actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
@@ -279,8 +279,8 @@ describe('MenuInputSystem', () => {
       new MenuItem('Item 3', 'ACTION_3')
     ];
     menuEntity.addComponent(new MenuComponent(items));
-    menuEntity.addComponent(new TextComponent(''));
-    menuEntity.addComponent(new IsVisibleComponent(true));
+  menuEntity.addComponent(new TextComponent(''));
+  menuEntity.addComponent(IsVisibleComponent.create(true));
 
     const actionQueueEntity = em.createEntity();
     actionQueueEntity.addComponent(new NameComponent('ActionQueue'));

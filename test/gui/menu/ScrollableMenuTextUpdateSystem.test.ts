@@ -26,7 +26,7 @@ describe('ScrollableMenuTextUpdateSystem', () => {
         entity.addComponent(new NameComponent('ChoicesScreen'));
         entity.addComponent(new ScrollableMenuComponent(items, 3));
         entity.addComponent(new TextComponent(''));
-        entity.addComponent(new IsVisibleComponent(true));
+    entity.addComponent(IsVisibleComponent.create(true));
 
         system.update();
 
@@ -56,7 +56,7 @@ describe('ScrollableMenuTextUpdateSystem', () => {
         entity.addComponent(new NameComponent('ChoicesScreen'));
         entity.addComponent(menu);
         entity.addComponent(new TextComponent(''));
-        entity.addComponent(new IsVisibleComponent(true));
+    entity.addComponent(IsVisibleComponent.create(true));
 
         // Initially at top - should show scroll down indicator
         system.update();
@@ -86,7 +86,7 @@ describe('ScrollableMenuTextUpdateSystem', () => {
         const entity = entityManager.createEntity();
         entity.addComponent(new ScrollableMenuComponent([], 3));
         entity.addComponent(new TextComponent(''));
-        entity.addComponent(new IsVisibleComponent(true));
+    entity.addComponent(IsVisibleComponent.create(true));
 
         system.update();
 
@@ -100,7 +100,7 @@ describe('ScrollableMenuTextUpdateSystem', () => {
         
         entity.addComponent(new ScrollableMenuComponent(items, 3));
         entity.addComponent(new TextComponent('initial'));
-        entity.addComponent(new IsVisibleComponent(false));
+    entity.addComponent(IsVisibleComponent.create(false));
 
         system.update();
 
@@ -112,7 +112,7 @@ describe('ScrollableMenuTextUpdateSystem', () => {
         // Entity with missing TextComponent
         const entity1 = entityManager.createEntity();
         entity1.addComponent(new ScrollableMenuComponent([new MenuItem('Test', 'test')], 3));
-        entity1.addComponent(new IsVisibleComponent(true));
+    entity1.addComponent(IsVisibleComponent.create(true));
         // No TextComponent
 
         // Entity with missing IsVisibleComponent
@@ -124,7 +124,7 @@ describe('ScrollableMenuTextUpdateSystem', () => {
         // Entity with missing ScrollableMenuComponent
         const entity3 = entityManager.createEntity();
         entity3.addComponent(new TextComponent(''));
-        entity3.addComponent(new IsVisibleComponent(true));
+    entity3.addComponent(IsVisibleComponent.create(true));
         // No ScrollableMenuComponent
 
         // Should not throw errors
@@ -142,7 +142,7 @@ describe('ScrollableMenuTextUpdateSystem', () => {
         
         entity.addComponent(menu);
         entity.addComponent(new TextComponent(''));
-        entity.addComponent(new IsVisibleComponent(true));
+    entity.addComponent(IsVisibleComponent.create(true));
 
         // Test different selections
         menu.setSelectedItemIndex(0);
@@ -172,7 +172,7 @@ describe('ScrollableMenuTextUpdateSystem', () => {
         
         entity.addComponent(new ScrollableMenuComponent(items, 3));
         entity.addComponent(new TextComponent(''));
-        entity.addComponent(new IsVisibleComponent(true));
+    entity.addComponent(IsVisibleComponent.create(true));
 
         system.update();
 
@@ -198,7 +198,7 @@ describe('ScrollableMenuTextUpdateSystem', () => {
         
         entity.addComponent(new ScrollableMenuComponent(items, 3));
         entity.addComponent(new TextComponent(''));
-        entity.addComponent(new IsVisibleComponent(true));
+    entity.addComponent(IsVisibleComponent.create(true));
 
         system.update();
 

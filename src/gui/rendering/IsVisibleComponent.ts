@@ -43,4 +43,23 @@ export class IsVisibleComponent extends Component {
         this.visible = visible;
     }
 
+    /**
+     * Creates a new instance of IsVisibleComponent.
+     * @param visible Whether the element should be visible (default: true)
+     * @param immutable If true, the visibility state cannot be changed (default: false)
+     * @returns A new instance of IsVisibleComponent.
+     */
+    static create(visible: boolean = true, immutable: boolean = false): IsVisibleComponent {
+        return new IsVisibleComponent(visible, immutable);
+    }
+
+    /**
+     * Creates a new instance of IsVisibleComponent with immutable visibility.
+     * @param visible Whether the element should be visible (default: true)
+     * @returns A new instance of IsVisibleComponent with immutable visibility.
+     */
+    static createImmutable(visible: boolean = true): IsVisibleComponent {
+        return new IsVisibleComponent(visible, true);
+    }
+
 }

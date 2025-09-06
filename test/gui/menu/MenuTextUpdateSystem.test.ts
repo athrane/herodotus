@@ -16,8 +16,8 @@ describe('MenuTextUpdateSystem', () => {
     ];
 
     entity.addComponent(new MenuComponent(items));
-    entity.addComponent(new TextComponent(''));
-    entity.addComponent(new IsVisibleComponent(true));
+  entity.addComponent(new TextComponent(''));
+  entity.addComponent(IsVisibleComponent.create(true));
 
     const system = new MenuTextUpdateSystem(em);
     system.update();
@@ -32,8 +32,8 @@ describe('MenuTextUpdateSystem', () => {
 
     const items = [new MenuItem('Start', 'start')];
     entity.addComponent(new MenuComponent(items));
-    entity.addComponent(new TextComponent(''));
-    entity.addComponent(new IsVisibleComponent(true));
+  entity.addComponent(new TextComponent(''));
+  entity.addComponent(IsVisibleComponent.create(true));
 
     const system = new MenuTextUpdateSystem(em);
     system.update();
@@ -51,8 +51,8 @@ describe('MenuTextUpdateSystem', () => {
       new MenuItem('Load', 'load'),
     ];
     entity.addComponent(new MenuComponent(items));
-    entity.addComponent(new TextComponent(''));
-    entity.addComponent(new IsVisibleComponent(true));
+  entity.addComponent(new TextComponent(''));
+  entity.addComponent(IsVisibleComponent.create(true));
 
     const system = new MenuTextUpdateSystem(em);
     system.update();
@@ -87,8 +87,8 @@ describe('MenuTextUpdateSystem', () => {
 
     const items = [new MenuItem('One', 'one')];
     entity.addComponent(new MenuComponent(items));
-    entity.addComponent(new TextComponent('keep-me'));
-    entity.addComponent(new IsVisibleComponent(false));
+  entity.addComponent(new TextComponent('keep-me'));
+  entity.addComponent(IsVisibleComponent.create(false));
 
     const system = new MenuTextUpdateSystem(em);
     system.update();
@@ -102,8 +102,8 @@ describe('MenuTextUpdateSystem', () => {
     const entity = em.createEntity();
 
     entity.addComponent(new MenuComponent([]));
-    entity.addComponent(new TextComponent('initial'));
-    entity.addComponent(new IsVisibleComponent(true));
+  entity.addComponent(new TextComponent('initial'));
+  entity.addComponent(IsVisibleComponent.create(true));
 
     const system = new MenuTextUpdateSystem(em);
     system.update();
@@ -117,9 +117,9 @@ describe('MenuTextUpdateSystem', () => {
     const entity = em.createEntity();
 
     const items = [new MenuItem('Hidden', 'hidden')];
-    entity.addComponent(new MenuComponent(items));
+  entity.addComponent(new MenuComponent(items));
     // Intentionally do NOT add TextComponent
-    entity.addComponent(new IsVisibleComponent(true));
+  entity.addComponent(IsVisibleComponent.create(true));
 
     const system = new MenuTextUpdateSystem(em);
     // Should not throw
@@ -161,8 +161,8 @@ describe('MenuTextUpdateSystem', () => {
     menu.setSelectedItemIndex(2); // select 'Third'
 
     entity.addComponent(menu);
-    entity.addComponent(new TextComponent(''));
-    entity.addComponent(new IsVisibleComponent(true));
+  entity.addComponent(new TextComponent(''));
+  entity.addComponent(IsVisibleComponent.create(true));
 
     const system = new MenuTextUpdateSystem(em);
     system.update();

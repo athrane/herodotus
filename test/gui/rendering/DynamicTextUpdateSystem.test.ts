@@ -14,7 +14,7 @@ describe('DynamicTextUpdateSystem', () => {
 
     const dynamic = new DynamicTextComponent((guiEM, simEM) => 'dynamic-text');
     const text = new TextComponent('initial');
-    const visible = new IsVisibleComponent(true);
+  const visible = IsVisibleComponent.create(true);
 
     entity.addComponent(dynamic).addComponent(text).addComponent(visible);
 
@@ -32,7 +32,7 @@ describe('DynamicTextUpdateSystem', () => {
 
     const dynamic = new DynamicTextComponent((guiEM, simEM) => 'should-not-see');
     const text = new TextComponent('stay');
-    const visible = new IsVisibleComponent(false);
+  const visible = IsVisibleComponent.create(false);
 
     entity.addComponent(dynamic).addComponent(text).addComponent(visible);
 
@@ -51,7 +51,7 @@ describe('DynamicTextUpdateSystem', () => {
     const spy = jest.fn((guiEM, simEM) => 'spy-text');
     const dynamic = new DynamicTextComponent(spy);
     const text = new TextComponent('before');
-    const visible = new IsVisibleComponent(true);
+  const visible = IsVisibleComponent.create(true);
 
     entity.addComponent(dynamic).addComponent(text).addComponent(visible);
 
