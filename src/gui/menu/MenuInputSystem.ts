@@ -1,5 +1,7 @@
 import { System } from '../../ecs/System';
 import { EntityManager } from '../../ecs/EntityManager';
+import { Entity } from '../../ecs/Entity';
+import { TypeUtils } from '../../util/TypeUtils';
 import { InputComponent } from './InputComponent';
 import { MenuComponent } from './MenuComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
@@ -15,15 +17,15 @@ export class MenuInputSystem extends System {
      * @param entityManager The entity manager for managing entities.
      */
     constructor(entityManager: EntityManager) {
-        // This system finds entities dynamically; no required components for construction
-        super(entityManager, []);
+        TypeUtils.ensureInstanceOf(entityManager, EntityManager);
+        super(entityManager, [MenuComponent, IsVisibleComponent]);
     }
 
     /**
      * Updates the system.
      */
-    update(): void {
-
+     
+    processEntity(entity: Entity): void {
         // Get the input component
         const inputComponent = this.getEntityManager().getSingletonComponent(InputComponent);
         if (!inputComponent) return;
@@ -32,26 +34,16 @@ export class MenuInputSystem extends System {
         const lastInput = inputComponent.getLastInput();
         if (lastInput == null) return;
 
-        // Find a visible menu entity
-        const entities = this.getEntityManager().getEntitiesWithComponents(MenuComponent, IsVisibleComponent);
-
-        // Find the active menu entity
-        const menuEntity = entities.find(e => {
-            const visibleComponent = e.getComponent(IsVisibleComponent);
-            return visibleComponent?.isVisible();
-        });
-
-        // Exit if no active menu entity is found
-        if (!menuEntity) {
-            return;
-        }
+        // Only process if this entity is visible
+        const visibleComponent = entity.getComponent(IsVisibleComponent);
+        if (!visibleComponent || !visibleComponent.isVisible()) return;
 
         // Get menu component
-        const menuComponent = menuEntity.getComponent(MenuComponent);
+        const menuComponent = entity.getComponent(MenuComponent);
         if (!menuComponent) return;
 
         // Exit if input was processed by menu navigation 
-        const isMenuProcessed = this.processInputWithActiveMenuNavigation(lastInput, menuComponent);
+        const isMenuProcessed = this.hasProcessedInputWithMenuNavigation(lastInput, menuComponent);
 
         // If menu was processed, then consume input and exit
         if (isMenuProcessed) {
@@ -71,7 +63,7 @@ export class MenuInputSystem extends System {
      * @param lastInput The last input received.
      * @returns True if the input was processed, false otherwise.
      */
-    processInputWithActiveMenuNavigation(lastInput: string, menuComponent: MenuComponent): boolean {
+    hasProcessedInputWithMenuNavigation(lastInput: string, menuComponent: MenuComponent): boolean {
         switch (lastInput) {
             case 'a':
             case 'left':
