@@ -40,7 +40,7 @@ export class ScreenBufferTextUpdateSystem extends System {
 
         // If visible, then render
         if(visibilityComponent.isVisible()) {
-            const lines = textComponent.getText();
+            const lines = textComponent.getTexts();
             const x = positionComponent.getX();
             let y = positionComponent.getY();
             for (const line of lines) {
