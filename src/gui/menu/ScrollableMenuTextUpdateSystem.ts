@@ -6,7 +6,7 @@ import { TextComponent } from '../rendering/TextComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 
 /**
- * Updates a ScrollableMenuComponent into a TextComponent for display.
+ * Processes a ScrollableMenuComponent into a TextComponent for display.
  * The menu shows only visible items with numbered shortcuts and scroll indicators.
  * Selected items are highlighted with a prefix.
  */

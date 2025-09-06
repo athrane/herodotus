@@ -3,9 +3,6 @@ import { Component } from '../../ecs/Component';
 import { MenuItem } from './MenuItem';
 
 /**
- * Represents a menu item in the menu.
- */
-/**
  * Represents a menu component that holds menu items and manages the selected item. 
  */
 export class MenuComponent extends Component {

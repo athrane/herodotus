@@ -7,6 +7,13 @@ import { IsActiveScreenComponent } from '../rendering/IsActiveScreenComponent';
 
 /*
  * Action system for handling user actions and updating the GUI.
+ * Processes actions from the ActionQueueComponent and updates which screen is visible.
+ * 
+ * A screen is made visible by setting its IsVisibleComponent to true and adding IsActiveScreenComponent.
+ * A screen is hidden by setting its IsVisibleComponent to false and removing IsActiveScreenComponent.
+ * Only one screen should have IsActiveScreenComponent at a time.
+ * 
+ * A screen is identified by a key in the ScreensComponent singleton, which maps to an entity ID.
  */
 export class ActionSystem extends System {
 

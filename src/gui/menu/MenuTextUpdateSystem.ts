@@ -6,7 +6,7 @@ import { TextComponent } from '../rendering/TextComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 
 /**
- * Updates a MenuComponent into a TextComponent for display.
+ * Processes a MenuComponent into a TextComponent for display.
  * The menu is rendered on a single line.
  * The currently selected item is indicated with a prefix.
  */
