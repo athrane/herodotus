@@ -219,6 +219,21 @@ export class TextBasedGui2 {
             case 'r':
                 inputComponent.setLastInput('r');
                 break;
+            case '1':
+                inputComponent.setLastInput('1');
+                break;
+            case '2':
+                inputComponent.setLastInput('2');
+                break;
+            case '3':
+                inputComponent.setLastInput('3');
+                break;
+            case '4':
+                inputComponent.setLastInput('4');
+                break;
+            case '5':
+                inputComponent.setLastInput('5');
+                break;
             default:
                 // Handle any other single character input
                 if (normalizedCommand.length === 1) {

@@ -16,6 +16,11 @@ export class ChoiceMenuSystem extends System {
     private readonly simulationEntityManager: EntityManager;
 
     /**
+     * Maximum description length for menu items.
+     */
+    private readonly MAX_DESC_LENGTH = 60;
+    
+    /**
      * Creates a new ChoiceMenuSystem.
      * @param guiEntityManager The GUI entity manager.
      * @param simulationEntityManager The simulation entity manager to read choices from.
@@ -95,9 +100,8 @@ export class ChoiceMenuSystem extends System {
         
         if (description && description.trim().length > 0) {
             // Truncate long descriptions for menu display
-            const maxDescLength = 60;
-            const truncatedDesc = description.length > maxDescLength 
-                ? description.substring(0, maxDescLength) + '...' 
+            const truncatedDesc = description.length > this.MAX_DESC_LENGTH
+                ? description.substring(0, this.MAX_DESC_LENGTH) + '...'
                 : description;
             return `${name} - ${truncatedDesc}`;
         }

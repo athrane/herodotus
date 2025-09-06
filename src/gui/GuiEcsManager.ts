@@ -123,10 +123,11 @@ export class GuiEcsManager {
         mainMenuEntity.addComponent(new IsVisibleComponent(true));
 
         // Create choices screen entity (scrollable menu for dilemma choices)
+        const VISIBLE_ITEMS_COUNT = 3;
         const choicesScreenEntity = entityManager.createEntity();
         choicesScreenEntity.addComponent(new NameComponent('ChoicesScreen'));
         // Initialize with empty menu items - ChoiceMenuSystem will populate them
-        choicesScreenEntity.addComponent(ScrollableMenuComponent.create([], 3));
+        choicesScreenEntity.addComponent(ScrollableMenuComponent.create([], VISIBLE_ITEMS_COUNT));
         choicesScreenEntity.addComponent(new TextComponent(''));
         choicesScreenEntity.addComponent(new PositionComponent(0, 3));
         choicesScreenEntity.addComponent(new IsVisibleComponent(false));
