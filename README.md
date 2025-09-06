@@ -390,7 +390,7 @@ This section lists exported classes found in the codebase grouped by area (file 
 - `src/gui/rendering/PositionComponent.ts` — Positioning data for UI elements
 - `src/gui/rendering/IsVisibleComponent.ts` — Visibility flag for renderable elements
 - `src/gui/rendering/ScreenBufferRenderSystem.ts` — Renders the screen buffer to terminal
-- `src/gui/rendering/ScreenBufferTextUpdateSystem.ts` — Updates text entries in the screen buffer
+- `src/gui/rendering/ScreenBufferTextUpdateSystem.ts` — Updates text entries in the screen buffer; implements Observer pattern within ECS architecture to monitor entities with text, position, and visibility components, then writes their content to the ScreenBufferComponent singleton for rendering
 - `src/gui/rendering/HeaderUpdateSystem.ts` — Updates header area each tick
 - `src/gui/rendering/FooterUpdateSystem.ts` — Updates footer/status area
  - `src/gui/rendering/DynamicTextRenderSystem.ts`  Updates `TextComponent` values by calling `DynamicTextComponent.getText(simulation)` for visible entities

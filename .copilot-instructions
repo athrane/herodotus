@@ -21,7 +21,12 @@
 - Prior to completing a task, verify the ESLint pre-commit check doesn't fails.
 
 ## Documentation 
-- Prior to completing a task, update the class documentation in the README file
+- Prior to completing a task, update the class documentation in the README file.
+- Documentation about classes should be documented in the Class Documentation section.
+- Documentation about classes should include a desciption of their participant and role in any used design patterns.
+
+## ESLint pre-commit errors
+- Prior to completing a task, ensure there are no ESLint pre-commot errors. If there are errors, then fix them.
 
 ## Pull Requests
 - Reference related issues or discussions in your PR descriptions.
