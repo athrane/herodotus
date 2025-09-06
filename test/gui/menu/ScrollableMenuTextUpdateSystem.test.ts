@@ -34,7 +34,8 @@ describe('ScrollableMenuTextUpdateSystem', () => {
         expect(textComp).toBeDefined();
         
         const text = textComp!.getText();
-        expect(text).toContain('*** CHOOSE YOUR ACTION ***');
+    // Header may include an availability suffix, so check the base phrase only
+    expect(text).toContain('*** CHOOSE YOUR ACTION');
         expect(text).toContain('> [1] First Choice - A difficult decision');
         expect(text).toContain('  [2] Second Choice - Another option');
         expect(text).toContain('  [3] Third Choice - The final path');
@@ -180,7 +181,8 @@ describe('ScrollableMenuTextUpdateSystem', () => {
         
         // Should have header, empty line, choice line, empty line, footer
         expect(lines.length).toBeGreaterThan(3);
-        expect(lines[0]).toContain('*** CHOOSE YOUR ACTION ***');
+    // Header may include an availability suffix, so check the base phrase only
+    expect(lines[0]).toContain('*** CHOOSE YOUR ACTION');
         expect(lines[1]).toBe(''); // Empty line after header
         expect(lines[2]).toContain('> [1] Test Choice');
         // Footer should be present

@@ -31,9 +31,17 @@ export class TextComponent extends Component {
      * Gets the text content of the component as an array of strings.
      * @returns The text content.
      */
-    getText(): string[] {
+    getTexts(): string[] {
         return this.lines;
     }
+
+    /**
+     * Gets the text content of the component as a single string.
+     * @returns The text content.
+     */
+    getText(): string {
+        return this.lines.join('\n');
+    }   
 
     /**
      * Sets the text content of the component from an array of strings.
