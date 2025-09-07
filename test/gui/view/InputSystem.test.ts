@@ -1,14 +1,14 @@
 import { EntityManager } from '../../../src/ecs/EntityManager';
-import { InputComponent } from '../../../src/gui/menu/InputComponent';
+import { InputComponent } from '../../../src/gui/view/InputComponent';
 import { MenuItem } from '../../../src/gui/menu/MenuItem';
 import { MenuComponent } from '../../../src/gui/menu/MenuComponent';
 import { TextComponent } from '../../../src/gui/rendering/TextComponent';
 import { IsVisibleComponent } from '../../../src/gui/rendering/IsVisibleComponent';
-import { MenuInputSystem } from '../../../src/gui/menu/MenuInputSystem';
+import { InputSystem } from '../../../src/gui/view/InputSystem';
 import { ActionQueueComponent } from '../../../src/gui/controller/ActionQueueComponent';
 import { NameComponent } from '../../../src/ecs/NameComponent';
 
-describe('MenuInputSystem', () => {
+describe('InputSystem', () => {
   test('navigates up and down with wrap-around', () => {
     const em = EntityManager.create();
 
@@ -26,7 +26,7 @@ describe('MenuInputSystem', () => {
     actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
     actionQueueEntity.addComponent(new ActionQueueComponent());
 
-    const system = new MenuInputSystem(em);
+    const system = new InputSystem(em);
 
     const inputComp = em.getSingletonComponent(InputComponent)!;
   inputComp.setLastInput('d');
@@ -63,7 +63,7 @@ describe('MenuInputSystem', () => {
     const actionQueue = new ActionQueueComponent();
     actionQueueEntity.addComponent(actionQueue);
 
-    const system = new MenuInputSystem(em);
+    const system = new InputSystem(em);
 
     const inputComp = em.getSingletonComponent(InputComponent)!;
   inputComp.setLastInput('enter');
@@ -90,7 +90,7 @@ describe('MenuInputSystem', () => {
     const actionQueue = new ActionQueueComponent();
     actionQueueEntity.addComponent(actionQueue);
 
-    const system = new MenuInputSystem(em);
+    const system = new InputSystem(em);
 
     const inputComp = em.getSingletonComponent(InputComponent)!;
   inputComp.setLastInput('enter');
@@ -121,7 +121,7 @@ describe('MenuInputSystem', () => {
     const actionQueue = new ActionQueueComponent();
     actionQueueEntity.addComponent(actionQueue);
 
-    const system = new MenuInputSystem(em);
+    const system = new InputSystem(em);
 
     // No input set
     const initialSelectedIndex = menuEntity.getComponent(MenuComponent)!.getSelectedItemIndex();
@@ -151,7 +151,7 @@ describe('MenuInputSystem', () => {
     const actionQueue = new ActionQueueComponent();
     actionQueueEntity.addComponent(actionQueue);
 
-    const system = new MenuInputSystem(em);
+    const system = new InputSystem(em);
 
     const inputComp = em.getSingletonComponent(InputComponent)!;
   inputComp.setLastInput('unknown');
@@ -177,7 +177,7 @@ describe('MenuInputSystem', () => {
   menuEntity.addComponent(IsVisibleComponent.create(true));
 
     // No action queue entity created
-    const system = new MenuInputSystem(em);
+    const system = new InputSystem(em);
 
     const inputComp = em.getSingletonComponent(InputComponent)!;
   inputComp.setLastInput('enter');
@@ -204,7 +204,7 @@ describe('MenuInputSystem', () => {
     const actionQueue = new ActionQueueComponent();
     actionQueueEntity.addComponent(actionQueue);
 
-    const system = new MenuInputSystem(em);
+    const system = new InputSystem(em);
     const inputComp = em.getSingletonComponent(InputComponent)!;
     const menu = menuEntity.getComponent(MenuComponent)!;
 
@@ -246,7 +246,7 @@ describe('MenuInputSystem', () => {
     const actionQueue = new ActionQueueComponent();
     actionQueueEntity.addComponent(actionQueue);
 
-    const system = new MenuInputSystem(em);
+    const system = new InputSystem(em);
     const inputComp = em.getSingletonComponent(InputComponent)!;
     const menu = menuEntity.getComponent(MenuComponent)!;
 
@@ -287,7 +287,7 @@ describe('MenuInputSystem', () => {
     const actionQueue = new ActionQueueComponent();
     actionQueueEntity.addComponent(actionQueue);
 
-    const system = new MenuInputSystem(em);
+    const system = new InputSystem(em);
     const inputComp = em.getSingletonComponent(InputComponent)!;
     const menu = menuEntity.getComponent(MenuComponent)!;
 
@@ -335,7 +335,7 @@ describe('MenuInputSystem', () => {
     const actionQueue = new ActionQueueComponent();
     actionQueueEntity.addComponent(actionQueue);
 
-    const system = new MenuInputSystem(em);
+    const system = new InputSystem(em);
     const inputComp = em.getSingletonComponent(InputComponent)!;
 
   inputComp.setLastInput('d');
@@ -363,7 +363,7 @@ describe('MenuInputSystem', () => {
     const actionQueue = new ActionQueueComponent();
     actionQueueEntity.addComponent(actionQueue);
 
-    const system = new MenuInputSystem(em);
+    const system = new InputSystem(em);
     const inputComp = em.getSingletonComponent(InputComponent)!;
 
     // Set empty input

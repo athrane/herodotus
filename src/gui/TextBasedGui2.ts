@@ -2,7 +2,7 @@ import * as readline from 'readline';
 import { Simulation } from '../simulation/Simulation';
 import { GuiEcsManager } from './GuiEcsManager';
 import { TypeUtils } from '../util/TypeUtils';
-import { InputComponent } from './menu/InputComponent';
+import { InputComponent } from './view/InputComponent';
 
 /**
  * A text-based GUI using a separate ECS system for screen management.

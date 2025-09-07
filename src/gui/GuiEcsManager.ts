@@ -14,10 +14,10 @@ import { FooterViewSystem } from './view/FooterViewSystem';
 import { DynamicTextUpdateSystem } from './rendering/DynamicTextUpdateSystem';
 import { MenuComponent } from './menu/MenuComponent';
 import { MenuItem } from './menu/MenuItem';
-import { InputComponent } from './menu/InputComponent';
+import { InputComponent } from './view/InputComponent';
 import { MainControllerSystem } from './controller/MainControllerSystem';
 import { ActionQueueComponent } from './controller/ActionQueueComponent';
-import { MenuInputSystem } from './menu/MenuInputSystem';
+import { InputSystem } from './view/InputSystem';
 import { MenuTextUpdateSystem } from './menu/MenuTextUpdateSystem';
 import { ScrollableMenuTextUpdateSystem } from './menu/ScrollableMenuTextUpdateSystem';
 import { ChoiceMenuViewSystem } from './view/ChoiceMenuViewSystem';
@@ -53,7 +53,7 @@ export class GuiEcsManager {
 
         // Register all systems
         // 1. Input processing 
-        this.ecs.registerSystem(MenuInputSystem.create(entityManager));
+        this.ecs.registerSystem(InputSystem.create(entityManager));
 
         // 2. GUI Controller 
         this.ecs.registerSystem(MainControllerSystem.create(entityManager, simulationEcs));

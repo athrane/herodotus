@@ -3,17 +3,17 @@ import { EntityManager } from '../../ecs/EntityManager';
 import { Entity } from '../../ecs/Entity';
 import { TypeUtils } from '../../util/TypeUtils';
 import { InputComponent } from './InputComponent';
-import { MenuComponent } from './MenuComponent';
+import { MenuComponent } from '../menu/MenuComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { ActionQueueComponent } from '../controller/ActionQueueComponent';
 
 /**
  * Processes user input for menu navigation and selection.
  */
-export class MenuInputSystem extends System {
+export class InputSystem extends System {
 
     /**
-     * Creates an instance of MenuInputSystem.
+     * Creates an instance of InputSystem.
      * @param entityManager The entity manager for managing entities.
      */
     constructor(entityManager: EntityManager) {
@@ -116,11 +116,11 @@ export class MenuInputSystem extends System {
     }
 
     /**
-     * Creates a new instance of MenuInputSystem.
+     * Creates a new instance of InputSystem.
      * @param entityManager The entity manager to use.
-     * @returns A new instance of MenuInputSystem.
+     * @returns A new instance of InputSystem.
      */
-    static create(entityManager: EntityManager): MenuInputSystem {
-        return new MenuInputSystem(entityManager);
+    static create(entityManager: EntityManager): InputSystem {
+        return new InputSystem(entityManager);
     }
 }

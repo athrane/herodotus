@@ -1,4 +1,4 @@
-import { InputComponent } from '../../../src/gui/menu/InputComponent';
+import { InputComponent } from '../../../src/gui/view/InputComponent';
 
 describe('InputComponent', () => {
   test('default lastInput is null and setters/getters work', () => {
