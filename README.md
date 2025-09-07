@@ -9,8 +9,8 @@ A procedural world-building and his- start:ts — same as `start:main`; runs `sr
 
 - start:gui — run the interactive text-based GUI - `src/gui/rendering/ScreenBufferRenderSystem.ts` — Renders the screen buffer to terminal
 - `src/gui/rendering/ScreenBufferTextUpdateSystem.ts` — Updates text entries in the screen buffer
-- `src/gui/rendering/HeaderUpdateSystem.ts` — Updates header area each tick; uses dependency injection pattern with simulation ECS for decoupled access to time data
-- `src/gui/rendering/FooterUpdateSystem.ts` — Updates footer/status area
+- `src/gui/view/HeaderViewSystem.ts` — Updates header area each tick; uses dependency injection pattern with simulation ECS for decoupled access to time data
+- `src/gui/view/FooterViewSystem.ts` — Updates footer/status area
 - `src/gui/rendering/DynamicTextUpdateSystem.ts` — Updates `TextComponent` values by calling `DynamicTextComponent.getText(guiEntityManager, simulationEntityManager)` for visible entities; uses dependency injection pattern with simulation ECS for decoupled system architectureon of the simulation via tsx.
 	Purpose: launches the GUI interface for interactive gameplay with player decision-making and real-time simulation control.
 	- Run:
@@ -280,10 +280,10 @@ This project now includes a scrollable choice menu used by the main interface to
 
 - Displays only 3 choices at a time and automatically scrolls to keep the selected item visible.
 - Navigation: A/D keys or Left/Right arrow keys to move between choices; Enter to select.
-- Choices are read from the player's `DilemmaComponent` (simulation ECS) and converted to menu items by `ChoiceMenuUpdateSystem`.
+- Choices are read from the player's `DilemmaComponent` (simulation ECS) and converted to menu items by `ChoiceMenuViewSystem`.
 - Each visible choice is shown with a numbered shortcut (`[1]`, `[2]`, `[3]`) for quick selection; selection actions are emitted as `CHOICE_SELECT_<index>`.
 - Rendering is handled by `ScrollableMenuTextUpdateSystem`, which shows headers, numbered lines, selection highlight, and scroll indicators.
-- Implementation files: `src/gui/menu/ScrollableMenuComponent.ts`, `src/gui/menu/ScrollableMenuTextUpdateSystem.ts`, `src/gui/menu/ChoiceMenuUpdateSystem.ts`.
+- Implementation files: `src/gui/menu/ScrollableMenuComponent.ts`, `src/gui/menu/ScrollableMenuTextUpdateSystem.ts`, `src/gui/view/ChoiceMenuViewSystem.ts`.
 - Tests cover scrolling logic, formatting, and integration with `DilemmaComponent`.
 
 ### Architecture Benefits
@@ -394,8 +394,8 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 - `src/gui/rendering/IsVisibleComponent.ts` — Visibility flag for renderable elements
 - `src/gui/rendering/ScreenBufferRenderSystem.ts` — Renders the screen buffer to terminal
 - `src/gui/rendering/ScreenBufferTextUpdateSystem.ts` — Updates text entries in the screen buffer; implements Observer pattern within ECS architecture to monitor entities with text, position, and visibility components, then writes their content to the ScreenBufferComponent singleton for rendering
-- `src/gui/rendering/HeaderUpdateSystem.ts` — Updates header area each tick
-- `src/gui/rendering/FooterUpdateSystem.ts` — Updates footer/status area
+- `src/gui/view/HeaderViewSystem.ts` — Updates header area each tick
+- `src/gui/view/FooterViewSystem.ts` — Updates footer/status area
  - `src/gui/rendering/DynamicTextRenderSystem.ts`  Updates `TextComponent` values by calling `DynamicTextComponent.getText(simulation)` for visible entities
 
 #### Menu components & systems
