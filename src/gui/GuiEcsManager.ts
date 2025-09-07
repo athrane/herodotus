@@ -15,8 +15,8 @@ import { DynamicTextUpdateSystem } from './rendering/DynamicTextUpdateSystem';
 import { MenuComponent } from './menu/MenuComponent';
 import { MenuItem } from './menu/MenuItem';
 import { InputComponent } from './menu/InputComponent';
-import { ActionSystem } from './menu/ActionSystem';
-import { ActionQueueComponent } from './menu/ActionQueueComponent';
+import { MainControllerSystem } from './controller/MainControllerSystem';
+import { ActionQueueComponent } from './controller/ActionQueueComponent';
 import { MenuInputSystem } from './menu/MenuInputSystem';
 import { MenuTextUpdateSystem } from './menu/MenuTextUpdateSystem';
 import { ScrollableMenuTextUpdateSystem } from './menu/ScrollableMenuTextUpdateSystem';
@@ -55,8 +55,8 @@ export class GuiEcsManager {
         // 1. Input processing 
         this.ecs.registerSystem(MenuInputSystem.create(entityManager));
 
-        // 2. GUI Controller 
-        this.ecs.registerSystem(ActionSystem.create(entityManager, simulationEcs));
+    // 2. GUI Controller 
+    this.ecs.registerSystem(MainControllerSystem.create(entityManager, simulationEcs));
         
         // 3. GUI Views (content updates)
         this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, simulationEcs));
@@ -243,8 +243,8 @@ export class GuiEcsManager {
     /**
      * Gets the action system.
      */
-    getActionSystem(): ActionSystem | undefined {
-        return this.ecs.getSystemManager().get('ActionSystem') as ActionSystem | undefined;
+    getActionSystem(): MainControllerSystem | undefined {
+        return this.ecs.getSystemManager().get('MainControllerSystem') as MainControllerSystem | undefined;
     }
 
     /**

@@ -4,7 +4,7 @@ import { Entity } from '../../ecs/Entity';
 import { TypeUtils } from '../../util/TypeUtils';
 import { ActionQueueComponent } from './ActionQueueComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
-import { ScreensComponent } from './ScreensComponent';
+import { ScreensComponent } from '../menu/ScreensComponent';
 import { IsActiveScreenComponent } from '../rendering/IsActiveScreenComponent';
 import { PlayerComponent } from '../../ecs/PlayerComponent';
 import { DilemmaComponent } from '../../behaviour/DilemmaComponent';
@@ -15,18 +15,12 @@ import { Ecs } from '../../ecs/Ecs';
 /*
  * Controller system for processing user actions and updating the GUI.
  * Processes actions from the ActionQueueComponent and updates which screen is visible.
- * 
- * A screen is made visible by setting its IsVisibleComponent to true and adding IsActiveScreenComponent.
- * A screen is hidden by setting its IsVisibleComponent to false and removing IsActiveScreenComponent.
- * Only one screen should have IsActiveScreenComponent at a time.
- * 
- * A screen is identified by a key in the ScreensComponent singleton, which maps to an entity ID.
  */
-export class ActionSystem extends System {
+export class MainControllerSystem extends System {
   private readonly simulationEcs: Ecs;
 
   /**
-   * Constructs the ActionSystem.
+   * Constructs the MainControllerSystem.
    * @param entityManager The entity manager for managing entities.
    * @param simulationEcs The simulation ECS instance for accessing simulation state.
    */
@@ -118,7 +112,6 @@ export class ActionSystem extends System {
     dataSetEventComponent.setDataSetEvent(selectedChoice);
   }
 
-
   /**
    * Sets the active screen by name.
    * Hides all other UI elements except header and footer.
@@ -153,12 +146,13 @@ export class ActionSystem extends System {
   }
 
   /**
-   * Creates a new ActionSystem.
+   * Creates a new MainControllerSystem.
    * @param entityManager The entity manager for managing entities.
    * @param simulationEcs The simulation ECS instance for accessing simulation state.
-   * @returns A new instance of ActionSystem.
+   * @returns A new instance of MainControllerSystem.
    */
-  static create(entityManager: EntityManager, simulationEcs: Ecs): ActionSystem {
-  return new ActionSystem(entityManager, simulationEcs);
+  static create(entityManager: EntityManager, simulationEcs: Ecs): MainControllerSystem {
+  return new MainControllerSystem(entityManager, simulationEcs);
   }
 }
+

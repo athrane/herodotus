@@ -5,7 +5,7 @@ import { TypeUtils } from '../../util/TypeUtils';
 import { InputComponent } from './InputComponent';
 import { MenuComponent } from './MenuComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
-import { ActionQueueComponent } from './ActionQueueComponent';
+import { ActionQueueComponent } from '../controller/ActionQueueComponent';
 
 /**
  * Processes user input for menu navigation and selection.

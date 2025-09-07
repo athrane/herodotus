@@ -223,31 +223,30 @@ Each screen is implemented as a separate entity with appropriate components:
 
 ### Key Menu Systems
 
-#### ActionSystem (`src/gui/menu/ActionSystem.ts`)
-The ActionSystem is responsible for processing UI action IDs and managing application flow:
+#### MainControllerSystem (`src/gui/controller/MainControllerSystem.ts`)
+MainControllerSystem (renamed from ActionSystem) is responsible for processing UI action IDs and managing application flow for the GUI ECS.
 
 **Core Functionality:**
 - Processes actions from the `ActionQueueComponent` in FIFO order
-- Handles screen navigation actions (e.g., "goto-main-menu", "goto-status")
-- Delegates screen switching operations
+- Handles screen navigation actions (e.g., `NAV_MAIN`, `NAV_STATUS`, `NAV_CHOICES`, `NAV_CHRONICLE`) and choice selection actions (`CHOICE_SELECT_<index>`)
+- Delegates screen switching operations to `setActiveScreen()`
 
 **Supported Actions:**
-- **Navigation**: "goto-main-menu", "goto-status", "goto-choices", "goto-chronicle"
-- **Extensible**: New actions can be added by extending the switch statement
+- **Navigation**: `NAV_MAIN`, `NAV_STATUS`, `NAV_CHOICES`, `NAV_CHRONICLE`
+- **Choice selection**: `CHOICE_SELECT_<index>` (mapped to choice handling in the simulation `DilemmaComponent`)
+- **Extensible**: New actions can be added by extending the switch/dispatch logic
 
 **Architecture:**
 - Queries entities with `ActionQueueComponent` to find pending actions
-- Processes actions sequentially from the queue using `shift()` method  
+- Processes actions sequentially from the queue and clears the queue to avoid reprocessing
 - Delegates screen switching via internal `setActiveScreen()` method
 - Handles unknown actions gracefully (no-op)
 
-**Note:** Application termination (quit) is handled directly by `TextBasedGui2` key input processing, not through the action system.
+**Note:** Application termination (quit) is handled directly by `TextBasedGui2` key input processing, not through the controller system.
 
 **Test Coverage:**
-- Comprehensive test suite with 18+ test cases
-- Tests action processing, screen switching, queue management
-- Includes edge cases: rapid successive actions, large queues, malformed actions
-- Verifies FIFO order processing and proper cleanup
+- Covered by unit tests that exercise navigation, queue handling, and menu selection behavior
+- Tests include edge cases such as rapid successive actions, large queues, and malformed actions; they verify FIFO processing and queue cleanup
 
 #### MenuInputSystem (`src/gui/menu/MenuInputSystem.ts`)
 The MenuInputSystem handles user input processing for menu navigation and interaction:

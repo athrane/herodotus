@@ -1,4 +1,4 @@
-import { ActionQueueComponent } from '../../../src/gui/menu/ActionQueueComponent';
+import { ActionQueueComponent } from '../../../src/gui/controller/ActionQueueComponent';
 
 describe('ActionQueueComponent', () => {
   test('initial queue is empty', () => {

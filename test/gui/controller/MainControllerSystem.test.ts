@@ -1,12 +1,12 @@
-import { ActionSystem } from '../../../src/gui/menu/ActionSystem';
+import { MainControllerSystem } from '../../../src/gui/controller/MainControllerSystem';
 import { EntityManager } from '../../../src/ecs/EntityManager';
 import { Ecs } from '../../../src/ecs/Ecs';
-import { ActionQueueComponent } from '../../../src/gui/menu/ActionQueueComponent';
+import { ActionQueueComponent } from '../../../src/gui/controller/ActionQueueComponent';
 import { NameComponent } from '../../../src/ecs/NameComponent';
 
-describe('ActionSystem', () => {
+describe('MainControllerSystem', () => {
   let mockEntityManager: EntityManager;
-  let system: ActionSystem;
+  let system: MainControllerSystem;
   let actionQueueComponent: ActionQueueComponent;
 
   beforeEach(() => {
@@ -19,9 +19,9 @@ describe('ActionSystem', () => {
     actionQueueComponent = new ActionQueueComponent();
     actionQueueEntity.addComponent(actionQueueComponent);
 
-  // Provide a minimal simulation ECS for the ActionSystem constructor
+  // Provide a minimal simulation ECS for the MainControllerSystem constructor
   const simulationEcs = Ecs.create();
-  system = new ActionSystem(mockEntityManager as any, simulationEcs as any);
+  system = new MainControllerSystem(mockEntityManager as any, simulationEcs as any);
     
     // Spy on the system's setActiveScreen method to avoid needing full ECS setup
     jest.spyOn(system, 'setActiveScreen').mockImplementation(() => {});
@@ -54,7 +54,7 @@ describe('ActionSystem', () => {
   test('NAV_QUIT action is ignored (handled by TextBasedGui2)', () => {
     actionQueueComponent.addAction('NAV_QUIT');
     system.update();
-    // NAV_QUIT should be a no-op in ActionSystem since stopping is handled by TextBasedGui2
+    // NAV_QUIT should be a no-op in MainControllerSystem since stopping is handled by TextBasedGui2
     expect(system.setActiveScreen).not.toHaveBeenCalled();
   });
 
@@ -120,7 +120,7 @@ describe('ActionSystem', () => {
     system.update();
     
     expect(system.setActiveScreen).toHaveBeenCalledWith('main');
-    // NAV_QUIT should be ignored by ActionSystem
+    // NAV_QUIT should be ignored by MainControllerSystem
     expect(system.setActiveScreen).toHaveBeenCalledWith('status');
     expect(system.setActiveScreen).toHaveBeenCalledTimes(2);
   });
@@ -168,9 +168,10 @@ describe('ActionSystem', () => {
     // Create a new entity manager without action queue
     const emptyEntityManager = EntityManager.create();
   const simulationEcs = Ecs.create();
-  const systemWithoutQueue = new ActionSystem(emptyEntityManager as any, simulationEcs as any);
+  const systemWithoutQueue = new MainControllerSystem(emptyEntityManager as any, simulationEcs as any);
     
     systemWithoutQueue.update();
     expect(system.setActiveScreen).not.toHaveBeenCalled();
   });
 });
+

@@ -5,7 +5,7 @@ import { MenuComponent } from '../../../src/gui/menu/MenuComponent';
 import { TextComponent } from '../../../src/gui/rendering/TextComponent';
 import { IsVisibleComponent } from '../../../src/gui/rendering/IsVisibleComponent';
 import { MenuInputSystem } from '../../../src/gui/menu/MenuInputSystem';
-import { ActionQueueComponent } from '../../../src/gui/menu/ActionQueueComponent';
+import { ActionQueueComponent } from '../../../src/gui/controller/ActionQueueComponent';
 import { NameComponent } from '../../../src/ecs/NameComponent';
 
 describe('MenuInputSystem', () => {

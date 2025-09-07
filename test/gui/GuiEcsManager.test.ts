@@ -5,7 +5,7 @@ import { Ecs } from '../../src/ecs/Ecs';
 import { EntityManager } from '../../src/ecs/EntityManager';
 import { SystemManager } from '../../src/ecs/SystemManager';
 import { NameComponent } from '../../src/ecs/NameComponent';
-import { ActionQueueComponent } from '../../src/gui/menu/ActionQueueComponent';
+import { ActionQueueComponent } from '../../src/gui/controller/ActionQueueComponent';
 import { ScreenBufferRenderSystem } from '../../src/gui/rendering/ScreenBufferRenderSystem';
 
 // Mock readline
