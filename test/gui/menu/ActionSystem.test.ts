@@ -1,5 +1,6 @@
 import { ActionSystem } from '../../../src/gui/menu/ActionSystem';
 import { EntityManager } from '../../../src/ecs/EntityManager';
+import { Ecs } from '../../../src/ecs/Ecs';
 import { ActionQueueComponent } from '../../../src/gui/menu/ActionQueueComponent';
 import { NameComponent } from '../../../src/ecs/NameComponent';
 
@@ -18,7 +19,9 @@ describe('ActionSystem', () => {
     actionQueueComponent = new ActionQueueComponent();
     actionQueueEntity.addComponent(actionQueueComponent);
 
-    system = new ActionSystem(mockEntityManager as any);
+  // Provide a minimal simulation ECS for the ActionSystem constructor
+  const simulationEcs = Ecs.create();
+  system = new ActionSystem(mockEntityManager as any, simulationEcs as any);
     
     // Spy on the system's setActiveScreen method to avoid needing full ECS setup
     jest.spyOn(system, 'setActiveScreen').mockImplementation(() => {});
@@ -164,7 +167,8 @@ describe('ActionSystem', () => {
   test('does nothing when no ActionQueueComponent exists', () => {
     // Create a new entity manager without action queue
     const emptyEntityManager = EntityManager.create();
-    const systemWithoutQueue = new ActionSystem(emptyEntityManager as any);
+  const simulationEcs = Ecs.create();
+  const systemWithoutQueue = new ActionSystem(emptyEntityManager as any, simulationEcs as any);
     
     systemWithoutQueue.update();
     expect(system.setActiveScreen).not.toHaveBeenCalled();

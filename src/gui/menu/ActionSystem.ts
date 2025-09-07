@@ -6,14 +6,14 @@ import { ActionQueueComponent } from './ActionQueueComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { ScreensComponent } from './ScreensComponent';
 import { IsActiveScreenComponent } from '../rendering/IsActiveScreenComponent';
-import { PlayerComponent } from 'ecs/PlayerComponent';
-import { DilemmaComponent } from 'behaviour/DilemmaComponent';
-import { DataSetEventComponent } from 'data/DataSetEventComponent';
-import { DataSetEvent } from 'data/DataSetEvent';
+import { PlayerComponent } from '../../ecs/PlayerComponent';
+import { DilemmaComponent } from '../../behaviour/DilemmaComponent';
+import { DataSetEventComponent } from '../../data/DataSetEventComponent';
+import { DataSetEvent } from '../../data/DataSetEvent';
 import { Ecs } from '../../ecs/Ecs';
 
 /*
- * Controller system for handling user actions and updating the GUI.
+ * Controller system for processing user actions and updating the GUI.
  * Processes actions from the ActionQueueComponent and updates which screen is visible.
  * 
  * A screen is made visible by setting its IsVisibleComponent to true and adding IsActiveScreenComponent.
@@ -90,11 +90,10 @@ export class ActionSystem extends System {
    * @param actionId The ID of the action to handle.
    */
   private handleMenuSelection(actionId: string): void {
-
-    // Find the player in the simulation
-    const simulationEntityManager = this.simulationEcs.getEntityManager();
-    const players = simulationEntityManager.getEntitiesWithComponents(PlayerComponent, DilemmaComponent, DataSetEventComponent);
-    if (players.length === 0) return;
+  // Find the player in the simulation
+  const simulationEntityManager = this.simulationEcs.getEntityManager();
+  const players = simulationEntityManager.getEntitiesWithComponents(PlayerComponent, DilemmaComponent, DataSetEventComponent);
+  if (players.length === 0) return;
 
     // Get the first player entity
     const player = players[0];
@@ -160,6 +159,6 @@ export class ActionSystem extends System {
    * @returns A new instance of ActionSystem.
    */
   static create(entityManager: EntityManager, simulationEcs: Ecs): ActionSystem {
-    return new ActionSystem(entityManager, simulationEcs);
+  return new ActionSystem(entityManager, simulationEcs);
   }
 }

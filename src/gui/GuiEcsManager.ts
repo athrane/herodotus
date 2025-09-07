@@ -58,7 +58,7 @@ export class GuiEcsManager {
         // 2. GUI Controller 
         this.ecs.registerSystem(ActionSystem.create(entityManager, simulationEcs));
         
-        // 3. GUI Views 
+        // 3. GUI Views (content updates)
         this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, simulationEcs));
         this.ecs.registerSystem(FooterUpdateSystem.create(entityManager));
         this.ecs.registerSystem(ChoiceMenuUpdateSystem.create(entityManager, simulationEcs.getEntityManager()));
