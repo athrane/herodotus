@@ -9,8 +9,8 @@ import { IsVisibleComponent } from './rendering/IsVisibleComponent';
 import { TextComponent } from './rendering/TextComponent';
 import { DynamicTextComponent } from './rendering/DynamicTextComponent';
 import { ScreenBufferTextUpdateSystem } from './rendering/ScreenBufferTextUpdateSystem';
-import { HeaderUpdateSystem } from './rendering/HeaderUpdateSystem';
-import { FooterUpdateSystem } from './rendering/FooterUpdateSystem';
+import { HeaderViewSystem } from './view/HeaderViewSystem';
+import { FooterViewSystem } from './view/FooterViewSystem';
 import { DynamicTextUpdateSystem } from './rendering/DynamicTextUpdateSystem';
 import { MenuComponent } from './menu/MenuComponent';
 import { MenuItem } from './menu/MenuItem';
@@ -20,7 +20,7 @@ import { ActionQueueComponent } from './controller/ActionQueueComponent';
 import { MenuInputSystem } from './menu/MenuInputSystem';
 import { MenuTextUpdateSystem } from './menu/MenuTextUpdateSystem';
 import { ScrollableMenuTextUpdateSystem } from './menu/ScrollableMenuTextUpdateSystem';
-import { ChoiceMenuUpdateSystem } from './menu/ChoiceMenuUpdateSystem';
+import { ChoiceMenuViewSystem } from './view/ChoiceMenuViewSystem';
 import { ScrollableMenuComponent } from './menu/ScrollableMenuComponent';
 import { GuiHelper } from './GuiHelper';
 import { ScreensComponent } from './menu/ScreensComponent';
@@ -55,13 +55,13 @@ export class GuiEcsManager {
         // 1. Input processing 
         this.ecs.registerSystem(MenuInputSystem.create(entityManager));
 
-    // 2. GUI Controller 
-    this.ecs.registerSystem(MainControllerSystem.create(entityManager, simulationEcs));
-        
-        // 3. GUI Views (content updates)
-        this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, simulationEcs));
-        this.ecs.registerSystem(FooterUpdateSystem.create(entityManager));
-        this.ecs.registerSystem(ChoiceMenuUpdateSystem.create(entityManager, simulationEcs.getEntityManager()));
+        // 2. GUI Controller 
+        this.ecs.registerSystem(MainControllerSystem.create(entityManager, simulationEcs));
+
+        // 3. GUI Views (dynamic content updates)
+        this.ecs.registerSystem(HeaderViewSystem.create(entityManager, simulationEcs));
+        this.ecs.registerSystem(FooterViewSystem.create(entityManager));
+        this.ecs.registerSystem(ChoiceMenuViewSystem.create(entityManager, simulationEcs.getEntityManager()));
 
         // 4. Dynamic text and menu text updates
         this.ecs.registerSystem(DynamicTextUpdateSystem.create(entityManager, simulationEcs));
@@ -96,14 +96,14 @@ export class GuiEcsManager {
 
         // Create global GUI Header entity, positioned at the top
         const headerEntity = entityManager.createEntity();
-        headerEntity.addComponent(new NameComponent(HeaderUpdateSystem.HEADER_ENTITY_NAME));
+        headerEntity.addComponent(new NameComponent(HeaderViewSystem.HEADER_ENTITY_NAME));
         headerEntity.addComponent(new PositionComponent(0, 0));
         headerEntity.addComponent(IsVisibleComponent.createImmutable(true)); // Immutable visibility
         headerEntity.addComponent(new TextComponent(''));
 
         // Create global GUI Footer entity, positioned at the bottom
         const footerEntity = entityManager.createEntity();
-        footerEntity.addComponent(new NameComponent(FooterUpdateSystem.FOOTER_ENTITY_NAME));
+        footerEntity.addComponent(new NameComponent(FooterViewSystem.FOOTER_ENTITY_NAME));
         footerEntity.addComponent(new PositionComponent(73, 23));
         footerEntity.addComponent(IsVisibleComponent.createImmutable(true)); // Immutable visibility
         footerEntity.addComponent(new TextComponent(''));

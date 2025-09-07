@@ -1,12 +1,12 @@
 import { EntityManager } from '../../../src/ecs/EntityManager';
 import { NameComponent } from '../../../src/ecs/NameComponent';
 import { TextComponent } from '../../../src/gui/rendering/TextComponent';
-import { HeaderUpdateSystem } from '../../../src/gui/rendering/HeaderUpdateSystem';
+import { HeaderViewSystem } from '../../../src/gui/view/HeaderViewSystem';
 import { Ecs } from '../../../src/ecs/Ecs';
 import { TimeComponent } from '../../../src/time/TimeComponent';
 import { Time } from '../../../src/time/Time';
 
-describe('HeaderUpdateSystem', () => {
+describe('HeaderViewSystem', () => {
   test('updates header text for header entity', () => {
     const simulationEcs = Ecs.create();
     const guiEntityManager = EntityManager.create();
@@ -19,10 +19,10 @@ describe('HeaderUpdateSystem', () => {
 
     // Create header entity in GUI ECS
     const headerEntity = guiEntityManager.createEntity();
-    headerEntity.addComponent(new NameComponent(HeaderUpdateSystem.HEADER_ENTITY_NAME));
+    headerEntity.addComponent(new NameComponent(HeaderViewSystem.HEADER_ENTITY_NAME));
     headerEntity.addComponent(new TextComponent('initial'));
 
-    const system = new HeaderUpdateSystem(guiEntityManager, simulationEcs);
+    const system = new HeaderViewSystem(guiEntityManager, simulationEcs);
     system.update();
 
     const textComponent = headerEntity.getComponent(TextComponent)!;
@@ -37,7 +37,7 @@ describe('HeaderUpdateSystem', () => {
     nonHeaderEntity.addComponent(new NameComponent('NotHeader'));
     nonHeaderEntity.addComponent(new TextComponent('original'));
 
-    const system = new HeaderUpdateSystem(guiEntityManager, simulationEcs);
+    const system = new HeaderViewSystem(guiEntityManager, simulationEcs);
     system.update();
 
     const textComponent = nonHeaderEntity.getComponent(TextComponent)!;
@@ -49,10 +49,10 @@ describe('HeaderUpdateSystem', () => {
     const guiEntityManager = EntityManager.create();
 
     const headerEntity = guiEntityManager.createEntity();
-    headerEntity.addComponent(new NameComponent(HeaderUpdateSystem.HEADER_ENTITY_NAME));
+    headerEntity.addComponent(new NameComponent(HeaderViewSystem.HEADER_ENTITY_NAME));
     headerEntity.addComponent(new TextComponent('initial'));
 
-    const system = new HeaderUpdateSystem(guiEntityManager, simulationEcs);
+    const system = new HeaderViewSystem(guiEntityManager, simulationEcs);
     system.update();
 
     const textComponent = headerEntity.getComponent(TextComponent)!;
@@ -63,8 +63,8 @@ describe('HeaderUpdateSystem', () => {
     const simulationEcs = Ecs.create();
     const guiEntityManager = EntityManager.create();
 
-    const system = HeaderUpdateSystem.create(guiEntityManager, simulationEcs);
+    const system = HeaderViewSystem.create(guiEntityManager, simulationEcs);
 
-    expect(system).toBeInstanceOf(HeaderUpdateSystem);
+    expect(system).toBeInstanceOf(HeaderViewSystem);
   });
 });

@@ -1,8 +1,8 @@
 import { System } from '../../ecs/System';
 import { Entity } from '../../ecs/Entity';
 import { EntityManager } from '../../ecs/EntityManager';
-import { ScrollableMenuComponent } from './ScrollableMenuComponent';
-import { MenuItem } from './MenuItem';
+import { ScrollableMenuComponent } from '../menu/ScrollableMenuComponent';
+import { MenuItem } from '../menu/MenuItem';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { DilemmaComponent } from '../../behaviour/DilemmaComponent';
 import { PlayerComponent } from '../../ecs/PlayerComponent';
@@ -12,7 +12,7 @@ import { DataSetEvent } from '../../data/DataSetEvent';
  * System that populates choice menu items from the player's DilemmaComponent.
  * Updates ScrollableMenuComponent with current available choices from the simulation.
  */
-export class ChoiceMenuUpdateSystem extends System {
+export class ChoiceMenuViewSystem extends System {
     private readonly simulationEntityManager: EntityManager;
 
     /**
@@ -21,7 +21,7 @@ export class ChoiceMenuUpdateSystem extends System {
     private readonly MAX_DESC_LENGTH = 60;
     
     /**
-    * Creates a new ChoiceMenuUpdateSystem.
+    * Creates a new ChoiceMenuViewSystem.
      * @param guiEntityManager The GUI entity manager.
      * @param simulationEntityManager The simulation entity manager to read choices from.
      */
@@ -168,12 +168,12 @@ export class ChoiceMenuUpdateSystem extends System {
     }
 
     /**
-     * Creates a new ChoiceMenuUpdateSystem.
+     * Creates a new ChoiceMenuViewSystem.
      * @param guiEntityManager The GUI entity manager.
      * @param simulationEntityManager The simulation entity manager.
-     * @returns A new ChoiceMenuUpdateSystem instance.
+     * @returns A new ChoiceMenuViewSystem instance.
      */
-    static create(guiEntityManager: EntityManager, simulationEntityManager: EntityManager): ChoiceMenuUpdateSystem {
-        return new ChoiceMenuUpdateSystem(guiEntityManager, simulationEntityManager);
+    static create(guiEntityManager: EntityManager, simulationEntityManager: EntityManager): ChoiceMenuViewSystem {
+        return new ChoiceMenuViewSystem(guiEntityManager, simulationEntityManager);
     }
 }

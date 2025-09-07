@@ -1,7 +1,7 @@
 import { System } from '../../ecs/System';
 import { EntityManager } from '../../ecs/EntityManager';
 import { NameComponent } from '../../ecs/NameComponent';
-import { TextComponent } from './TextComponent';
+import { TextComponent } from '../rendering/TextComponent';
 import { Entity } from '../../ecs/Entity';
 import { Ecs } from '../../ecs/Ecs';
 import { TimeComponent } from '../../time/TimeComponent';
@@ -9,7 +9,7 @@ import { TimeComponent } from '../../time/TimeComponent';
 /**
  * System responsible for updating the header text entity with current game status.
  */
-export class HeaderUpdateSystem extends System {
+export class HeaderViewSystem extends System {
     private simulationEcs: Ecs;
 
     /**
@@ -18,7 +18,7 @@ export class HeaderUpdateSystem extends System {
     public static HEADER_ENTITY_NAME = 'Header';
 
     /**
-     * Constructor for the HeaderUpdateSystem.
+     * Constructor for the HeaderViewSystem.
      * @param entityManager The entity manager to use for querying entities.
      * @param simulationEcs The simulation ECS instance to get header info from.
      */
@@ -30,7 +30,7 @@ export class HeaderUpdateSystem extends System {
     processEntity(entity: Entity): void {
         // Get the name component
         const nameComponent = entity.getComponent(NameComponent);
-        if (!nameComponent || nameComponent.getText() !== HeaderUpdateSystem.HEADER_ENTITY_NAME) return;
+        if (!nameComponent || nameComponent.getText() !== HeaderViewSystem.HEADER_ENTITY_NAME) return;
 
         // Get the text component
         const textComponent = entity.getComponent(TextComponent);
@@ -69,12 +69,12 @@ export class HeaderUpdateSystem extends System {
     }
 
     /**
-     * Creates a new instance of the HeaderUpdateSystem.
+     * Creates a new instance of the HeaderViewSystem.
      * @param entityManager The entity manager to use for querying entities.
      * @param simulationEcs The simulation ECS instance.
-     * @returns A new instance of the HeaderUpdateSystem.
+     * @returns A new instance of the HeaderViewSystem.
      */
-    static create(entityManager: EntityManager, simulationEcs: Ecs): HeaderUpdateSystem {
-        return new HeaderUpdateSystem(entityManager, simulationEcs);
+    static create(entityManager: EntityManager, simulationEcs: Ecs): HeaderViewSystem {
+        return new HeaderViewSystem(entityManager, simulationEcs);
     }
 }
