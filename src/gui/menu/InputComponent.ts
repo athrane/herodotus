@@ -21,4 +21,20 @@ export class InputComponent extends Component {
   setLastInput(input: string | null): void {
     this.lastInput = input;
   }
+
+  /**
+   * Clears the last user input.
+   */
+  clear(): void {
+    this.lastInput = null;
+  }
+
+  /**
+   * Checks if the last user input is defined.
+   * @returns True if last input is defined, false otherwise.
+   */
+  isDefined(): boolean {
+    return this.lastInput !== null;
+  }
+
 }

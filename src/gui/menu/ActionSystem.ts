@@ -6,9 +6,14 @@ import { ActionQueueComponent } from './ActionQueueComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { ScreensComponent } from './ScreensComponent';
 import { IsActiveScreenComponent } from '../rendering/IsActiveScreenComponent';
+import { PlayerComponent } from 'ecs/PlayerComponent';
+import { DilemmaComponent } from 'behaviour/DilemmaComponent';
+import { DataSetEventComponent } from 'data/DataSetEventComponent';
+import { DataSetEvent } from 'data/DataSetEvent';
+import { Ecs } from '../../ecs/Ecs';
 
 /*
- * Action system for handling user actions and updating the GUI.
+ * Controller system for handling user actions and updating the GUI.
  * Processes actions from the ActionQueueComponent and updates which screen is visible.
  * 
  * A screen is made visible by setting its IsVisibleComponent to true and adding IsActiveScreenComponent.
@@ -18,19 +23,23 @@ import { IsActiveScreenComponent } from '../rendering/IsActiveScreenComponent';
  * A screen is identified by a key in the ScreensComponent singleton, which maps to an entity ID.
  */
 export class ActionSystem extends System {
+  private readonly simulationEcs: Ecs;
 
   /**
    * Constructs the ActionSystem.
    * @param entityManager The entity manager for managing entities.
+   * @param simulationEcs The simulation ECS instance for accessing simulation state.
    */
-  constructor(entityManager: EntityManager) {
+  constructor(entityManager: EntityManager, simulationEcs: Ecs) {
     TypeUtils.ensureInstanceOf(entityManager, EntityManager);
+    TypeUtils.ensureInstanceOf(simulationEcs, Ecs);
     super(entityManager, [ActionQueueComponent]);
+    this.simulationEcs = simulationEcs;
   }
 
   /**
    * Updates the system by processing queued actions.
-   */   
+   */
   processEntity(entity: Entity): void {
     const actionQueueComponent = entity.getComponent(ActionQueueComponent);
     if (!actionQueueComponent) return;
@@ -66,10 +75,50 @@ export class ActionSystem extends System {
         this.setActiveScreen('chronicle');
         break;
       default:
+        if (actionId.startsWith('CHOICE_SELECT_')) {
+          this.handleMenuSelection(actionId);
+          break
+        }
+
         // unknown action - no-op
         break;
     }
   }
+
+  /**
+   * Handles a menu selection action.
+   * @param actionId The ID of the action to handle.
+   */
+  private handleMenuSelection(actionId: string): void {
+
+    // Find the player in the simulation
+    const simulationEntityManager = this.simulationEcs.getEntityManager();
+    const players = simulationEntityManager.getEntitiesWithComponents(PlayerComponent, DilemmaComponent, DataSetEventComponent);
+    if (players.length === 0) return;
+
+    // Get the first player entity
+    const player = players[0];
+
+    // Get the dilemma and data set event components
+    const dilemmaComponent = player.getComponent(DilemmaComponent);
+    if (!dilemmaComponent) return;
+
+    // Get the data set event component
+    const dataSetEventComponent = player.getComponent(DataSetEventComponent);
+    if (!dataSetEventComponent) return;
+
+    // Handle the menu selection
+    const choiceIndex = parseInt(actionId.split('_').pop() || '0');
+    const selectedChoice = dilemmaComponent.getChoice(choiceIndex);
+    if (!selectedChoice) return;
+
+    // Ensure the selected choice is a DataSetEvent
+    TypeUtils.ensureInstanceOf(selectedChoice, DataSetEvent, 'choice must be a DataSetEvent');
+
+    // Set the selected choice in the DataSetEventComponent
+    dataSetEventComponent.setDataSetEvent(selectedChoice);
+  }
+
 
   /**
    * Sets the active screen by name.
@@ -83,9 +132,9 @@ export class ActionSystem extends System {
     // Deactivate the current screen
     const activeScreenEntities = entityManager.getEntitiesWithComponents(IsActiveScreenComponent, IsVisibleComponent);
     if (activeScreenEntities.length > 0) {
-        const currentScreenEntity = activeScreenEntities[0];
-        currentScreenEntity.getComponent(IsVisibleComponent)?.setVisibility(false);
-        currentScreenEntity.removeComponent(IsActiveScreenComponent);
+      const currentScreenEntity = activeScreenEntities[0];
+      currentScreenEntity.getComponent(IsVisibleComponent)?.setVisibility(false);
+      currentScreenEntity.removeComponent(IsActiveScreenComponent);
     }
 
     // Activate the new screen
@@ -100,16 +149,17 @@ export class ActionSystem extends System {
 
     newScreenEntity.getComponent(IsVisibleComponent)?.setVisibility(true);
     if (!newScreenEntity.hasComponent(IsActiveScreenComponent)) {
-        newScreenEntity.addComponent(new IsActiveScreenComponent());
+      newScreenEntity.addComponent(new IsActiveScreenComponent());
     }
   }
 
   /**
    * Creates a new ActionSystem.
    * @param entityManager The entity manager for managing entities.
+   * @param simulationEcs The simulation ECS instance for accessing simulation state.
    * @returns A new instance of ActionSystem.
    */
-  static create(entityManager: EntityManager): ActionSystem {
-    return new ActionSystem(entityManager);
+  static create(entityManager: EntityManager, simulationEcs: Ecs): ActionSystem {
+    return new ActionSystem(entityManager, simulationEcs);
   }
 }

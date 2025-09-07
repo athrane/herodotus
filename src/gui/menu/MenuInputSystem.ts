@@ -6,7 +6,6 @@ import { InputComponent } from './InputComponent';
 import { MenuComponent } from './MenuComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { ActionQueueComponent } from './ActionQueueComponent';
-import { GuiHelper } from '../GuiHelper';
 
 /**
  * Processes user input for menu navigation and selection.
@@ -24,8 +23,8 @@ export class MenuInputSystem extends System {
 
     /**
      * Updates the system.
+     * @param entitys The entities to process.
      */
-     
     processEntity(entity: Entity): void {
         // Get the input component
         const inputComponent = this.getEntityManager().getSingletonComponent(InputComponent);
@@ -43,28 +42,28 @@ export class MenuInputSystem extends System {
         const menuComponent = entity.getComponent(MenuComponent);
         if (!menuComponent) return;
 
-        // Exit if input was processed by menu navigation 
-        const isMenuProcessed = this.hasProcessedInputWithMenuNavigation(lastInput, menuComponent);
-
-        // If menu was processed, then consume input and exit
-        if (isMenuProcessed) {
-            inputComponent.setLastInput(null);
+        // Pass input on for potential processing due to menu navigation
+        const isProcessedByMenu = this.processInputByMenuNavigation(lastInput, menuComponent);
+        if (isProcessedByMenu) {
+            inputComponent.clear();
             return;
         }
 
-        // Post action if input was not processed by menu navigation
-        this.postAction(lastInput, menuComponent);
-
-        // Consume input
-        inputComponent.setLastInput(null);
+        // Pass input on for potential processing by action
+        const isProcessedByAction = this.processInputByAction(lastInput, menuComponent);
+        if (isProcessedByAction) {
+            inputComponent.clear();
+            return;
+        }
     }
 
     /**
-     * Processes input with the active menu navigation
+     * Processes input with active menu navigation.
      * @param lastInput The last input received.
+     * @param menuComponent The menu component to navigate.
      * @returns True if the input was processed, false otherwise.
      */
-    hasProcessedInputWithMenuNavigation(lastInput: string, menuComponent: MenuComponent): boolean {
+    processInputByMenuNavigation(lastInput: string, menuComponent: MenuComponent): boolean {
         switch (lastInput) {
             case 'a':
             case 'left':
@@ -92,25 +91,28 @@ export class MenuInputSystem extends System {
     }
 
     /**
-     * Posts an action based on the last input and the menu component.
+     * Process input by action. 
+     * If input is processed then an action is posted based on the last input and the menu component.
      * @param lastInput The last input received.
      * @param menuComponent The menu component to check against.
+     * @returns True if the input was processed, false otherwise.
      */
-    postAction(lastInput: string, menuComponent: MenuComponent): void {
+    processInputByAction(lastInput: string, menuComponent: MenuComponent): boolean {
 
         // Check if the input matches any menu item hotkey
         const menuItems = menuComponent.getItems();
         const matchingItem = menuItems.find(item => item.getHotkey() === lastInput);
 
-        GuiHelper.postDebugText(this.getEntityManager(), "D1", `MenuInputSystem: lastInput='${lastInput}', matchingItem=${matchingItem ? matchingItem.getHotkey() : 'none'}`);
-
         // Exit if no matching item is found
-        if (!matchingItem) return;
+        if (!matchingItem) return false;
 
         // Add action to the queue
         const actionQueueComponent = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
-        if (!actionQueueComponent) return;
+        if (!actionQueueComponent) return false;
         actionQueueComponent.addAction(matchingItem.getActionID());
+
+        // Mark input as processed
+        return true;
     }
 
     /**

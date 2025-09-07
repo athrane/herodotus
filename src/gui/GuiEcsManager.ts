@@ -52,24 +52,24 @@ export class GuiEcsManager {
         const entityManager = this.ecs.getEntityManager();
 
         // Register all systems
-        // 1. Input processing first
+        // 1. Input processing 
         this.ecs.registerSystem(MenuInputSystem.create(entityManager));
 
-        // 2. Action handling
-        this.ecs.registerSystem(ActionSystem.create(entityManager));
-
-        // 3. Content updates
+        // 2. GUI Controller 
+        this.ecs.registerSystem(ActionSystem.create(entityManager, simulationEcs));
+        
+        // 3. GUI Views 
         this.ecs.registerSystem(HeaderUpdateSystem.create(entityManager, simulationEcs));
         this.ecs.registerSystem(FooterUpdateSystem.create(entityManager));
+        this.ecs.registerSystem(ChoiceMenuUpdateSystem.create(entityManager, simulationEcs.getEntityManager()));
+
+        // 4. Dynamic text and menu text updates
         this.ecs.registerSystem(DynamicTextUpdateSystem.create(entityManager, simulationEcs));
         this.ecs.registerSystem(MenuTextUpdateSystem.create(entityManager));
         this.ecs.registerSystem(ScrollableMenuTextUpdateSystem.create(entityManager));
-    this.ecs.registerSystem(ChoiceMenuUpdateSystem.create(entityManager, simulationEcs.getEntityManager()));
 
-        // 4. Buffer update
+        // 5. GUI rendering 
         this.ecs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
-
-        // 5. Final rendering
         this.ecs.registerSystem(ScreenBufferRenderSystem.create(entityManager));
     }
 
@@ -96,17 +96,17 @@ export class GuiEcsManager {
 
         // Create global GUI Header entity, positioned at the top
         const headerEntity = entityManager.createEntity();
-    headerEntity.addComponent(new NameComponent(HeaderUpdateSystem.HEADER_ENTITY_NAME));
-    headerEntity.addComponent(new PositionComponent(0, 0));
-    headerEntity.addComponent(IsVisibleComponent.createImmutable(true)); // Immutable visibility
-    headerEntity.addComponent(new TextComponent(''));
+        headerEntity.addComponent(new NameComponent(HeaderUpdateSystem.HEADER_ENTITY_NAME));
+        headerEntity.addComponent(new PositionComponent(0, 0));
+        headerEntity.addComponent(IsVisibleComponent.createImmutable(true)); // Immutable visibility
+        headerEntity.addComponent(new TextComponent(''));
 
         // Create global GUI Footer entity, positioned at the bottom
         const footerEntity = entityManager.createEntity();
-    footerEntity.addComponent(new NameComponent(FooterUpdateSystem.FOOTER_ENTITY_NAME));
-    footerEntity.addComponent(new PositionComponent(73, 23));
-    footerEntity.addComponent(IsVisibleComponent.createImmutable(true)); // Immutable visibility
-    footerEntity.addComponent(new TextComponent(''));
+        footerEntity.addComponent(new NameComponent(FooterUpdateSystem.FOOTER_ENTITY_NAME));
+        footerEntity.addComponent(new PositionComponent(73, 23));
+        footerEntity.addComponent(IsVisibleComponent.createImmutable(true)); // Immutable visibility
+        footerEntity.addComponent(new TextComponent(''));
 
         // Create main menu entity
         const mainMenuItems = [
@@ -116,45 +116,45 @@ export class GuiEcsManager {
             new MenuItem('Quit', 'NAV_QUIT', 'q')
         ];
         const mainMenuEntity = entityManager.createEntity();
-    mainMenuEntity.addComponent(new NameComponent('MainMenu'));
+        mainMenuEntity.addComponent(new NameComponent('MainMenu'));
         mainMenuEntity.addComponent(new MenuComponent(mainMenuItems));
         mainMenuEntity.addComponent(new TextComponent(''));
         mainMenuEntity.addComponent(new PositionComponent(0, 23));
-    mainMenuEntity.addComponent(IsVisibleComponent.create(true));
+        mainMenuEntity.addComponent(IsVisibleComponent.create(true));
 
         // Create choices screen entity (scrollable menu for dilemma choices)
         const VISIBLE_ITEMS_COUNT = 3;
         const choicesScreenEntity = entityManager.createEntity();
-    choicesScreenEntity.addComponent(new NameComponent('ChoicesScreen'));
+        choicesScreenEntity.addComponent(new NameComponent('ChoicesScreen'));
         // Initialize with empty menu items - ChoiceMenuSystem will populate them
         choicesScreenEntity.addComponent(ScrollableMenuComponent.create([], VISIBLE_ITEMS_COUNT));
         choicesScreenEntity.addComponent(new TextComponent(''));
         choicesScreenEntity.addComponent(new PositionComponent(0, 3));
-    choicesScreenEntity.addComponent(IsVisibleComponent.create(false));
+        choicesScreenEntity.addComponent(IsVisibleComponent.create(false));
 
         // Create status screen entity (dynamic text for status screen)
         const statusScreenEntity = entityManager.createEntity();
-    statusScreenEntity.addComponent(new NameComponent('StatusScreen'));
+        statusScreenEntity.addComponent(new NameComponent('StatusScreen'));
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         statusScreenEntity.addComponent(new DynamicTextComponent((_guiEntityManager, _simulationEntityManager) => {
             // Simple status text - can be enhanced later
             return `Simulation is ${this.simulation.getIsRunning() ? 'running' : 'stopped'}`;
         }));
-    statusScreenEntity.addComponent(new TextComponent(''));
-    statusScreenEntity.addComponent(new PositionComponent(0, 3));
-    statusScreenEntity.addComponent(IsVisibleComponent.create(false));
+        statusScreenEntity.addComponent(new TextComponent(''));
+        statusScreenEntity.addComponent(new PositionComponent(0, 3));
+        statusScreenEntity.addComponent(IsVisibleComponent.create(false));
 
         // Create chronicle screen entity (dynamic text for chronicle screen)
         const chronicleScreenEntity = entityManager.createEntity();
-    chronicleScreenEntity.addComponent(new NameComponent('ChronicleScreen'));
+        chronicleScreenEntity.addComponent(new NameComponent('ChronicleScreen'));
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         chronicleScreenEntity.addComponent(new DynamicTextComponent((guiEntityManager, simulationEntityManager) => {
             // Simple chronicle text - can be enhanced later
             return `Hello Chronicle`;
         }));
-    chronicleScreenEntity.addComponent(new TextComponent(''));
-    chronicleScreenEntity.addComponent(new PositionComponent(0, 3));
-    chronicleScreenEntity.addComponent(IsVisibleComponent.create(false));
+        chronicleScreenEntity.addComponent(new TextComponent(''));
+        chronicleScreenEntity.addComponent(new PositionComponent(0, 3));
+        chronicleScreenEntity.addComponent(IsVisibleComponent.create(false));
 
         // Map screen names to their primary interactive entities
         const screensComponent = ScreensComponent.create()
@@ -197,6 +197,8 @@ export class GuiEcsManager {
         let line = 15;
         GuiHelper.createDebugEntity(entityManager, 'D1', 0, line++);
         GuiHelper.createDebugEntity(entityManager, 'D2', 0, line++);
+        GuiHelper.createDebugEntity(entityManager, 'D3', 0, line++);
+
     }
 
     /**
