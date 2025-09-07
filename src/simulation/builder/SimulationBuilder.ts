@@ -1,4 +1,4 @@
-import { Builder } from './Builder';
+import { Builder } from '../../ecs/builder/Builder';
 import { Simulation } from '../Simulation';
 import { WorldGenerator } from '../../generator/world/WorldGenerator';
 import { Time } from '../../time/Time';
@@ -137,7 +137,7 @@ export class SimulationBuilder extends Builder {
     /**
      * @override
      */
-    buildGeographicalFeatures(): void {
+    buildComponents(): void {
         GeographicalFeaturesFactory.create();
     }
 

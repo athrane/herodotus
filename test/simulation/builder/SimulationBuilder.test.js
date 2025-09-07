@@ -74,8 +74,8 @@ describe('SimulationBuilder', () => {
         expect(systemManager.register).toHaveBeenCalledWith(expect.any(DilemmaResolutionSystem));
     });
 
-    it('should have an empty buildGeographicalFeatures method', () => {
-        expect(builder.buildGeographicalFeatures()).toBeUndefined();
+    it('should have an empty buildComponents method', () => {
+        expect(builder.buildComponents()).toBeUndefined();
     });
 
     it('should load data in buildData and attach DataSetComponent in buildEntities', () => {

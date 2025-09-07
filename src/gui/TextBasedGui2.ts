@@ -3,6 +3,7 @@ import { Simulation } from '../simulation/Simulation';
 import { GuiEcsManager } from './GuiEcsManager';
 import { TypeUtils } from '../util/TypeUtils';
 import { InputComponent } from './view/InputComponent';
+import { Ecs } from '../ecs/Ecs';
 
 /**
  * A text-based GUI using a separate ECS system for screen management.
@@ -31,8 +32,9 @@ export class TextBasedGui2 {
     /**
      * Creates an instance of TextBasedGui2.
      * @param simulation The simulation instance to associate with the GUI.
+     * @param guiEcs Optional pre-built GUI ECS instance.
      */
-    constructor(simulation: Simulation) {
+    constructor(simulation: Simulation, guiEcs?: Ecs) {
         TypeUtils.ensureInstanceOf(simulation, Simulation, "Expected simulation to be an instance of Simulation");
         this.simulation = simulation;
 
@@ -47,8 +49,8 @@ export class TextBasedGui2 {
             process.stdin.setRawMode(true);
         }
 
-        // Initialize the GUI ECS
-        this.guiEcsManager = new GuiEcsManager(this.simulation);
+        // Initialize the GUI ECS with optional pre-built ECS
+        this.guiEcsManager = new GuiEcsManager(this.simulation, guiEcs);
     }
 
     /**
@@ -266,8 +268,10 @@ export class TextBasedGui2 {
 
     /**
      * Creates a new instance of TextBasedGui2.
+     * @param simulation The simulation instance to associate with the GUI.
+     * @param guiEcs Optional pre-built GUI ECS instance.
      */
-    static create(simulation: Simulation): TextBasedGui2 {
-        return new TextBasedGui2(simulation);
+    static create(simulation: Simulation, guiEcs?: Ecs): TextBasedGui2 {
+        return new TextBasedGui2(simulation, guiEcs);
     }
 }

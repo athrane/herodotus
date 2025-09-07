@@ -1,97 +1,102 @@
-import { Ecs } from '../ecs/Ecs';
-import { NameComponent } from '../ecs/NameComponent';
-import { Simulation } from '../simulation/Simulation';
-import { TypeUtils } from '../util/TypeUtils';
-import { ScreenBufferRenderSystem } from './rendering/ScreenBufferRenderSystem';
-import { ScreenBufferComponent } from './rendering/ScreenBufferComponent';
-import { PositionComponent } from './rendering/PositionComponent';
-import { IsVisibleComponent } from './rendering/IsVisibleComponent';
-import { TextComponent } from './rendering/TextComponent';
-import { DynamicTextComponent } from './rendering/DynamicTextComponent';
-import { ScreenBufferTextUpdateSystem } from './rendering/ScreenBufferTextUpdateSystem';
-import { HeaderViewSystem } from './view/HeaderViewSystem';
-import { FooterViewSystem } from './view/FooterViewSystem';
-import { DynamicTextUpdateSystem } from './rendering/DynamicTextUpdateSystem';
-import { MenuComponent } from './menu/MenuComponent';
-import { MenuItem } from './menu/MenuItem';
-import { InputComponent } from './view/InputComponent';
-import { MainControllerSystem } from './controller/MainControllerSystem';
-import { ActionQueueComponent } from './controller/ActionQueueComponent';
-import { InputSystem } from './view/InputSystem';
-import { MenuTextUpdateSystem } from './menu/MenuTextUpdateSystem';
-import { ScrollableMenuTextUpdateSystem } from './menu/ScrollableMenuTextUpdateSystem';
-import { ChoiceMenuViewSystem } from './view/ChoiceMenuViewSystem';
-import { ScrollableMenuComponent } from './menu/ScrollableMenuComponent';
-import { GuiHelper } from './GuiHelper';
-import { ScreensComponent } from './menu/ScreensComponent';
+import { Builder } from '../../ecs/builder/Builder';
+import { Simulation } from '../../simulation/Simulation';
+import { Ecs } from '../../ecs/Ecs';
+import { TypeUtils } from '../../util/TypeUtils';
+import { NameComponent } from '../../ecs/NameComponent';
+import { ScreenBufferRenderSystem } from '../rendering/ScreenBufferRenderSystem';
+import { ScreenBufferComponent } from '../rendering/ScreenBufferComponent';
+import { PositionComponent } from '../rendering/PositionComponent';
+import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
+import { TextComponent } from '../rendering/TextComponent';
+import { DynamicTextComponent } from '../rendering/DynamicTextComponent';
+import { ScreenBufferTextUpdateSystem } from '../rendering/ScreenBufferTextUpdateSystem';
+import { HeaderViewSystem } from '../view/HeaderViewSystem';
+import { FooterViewSystem } from '../view/FooterViewSystem';
+import { DynamicTextUpdateSystem } from '../rendering/DynamicTextUpdateSystem';
+import { MenuComponent } from '../menu/MenuComponent';
+import { MenuItem } from '../menu/MenuItem';
+import { InputComponent } from '../view/InputComponent';
+import { MainControllerSystem } from '../controller/MainControllerSystem';
+import { ActionQueueComponent } from '../controller/ActionQueueComponent';
+import { InputSystem } from '../view/InputSystem';
+import { MenuTextUpdateSystem } from '../menu/MenuTextUpdateSystem';
+import { ScrollableMenuTextUpdateSystem } from '../menu/ScrollableMenuTextUpdateSystem';
+import { ChoiceMenuViewSystem } from '../view/ChoiceMenuViewSystem';
+import { ScrollableMenuComponent } from '../menu/ScrollableMenuComponent';
+import { GuiHelper } from '../GuiHelper';
+import { ScreensComponent } from '../menu/ScreensComponent';
 
 /**
- * Manages a separate ECS instance specifically for GUI components and systems.
- * This allows the GUI to have its own update frequency independent of the simulation.
+ * GuiBuilder class is responsible for building a GUI ECS system.
+ * It extends the Builder to create a GUI with ECS components.
+ * 
+ * @class GuiBuilder
+ * @extends {Builder}
  */
-export class GuiEcsManager {
-    private readonly ecs: Ecs;
-    private readonly simulation: Simulation;
-    private guiUpdateInterval: NodeJS.Timeout | null = null;
-    private isRunning: boolean = false;
+export class GuiBuilder extends Builder {
+    private simulation: Simulation;
+    private guiEcs: Ecs | null = null;
 
     /**
-     * Name of the Debug entity.
+     * Creates a new instance of GuiBuilder.
+     * @param simulation The simulation instance for the GUI to interact with.
      */
-    public static DEBUG_ENTITY_NAME = 'Debug';
-
-    constructor(simulation: Simulation, guiEcs?: Ecs) {
+    constructor(simulation: Simulation) {
+        super();
         TypeUtils.ensureInstanceOf(simulation, Simulation, "Expected simulation to be an instance of Simulation");
         this.simulation = simulation;
-
-        // Use provided ECS or create separate ECS instance for GUI
-        this.ecs = guiEcs || Ecs.create();
-        
-        // Only register systems if no ECS was provided (backward compatibility)
-        if (!guiEcs) {
-            const simulationEcs = this.simulation.getEcs();
-            const entityManager = this.ecs.getEntityManager();
-
-            // Register all systems
-            // 1. Input processing 
-            this.ecs.registerSystem(InputSystem.create(entityManager));
-
-            // 2. GUI Controller 
-            this.ecs.registerSystem(MainControllerSystem.create(entityManager, simulationEcs));
-
-            // 3. GUI Views (dynamic content updates)
-            this.ecs.registerSystem(HeaderViewSystem.create(entityManager, simulationEcs));
-            this.ecs.registerSystem(FooterViewSystem.create(entityManager));
-            this.ecs.registerSystem(ChoiceMenuViewSystem.create(entityManager, simulationEcs.getEntityManager()));
-
-            // 4. Dynamic text and menu text updates
-            this.ecs.registerSystem(DynamicTextUpdateSystem.create(entityManager, simulationEcs));
-            this.ecs.registerSystem(MenuTextUpdateSystem.create(entityManager));
-            this.ecs.registerSystem(ScrollableMenuTextUpdateSystem.create(entityManager));
-
-            // 5. GUI rendering 
-            this.ecs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
-            this.ecs.registerSystem(ScreenBufferRenderSystem.create(entityManager));
-        }
     }
 
     /**
-     * Initializes the GUI ECS system.
-     * If entities are already created (e.g., by GuiBuilder), this method does nothing.
+     * @override
      */
-    initialize(): void {
-        const entityManager = this.ecs.getEntityManager();
+    build(): void {
+        // Create separate ECS instance for GUI
+        this.guiEcs = Ecs.create();
+    }
 
-        // Check if entities are already created (by GuiBuilder)
-        const existingScreenBuffer = entityManager.getEntitiesWithComponents().find(entity => {
-            const nameComponent = entity.getComponent(NameComponent);
-            return nameComponent && nameComponent.getText() === 'ScreenBuffer';
-        });
-
-        if (existingScreenBuffer) {
-            // Entities already created, skip initialization
-            return;
+    /**
+     * @override
+     */
+    buildSystems(): void {
+        if (!this.guiEcs) {
+            throw new Error("GUI ECS not initialized. Call build() first.");
         }
+
+        const simulationEcs = this.simulation.getEcs();
+        const entityManager = this.guiEcs.getEntityManager();
+
+        // Register all systems
+        // 1. Input processing 
+        this.guiEcs.registerSystem(InputSystem.create(entityManager));
+
+        // 2. GUI Controller 
+        this.guiEcs.registerSystem(MainControllerSystem.create(entityManager, simulationEcs));
+
+        // 3. GUI Views (dynamic content updates)
+        this.guiEcs.registerSystem(HeaderViewSystem.create(entityManager, simulationEcs));
+        this.guiEcs.registerSystem(FooterViewSystem.create(entityManager));
+        this.guiEcs.registerSystem(ChoiceMenuViewSystem.create(entityManager, simulationEcs.getEntityManager()));
+
+        // 4. Dynamic text and menu text updates
+        this.guiEcs.registerSystem(DynamicTextUpdateSystem.create(entityManager, simulationEcs));
+        this.guiEcs.registerSystem(MenuTextUpdateSystem.create(entityManager));
+        this.guiEcs.registerSystem(ScrollableMenuTextUpdateSystem.create(entityManager));
+
+        // 5. GUI rendering 
+        this.guiEcs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
+        this.guiEcs.registerSystem(ScreenBufferRenderSystem.create(entityManager));
+    }
+
+    /**
+     * @override
+     */
+    buildEntities(): void {
+        if (!this.guiEcs) {
+            throw new Error("GUI ECS not initialized. Call build() first.");
+        }
+
+        const entityManager = this.guiEcs.getEntityManager();
 
         // Create screen buffer entity
         const screenBufferEntity = entityManager.createEntity();
@@ -212,75 +217,47 @@ export class GuiEcsManager {
         GuiHelper.createDebugEntity(entityManager, 'D1', 0, line++);
         GuiHelper.createDebugEntity(entityManager, 'D2', 0, line++);
         GuiHelper.createDebugEntity(entityManager, 'D3', 0, line++);
-
     }
 
     /**
-     * Starts the GUI ECS update loop with its own frequency.
-     * @param updateFrequencyMs - Update frequency in milliseconds
+     * @override
      */
-    start(updateFrequencyMs: number): void {
-        // Stop any existing interval before starting a new one
-        if (this.guiUpdateInterval) {
-            clearInterval(this.guiUpdateInterval);
-            this.guiUpdateInterval = null;
+    buildData(): void {
+        // No data loading needed for GUI
+    }
+
+    /**
+     * @override
+     */
+    buildComponents(): void {
+        // No additional components needed for GUI
+    }
+
+    /**
+     * Returns the simulation instance (unchanged).
+     * @returns The simulation instance.
+     */
+    getSimulation(): Simulation {
+        return this.simulation;
+    }
+
+    /**
+     * Returns the built GUI ECS instance.
+     * @returns The GUI ECS instance.
+     */
+    getGuiEcs(): Ecs {
+        if (!this.guiEcs) {
+            throw new Error("GUI ECS not initialized. Call build() first.");
         }
-
-        this.isRunning = true;
-
-        // Start the GUI update loop
-        this.guiUpdateInterval = setInterval(() => {
-            if (this.isRunning) {
-                this.ecs.update();
-            }
-        }, updateFrequencyMs);
+        return this.guiEcs;
     }
 
     /**
-     * Stops the GUI ECS system.
+     * Static factory method to create a new instance of GuiBuilder.
+     * @param simulation The simulation instance for the GUI to interact with.
+     * @returns A new GuiBuilder instance.
      */
-    stop(): void {
-        this.isRunning = false;
-        if (this.guiUpdateInterval) {
-            clearInterval(this.guiUpdateInterval);
-            this.guiUpdateInterval = null;
-        }
+    static create(simulation: Simulation): GuiBuilder {
+        return new GuiBuilder(simulation);
     }
-
-    /**
-     * Gets the GUI ECS instance.
-     */
-    getEcs(): Ecs {
-        return this.ecs;
-    }
-
-    /**
-     * Gets the action system.
-     */
-    getActionSystem(): MainControllerSystem | undefined {
-        return this.ecs.getSystemManager().get('MainControllerSystem') as MainControllerSystem | undefined;
-    }
-
-    /**
-     * Convenience method used by TESTS to set the active screen by delegating to the ActionSystem.
-     * @param screenName The name of the screen to activate
-     */
-    setActiveScreen(screenName: string): void {
-        const actionSystem = this.getActionSystem();
-        if (actionSystem) {
-            actionSystem.setActiveScreen(screenName);
-        }
-    }
-
-    /**
-     * Convenience method used by TESTS to gets the entity ID for a screen by name.
-     * Retrieves the screen entity ID from the ScreensComponent entity.
-     * @param screenName The name of the screen to get the entity ID for
-     * @returns The entity ID if found, undefined otherwise
-     */
-    getScreenEntityId(screenName: string): string | undefined {
-        const screensComponent = this.ecs.getEntityManager().getSingletonComponent(ScreensComponent);
-        return screensComponent?.getScreen(screenName);
-    }
-
 }

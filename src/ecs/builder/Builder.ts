@@ -1,9 +1,9 @@
-import { Simulation } from '../Simulation';
+import { Simulation } from '../../simulation/Simulation';
 
 /**
  * Builder class is an abstract base class for building simulations.
  * It defines the methods that must be implemented by subclasses to build
- * entities, systems, and geographical features in a simulation.
+ * entities, systems, and components in a simulation.
  * @abstract
  * @class Builder
  */
@@ -33,10 +33,10 @@ export abstract class Builder {
     abstract buildData(): void;
 
     /**
-     * Builds geographical features for the simulation.
+     * Builds additional components and resources for the simulation.
      * @abstract
      */
-    abstract buildGeographicalFeatures(): void;
+    abstract buildComponents(): void;
 
     /**
      * Returns the built simulation instance.

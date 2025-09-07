@@ -1,6 +1,7 @@
 import { LogHelper } from './util/log/LogHelper';
-import { SimulationDirector } from './simulation/builder/SimulationDirector';
+import { BuilderDirector } from './ecs/builder/BuilderDirector';
 import { SimulationBuilder } from './simulation/builder/SimulationBuilder';
+import { GuiBuilder } from './gui/builder/GuiBuilder';
 import { WorldComponent } from './geography/WorldComponent';
 import { TextBasedGui2 } from './gui/TextBasedGui2';
 
@@ -12,8 +13,8 @@ async function mainWithGUI(): Promise<void> {
   console.log('Starting Herodotus Interactive Simulation...');
   
   // create simulation
-  const director = SimulationDirector.create(SimulationBuilder.create());
-  const simulation = director.build();
+  const simulationDirector = BuilderDirector.create(SimulationBuilder.create());
+  const simulation = simulationDirector.build();
 
   // log the world details
   const entityManager = simulation.getEntityManager();
@@ -22,8 +23,14 @@ async function mainWithGUI(): Promise<void> {
     LogHelper.logWorldDetails(worldComponent.get());
   }
 
-  // Create and start the GUI
-  const gui = TextBasedGui2.create(simulation);
+  // create GUI ECS
+  const guiBuilder = GuiBuilder.create(simulation);
+  const guiDirector = BuilderDirector.create(guiBuilder);
+  guiDirector.build();
+  const guiEcs = guiBuilder.getGuiEcs();
+
+  // Create and start the GUI with pre-built ECS
+  const gui = TextBasedGui2.create(simulation, guiEcs);
   
   try {
     await gui.start();

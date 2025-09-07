@@ -1,5 +1,5 @@
 import { LogHelper } from './util/log/LogHelper';
-import { SimulationDirector } from './simulation/builder/SimulationDirector';
+import { BuilderDirector } from './ecs/builder/BuilderDirector';
 import { SimulationBuilder } from './simulation/builder/SimulationBuilder';
 import { WorldComponent } from './geography/WorldComponent';
 import { ChronicleComponent } from './chronicle/ChronicleComponent';
@@ -9,7 +9,7 @@ import { ChronicleComponent } from './chronicle/ChronicleComponent';
  */
 function main(): void {
   // create simulation
-  const director = SimulationDirector.create(SimulationBuilder.create());
+  const director = BuilderDirector.create(SimulationBuilder.create());
   const simulation = director.build();
 
   // log the world details

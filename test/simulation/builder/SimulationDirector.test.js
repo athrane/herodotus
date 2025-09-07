@@ -14,7 +14,7 @@ describe('SimulationDirector', () => {
             buildData: jest.fn(),
             buildEntities: jest.fn(),
             buildSystems: jest.fn(),
-            buildGeographicalFeatures: jest.fn(),
+            buildComponents: jest.fn(),
             getSimulation: jest.fn().mockReturnValue(simulationInstance),
             simulation: null
         };
@@ -29,12 +29,12 @@ describe('SimulationDirector', () => {
         expect(mockBuilder.buildData).toHaveBeenCalledTimes(1);
         expect(mockBuilder.buildSystems).toHaveBeenCalledTimes(1);
         expect(mockBuilder.buildEntities).toHaveBeenCalledTimes(1);
-        expect(mockBuilder.buildGeographicalFeatures).toHaveBeenCalledTimes(1);
+        expect(mockBuilder.buildComponents).toHaveBeenCalledTimes(1);
 
         // Verify the order of calls
         expect(mockBuilder.build.mock.invocationCallOrder[0]).toBeLessThan(mockBuilder.buildData.mock.invocationCallOrder[0]);
-        expect(mockBuilder.buildData.mock.invocationCallOrder[0]).toBeLessThan(mockBuilder.buildGeographicalFeatures.mock.invocationCallOrder[0]);
-        expect(mockBuilder.buildGeographicalFeatures.mock.invocationCallOrder[0]).toBeLessThan(mockBuilder.buildSystems.mock.invocationCallOrder[0]);
+        expect(mockBuilder.buildData.mock.invocationCallOrder[0]).toBeLessThan(mockBuilder.buildComponents.mock.invocationCallOrder[0]);
+        expect(mockBuilder.buildComponents.mock.invocationCallOrder[0]).toBeLessThan(mockBuilder.buildSystems.mock.invocationCallOrder[0]);
         expect(mockBuilder.buildSystems.mock.invocationCallOrder[0]).toBeLessThan(mockBuilder.buildEntities.mock.invocationCallOrder[0]);
     });
 

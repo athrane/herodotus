@@ -1,4 +1,4 @@
-import { Builder } from './Builder';
+import { Builder } from '../../ecs/builder/Builder';
 import { Simulation } from '../Simulation';
 
 /**
@@ -26,7 +26,7 @@ export class SimulationDirector {
     build(): Simulation {
         this.builder.build();
         this.builder.buildData();
-        this.builder.buildGeographicalFeatures();
+        this.builder.buildComponents();
         this.builder.buildSystems();
         this.builder.buildEntities();
         return this.builder.getSimulation();
