@@ -1,4 +1,5 @@
 import { SimulationBuilder } from '../../../src/simulation/builder/SimulationBuilder.ts';
+import { Simulation } from '../../../src/simulation/Simulation.ts';
 import { NameComponent } from '../../../src/ecs/NameComponent.ts';
 import { HistoricalFigureComponent } from '../../../src/historicalfigure/HistoricalFigureComponent.ts';
 import { DataSetEventComponent } from '../../../src/data/DataSetEventComponent.ts';
@@ -12,7 +13,8 @@ describe('Player Entity Integration', () => {
         builder.build();
         builder.buildData();
         builder.buildEntities();
-        simulation = builder.getSimulation();
+        const ecs = builder.getEcs();
+        simulation = Simulation.create(ecs);
     });
 
     it('should create a dedicated Player entity with required components', () => {

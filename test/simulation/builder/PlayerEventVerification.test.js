@@ -1,4 +1,5 @@
 import { SimulationBuilder } from '../../../src/simulation/builder/SimulationBuilder.ts';
+import { Simulation } from '../../../src/simulation/Simulation.ts';
 import { NameComponent } from '../../../src/ecs/NameComponent.ts';
 import { DataSetEventComponent } from '../../../src/data/DataSetEventComponent.ts';
 
@@ -11,7 +12,8 @@ describe('Player Initial Event Verification', () => {
         builder.build();
         builder.buildData();
         builder.buildEntities();
-        simulation = builder.getSimulation();
+        const ecs = builder.getEcs();
+        simulation = Simulation.create(ecs);
     });
 
     it('should create Player entity with complete DataSetEvent fields', () => {

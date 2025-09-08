@@ -26,7 +26,8 @@ describe('GuiEcsManager', () => {
 
   beforeEach(() => {
     // Create a real simulation instance instead of mock
-    mockSimulation = Simulation.create();
+    const ecs = Ecs.create();
+    mockSimulation = Simulation.create(ecs);
 
     guiEcsManager = new GuiEcsManager(mockSimulation);
   });

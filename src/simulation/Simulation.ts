@@ -13,9 +13,10 @@ export class Simulation {
 
     /**
      * Creates an instance of Simulation.
+     * @param ecs The Ecs instance to be used by this simulation.
      */
-    constructor() {
-        this.ecs = Ecs.create();
+    constructor(ecs: Ecs) {
+        this.ecs = ecs;
         this.isRunning = false;
         this.lastTickTime = 0;
     }
@@ -99,10 +100,10 @@ export class Simulation {
 
     /**
      * Creates a new instance of Simulation.
-     * This static factory method provides a standardized way to construct Simulation objects.
+     * @param ecs The Ecs instance to use for the simulation.
      * @returns A new Simulation instance.
      */ 
-    static create(): Simulation {
-        return new Simulation();
+    static create(ecs: Ecs): Simulation {
+        return new Simulation(ecs);
     }
 }

@@ -372,6 +372,43 @@ This section lists exported classes found in the codebase grouped by area (file 
 - `src/ecs/NameComponent.ts` — Component storing a human-readable name
 - `src/ecs/PlayerComponent.ts` — Marks an entity as the player
 
+##### Builder Pattern Classes
+The Herodotus project uses the Builder pattern to construct complex ECS instances with proper dependency management and construction order. The builder architecture provides a structured way to create simulation and GUI instances with all required components, systems, and entities.
+
+**Core Builder Classes:**
+- `src/ecs/builder/Builder.ts` — Abstract base class defining the builder interface for ECS construction with methods for building entities, systems, components, and data
+- `src/ecs/builder/BuilderDirector.ts` — Director class that orchestrates the building process by coordinating the execution order of builder methods (`build()`, `buildData()`, `buildComponents()`, `buildSystems()`, `buildEntities()`)
+
+**Simulation Builder:**
+- `src/simulation/builder/SimulationBuilder.ts` — Concrete builder implementation for creating simulation ECS instances with world generation, historical figures, time systems, player entities, and dilemma management
+
+**GUI Builder:**
+- `src/gui/builder/GuiBuilder.ts` — Concrete builder implementation for creating GUI ECS instances with screen management, input handling, rendering systems, and menu components that integrate with a simulation ECS instance
+
+**Architecture Benefits:**
+- **Separation of Concerns**: Each builder handles construction of a specific domain (simulation vs. GUI)
+- **Proper Initialization Order**: Director ensures components are built before systems that depend on them
+- **Dependency Injection**: GUI builder accepts simulation ECS instance for integration
+- **Extensibility**: New builders can be created by extending the abstract Builder class
+- **Testability**: Individual builders can be tested in isolation with mock dependencies
+
+**Usage Example:**
+```typescript
+// Create simulation
+const simBuilder = SimulationBuilder.create();
+simBuilder.build();
+simBuilder.buildData();
+simBuilder.buildComponents();
+simBuilder.buildSystems();
+simBuilder.buildEntities();
+const simulationEcs = simBuilder.getEcs();
+
+// Create GUI with simulation integration
+const guiBuilder = GuiBuilder.create(simulationEcs);
+const guiDirector = BuilderDirector.create(guiBuilder);
+const guiEcs = guiDirector.build();
+```
+
 ##### Component matching and inheritance
 Entity component queries now use instanceof semantics with an exact-match preference:
 - `Entity.hasComponent(Base)` returns true if the entity has a `Base` component or any subclass instance.
@@ -413,7 +450,6 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 #### Simulation & Time
 - `src/simulation/Simulation.ts` — Main simulation (run loop and global state)
 - `src/simulation/builder/SimulationBuilder.ts` — Builder for simulation instances
-- `src/simulation/builder/SimulationDirector.ts` — High-level construction orchestration
 - `src/time/Time.ts` — Simulation time model
 - `src/time/TimeComponent.ts` — Component holding current time state
 - `src/time/TimeSystem.ts` — System advancing simulation time

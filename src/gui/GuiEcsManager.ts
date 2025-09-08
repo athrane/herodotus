@@ -40,44 +40,58 @@ export class GuiEcsManager {
      */
     public static DEBUG_ENTITY_NAME = 'Debug';
 
-    constructor(simulation: Simulation) {
+    constructor(simulation: Simulation, guiEcs?: Ecs) {
         TypeUtils.ensureInstanceOf(simulation, Simulation, "Expected simulation to be an instance of Simulation");
         this.simulation = simulation;
 
-        // Create separate ECS instance for GUI
-        this.ecs = Ecs.create();
-        const simulationEcs = this.simulation.getEcs();
+        // Use provided ECS or create separate ECS instance for GUI
+        this.ecs = guiEcs || Ecs.create();
+        
+        // Only register systems if no ECS was provided (backward compatibility)
+        if (!guiEcs) {
+            const simulationEcs = this.simulation.getEcs();
+            const entityManager = this.ecs.getEntityManager();
 
-        // Create and register ECS systems
-        const entityManager = this.ecs.getEntityManager();
+            // Register all systems
+            // 1. Input processing 
+            this.ecs.registerSystem(InputSystem.create(entityManager));
 
-        // Register all systems
-        // 1. Input processing 
-        this.ecs.registerSystem(InputSystem.create(entityManager));
+            // 2. GUI Controller 
+            this.ecs.registerSystem(MainControllerSystem.create(entityManager, simulationEcs));
 
-        // 2. GUI Controller 
-        this.ecs.registerSystem(MainControllerSystem.create(entityManager, simulationEcs));
+            // 3. GUI Views (dynamic content updates)
+            this.ecs.registerSystem(HeaderViewSystem.create(entityManager, simulationEcs));
+            this.ecs.registerSystem(FooterViewSystem.create(entityManager));
+            this.ecs.registerSystem(ChoiceMenuViewSystem.create(entityManager, simulationEcs.getEntityManager()));
 
-        // 3. GUI Views (dynamic content updates)
-        this.ecs.registerSystem(HeaderViewSystem.create(entityManager, simulationEcs));
-        this.ecs.registerSystem(FooterViewSystem.create(entityManager));
-        this.ecs.registerSystem(ChoiceMenuViewSystem.create(entityManager, simulationEcs.getEntityManager()));
+            // 4. Dynamic text and menu text updates
+            this.ecs.registerSystem(DynamicTextUpdateSystem.create(entityManager, simulationEcs));
+            this.ecs.registerSystem(MenuTextUpdateSystem.create(entityManager));
+            this.ecs.registerSystem(ScrollableMenuTextUpdateSystem.create(entityManager));
 
-        // 4. Dynamic text and menu text updates
-        this.ecs.registerSystem(DynamicTextUpdateSystem.create(entityManager, simulationEcs));
-        this.ecs.registerSystem(MenuTextUpdateSystem.create(entityManager));
-        this.ecs.registerSystem(ScrollableMenuTextUpdateSystem.create(entityManager));
-
-        // 5. GUI rendering 
-        this.ecs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
-        this.ecs.registerSystem(ScreenBufferRenderSystem.create(entityManager));
+            // 5. GUI rendering 
+            this.ecs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
+            this.ecs.registerSystem(ScreenBufferRenderSystem.create(entityManager));
+        }
     }
 
     /**
      * Initializes the GUI ECS system.
+     * If entities are already created (e.g., by GuiBuilder), this method does nothing.
      */
     initialize(): void {
         const entityManager = this.ecs.getEntityManager();
+
+        // Check if entities are already created (by GuiBuilder)
+        const existingScreenBuffer = entityManager.getEntitiesWithComponents().find(entity => {
+            const nameComponent = entity.getComponent(NameComponent);
+            return nameComponent && nameComponent.getText() === 'ScreenBuffer';
+        });
+
+        if (existingScreenBuffer) {
+            // Entities already created, skip initialization
+            return;
+        }
 
         // Create screen buffer entity
         const screenBufferEntity = entityManager.createEntity();

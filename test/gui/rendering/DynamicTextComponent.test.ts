@@ -1,10 +1,12 @@
 import { DynamicTextComponent } from '../../../src/gui/rendering/DynamicTextComponent';
 import { Simulation } from '../../../src/simulation/Simulation';
 import { EntityManager } from '../../../src/ecs/EntityManager';
+import { Ecs } from '../../../src/ecs/Ecs';
 
 describe('DynamicTextComponent', () => {
   test('getText is called with entity managers and returns expected string', () => {
-    const sim = Simulation.create();
+    const ecs = Ecs.create();
+    const sim = Simulation.create(ecs);
     const guiEM = EntityManager.create();
     const simEM = sim.getEntityManager();
 

@@ -1,16 +1,21 @@
 import { LogHelper } from './util/log/LogHelper';
-import { SimulationDirector } from './simulation/builder/SimulationDirector';
+import { BuilderDirector } from './ecs/builder/BuilderDirector';
 import { SimulationBuilder } from './simulation/builder/SimulationBuilder';
 import { WorldComponent } from './geography/WorldComponent';
 import { ChronicleComponent } from './chronicle/ChronicleComponent';
+import { Simulation } from 'simulation/Simulation';
 
 /**
  * The main entry point for the chronicle generation application.
  */
 function main(): void {
+
+  // create simulation ECS
+  const director = BuilderDirector.create(SimulationBuilder.create());
+  const simulationEcs = director.build();
+
   // create simulation
-  const director = SimulationDirector.create(SimulationBuilder.create());
-  const simulation = director.build();
+  const simulation = Simulation.create(simulationEcs);
 
   // log the world details
   const entityManager = simulation.getEntityManager();

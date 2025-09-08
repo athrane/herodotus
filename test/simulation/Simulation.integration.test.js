@@ -1,10 +1,27 @@
 import { Simulation } from '../../src/simulation/Simulation.ts';
-import { SimulationDirector } from '../../src/simulation/builder/SimulationDirector.ts';
 import { SimulationBuilder } from '../../src/simulation/builder/SimulationBuilder.ts';
+import { GeographicalFeatureTypeRegistry } from '../../src/geography/GeographicalFeatureTypeRegistry.ts';
 
 describe('Simulation integration (no mocks)', () => {
+  beforeEach(() => {
+    // Clear registry state between tests to avoid conflicts
+    GeographicalFeatureTypeRegistry.clear();
+  });
+
+  afterEach(() => {
+    // Clean up registry after each test
+    GeographicalFeatureTypeRegistry.clear();
+  });
+
   it('should run and stop a real simulation', () => {
-    const simulation = Simulation.create();
+    const builder = SimulationBuilder.create();
+    builder.build();
+    builder.buildData();
+    builder.buildComponents();
+    builder.buildSystems();
+    builder.buildEntities();
+    const ecs = builder.getEcs();
+    const simulation = Simulation.create(ecs);
 
     // Should not be running initially
     expect(simulation.getIsRunning()).toBe(false);
@@ -22,7 +39,14 @@ describe('Simulation integration (no mocks)', () => {
   });
 
   it('should allow multiple start/stop cycles', () => {
-    const simulation = Simulation.create();
+    const builder = SimulationBuilder.create();
+    builder.build();
+    builder.buildData();
+    builder.buildComponents();
+    builder.buildSystems();
+    builder.buildEntities();
+    const ecs = builder.getEcs();
+    const simulation = Simulation.create(ecs);
     for (let cycle = 0; cycle < 3; cycle++) {
       simulation.start();
       expect(simulation.getIsRunning()).toBe(true);
@@ -33,8 +57,14 @@ describe('Simulation integration (no mocks)', () => {
   });
 
   it('should build and run the simulation', () => {
-    const director = SimulationDirector.create(SimulationBuilder.create());
-    const simulation = director.build();
+    const builder = SimulationBuilder.create();
+    builder.build();
+    builder.buildData();
+    builder.buildComponents();
+    builder.buildSystems();
+    builder.buildEntities();
+    const ecs = builder.getEcs();
+    const simulation = Simulation.create(ecs);
 
     expect(simulation).toBeDefined();
     expect(typeof simulation.start).toBe('function');
@@ -52,7 +82,14 @@ describe('Simulation integration (no mocks)', () => {
   });
 
   it('should simulate 5 ticks and then stop', () => {
-    const simulation = Simulation.create();
+    const builder = SimulationBuilder.create();
+    builder.build();
+    builder.buildData();
+    builder.buildComponents();
+    builder.buildSystems();
+    builder.buildEntities();
+    const ecs = builder.getEcs();
+    const simulation = Simulation.create(ecs);
     simulation.start();
 
     for (let i = 0; i < 5; i++) {
