@@ -1,10 +1,10 @@
 import { Builder } from './Builder';
-import { Simulation } from '../../simulation/Simulation';
+import { Ecs } from 'ecs/Ecs';
 
 /**
  * BuilderDirector class is responsible for directing the building process.
- * It uses a builder to construct simulations and their components.
- * 
+ * It uses a builder to construct ECS instances and their components.
+ *
  * @class BuilderDirector
  */
 export class BuilderDirector {
@@ -21,15 +21,15 @@ export class BuilderDirector {
     /**
      * Builds by delegating tasks to the builder.
      * This method orchestrates the building of systems, entities, and components.
-     * @returns The built simulation instance.
+     * @returns The built ECS instance.
      */
-    build(): Simulation {
+    build(): Ecs {
         this.builder.build();
         this.builder.buildData();
         this.builder.buildComponents();
         this.builder.buildSystems();
         this.builder.buildEntities();
-        return this.builder.getSimulation();
+        return this.builder.getEcs();
     }
 
     /**

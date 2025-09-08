@@ -1,5 +1,4 @@
 import { Builder } from '../../ecs/builder/Builder';
-import { Simulation } from '../../simulation/Simulation';
 import { Ecs } from '../../ecs/Ecs';
 import { TypeUtils } from '../../util/TypeUtils';
 import { NameComponent } from '../../ecs/NameComponent';
@@ -34,24 +33,34 @@ import { ScreensComponent } from '../menu/ScreensComponent';
  * @extends {Builder}
  */
 export class GuiBuilder extends Builder {
-    private simulation: Simulation;
-    private guiEcs: Ecs | null = null;
+
+   /** 
+     * The simulation ECS instance.
+     * ! signifies that this property is not yet initialized.
+     */    
+    private simEcs!: Ecs;
+
+   /** 
+     * The ECS instance that is built by this builder.
+     * ! signifies that this property is not yet initialized.
+     */    
+    private guiEcs!: Ecs;
 
     /**
      * Creates a new instance of GuiBuilder.
-     * @param simulation The simulation instance for the GUI to interact with.
+     * @param simulationEcs The simulation ECS instance.
+     * @constructor
      */
-    constructor(simulation: Simulation) {
+    constructor(simulationEcs: Ecs) {
         super();
-        TypeUtils.ensureInstanceOf(simulation, Simulation, "Expected simulation to be an instance of Simulation");
-        this.simulation = simulation;
+        TypeUtils.ensureInstanceOf(simulationEcs, Ecs, "Expected simulationEcs to be an instance of Ecs");
+        this.simEcs = simulationEcs;
     }
 
     /**
      * @override
      */
     build(): void {
-        // Create separate ECS instance for GUI
         this.guiEcs = Ecs.create();
     }
 
@@ -59,11 +68,6 @@ export class GuiBuilder extends Builder {
      * @override
      */
     buildSystems(): void {
-        if (!this.guiEcs) {
-            throw new Error("GUI ECS not initialized. Call build() first.");
-        }
-
-        const simulationEcs = this.simulation.getEcs();
         const entityManager = this.guiEcs.getEntityManager();
 
         // Register all systems
@@ -71,15 +75,15 @@ export class GuiBuilder extends Builder {
         this.guiEcs.registerSystem(InputSystem.create(entityManager));
 
         // 2. GUI Controller 
-        this.guiEcs.registerSystem(MainControllerSystem.create(entityManager, simulationEcs));
+        this.guiEcs.registerSystem(MainControllerSystem.create(entityManager, this.simEcs));
 
         // 3. GUI Views (dynamic content updates)
-        this.guiEcs.registerSystem(HeaderViewSystem.create(entityManager, simulationEcs));
+        this.guiEcs.registerSystem(HeaderViewSystem.create(entityManager, this.simEcs));
         this.guiEcs.registerSystem(FooterViewSystem.create(entityManager));
-        this.guiEcs.registerSystem(ChoiceMenuViewSystem.create(entityManager, simulationEcs.getEntityManager()));
+        this.guiEcs.registerSystem(ChoiceMenuViewSystem.create(entityManager, this.simEcs.getEntityManager()));
 
         // 4. Dynamic text and menu text updates
-        this.guiEcs.registerSystem(DynamicTextUpdateSystem.create(entityManager, simulationEcs));
+        this.guiEcs.registerSystem(DynamicTextUpdateSystem.create(entityManager, this.simEcs));
         this.guiEcs.registerSystem(MenuTextUpdateSystem.create(entityManager));
         this.guiEcs.registerSystem(ScrollableMenuTextUpdateSystem.create(entityManager));
 
@@ -92,10 +96,6 @@ export class GuiBuilder extends Builder {
      * @override
      */
     buildEntities(): void {
-        if (!this.guiEcs) {
-            throw new Error("GUI ECS not initialized. Call build() first.");
-        }
-
         const entityManager = this.guiEcs.getEntityManager();
 
         // Create screen buffer entity
@@ -157,7 +157,9 @@ export class GuiBuilder extends Builder {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         statusScreenEntity.addComponent(new DynamicTextComponent((_guiEntityManager, _simulationEntityManager) => {
             // Simple status text - can be enhanced later
-            return `Simulation is ${this.simulation.getIsRunning() ? 'running' : 'stopped'}`;
+            //return `Simulation is ${this.simulation.getIsRunning() ? 'running' : 'stopped'}`;
+            return `Simulation is RUNNING'}`;
+
         }));
         statusScreenEntity.addComponent(new TextComponent(''));
         statusScreenEntity.addComponent(new PositionComponent(0, 3));
@@ -166,11 +168,17 @@ export class GuiBuilder extends Builder {
         // Create chronicle screen entity (dynamic text for chronicle screen)
         const chronicleScreenEntity = entityManager.createEntity();
         chronicleScreenEntity.addComponent(new NameComponent('ChronicleScreen'));
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        chronicleScreenEntity.addComponent(new DynamicTextComponent((guiEntityManager, simulationEntityManager) => {
+         
+        /** 
+        chronicleScreenEntity.addComponent(new DynamicTextComponent((entityManager, this.simEcs.getEntityManager()) => {
             // Simple chronicle text - can be enhanced later
             return `Hello Chronicle`;
         }));
+        **/
+        chronicleScreenEntity.addComponent(new DynamicTextComponent(() => {
+            // Simple chronicle text - can be enhanced later
+            return `Hello Chronicle`;
+        }));       
         chronicleScreenEntity.addComponent(new TextComponent(''));
         chronicleScreenEntity.addComponent(new PositionComponent(0, 3));
         chronicleScreenEntity.addComponent(IsVisibleComponent.create(false));
@@ -234,30 +242,18 @@ export class GuiBuilder extends Builder {
     }
 
     /**
-     * Returns the simulation instance (unchanged).
-     * @returns The simulation instance.
+     * @override
      */
-    getSimulation(): Simulation {
-        return this.simulation;
-    }
-
-    /**
-     * Returns the built GUI ECS instance.
-     * @returns The GUI ECS instance.
-     */
-    getGuiEcs(): Ecs {
-        if (!this.guiEcs) {
-            throw new Error("GUI ECS not initialized. Call build() first.");
-        }
+    getEcs(): Ecs {
         return this.guiEcs;
     }
 
     /**
      * Static factory method to create a new instance of GuiBuilder.
-     * @param simulation The simulation instance for the GUI to interact with.
+     * @param simulationEcs The simulation ECS instance.
      * @returns A new GuiBuilder instance.
      */
-    static create(simulation: Simulation): GuiBuilder {
-        return new GuiBuilder(simulation);
+    static create(simulationEcs: Ecs): GuiBuilder {
+        return new GuiBuilder(simulationEcs);
     }
 }

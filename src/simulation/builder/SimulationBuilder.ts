@@ -1,5 +1,4 @@
 import { Builder } from '../../ecs/builder/Builder';
-import { Simulation } from '../Simulation';
 import { WorldGenerator } from '../../generator/world/WorldGenerator';
 import { Time } from '../../time/Time';
 import { TimeSystem } from '../../time/TimeSystem';
@@ -22,6 +21,7 @@ import { DilemmaSystem } from '../../behaviour/DilemmaSystem';
 import { DilemmaResolutionSystem } from '../../behaviour/DilemmaResolutionSystem';
 import { DilemmaComponent } from '../../behaviour/DilemmaComponent';
 import { PlayerComponent } from '../../ecs/PlayerComponent';
+import { Ecs } from 'ecs/Ecs';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -32,11 +32,11 @@ import { PlayerComponent } from '../../ecs/PlayerComponent';
  */
 export class SimulationBuilder extends Builder {
 
-    /** 
-     * The simulation instance that is built by this builder.
+   /** 
+     * The ECS  instance that is built by this builder.
      * ! signifies that this property is not yet initialized.
-     */
-    private simulation!: Simulation;
+     */    
+    private simEcs!: Ecs;    
 
     /**
      * The array of dataset events that are loaded into the simulation.
@@ -56,14 +56,14 @@ export class SimulationBuilder extends Builder {
      * @override
      */
     build(): void {
-        this.simulation = new Simulation();
+        this.simEcs = Ecs.create();
     }
 
     /**
      * @override
      */
     buildEntities(): void {
-        const entityManager: EntityManager = this.simulation.getEntityManager();
+        const entityManager: EntityManager = this.simEcs.getEntityManager();
 
         // create world
         const nameGenerator = NameGenerator.create();
@@ -115,9 +115,9 @@ export class SimulationBuilder extends Builder {
      * @override
      */
     buildSystems(): void {
-        const ecs = this.simulation.getEcs();
-        const entityManager: EntityManager = ecs.getEntityManager();
-        
+        const ecs = this.simEcs;
+        const entityManager: EntityManager = this.simEcs.getEntityManager();
+
         // Register systems using the Ecs facade
         ecs.registerSystem(new TimeSystem(entityManager));
         ecs.registerSystem(new HistoricalFigureBirthSystem(entityManager));
@@ -141,14 +141,13 @@ export class SimulationBuilder extends Builder {
         GeographicalFeaturesFactory.create();
     }
 
-    /**
-     * Returns the simulation instance built by this builder.
-     * @returns The simulation instance.
+/**
+     * @override
      */
-    getSimulation(): Simulation {
-        return this.simulation;
+    getEcs(): Ecs {
+        return this.simEcs;
     }
-
+        
     /**
      * Static factory method to create a new instance of SimulationBuilder.
      * @returns A new SimulationBuilder instance.

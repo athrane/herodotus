@@ -4,6 +4,7 @@ import { SimulationBuilder } from './simulation/builder/SimulationBuilder';
 import { GuiBuilder } from './gui/builder/GuiBuilder';
 import { WorldComponent } from './geography/WorldComponent';
 import { TextBasedGui2 } from './gui/TextBasedGui2';
+import { Simulation } from 'simulation/Simulation';
 
 /**
  * The main entry point for the interactive chronicle generation application.
@@ -12,9 +13,12 @@ import { TextBasedGui2 } from './gui/TextBasedGui2';
 async function mainWithGUI(): Promise<void> {
   console.log('Starting Herodotus Interactive Simulation...');
   
+  // create simulation ECS
+  const director = BuilderDirector.create(SimulationBuilder.create());
+  const simulationEcs = director.build();
+
   // create simulation
-  const simulationDirector = BuilderDirector.create(SimulationBuilder.create());
-  const simulation = simulationDirector.build();
+  const simulation = Simulation.create(simulationEcs);
 
   // log the world details
   const entityManager = simulation.getEntityManager();
@@ -24,10 +28,9 @@ async function mainWithGUI(): Promise<void> {
   }
 
   // create GUI ECS
-  const guiBuilder = GuiBuilder.create(simulation);
-  const guiDirector = BuilderDirector.create(guiBuilder);
-  guiDirector.build();
-  const guiEcs = guiBuilder.getGuiEcs();
+  const guiBuilder = GuiBuilder.create(simulationEcs);
+  const guiDirector = BuilderDirector.create(guiBuilder)
+  const guiEcs = guiDirector.build();
 
   // Create and start the GUI with pre-built ECS
   const gui = TextBasedGui2.create(simulation, guiEcs);
