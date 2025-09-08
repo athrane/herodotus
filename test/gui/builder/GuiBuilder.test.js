@@ -1,14 +1,14 @@
 import { GuiBuilder } from '../../../src/gui/builder/GuiBuilder.ts';
-import { Simulation } from '../../../src/simulation/Simulation.ts';
+import { Ecs } from '../../../src/ecs/Ecs.ts';
 import { NameComponent } from '../../../src/ecs/NameComponent.ts';
 
 describe('GuiBuilder', () => {
-    let simulation;
+    let simulationEcs;
     let builder;
 
     beforeEach(() => {
-        simulation = new Simulation();
-        builder = GuiBuilder.create(simulation);
+        simulationEcs = Ecs.create();
+        builder = GuiBuilder.create(simulationEcs);
     });
 
     it('should create a new GuiBuilder instance', () => {
@@ -21,7 +21,7 @@ describe('GuiBuilder', () => {
         builder.buildSystems();
         builder.buildEntities();
 
-        const guiEcs = builder.getGuiEcs();
+        const guiEcs = builder.getEcs();
         expect(guiEcs).toBeDefined();
 
         // Check that systems are registered
@@ -46,8 +46,8 @@ describe('GuiBuilder', () => {
 
     it('should return the simulation unchanged', () => {
         builder.build();
-        const returnedSimulation = builder.getSimulation();
-        expect(returnedSimulation).toBe(simulation);
+        const returnedEcs = builder.getEcs();
+        expect(returnedEcs).toBe(builder.getEcs());
     });
 
     it('should have empty buildData and buildComponents methods', () => {

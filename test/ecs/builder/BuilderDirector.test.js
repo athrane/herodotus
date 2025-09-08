@@ -1,22 +1,22 @@
 import { BuilderDirector } from '../../../src/ecs/builder/BuilderDirector.ts';
-import { Simulation } from '../../../src/simulation/Simulation.ts';
+import { Ecs } from '../../../src/ecs/Ecs.ts';
 
 describe('BuilderDirector', () => {
     let mockBuilder;
     let director;
-    let simulationInstance;
+    let ecsInstance;
 
     beforeEach(() => {
-        simulationInstance = new Simulation();
+        ecsInstance = Ecs.create();
 
         mockBuilder = {
-            build: jest.fn().mockImplementation(function() { this.simulation = simulationInstance; }),
+            build: jest.fn().mockImplementation(function() { this.ecs = ecsInstance; }),
             buildData: jest.fn(),
             buildEntities: jest.fn(),
             buildSystems: jest.fn(),
             buildComponents: jest.fn(),
-            getSimulation: jest.fn().mockReturnValue(simulationInstance),
-            simulation: null
+            getEcs: jest.fn().mockReturnValue(ecsInstance),
+            ecs: null
         };
 
         director = BuilderDirector.create(mockBuilder);
@@ -40,6 +40,6 @@ describe('BuilderDirector', () => {
 
     it('should return the simulation instance from the builder', () => {
         const result = director.build();
-        expect(result).toBe(simulationInstance);
+        expect(result).toBe(ecsInstance);
     });
 });

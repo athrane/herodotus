@@ -1,5 +1,5 @@
 import { Builder } from './Builder';
-import { Ecs } from 'ecs/Ecs';
+import { Ecs } from '../Ecs';
 
 /**
  * BuilderDirector class is responsible for directing the building process.

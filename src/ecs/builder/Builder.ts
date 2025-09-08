@@ -1,4 +1,4 @@
-import { Ecs } from 'ecs/Ecs';
+import { Ecs } from '../Ecs';
 
 /**
  * Builder class is an abstract base class for building ECS instances.

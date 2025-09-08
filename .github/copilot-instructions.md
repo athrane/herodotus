@@ -145,7 +145,7 @@ Configuration Files (Root):
   - Example: `TimeSystem`, `DilemmaSystem`
 
 #### Builder Pattern
-- `SimulationDirector` and `SimulationBuilder` construct simulations
+- `SimulationBuilder` constructs simulations
 - **Always integrate new features through this pattern**
 - Located in `src/simulation/builder/`
 
@@ -183,7 +183,7 @@ Configuration Files (Root):
 - **tsx**: Development TypeScript execution
 
 ### Data Flow
-1. `main.ts` → `SimulationDirector` → `SimulationBuilder` → `Simulation`
+1. `main.ts` → `SimulationBuilder` → `Simulation`
 2. `Simulation` manages `EntityManager` and `SystemManager`
 3. Systems process entities with relevant components each tick
 4. Time advances through `TimeSystem` and `TimeComponent`

@@ -21,7 +21,7 @@ import { DilemmaSystem } from '../../behaviour/DilemmaSystem';
 import { DilemmaResolutionSystem } from '../../behaviour/DilemmaResolutionSystem';
 import { DilemmaComponent } from '../../behaviour/DilemmaComponent';
 import { PlayerComponent } from '../../ecs/PlayerComponent';
-import { Ecs } from 'ecs/Ecs';
+import { Ecs } from '../../ecs/Ecs';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.

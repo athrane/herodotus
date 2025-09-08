@@ -43,7 +43,8 @@ describe('SimulationBuilder', () => {
     beforeEach(() => {
         builder = SimulationBuilder.create();
         builder.build(); // build the simulation instance
-        simulation = builder.getSimulation();
+        const ecs = builder.getEcs();
+        simulation = Simulation.create(ecs);
         entityManager = simulation.getEntityManager();
         systemManager = simulation.getSystemManager();
 
@@ -59,7 +60,9 @@ describe('SimulationBuilder', () => {
     });
 
     it('should initialize simulation instance on build()', () => {
-        expect(builder.getSimulation()).toBeInstanceOf(Simulation);
+        const ecs = builder.getEcs();
+        const simulation = Simulation.create(ecs);
+        expect(simulation).toBeInstanceOf(Simulation);
     });
 
     it('should build systems correctly', () => {

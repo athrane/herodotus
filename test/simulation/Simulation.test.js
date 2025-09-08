@@ -1,9 +1,11 @@
 import { Simulation } from '../../src/simulation/Simulation.ts';
 import { EntityManager } from '../../src/ecs/EntityManager';
 import { SystemManager } from '../../src/ecs/SystemManager';
+import { Ecs } from '../../src/ecs/Ecs';
 
 describe('Simulation', () => {
   let simulation;
+  let ecs;
 
   // Mock browser/environment APIs
   beforeAll(() => {
@@ -16,7 +18,8 @@ describe('Simulation', () => {
     // Reset mocks and simulation instance before each test
     jest.clearAllMocks();
     performance.now.mockReturnValue(0);
-    simulation = Simulation.create();
+    ecs = Ecs.create();
+    simulation = Simulation.create(ecs);
   });
 
   describe('constructor', () => {
