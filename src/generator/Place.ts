@@ -2,6 +2,7 @@ import { TypeUtils } from '../util/TypeUtils';
 
 /**
  * Represents a location where a historical event occurred.
+ * @deprecated This class is deprecated and will be removed in future versions.
  */
 export class Place {
   private readonly name: string;
