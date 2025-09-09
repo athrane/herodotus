@@ -7,6 +7,7 @@ import { SystemManager } from '../../src/ecs/SystemManager';
 import { NameComponent } from '../../src/ecs/NameComponent';
 import { ActionQueueComponent } from '../../src/gui/controller/ActionQueueComponent';
 import { ScreenBufferRenderSystem } from '../../src/gui/rendering/ScreenBufferRenderSystem';
+import { GuiBuilder } from '../../src/gui/builder/GuiBuilder';
 
 // Mock readline
 const mockReadlineInterface = {
@@ -25,11 +26,17 @@ describe('GuiEcsManager', () => {
   let mockSimulation: Simulation;
 
   beforeEach(() => {
-    // Create a real simulation instance instead of mock
-    const ecs = Ecs.create();
-    mockSimulation = Simulation.create(ecs);
+  // Create a real simulation instance instead of mock
+  const ecs = Ecs.create();
+  mockSimulation = Simulation.create(ecs);
 
-    guiEcsManager = new GuiEcsManager(mockSimulation);
+  // Build a GUI ECS using the GuiBuilder so systems and entities are created
+  const guiBuilder = GuiBuilder.create(mockSimulation.getEcs());
+  guiBuilder.build();
+  guiBuilder.buildSystems();
+  guiBuilder.buildEntities();
+  const guiEcs = guiBuilder.getEcs();
+  guiEcsManager = new GuiEcsManager(mockSimulation, guiEcs);
   });
 
   afterEach(() => {
@@ -64,10 +71,8 @@ describe('GuiEcsManager', () => {
   });
 
   describe('initialize', () => {
-    test('should initialize screens', () => {
-      guiEcsManager.initialize();
-      
-      // Check that screens are created
+    test('should have screens created by builder', () => {
+      // GuiBuilder already created screens during setup
       expect(guiEcsManager.getScreenEntityId('main')).toBeDefined();
       expect(guiEcsManager.getScreenEntityId('status')).toBeDefined();
       expect(guiEcsManager.getScreenEntityId('choices')).toBeDefined();
@@ -75,8 +80,7 @@ describe('GuiEcsManager', () => {
     });
 
     test('should create ActionQueue entity', () => {
-      guiEcsManager.initialize();
-      
+      // Entities were created by the GuiBuilder during setup
       const entityManager = guiEcsManager.getEcs().getEntityManager();
       const actionQueueEntity = entityManager.getEntitiesWithComponents(NameComponent, ActionQueueComponent).find(entity => {
         const nameComponent = entity.getComponent(NameComponent);
@@ -114,7 +118,7 @@ describe('GuiEcsManager', () => {
 
   describe('screen management', () => {
     beforeEach(() => {
-      guiEcsManager.initialize();
+      // builder already initialized GUI entities
     });
 
     test('should get screen entity IDs', () => {
@@ -132,9 +136,7 @@ describe('GuiEcsManager', () => {
     });
 
     test('should set active screen', () => {
-      expect(() => {
-        guiEcsManager.setActiveScreen('status');
-      }).not.toThrow();
+      expect(() => guiEcsManager.setActiveScreen('status')).not.toThrow();
     });
   });
 
@@ -171,8 +173,7 @@ describe('GuiEcsManager', () => {
     });
 
     test('should handle screen switching', () => {
-      guiEcsManager.initialize();
-      
+      // Screens are present from builder
       expect(() => {
         guiEcsManager.setActiveScreen('status');
         guiEcsManager.setActiveScreen('main');

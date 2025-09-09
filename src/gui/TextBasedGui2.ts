@@ -32,10 +32,11 @@ export class TextBasedGui2 {
     /**
      * Creates an instance of TextBasedGui2.
      * @param simulation The simulation instance to associate with the GUI.
-     * @param guiEcs Optional pre-built GUI ECS instance.
+     * @param guiEcs pre-built GUI ECS instance.
      */
-    constructor(simulation: Simulation, guiEcs?: Ecs) {
+    constructor(simulation: Simulation, guiEcs: Ecs) {
         TypeUtils.ensureInstanceOf(simulation, Simulation, "Expected simulation to be an instance of Simulation");
+        TypeUtils.ensureInstanceOf(guiEcs, Ecs, "Expected guiEcs to be an instance of Ecs");
         this.simulation = simulation;
 
         // Create readline interface for user input with raw mode for direct key capture
@@ -49,8 +50,8 @@ export class TextBasedGui2 {
             process.stdin.setRawMode(true);
         }
 
-        // Initialize the GUI ECS with optional pre-built ECS
-        this.guiEcsManager = new GuiEcsManager(this.simulation, guiEcs);
+    // Initialize the GUI ECS with provided GUI ECS
+    this.guiEcsManager = new GuiEcsManager(this.simulation, guiEcs);
     }
 
     /**
@@ -59,9 +60,8 @@ export class TextBasedGui2 {
     async start(): Promise<void> {
         this.startGuiRunning();
 
-        // Initialize and start the GUI ECS system (fast updates for responsive UI)
-        this.guiEcsManager.initialize();
-        this.guiEcsManager.start(TextBasedGui2.GUI_UPDATE_INTERVAL_MS); 
+        // Start the GUI ECS system (fast updates for responsive UI)
+        this.guiEcsManager.start(TextBasedGui2.GUI_UPDATE_INTERVAL_MS);
 
         // Start the simulation
         this.simulation.start();
@@ -271,7 +271,7 @@ export class TextBasedGui2 {
      * @param simulation The simulation instance to associate with the GUI.
      * @param guiEcs Optional pre-built GUI ECS instance.
      */
-    static create(simulation: Simulation, guiEcs?: Ecs): TextBasedGui2 {
+    static create(simulation: Simulation, guiEcs: Ecs): TextBasedGui2 {
         return new TextBasedGui2(simulation, guiEcs);
     }
 }
