@@ -204,6 +204,8 @@ describe('ScrollableMenuTextUpdateSystem', () => {
 
         const text = entity.getComponent(TextComponent)!.getText();
         expect(text).toContain('[1]');
-        expect(text).toContain(longText); // Should display full text
+        // Should display full text with proper wrapping
+        expect(text).toContain('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+        expect(text).toContain('AAAAAAAAAAAAAAAAAAAAAAAAAA'); // Second line
     });
 });

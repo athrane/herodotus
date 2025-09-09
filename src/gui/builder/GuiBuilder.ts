@@ -142,13 +142,13 @@ export class GuiBuilder extends Builder {
         mainMenuEntity.addComponent(IsVisibleComponent.create(true));
 
         // Create choices screen entity (scrollable menu for dilemma choices)
-        const VISIBLE_ITEMS_COUNT = 3;
+        const VISIBLE_ITEMS_COUNT = 5;
         const choicesScreenEntity = entityManager.createEntity();
         choicesScreenEntity.addComponent(new NameComponent('ChoicesScreen'));
         // Initialize with empty menu items - ChoiceMenuSystem will populate them
         choicesScreenEntity.addComponent(ScrollableMenuComponent.create([], VISIBLE_ITEMS_COUNT));
         choicesScreenEntity.addComponent(new TextComponent(''));
-        choicesScreenEntity.addComponent(new PositionComponent(0, 3));
+        choicesScreenEntity.addComponent(new PositionComponent(0, 2));
         choicesScreenEntity.addComponent(IsVisibleComponent.create(false));
 
         // Create status screen entity (dynamic text for status screen)
@@ -162,7 +162,7 @@ export class GuiBuilder extends Builder {
 
         }));
         statusScreenEntity.addComponent(new TextComponent(''));
-        statusScreenEntity.addComponent(new PositionComponent(0, 3));
+        statusScreenEntity.addComponent(new PositionComponent(0, 2));
         statusScreenEntity.addComponent(IsVisibleComponent.create(false));
 
         // Create chronicle screen entity (dynamic text for chronicle screen)
@@ -180,7 +180,7 @@ export class GuiBuilder extends Builder {
             return `Hello Chronicle`;
         }));       
         chronicleScreenEntity.addComponent(new TextComponent(''));
-        chronicleScreenEntity.addComponent(new PositionComponent(0, 3));
+        chronicleScreenEntity.addComponent(new PositionComponent(0, 2));
         chronicleScreenEntity.addComponent(IsVisibleComponent.create(false));
 
         // Map screen names to their primary interactive entities
@@ -221,10 +221,8 @@ export class GuiBuilder extends Builder {
         }));
 
         // Create passive Debug Entity for the action system
-        let line = 15;
+        let line = 20;
         GuiHelper.createDebugEntity(entityManager, 'D1', 0, line++);
-        GuiHelper.createDebugEntity(entityManager, 'D2', 0, line++);
-        GuiHelper.createDebugEntity(entityManager, 'D3', 0, line++);
     }
 
     /**

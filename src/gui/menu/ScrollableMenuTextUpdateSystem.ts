@@ -13,6 +13,11 @@ import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 export class ScrollableMenuTextUpdateSystem extends System {
 
     /**
+     * Screen width for text wrapping calculations.
+     */
+    private readonly SCREEN_WIDTH = 80;
+
+    /**
      * Creates a new ScrollableMenuTextUpdateSystem.
      * @param entityManager The entity manager for managing entities.
      */
@@ -79,9 +84,9 @@ export class ScrollableMenuTextUpdateSystem extends System {
             const prefix = isSelected ? '> ' : '  ';
             const number = globalIndex + 1; // 1-based numbering for user display
             
-            // Format: "  [1] Choice Name - Description"
-            const formattedLine = `${prefix}[${number}] ${item.getText()}`;
-            lines.push(formattedLine);
+            // Format and wrap the menu item text
+            const menuItemLines = this.formatMenuItem(prefix, number, item.getText());
+            lines.push(...menuItemLines);
         });
 
         // Add footer with scroll hints if needed
@@ -92,6 +97,88 @@ export class ScrollableMenuTextUpdateSystem extends System {
         }
 
         return lines;
+    }
+
+    /**
+     * Formats a single menu item with proper text wrapping.
+     * @param prefix The selection prefix (">" or "  ").
+     * @param number The menu item number.
+     * @param text The menu item text.
+     * @returns Array of formatted lines for this menu item.
+     */
+    private formatMenuItem(prefix: string, number: number, text: string): string[] {
+        const firstLinePrefix = `${prefix}[${number}] `;
+        const continuationPrefix = ' '.repeat(firstLinePrefix.length);
+        
+        // Calculate available width for text content
+        const availableWidth = this.SCREEN_WIDTH - firstLinePrefix.length;
+        
+        // Wrap the text
+        const wrappedLines = this.wrapText(text, availableWidth);
+        
+        // Format the lines with appropriate prefixes
+        const formattedLines: string[] = [];
+        wrappedLines.forEach((line, index) => {
+            if (index === 0) {
+                formattedLines.push(firstLinePrefix + line);
+            } else {
+                formattedLines.push(continuationPrefix + line);
+            }
+        });
+        
+        return formattedLines;
+    }
+
+    /**
+     * Wraps text to fit within the specified width.
+     * @param text The text to wrap.
+     * @param maxWidth The maximum width per line.
+     * @returns Array of wrapped lines.
+     */
+    private wrapText(text: string, maxWidth: number): string[] {
+        if (!text || maxWidth <= 0) {
+            return [''];
+        }
+
+        const words = text.split(' ');
+        const lines: string[] = [];
+        let currentLine = '';
+
+        for (const word of words) {
+            // Check if adding this word would exceed the line width
+            const potentialLine = currentLine ? `${currentLine} ${word}` : word;
+            
+            if (potentialLine.length <= maxWidth) {
+                currentLine = potentialLine;
+            } else {
+                // If current line has content, save it and start a new line
+                if (currentLine) {
+                    lines.push(currentLine);
+                    currentLine = word;
+                } else {
+                    // Single word is too long, we need to break it
+                    if (word.length > maxWidth) {
+                        // Break the word across multiple lines
+                        let remainingWord = word;
+                        while (remainingWord.length > maxWidth) {
+                            lines.push(remainingWord.substring(0, maxWidth));
+                            remainingWord = remainingWord.substring(maxWidth);
+                        }
+                        currentLine = remainingWord;
+                    } else {
+                        currentLine = word;
+                    }
+                }
+            }
+        }
+
+        // Add the last line if it has content
+        if (currentLine) {
+            lines.push(currentLine);
+        }
+
+        // Return at least one line (even if empty)
+        return lines.length > 0 ? lines : [''];
     }
 
     /**

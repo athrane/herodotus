@@ -16,9 +16,10 @@ export class ChoiceMenuViewSystem extends System {
     private readonly simulationEntityManager: EntityManager;
 
     /**
-     * Maximum description length for menu items.
+     * Maximum line width for menu items (accounting for menu formatting).
+     * Screen is 80 chars, menu format is "> [N] " which is 6 chars, leaving 74 for content.
      */
-    private readonly MAX_DESC_LENGTH = 60;
+    private readonly MAX_LINE_WIDTH = 74;
     
     /**
     * Creates a new ChoiceMenuViewSystem.
@@ -91,22 +92,21 @@ export class ChoiceMenuViewSystem extends System {
 
     /**
      * Formats a DataSetEvent into display text for menu items.
+     * Supports multi-line text that wraps to fit within screen width.
      * @param choice The DataSetEvent to format.
-     * @returns Formatted text string.
+     * @returns Formatted text string that may contain newlines for wrapping.
      */
     private formatChoiceText(choice: DataSetEvent): string {
         const name = choice.getEventName() || 'Unnamed Choice';
         const description = choice.getDescription();
         
+        let fullText = name;
         if (description && description.trim().length > 0) {
-            // Truncate long descriptions for menu display
-            const truncatedDesc = description.length > this.MAX_DESC_LENGTH
-                ? description.substring(0, this.MAX_DESC_LENGTH) + '...'
-                : description;
-            return `${name} - ${truncatedDesc}`;
+            fullText = `${name} - ${description}`;
         }
         
-        return name;
+        // Return text as-is, wrapping will be handled by ScrollableMenuTextUpdateSystem
+        return fullText;
     }
 
     /**

@@ -163,8 +163,8 @@ describe('ChoiceMenuViewSystem', () => {
         expect(menuItems[1].getText()).toBe("Name Only"); // No description
         expect(menuItems[2].getText()).toBe("Unnamed Choice - Description only"); // Default name
         expect(menuItems[3].getText()).toContain("Very Long Choice Name");
-        expect(menuItems[3].getText()).toContain("..."); // Should be truncated
-        expect(menuItems[3].getText().length).toBeLessThan(150); // Should be reasonably short
+        expect(menuItems[3].getText()).toContain("This is a very long description"); // Should include full description
+        expect(menuItems[3].getText()).not.toContain("..."); // No truncation with new implementation
     });
 
     test('preserves selection when items change', () => {
