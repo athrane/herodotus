@@ -28,7 +28,7 @@ export class ScreenBufferComponent extends Component {
     private createEmptyBuffer(): string[][] {
         const buffer: string[][] = [];
         for (let row = 0; row < ScreenBufferComponent.ROWS; row++) {
-            buffer[row] = new Array(ScreenBufferComponent.COLS).fill('.');
+            buffer[row] = new Array(ScreenBufferComponent.COLS).fill(' ');
         }
         return buffer;
     }

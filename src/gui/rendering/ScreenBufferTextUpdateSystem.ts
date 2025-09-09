@@ -21,6 +21,9 @@ export class ScreenBufferTextUpdateSystem extends System {
     }
     
     processEntity(entity: Entity): void {
+        // Get the screen buffer component first
+        const screenBufferComponent = this.getEntityManager().getSingletonComponent(ScreenBufferComponent);
+        if (!screenBufferComponent) return;
 
         // Get visibility component
         const visibilityComponent = entity.getComponent(IsVisibleComponent);
@@ -33,10 +36,6 @@ export class ScreenBufferTextUpdateSystem extends System {
         // Get text component
         const textComponent = entity.getComponent(TextComponent);
         if (!textComponent) return;
-        
-        // Get the screen buffer component
-        const screenBufferComponent = this.getEntityManager().getSingletonComponent(ScreenBufferComponent);
-        if (!screenBufferComponent) return;
 
         // If visible, then render
         if(visibilityComponent.isVisible()) {
@@ -50,6 +49,9 @@ export class ScreenBufferTextUpdateSystem extends System {
         }
     }
 
+    /**
+     * Called before processing entities in each update cycle.
+     * Resets the frame flag to ensure the buffer is cleared once per frame.
     /**
      * Creates a new instance of the ScreenBufferTextUpdateSystem.
      * @param entityManager The entity manager to use for querying entities.

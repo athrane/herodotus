@@ -16,7 +16,7 @@ describe('ScreenBufferComponent', () => {
         expect(buffer).toHaveLength(24);
         buffer.forEach(row => {
             expect(row).toHaveLength(80);
-            expect(row).toBe('.'.repeat(80));
+            expect(row).toBe(' '.repeat(80));
         });
     });
 
@@ -49,8 +49,8 @@ describe('ScreenBufferComponent', () => {
         screenBuffer.writeAt(5, 10, 'Hello');
         const row = screenBuffer.getRow(5);
         expect(row.substring(10, 15)).toBe('Hello');
-        expect(row.substring(0, 10)).toBe('.'.repeat(10));
-        expect(row.substring(15)).toBe('.'.repeat(65));
+        expect(row.substring(0, 10)).toBe(' '.repeat(10));
+        expect(row.substring(15)).toBe(' '.repeat(65));
     });
 
     test('should not write text outside buffer bounds', () => {
@@ -62,7 +62,7 @@ describe('ScreenBufferComponent', () => {
         // Buffer should remain empty
         const buffer = screenBuffer.getBuffer();
         buffer.forEach(row => {
-            expect(row).toBe('.'.repeat(80));
+            expect(row).toBe(' '.repeat(80));
         });
     });
 
@@ -129,7 +129,7 @@ describe('ScreenBufferComponent', () => {
 
         const buffer = screenBuffer.getBuffer();
         buffer.forEach(row => {
-            expect(row).toBe('.'.repeat(80));
+            expect(row).toBe(' '.repeat(80));
         });
     });
 

@@ -152,6 +152,6 @@ describe('ScreenBufferTextUpdateSystem', () => {
         expect(renderedText).toBe(headerText);
         
         // Ensure no characters from the header are on subsequent lines (the bug was putting each char on a new line)
-        expect(screenBufferComponent.getRow(1).substring(0, 10)).toBe('.'.repeat(10));  // Should be default buffer content
+        expect(screenBufferComponent.getRow(1).substring(0, 10)).toBe(' '.repeat(10));  // Should be default buffer content
     });
 });

@@ -1,31 +1,6 @@
 # Herodotus
 
-A procedural world-building and his- start:ts — same as `start:main`; runs `src/main.ts` via tsx.
-	Purpose: alternate name if you prefer explicit "ts" in scripts or for CI environments.
-	- Run:
-		```powershell
-		npm run start:ts
-		```
-
-- start:gui — run the interactive text-based GUI - `src/gui/rendering/ScreenBufferRenderSystem.ts` — Renders the screen buffer to terminal
-- `src/gui/rendering/ScreenBufferTextUpdateSystem.ts` — Updates text entries in the screen buffer
-- `src/gui/view/HeaderViewSystem.ts` — Updates header area each tick; uses dependency injection pattern with simulation ECS for decoupled access to time data
-- `src/gui/view/FooterViewSystem.ts` — Updates footer/status area
-- `src/gui/rendering/DynamicTextUpdateSystem.ts` — Updates `TextComponent` values by calling `DynamicTextComponent.getText(guiEntityManager, simulationEntityManager)` for visible entities; uses dependency injection pattern with simulation ECS for decoupled system architectureon of the simulation via tsx.
-	Purpose: launches the GUI interface for interactive gameplay with player decision-making and real-time simulation control.
-	- Run:
-		```powershell
-		npm run start:gui
-		```
-
-- build:gui — bundle `src/mainGUI.ts` to `dist/bundleGUI.js` using esbuild.
-	Purpose: produce an optimized ESM bundle for the GUI version, ideal for distribution and production deployment of the interactive interface.
-	- Run:
-		```powershell
-		npm run build:gui
-		```
-
-- test — run Jest test suite.eration tool.
+A procedural world-building and history generation tool written in TypeScript. The project simulates the creation and evolution of civilizations, geographic features, and historical events using an Entity-Component-System (ECS) architecture.
 
 ## Development
 
@@ -47,6 +22,58 @@ All available npm scripts and what they do. Commands below are for PowerShell.
 	- Run:
 		```powershell
 		npm start
+		```
+
+- start:bundle — builds (via prestart hook) and runs `node dist/bundle.js`.
+	Purpose: ensures the bundle is up to date, then executes the exact artifact that would be deployed.
+	- Run:
+		```powershell
+		npm run start:bundle
+		```
+
+- prestart:bundle — automatic pre-hook that runs `npm run build` before `start:bundle`.
+	Purpose: guarantees the bundle reflects the latest sources without needing a separate build step.
+
+- start:main — run `src/main.ts` directly via tsx (no bundling).
+	Purpose: fastest developer loop; executes TypeScript directly with TS-aware loader, no files emitted.
+	- Run:
+		```powershell
+		npm run start:main
+		```
+
+- dev — same as `start:main`; runs `src/main.ts` via tsx for fast iteration.
+	Purpose: convenient alias commonly used during active development.
+	- Run:
+		```powershell
+		npm run dev
+		```
+
+- start:ts — same as `start:main`; runs `src/main.ts` via tsx.
+	Purpose: alternate name if you prefer explicit "ts" in scripts or for CI environments.
+	- Run:
+		```powershell
+		npm run start:ts
+		```
+
+- start:gui — run the interactive text-based GUI simulation via tsx.
+	Purpose: launches the GUI interface for interactive gameplay with player decision-making and real-time simulation control.
+	- Run:
+		```powershell
+		npm run start:gui
+		```
+
+- build:gui — bundle `src/mainGUI.ts` to `dist/bundleGUI.js` using esbuild.
+	Purpose: produce an optimized ESM bundle for the GUI version, ideal for distribution and production deployment of the interactive interface.
+	- Run:
+		```powershell
+		npm run build:gui
+		```
+
+- test — run Jest test suite.
+	Purpose: executes all unit tests using `jest.config.js`; use to validate behavior locally and in CI.
+	- Run:
+		```powershell
+		npm test
 		```
 
 - start:bundle — builds (via prestart hook) and runs `node dist/bundle.js`.
@@ -429,6 +456,7 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 - `src/gui/rendering/ScreenBufferComponent.ts` — Holds terminal buffer content for rendering
 - `src/gui/rendering/PositionComponent.ts` — Positioning data for UI elements
 - `src/gui/rendering/IsVisibleComponent.ts` — Visibility flag for renderable elements
+- `src/gui/rendering/ScreenBufferClearSystem.ts` — Clears the screen buffer once per frame before text rendering; follows Single Responsibility Principle by separating buffer clearing from text updating logic
 - `src/gui/rendering/ScreenBufferRenderSystem.ts` — Renders the screen buffer to terminal
 - `src/gui/rendering/ScreenBufferTextUpdateSystem.ts` — Updates text entries in the screen buffer; implements Observer pattern within ECS architecture to monitor entities with text, position, and visibility components, then writes their content to the ScreenBufferComponent singleton for rendering
 - `src/gui/view/HeaderViewSystem.ts` — Updates header area each tick

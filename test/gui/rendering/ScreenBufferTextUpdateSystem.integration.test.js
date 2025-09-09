@@ -100,7 +100,7 @@ describe('ScreenBufferTextUpdateSystem Integration Tests', () => {
         // Second update - should not render
         system.update();
         screenBuffer = screenBufferEntity.getComponent(ScreenBufferComponent);
-        expect(screenBuffer.getRow(0).substring(0, 12)).toBe('.'.repeat(12));
+        expect(screenBuffer.getRow(0).substring(0, 12)).toBe(' '.repeat(12));
     });
 
     test('should handle real header scenario that caused the original bug', () => {
@@ -119,7 +119,7 @@ describe('ScreenBufferTextUpdateSystem Integration Tests', () => {
         expect(screenBuffer.getRow(0).substring(0, headerText.length)).toBe(headerText);
         
         // Verify no header content leaked to subsequent lines (this was the bug)
-        expect(screenBuffer.getRow(1).substring(0, 10)).toBe('.'.repeat(10));
-        expect(screenBuffer.getRow(2).substring(0, 10)).toBe('.'.repeat(10));
+        expect(screenBuffer.getRow(1).substring(0, 10)).toBe(' '.repeat(10));
+        expect(screenBuffer.getRow(2).substring(0, 10)).toBe(' '.repeat(10));
     });
 });

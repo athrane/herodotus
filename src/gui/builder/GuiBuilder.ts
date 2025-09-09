@@ -4,6 +4,7 @@ import { TypeUtils } from '../../util/TypeUtils';
 import { NameComponent } from '../../ecs/NameComponent';
 import { ScreenBufferRenderSystem } from '../rendering/ScreenBufferRenderSystem';
 import { ScreenBufferComponent } from '../rendering/ScreenBufferComponent';
+import { ScreenBufferClearSystem } from '../rendering/ScreenBufferClearSystem';
 import { PositionComponent } from '../rendering/PositionComponent';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { TextComponent } from '../rendering/TextComponent';
@@ -87,7 +88,8 @@ export class GuiBuilder extends Builder {
         this.guiEcs.registerSystem(MenuTextUpdateSystem.create(entityManager));
         this.guiEcs.registerSystem(ScrollableMenuTextUpdateSystem.create(entityManager));
 
-        // 5. GUI rendering 
+        // 5. GUI rendering (order is important: clear first, then update text, then render)
+        this.guiEcs.registerSystem(ScreenBufferClearSystem.create(entityManager));
         this.guiEcs.registerSystem(ScreenBufferTextUpdateSystem.create(entityManager));
         this.guiEcs.registerSystem(ScreenBufferRenderSystem.create(entityManager));
     }
