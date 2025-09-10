@@ -17,8 +17,8 @@ import { loadEvents } from '../../data/loadEvents';
 import { DataSetComponent } from '../../data/DataSetComponent';
 import { DataSetEvent } from '../../data/DataSetEvent';
 import { DataSetEventComponent } from '../../data/DataSetEventComponent';
-import { DilemmaSystem } from '../../behaviour/DilemmaSystem';
-import { DilemmaResolutionSystem } from '../../behaviour/DilemmaResolutionSystem';
+import { ComputeChoicesSystem } from '../../behaviour/ComputeChoicesSystem';
+import { SelectChoiceSystem } from '../../behaviour/SelectChoiceSystem';
 import { DilemmaComponent } from '../../behaviour/DilemmaComponent';
 import { PlayerComponent } from '../../ecs/PlayerComponent';
 import { Ecs } from '../../ecs/Ecs';
@@ -100,7 +100,7 @@ export class SimulationBuilder extends Builder {
             new NameComponent("Player"),
             HistoricalFigureComponent.create("Player Character", 0, 70, "Unknown", "Ruler"),
             DataSetEventComponent.create(initialEvent),
-            DilemmaComponent.create([]), // Start with empty choices, will be populated by DilemmaSystem
+            DilemmaComponent.create([]), // Start with empty choices, will be populated by ComputeChoicesSystem
             PlayerComponent.create()
         );
 
@@ -123,8 +123,8 @@ export class SimulationBuilder extends Builder {
         ecs.registerSystem(new HistoricalFigureBirthSystem(entityManager));
         ecs.registerSystem(new HistoricalFigureLifecycleSystem(entityManager));
         ecs.registerSystem(new HistoricalFigureInfluenceSystem(entityManager));
-        ecs.registerSystem(new DilemmaSystem(entityManager));
-        ecs.registerSystem(new DilemmaResolutionSystem(entityManager));
+        ecs.registerSystem(ComputeChoicesSystem.create(entityManager));
+        ecs.registerSystem(SelectChoiceSystem.create(entityManager));
     }
 
     /**

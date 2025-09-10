@@ -142,7 +142,7 @@ Configuration Files (Root):
   - Process entities with specific component combinations
   - **Prefer overriding `processEntity()` over `update()`** for individual entity processing
   - Must use static factory methods (`create()`)
-  - Example: `TimeSystem`, `DilemmaSystem`
+  - Example: `TimeSystem`, `ComputeChoicesSystem`
 
 #### Builder Pattern
 - `SimulationBuilder` constructs simulations

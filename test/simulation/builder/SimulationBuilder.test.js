@@ -5,8 +5,8 @@ import { TimeSystem } from '../../../src/time/TimeSystem';
 import { HistoricalFigureLifecycleSystem } from '../../../src/historicalfigure/HistoricalFigureLifecycleSystem';
 import { HistoricalFigureInfluenceSystem } from '../../../src/historicalfigure/HistoricalFigureInfluenceSystem';
 import { HistoricalFigureBirthSystem } from '../../../src/historicalfigure/HistoricalFigureBirthSystem';
-import { DilemmaSystem } from '../../../src/behaviour/DilemmaSystem';
-import { DilemmaResolutionSystem } from '../../../src/behaviour/DilemmaResolutionSystem';
+import { ComputeChoicesSystem } from '../../../src/behaviour/ComputeChoicesSystem';
+import { SelectChoiceSystem } from '../../../src/behaviour/SelectChoiceSystem';
 import { DataSetComponent } from '../../../src/data/DataSetComponent.ts';
 import { DataSetEventComponent } from '../../../src/data/DataSetEventComponent.ts';
 import { HistoricalFigureComponent } from '../../../src/historicalfigure/HistoricalFigureComponent.ts';
@@ -73,8 +73,8 @@ describe('SimulationBuilder', () => {
         expect(systemManager.register).toHaveBeenCalledWith(expect.any(HistoricalFigureBirthSystem));
         expect(systemManager.register).toHaveBeenCalledWith(expect.any(HistoricalFigureLifecycleSystem));
         expect(systemManager.register).toHaveBeenCalledWith(expect.any(HistoricalFigureInfluenceSystem));
-        expect(systemManager.register).toHaveBeenCalledWith(expect.any(DilemmaSystem));
-        expect(systemManager.register).toHaveBeenCalledWith(expect.any(DilemmaResolutionSystem));
+        expect(systemManager.register).toHaveBeenCalledWith(expect.any(ComputeChoicesSystem));
+        expect(systemManager.register).toHaveBeenCalledWith(expect.any(SelectChoiceSystem));
     });
 
     it('should have an empty buildComponents method', () => {

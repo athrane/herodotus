@@ -109,6 +109,13 @@ export class EntityManager {
   }
 
   /**
+   * Removes all entities from the manager.
+   */
+  clear(): void {
+    this.entities.clear();
+  }
+
+  /**
    * Creates a new instance of EntityManager.
    * This static factory method provides a standardized way to construct EntityManager objects.
    * @returns A new instance of EntityManager.

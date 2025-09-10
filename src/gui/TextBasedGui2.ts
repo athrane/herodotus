@@ -154,7 +154,7 @@ export class TextBasedGui2 {
         // Reset waiting flag
         this.isWaitingForInput = false;
 
-        // post debug message
+        // get the entity manager
         const entityManager = this.guiEcsManager.getEcs().getEntityManager();        
 
         // Get the input component for processing commands
