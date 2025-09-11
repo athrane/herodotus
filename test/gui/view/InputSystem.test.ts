@@ -2,6 +2,7 @@ import { EntityManager } from '../../../src/ecs/EntityManager';
 import { InputComponent } from '../../../src/gui/view/InputComponent';
 import { MenuItem } from '../../../src/gui/menu/MenuItem';
 import { MenuComponent } from '../../../src/gui/menu/MenuComponent';
+import { ScrollStrategy } from '../../../src/gui/menu/ScrollStrategy';
 import { TextComponent } from '../../../src/gui/rendering/TextComponent';
 import { IsVisibleComponent } from '../../../src/gui/rendering/IsVisibleComponent';
 import { InputSystem } from '../../../src/gui/view/InputSystem';
@@ -375,5 +376,289 @@ describe('InputSystem', () => {
     // Nothing should change
     expect(menuEntity.getComponent(MenuComponent)!.getSelectedItemIndex()).toBe(initialState);
     expect(actionQueue.getActions()).toHaveLength(0);
+  });
+});
+
+describe('InputSystem with scroll strategies', () => {
+  test('navigates vertically with VERTICAL scroll strategy using w/s keys', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [
+      new MenuItem('One', 'one'), 
+      new MenuItem('Two', 'two'), 
+      new MenuItem('Three', 'three')
+    ];
+    const menu = new MenuComponent(items, ScrollStrategy.VERTICAL);
+    menuEntity.addComponent(menu);
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(IsVisibleComponent.create(true));
+
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    actionQueueEntity.addComponent(new ActionQueueComponent());
+
+    const system = new InputSystem(em);
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+
+    // Test 's' (down) navigation
+    inputComp.setLastInput('s');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(1);
+
+    inputComp.setLastInput('s');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(2);
+
+    inputComp.setLastInput('s');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(0); // wrap around
+
+    // Test 'w' (up) navigation
+    inputComp.setLastInput('w');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(2); // wrap to last
+  });
+
+  test('navigates vertically with VERTICAL scroll strategy using arrow keys', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [
+      new MenuItem('One', 'one'), 
+      new MenuItem('Two', 'two')
+    ];
+    const menu = new MenuComponent(items, ScrollStrategy.VERTICAL);
+    menuEntity.addComponent(menu);
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(IsVisibleComponent.create(true));
+
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    actionQueueEntity.addComponent(new ActionQueueComponent());
+
+    const system = new InputSystem(em);
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+
+    // Test 'down' arrow navigation
+    inputComp.setLastInput('down');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(1);
+
+    // Test 'up' arrow navigation
+    inputComp.setLastInput('up');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(0);
+  });
+
+  test('does not respond to horizontal keys with VERTICAL scroll strategy', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [new MenuItem('One', 'one'), new MenuItem('Two', 'two')];
+    const menu = new MenuComponent(items, ScrollStrategy.VERTICAL);
+    menuEntity.addComponent(menu);
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(IsVisibleComponent.create(true));
+
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    actionQueueEntity.addComponent(new ActionQueueComponent());
+
+    const system = new InputSystem(em);
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+
+    const initialIndex = menu.getSelectedItemIndex();
+
+    // Test that horizontal keys don't work
+    inputComp.setLastInput('a');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(initialIndex);
+
+    inputComp.setLastInput('d');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(initialIndex);
+
+    inputComp.setLastInput('left');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(initialIndex);
+
+    inputComp.setLastInput('right');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(initialIndex);
+  });
+
+  test('navigates horizontally with HORIZONTAL scroll strategy (default behavior)', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [
+      new MenuItem('One', 'one'), 
+      new MenuItem('Two', 'two'), 
+      new MenuItem('Three', 'three')
+    ];
+    const menu = new MenuComponent(items, ScrollStrategy.HORIZONTAL);
+    menuEntity.addComponent(menu);
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(IsVisibleComponent.create(true));
+
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    actionQueueEntity.addComponent(new ActionQueueComponent());
+
+    const system = new InputSystem(em);
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+
+    // Test 'd' (right) navigation
+    inputComp.setLastInput('d');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(1);
+
+    inputComp.setLastInput('d');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(2);
+
+    inputComp.setLastInput('d');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(0); // wrap around
+
+    // Test 'a' (left) navigation
+    inputComp.setLastInput('a');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(2); // wrap to last
+  });
+
+  test('does not respond to vertical keys with HORIZONTAL scroll strategy', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [new MenuItem('One', 'one'), new MenuItem('Two', 'two')];
+    const menu = new MenuComponent(items, ScrollStrategy.HORIZONTAL);
+    menuEntity.addComponent(menu);
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(IsVisibleComponent.create(true));
+
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    actionQueueEntity.addComponent(new ActionQueueComponent());
+
+    const system = new InputSystem(em);
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+
+    const initialIndex = menu.getSelectedItemIndex();
+
+    // Test that vertical keys don't work
+    inputComp.setLastInput('w');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(initialIndex);
+
+    inputComp.setLastInput('s');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(initialIndex);
+
+    inputComp.setLastInput('up');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(initialIndex);
+
+    inputComp.setLastInput('down');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(initialIndex);
+  });
+
+  test('enter key works with both scroll strategies', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    // Test VERTICAL strategy
+    const verticalMenuEntity = em.createEntity();
+    const verticalItems = [new MenuItem('Vertical Item', 'VERTICAL_ACTION')];
+    verticalMenuEntity.addComponent(new MenuComponent(verticalItems, ScrollStrategy.VERTICAL));
+    verticalMenuEntity.addComponent(new TextComponent(''));
+    verticalMenuEntity.addComponent(IsVisibleComponent.create(true));
+
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    const actionQueue = new ActionQueueComponent();
+    actionQueueEntity.addComponent(actionQueue);
+
+    const system = new InputSystem(em);
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+
+    inputComp.setLastInput('enter');
+    system.update();
+    expect(actionQueue.getActions()).toContain('VERTICAL_ACTION');
+
+    // Clear the action queue and test HORIZONTAL strategy
+    actionQueue.getActions().length = 0;
+    
+    // Hide vertical menu and show horizontal menu
+    verticalMenuEntity.getComponent(IsVisibleComponent)!.setVisibility(false);
+    
+    const horizontalMenuEntity = em.createEntity();
+    const horizontalItems = [new MenuItem('Horizontal Item', 'HORIZONTAL_ACTION')];
+    horizontalMenuEntity.addComponent(new MenuComponent(horizontalItems, ScrollStrategy.HORIZONTAL));
+    horizontalMenuEntity.addComponent(new TextComponent(''));
+    horizontalMenuEntity.addComponent(IsVisibleComponent.create(true));
+
+    inputComp.setLastInput('enter');
+    system.update();
+    expect(actionQueue.getActions()).toContain('HORIZONTAL_ACTION');
+  });
+
+  test('backward compatibility: menu without scroll strategy defaults to HORIZONTAL', () => {
+    const em = EntityManager.create();
+
+    const inputEntity = em.createEntity();
+    inputEntity.addComponent(new InputComponent());
+
+    const menuEntity = em.createEntity();
+    const items = [new MenuItem('One', 'one'), new MenuItem('Two', 'two')];
+    // Create menu without specifying scroll strategy
+    const menu = new MenuComponent(items);
+    menuEntity.addComponent(menu);
+    menuEntity.addComponent(new TextComponent(''));
+    menuEntity.addComponent(IsVisibleComponent.create(true));
+
+    const actionQueueEntity = em.createEntity();
+    actionQueueEntity.addComponent(new NameComponent('ActionQueue'));
+    actionQueueEntity.addComponent(new ActionQueueComponent());
+
+    const system = new InputSystem(em);
+    const inputComp = em.getSingletonComponent(InputComponent)!;
+
+    // Should behave like horizontal navigation (existing behavior)
+    inputComp.setLastInput('d');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(1);
+
+    inputComp.setLastInput('a');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(0);
+
+    // Vertical keys should not work
+    inputComp.setLastInput('w');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(0);
+
+    inputComp.setLastInput('s');
+    system.update();
+    expect(menu.getSelectedItemIndex()).toBe(0);
   });
 });

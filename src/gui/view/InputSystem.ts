@@ -4,6 +4,7 @@ import { Entity } from '../../ecs/Entity';
 import { TypeUtils } from '../../util/TypeUtils';
 import { InputComponent } from './InputComponent';
 import { MenuComponent } from '../menu/MenuComponent';
+import { ScrollStrategy } from '../menu/ScrollStrategy';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { ActionQueueComponent } from '../controller/ActionQueueComponent';
 
@@ -59,33 +60,65 @@ export class InputSystem extends System {
 
     /**
      * Processes input with active menu navigation.
+     * Supports both vertical and horizontal scroll strategies.
      * @param lastInput The last input received.
      * @param menuComponent The menu component to navigate.
      * @returns True if the input was processed, false otherwise.
      */
     processInputByMenuNavigation(lastInput: string, menuComponent: MenuComponent): boolean {
-        switch (lastInput) {
-            case 'a':
-            case 'left':
-                menuComponent.selectPrevious();
-                return true;
-            case 'd':
-            case 'right':
-                menuComponent.selectNext();
-                return true;
-            case 'enter': {
-                // Get the selected menu item and add its action to the queue
-                const selectedItem = menuComponent.getSelectedItem();
-                if (selectedItem) {
-                    const actionQueueComponent = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
-                    if (actionQueueComponent) {
-                        actionQueueComponent.addAction(selectedItem.getActionID());
+        const scrollStrategy = menuComponent.getScrollStrategy();
+        
+        if (scrollStrategy === ScrollStrategy.VERTICAL) {
+            // Vertical navigation: w/up for previous, s/down for next
+            switch (lastInput) {
+                case 'w':
+                case 'up':
+                    menuComponent.selectPrevious();
+                    return true;
+                case 's':
+                case 'down':
+                    menuComponent.selectNext();
+                    return true;
+                case 'enter': {
+                    // Get the selected menu item and add its action to the queue
+                    const selectedItem = menuComponent.getSelectedItem();
+                    if (selectedItem) {
+                        const actionQueueComponent = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
+                        if (actionQueueComponent) {
+                            actionQueueComponent.addAction(selectedItem.getActionID());
+                        }
                     }
+                    return true;
                 }
-                return true;
+                default: {
+                    return false;
+                }
             }
-            default: {
-                return false;
+        } else {
+            // Horizontal navigation: a/left for previous, d/right for next (default behavior)
+            switch (lastInput) {
+                case 'a':
+                case 'left':
+                    menuComponent.selectPrevious();
+                    return true;
+                case 'd':
+                case 'right':
+                    menuComponent.selectNext();
+                    return true;
+                case 'enter': {
+                    // Get the selected menu item and add its action to the queue
+                    const selectedItem = menuComponent.getSelectedItem();
+                    if (selectedItem) {
+                        const actionQueueComponent = this.getEntityManager().getSingletonComponent(ActionQueueComponent);
+                        if (actionQueueComponent) {
+                            actionQueueComponent.addAction(selectedItem.getActionID());
+                        }
+                    }
+                    return true;
+                }
+                default: {
+                    return false;
+                }
             }
         }
     }
