@@ -132,7 +132,7 @@ export class GuiBuilder extends Builder {
 
         // Create main menu entity
         const mainMenuItems = [
-            new MenuItem('Status', 'NAV_STATUS', 's'),
+            new MenuItem('Status', 'NAV_STATUS', 't'),
             new MenuItem('Choices', 'NAV_CHOICES', 'c'),
             new MenuItem('Chronicle', 'NAV_CHRONICLE', 'r'),
             new MenuItem('Quit', 'NAV_QUIT', 'q')
