@@ -7,7 +7,7 @@ import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { ScreensComponent } from '../menu/ScreensComponent';
 import { IsActiveScreenComponent } from '../rendering/IsActiveScreenComponent';
 import { PlayerComponent } from '../../ecs/PlayerComponent';
-import { DilemmaComponent } from '../../behaviour/DilemmaComponent';
+import { ChoiceComponent } from '../../behaviour/ChoiceComponent';
 import { DataSetEventComponent } from '../../data/DataSetEventComponent';
 import { DataSetEvent } from '../../data/DataSetEvent';
 import { Ecs } from '../../ecs/Ecs';
@@ -86,15 +86,15 @@ export class MainControllerSystem extends System {
   private handleMenuSelection(actionId: string): void {
   // Find the player in the simulation
   const simulationEntityManager = this.simulationEcs.getEntityManager();
-  const players = simulationEntityManager.getEntitiesWithComponents(PlayerComponent, DilemmaComponent, DataSetEventComponent);
+  const players = simulationEntityManager.getEntitiesWithComponents(PlayerComponent, ChoiceComponent, DataSetEventComponent);
   if (players.length === 0) return;
 
     // Get the first player entity
     const player = players[0];
 
-    // Get the dilemma and data set event components
-    const dilemmaComponent = player.getComponent(DilemmaComponent);
-    if (!dilemmaComponent) return;
+    // Get the choice and data set event components
+    const choiceComponent = player.getComponent(ChoiceComponent);
+    if (!choiceComponent) return;
 
     // Get the data set event component
     const dataSetEventComponent = player.getComponent(DataSetEventComponent);
@@ -102,7 +102,7 @@ export class MainControllerSystem extends System {
 
     // Handle the menu selection
     const choiceIndex = parseInt(actionId.split('_').pop() || '0');
-    const selectedChoice = dilemmaComponent.getChoice(choiceIndex);
+    const selectedChoice = choiceComponent.getChoice(choiceIndex);
     if (!selectedChoice) return;
 
     // Ensure the selected choice is a DataSetEvent

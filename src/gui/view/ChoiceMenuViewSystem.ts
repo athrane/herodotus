@@ -4,12 +4,12 @@ import { EntityManager } from '../../ecs/EntityManager';
 import { ScrollableMenuComponent } from '../menu/ScrollableMenuComponent';
 import { MenuItem } from '../menu/MenuItem';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
-import { DilemmaComponent } from '../../behaviour/DilemmaComponent';
+import { ChoiceComponent } from '../../behaviour/ChoiceComponent';
 import { PlayerComponent } from '../../ecs/PlayerComponent';
 import { DataSetEvent } from '../../data/DataSetEvent';
 
 /**
- * System that populates choice menu items from the player's DilemmaComponent.
+ * System that populates choice menu items from the player's ChoiceComponent.
  * Updates ScrollableMenuComponent with current available choices from the simulation.
  */
 export class ChoiceMenuViewSystem extends System {
@@ -67,12 +67,12 @@ export class ChoiceMenuViewSystem extends System {
 
         // Get the first player entity
         const playerEntity = playerEntities[0];
-        const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
+        const choiceComponent = playerEntity.getComponent(ChoiceComponent);
 
-        // Exit if no dilemma component is found
-        if (!dilemmaComponent) return [];
+        // Exit if no choice component is found
+        if (!choiceComponent) return [];
 
-        return dilemmaComponent.getChoices() as DataSetEvent[];
+        return choiceComponent.getChoices() as DataSetEvent[];
     }
 
     /**

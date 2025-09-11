@@ -1,7 +1,7 @@
 import { System } from '../ecs/System';
 import { EntityManager } from '../ecs/EntityManager';
 import { Entity } from '../ecs/Entity';
-import { DilemmaComponent } from './DilemmaComponent';
+import { ChoiceComponent } from './ChoiceComponent';
 import { DataSetEventComponent } from '../data/DataSetEventComponent';
 import { DataSetEvent } from '../data/DataSetEvent';
 import { TypeUtils } from '../util/TypeUtils';
@@ -17,10 +17,10 @@ import { HistoricalFigure } from '../historicalfigure/HistoricalFigure';
 import { PlayerComponent } from '../ecs/PlayerComponent';
 
 /**
- * The SelectChoiceSystem processes entities with DilemmaComponents to resolve
+ * The SelectChoiceSystem processes entities with ChoiceComponents to resolve
  * player choices. It selects one of the available choices, updates the entity's
- * DataSetEventComponent with the chosen event, and removes the DilemmaComponent
- * to prepare for the next dilemma generation cycle.
+ * DataSetEventComponent with the chosen event, and removes the ChoiceComponent
+ * to prepare for the next choice generation cycle.
  */
 export class SelectChoiceSystem extends System {
     
@@ -40,11 +40,11 @@ export class SelectChoiceSystem extends System {
      * @param entityManager - The entity manager instance.
      */
     constructor(entityManager: EntityManager) {
-        super(entityManager, [DilemmaComponent, DataSetEventComponent]);
+        super(entityManager, [ChoiceComponent, DataSetEventComponent]);
     }
 
     /**
-     * Processes an entity with a DilemmaComponent by making a choice and updating
+     * Processes an entity with a ChoiceComponent by making a choice and updating
      * the entity's DataSetEventComponent with the chosen event.
      * Also creates a chronicle event to record the decision.
      * For player entities, the choice must be made via the GUI before processing.
@@ -53,17 +53,17 @@ export class SelectChoiceSystem extends System {
     processEntity(entity: Entity): void {
         TypeUtils.ensureInstanceOf(entity, Entity, 'Entity must be a valid Entity instance.');
 
-        const dilemmaComponent = entity.getComponent(DilemmaComponent);
+        const choiceComponent = entity.getComponent(ChoiceComponent);
         const dataSetEventComponent = entity.getComponent(DataSetEventComponent);
 
         // Exit if components are missing
-        if (!dilemmaComponent || !dataSetEventComponent) return;
+        if (!choiceComponent || !dataSetEventComponent) return;
 
         // Check if this is a player entity
         const isPlayerEntity = entity.hasComponent(PlayerComponent);
 
         // Get available choices, exit if no choices are available
-        const choices = dilemmaComponent.getChoices();
+        const choices = choiceComponent.getChoices();
         if (choices.length === 0) return;
 
         // For player entities, check if a choice has already been made via GUI
@@ -83,8 +83,8 @@ export class SelectChoiceSystem extends System {
             // Record the player's decision in the chronicle
             this.recordDecisionInChronicle(entity, currentEvent!);
 
-            // Clear the choices in DilemmaComponent to prepare for the next cycle
-            dilemmaComponent.clearChoices();
+            // Clear the choices in ChoiceComponent to prepare for the next cycle
+            choiceComponent.clearChoices();
             return;
         }
 
@@ -97,8 +97,8 @@ export class SelectChoiceSystem extends System {
         // Record the decision in the chronicle
         this.recordDecisionInChronicle(entity, chosenEvent);
 
-        // Clear the choices in DilemmaComponent to prepare for the next cycle
-        dilemmaComponent.clearChoices();
+        // Clear the choices in ChoiceComponent to prepare for the next cycle
+        choiceComponent.clearChoices();
     }
 
     /**

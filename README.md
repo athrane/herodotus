@@ -146,7 +146,7 @@ The Herodotus simulation includes an interactive text-based GUI built on an Enti
 
 The ECS-based GUI provides the following functionality:
 
-- **Interactive Decision Making**: Make choices for your player character when dilemmas arise
+- **Interactive Decision Making**: Make choices for your player character when decisions arise
 - **Real-time Simulation Control**: View live simulation updates with automatic screen refresh
 - **Modular Screen System**: Each screen is a separate entity with its own components
 - **Chronicle Viewing**: Review recent historical events and decisions
@@ -221,9 +221,9 @@ The GUI system is built using the Entity-Component-System (ECS) pattern, where e
 
 Each screen is implemented as a separate entity with appropriate components:
 
-- **MainInterfaceScreen**: Main menu with navigation options and pending dilemmas
+- **MainInterfaceScreen**: Main menu with navigation options and pending choices
 - **StatusScreen**: Displays detailed simulation status and historical figures
-- **ChoicesScreen**: Handles dilemma choice selection and validation
+- **ChoicesScreen**: Handles choice selection and validation
 - **ChronicleScreen**: Displays recent historical events from the chronicle
 
 #### Management Classes
@@ -260,7 +260,7 @@ MainControllerSystem (renamed from ActionSystem) is responsible for processing U
 
 **Supported Actions:**
 - **Navigation**: `NAV_MAIN`, `NAV_STATUS`, `NAV_CHOICES`, `NAV_CHRONICLE`
-- **Choice selection**: `CHOICE_SELECT_<index>` (mapped to choice handling in the simulation `DilemmaComponent`)
+- **Choice selection**: `CHOICE_SELECT_<index>` (mapped to choice handling in the simulation `ChoiceComponent`)
 - **Extensible**: New actions can be added by extending the switch/dispatch logic
 
 **Architecture:**
@@ -303,15 +303,15 @@ The InputSystem handles user input processing for menu navigation and interactio
 
 ### Scrollable Choice Menu
 
-This project now includes a scrollable choice menu used by the main interface to present player dilemmas. Key points:
+This project now includes a scrollable choice menu used by the main interface to present player choices. Key points:
 
 - Displays only 3 choices at a time and automatically scrolls to keep the selected item visible.
 - Navigation: A/D keys or Left/Right arrow keys to move between choices; Enter to select.
-- Choices are read from the player's `DilemmaComponent` (simulation ECS) and converted to menu items by `ChoiceMenuViewSystem`.
+- Choices are read from the player's `ChoiceComponent` (simulation ECS) and converted to menu items by `ChoiceMenuViewSystem`.
 - Each visible choice is shown with a numbered shortcut (`[1]`, `[2]`, `[3]`) for quick selection; selection actions are emitted as `CHOICE_SELECT_<index>`.
 - Rendering is handled by `ScrollableMenuTextUpdateSystem`, which shows headers, numbered lines, selection highlight, and scroll indicators.
 - Implementation files: `src/gui/menu/ScrollableMenuComponent.ts`, `src/gui/menu/ScrollableMenuTextUpdateSystem.ts`, `src/gui/view/ChoiceMenuViewSystem.ts`.
-- Tests cover scrolling logic, formatting, and integration with `DilemmaComponent`.
+- Tests cover scrolling logic, formatting, and integration with `ChoiceComponent`.
 
 ### Architecture Benefits
 
@@ -329,7 +329,7 @@ The GUI accepts both full commands and single-letter shortcuts:
 
 - **[H]elp** / `h` - Show available commands and interface help
 - **[S]tatus** / `s` - Display detailed simulation status  
-- **[C]hoices** / `c` - View and make decisions for current dilemmas
+- **[C]hoices** / `c` - View and make decisions for current choices
 - **Ch[r]onicle** / `r` - Display recent historical events (last 10)
 - **[Q]uit** / `q` - Exit the simulation
 
@@ -353,12 +353,12 @@ The header shows all essential information in one line:
 #### Player Integration
 The simulation creates a dedicated player entity with:
 - `PlayerComponent` - Marks the entity as player-controlled
-- `DilemmaComponent` - Contains available choices when decisions are needed
+- `ChoiceComponent` - Contains available choices when decisions are needed
 - `DataSetEventComponent` - Holds the current event/decision state
 - `HistoricalFigureComponent` - Contains character information
 
 #### Decision Making Process
-1. The `DilemmaSystem` generates choices and adds them to the player's `DilemmaComponent`
+1. The `DilemmaSystem` generates choices and adds them to the player's `ChoiceComponent`
 2. The GUI automatically displays pending choices in the main interface
 3. Player uses `c` or `choices` command to access the decision screen
 4. Player selects a choice by number (1-N)
@@ -407,7 +407,7 @@ The Herodotus project uses the Builder pattern to construct complex ECS instance
 - `src/ecs/builder/BuilderDirector.ts` — Director class that orchestrates the building process by coordinating the execution order of builder methods (`build()`, `buildData()`, `buildComponents()`, `buildSystems()`, `buildEntities()`)
 
 **Simulation Builder:**
-- `src/simulation/builder/SimulationBuilder.ts` — Concrete builder implementation for creating simulation ECS instances with world generation, historical figures, time systems, player entities, and dilemma management
+- `src/simulation/builder/SimulationBuilder.ts` — Concrete builder implementation for creating simulation ECS instances with world generation, historical figures, time systems, player entities, and choice management
 
 **GUI Builder:**
 - `src/gui/builder/GuiBuilder.ts` — Concrete builder implementation for creating GUI ECS instances with screen management, input handling, rendering systems, and menu components that integrate with a simulation ECS instance
@@ -509,7 +509,7 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 - `src/historicalfigure/HistoricalFigureInfluenceSystem.ts` — Applies influence changes to figures
 
 #### Behaviour / Dilemmas
-- `src/behaviour/DilemmaComponent.ts` — Component holding current dilemma choices
+- `src/behaviour/ChoiceComponent.ts` — Component holding current choice options
 - `src/behaviour/DilemmaSystem.ts` — System creating and scheduling dilemmas
 - `src/behaviour/DilemmaResolutionSystem.ts` — Resolves choices and records outcomes
 
@@ -521,14 +521,14 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 
 
 #### Screen Implementations
-- `MainInterfaceScreen.ts` - Main menu with navigation and pending dilemmas
+- `MainInterfaceScreen.ts` - Main menu with navigation and pending choices
 - `StatusScreen.ts` - Detailed simulation status display
 - `ChoicesScreen.ts` - Dilemma choice selection and processing
 - `ChronicleScreen.ts` - Historical events display
 
 #### Integration Points
 The GUI uses a dual-ECS architecture:
-- **Simulation ECS**: Handles game logic, entities with `PlayerComponent`, `DilemmaComponent`, etc.
+- **Simulation ECS**: Handles game logic, entities with `PlayerComponent`, `ChoiceComponent`, etc.
 - **GUI ECS**: Separate instance for screen management with independent update frequencies
 - Reads/writes simulation state through the main ECS instance
 - Monitors simulation state through singleton components

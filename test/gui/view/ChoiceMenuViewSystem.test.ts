@@ -4,7 +4,7 @@ import { ScrollableMenuComponent } from '../../../src/gui/menu/ScrollableMenuCom
 import { MenuItem } from '../../../src/gui/menu/MenuItem';
 import { IsVisibleComponent } from '../../../src/gui/rendering/IsVisibleComponent';
 import { PlayerComponent } from '../../../src/ecs/PlayerComponent';
-import { DilemmaComponent } from '../../../src/behaviour/DilemmaComponent';
+import { ChoiceComponent } from '../../../src/behaviour/ChoiceComponent';
 import { DataSetEvent } from '../../../src/data/DataSetEvent';
 import { NameComponent } from '../../../src/ecs/NameComponent';
 
@@ -52,7 +52,7 @@ describe('ChoiceMenuViewSystem', () => {
             createTestDataSetEvent("Military Campaign", "Launch a military expedition"),
             createTestDataSetEvent("Diplomatic Mission", "Send diplomatic envoys")
         ];
-        playerEntity.addComponent(new DilemmaComponent(choices));
+        playerEntity.addComponent(new ChoiceComponent(choices));
 
         // Run system
         system.update();
@@ -94,7 +94,7 @@ describe('ChoiceMenuViewSystem', () => {
         choiceMenuEntity.addComponent(ScrollableMenuComponent.create([/* some initial items */], 3));
         choiceMenuEntity.addComponent(IsVisibleComponent.create(true));
 
-        // Create player without DilemmaComponent
+        // Create player without ChoiceComponent
         const playerEntity = simulationEntityManager.createEntity();
         playerEntity.addComponent(new PlayerComponent());
 
@@ -111,7 +111,7 @@ describe('ChoiceMenuViewSystem', () => {
 
         const playerEntity = simulationEntityManager.createEntity();
         playerEntity.addComponent(new PlayerComponent());
-        playerEntity.addComponent(new DilemmaComponent([])); // Empty choices
+        playerEntity.addComponent(new ChoiceComponent([])); // Empty choices
 
         system.update();
 
@@ -128,7 +128,7 @@ describe('ChoiceMenuViewSystem', () => {
         const playerEntity = simulationEntityManager.createEntity();
         playerEntity.addComponent(new PlayerComponent());
         const choices = [createTestDataSetEvent("Should not appear")];
-        playerEntity.addComponent(new DilemmaComponent(choices));
+        playerEntity.addComponent(new ChoiceComponent(choices));
 
         system.update();
 
@@ -152,7 +152,7 @@ describe('ChoiceMenuViewSystem', () => {
             createTestDataSetEvent("", "Description only"), // Empty name
             createTestDataSetEvent("Very Long Choice Name", "This is a very long description that should be truncated because it exceeds the maximum length limit for display in the menu interface")
         ];
-        playerEntity.addComponent(new DilemmaComponent(choices));
+        playerEntity.addComponent(new ChoiceComponent(choices));
 
         system.update();
 
@@ -186,7 +186,7 @@ describe('ChoiceMenuViewSystem', () => {
             createTestDataSetEvent("Updated Choice A"),
             createTestDataSetEvent("Updated Choice B")
         ];
-        playerEntity.addComponent(new DilemmaComponent(choices));
+        playerEntity.addComponent(new ChoiceComponent(choices));
 
         system.update();
 
@@ -215,7 +215,7 @@ describe('ChoiceMenuViewSystem', () => {
             createTestDataSetEvent("New Choice A"),
             createTestDataSetEvent("New Choice B")
         ];
-        playerEntity.addComponent(new DilemmaComponent(choices));
+        playerEntity.addComponent(new ChoiceComponent(choices));
 
         system.update();
 
@@ -233,7 +233,7 @@ describe('ChoiceMenuViewSystem', () => {
         const playerEntity = simulationEntityManager.createEntity();
         playerEntity.addComponent(new PlayerComponent());
         const choices = [createTestDataSetEvent("Stable Choice")];
-        playerEntity.addComponent(new DilemmaComponent(choices));
+        playerEntity.addComponent(new ChoiceComponent(choices));
 
         // First update
         system.update();
@@ -258,12 +258,12 @@ describe('ChoiceMenuViewSystem', () => {
         const player1 = simulationEntityManager.createEntity();
         player1.addComponent(new PlayerComponent());
         const choices1 = [createTestDataSetEvent("Player 1 Choice")];
-        player1.addComponent(new DilemmaComponent(choices1));
+        player1.addComponent(new ChoiceComponent(choices1));
 
         const player2 = simulationEntityManager.createEntity();
         player2.addComponent(new PlayerComponent());
         const choices2 = [createTestDataSetEvent("Player 2 Choice")];
-        player2.addComponent(new DilemmaComponent(choices2));
+        player2.addComponent(new ChoiceComponent(choices2));
 
         system.update();
 

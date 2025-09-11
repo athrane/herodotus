@@ -367,7 +367,7 @@ describe('HistoricalFigureBirthSystem', () => {
             expect(entityManager.createEntity).toHaveBeenCalledTimes(1);
             
             const createEntityCall = entityManager.createEntity.mock.calls[0];
-            expect(createEntityCall).toHaveLength(4); // NameComponent, HistoricalFigureComponent, DataSetEventComponent, DilemmaComponent
+            expect(createEntityCall).toHaveLength(4); // NameComponent, HistoricalFigureComponent, DataSetEventComponent, ChoiceComponent
             
             // Verify DataSetEventComponent is included
             const dataSetEventComponent = createEntityCall.find(component => 
@@ -375,9 +375,9 @@ describe('HistoricalFigureBirthSystem', () => {
             );
             expect(dataSetEventComponent).toBeDefined();
             
-            // Verify DilemmaComponent is included
+            // Verify ChoiceComponent is included
             const dilemmaComponent = createEntityCall.find(component => 
-                component.constructor.name === 'DilemmaComponent'
+                component.constructor.name === 'ChoiceComponent'
             );
             expect(dilemmaComponent).toBeDefined();
         });

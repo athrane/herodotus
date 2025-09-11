@@ -19,7 +19,7 @@ import { DataSetEvent } from '../../data/DataSetEvent';
 import { DataSetEventComponent } from '../../data/DataSetEventComponent';
 import { ComputeChoicesSystem } from '../../behaviour/ComputeChoicesSystem';
 import { SelectChoiceSystem } from '../../behaviour/SelectChoiceSystem';
-import { DilemmaComponent } from '../../behaviour/DilemmaComponent';
+import { ChoiceComponent } from '../../behaviour/ChoiceComponent';
 import { PlayerComponent } from '../../ecs/PlayerComponent';
 import { Ecs } from '../../ecs/Ecs';
 
@@ -100,7 +100,7 @@ export class SimulationBuilder extends Builder {
             new NameComponent("Player"),
             HistoricalFigureComponent.create("Player Character", 0, 70, "Unknown", "Ruler"),
             DataSetEventComponent.create(initialEvent),
-            DilemmaComponent.create([]), // Start with empty choices, will be populated by ComputeChoicesSystem
+            ChoiceComponent.create([]), // Start with empty choices, will be populated by ComputeChoicesSystem
             PlayerComponent.create()
         );
 

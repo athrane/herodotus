@@ -3,17 +3,17 @@ import { EntityManager } from '../ecs/EntityManager';
 import { Entity } from '../ecs/Entity';
 import { DataSetEventComponent } from '../data/DataSetEventComponent';
 import { DataSetComponent } from '../data/DataSetComponent';
-import { DilemmaComponent } from './DilemmaComponent';
+import { ChoiceComponent } from './ChoiceComponent';
 import { TypeUtils } from '../util/TypeUtils';
 
 /**
- * The ComputeChoicesSystem is the engine of the dilemma loop, responsible for generating 
+ * The ComputeChoicesSystem is the engine of the choice loop, responsible for generating 
  * choices based on the player's current state. It directly implements the 
  * read_state → find_triggers → generate_choices sequence.
  * 
  * This system reads the player's game state from their DataSetEventComponent,
  * queries the global DataSetComponent for valid choices, and creates a 
- * DilemmaComponent with the available options.
+ * ChoiceComponent with the available options.
  */
 export class ComputeChoicesSystem extends System {
 
@@ -27,7 +27,7 @@ export class ComputeChoicesSystem extends System {
     }
 
     /**
-     * Processes a single entity (the player) to generate dilemma choices.
+     * Processes a single entity (the player) to generate choice options.
      * 
      * Logic:
      * 1. Read State: Reads the current state from the EventConsequence field 
@@ -61,17 +61,17 @@ export class ComputeChoicesSystem extends System {
             event.getCause() === currentState
         );
 
-        // Update DilemmaComponent with valid choices
-        let dilemmaComponent = entity.getComponent(DilemmaComponent);
+        // Update ChoiceComponent with valid choices
+        let choiceComponent = entity.getComponent(ChoiceComponent);
         
-        // Create DilemmaComponent if it doesn't exist        
-        if (!dilemmaComponent) {
-            dilemmaComponent = DilemmaComponent.create([]);
-            entity.addComponent(dilemmaComponent);
+        // Create ChoiceComponent if it doesn't exist        
+        if (!choiceComponent) {
+            choiceComponent = ChoiceComponent.create([]);
+            entity.addComponent(choiceComponent);
         }
 
         // Set the new choices (or empty array if no valid choices)
-        dilemmaComponent.setChoices(validChoices);
+        choiceComponent.setChoices(validChoices);
     }
 
     /**
