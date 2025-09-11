@@ -180,7 +180,7 @@ describe('ScrollableMenuComponent', () => {
 
     test('static create method works', () => {
         const items = [new MenuItem('Test', 'action')];
-        const menu = ScrollableMenuComponent.create(items, 2);
+        const menu = ScrollableMenuComponent.createWithItemCount(items, 2);
         
         expect(menu).toBeInstanceOf(ScrollableMenuComponent);
         expect(menu.getVisibleItemCount()).toBe(2);

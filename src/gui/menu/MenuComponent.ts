@@ -10,26 +10,32 @@ import { ScrollStrategy } from './ScrollStrategy';
 export class MenuComponent extends Component {
   private items: MenuItem[];
   private selectedIndex: number = 0;
-  private scrollStrategy: ScrollStrategy = ScrollStrategy.HORIZONTAL;
+  private scrollStrategy: ScrollStrategy;
 
   /**
-   * Constructs a MenuComponent with the given menu items.
+   * Constructs a MenuComponent with the given menu items and scroll strategy.
    * @param items The menu items to include in the menu.
-   * @param scrollStrategy The scroll strategy for navigation (defaults to HORIZONTAL).
+   * @param scrollStrategy The scroll strategy for navigation.
    */
-  constructor(items: MenuItem[], scrollStrategy?: ScrollStrategy) {
+  constructor(items: MenuItem[], scrollStrategy: ScrollStrategy) {
     super();
     TypeUtils.ensureArray(items, "items must be an array");
-    if (scrollStrategy !== undefined) {
-      TypeUtils.ensureString(scrollStrategy, "scrollStrategy must be a valid ScrollStrategy enum value");
-      if (!Object.values(ScrollStrategy).includes(scrollStrategy)) {
-        throw new TypeError(`scrollStrategy must be one of: ${Object.values(ScrollStrategy).join(', ')}`);
-      }
+    TypeUtils.ensureString(scrollStrategy, "scrollStrategy must be a valid ScrollStrategy enum value");
+    if (!Object.values(ScrollStrategy).includes(scrollStrategy)) {
+      throw new TypeError(`scrollStrategy must be one of: ${Object.values(ScrollStrategy).join(', ')}`);
     }
     this.items = items;
-    if (scrollStrategy !== undefined) {
-      this.scrollStrategy = scrollStrategy;
-    }
+    this.scrollStrategy = scrollStrategy;
+  }
+
+  /**
+   * Creates a new MenuComponent instance.
+   * @param items The menu items to include in the menu.
+   * @param scrollStrategy The scroll strategy for navigation.
+   * @returns A new MenuComponent instance.
+   */
+  static create(items: MenuItem[], scrollStrategy: ScrollStrategy): MenuComponent {
+    return new MenuComponent(items, scrollStrategy);
   }
 
   /**

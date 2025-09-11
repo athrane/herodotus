@@ -18,7 +18,7 @@ describe('InputSystem', () => {
 
     const menuEntity = em.createEntity();
     const items = [new MenuItem('One', 'one'), new MenuItem('Two', 'two')];
-    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(MenuComponent.create(items, ScrollStrategy.HORIZONTAL));
   menuEntity.addComponent(new TextComponent(''));
   menuEntity.addComponent(IsVisibleComponent.create(true));
 
@@ -54,7 +54,7 @@ describe('InputSystem', () => {
 
     const menuEntity = em.createEntity();
     const items = [new MenuItem('One', 'ACTION_ONE')];
-    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(MenuComponent.create(items, ScrollStrategy.HORIZONTAL));
   menuEntity.addComponent(new TextComponent(''));
   menuEntity.addComponent(IsVisibleComponent.create(true));
 
@@ -81,7 +81,7 @@ describe('InputSystem', () => {
 
     const menuEntity = em.createEntity();
     const items = [new MenuItem('One', 'one')];
-    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(MenuComponent.create(items, ScrollStrategy.HORIZONTAL));
   menuEntity.addComponent(new TextComponent(''));
   menuEntity.addComponent(IsVisibleComponent.create(false)); // Not visible
 
@@ -112,7 +112,7 @@ describe('InputSystem', () => {
 
     const menuEntity = em.createEntity();
     const items = [new MenuItem('One', 'one')];
-    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(MenuComponent.create(items, ScrollStrategy.HORIZONTAL));
   menuEntity.addComponent(new TextComponent(''));
   menuEntity.addComponent(IsVisibleComponent.create(true));
 
@@ -142,7 +142,7 @@ describe('InputSystem', () => {
 
     const menuEntity = em.createEntity();
     const items = [new MenuItem('One', 'one')];
-    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(MenuComponent.create(items, ScrollStrategy.HORIZONTAL));
   menuEntity.addComponent(new TextComponent(''));
   menuEntity.addComponent(IsVisibleComponent.create(true));
 
@@ -173,7 +173,7 @@ describe('InputSystem', () => {
 
     const menuEntity = em.createEntity();
     const items = [new MenuItem('One', 'ACTION_ONE')];
-    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(MenuComponent.create(items, ScrollStrategy.HORIZONTAL));
   menuEntity.addComponent(new TextComponent(''));
   menuEntity.addComponent(IsVisibleComponent.create(true));
 
@@ -196,7 +196,7 @@ describe('InputSystem', () => {
 
     const menuEntity = em.createEntity();
     const items = [new MenuItem('Single Item', 'SINGLE_ACTION')];
-    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(MenuComponent.create(items, ScrollStrategy.HORIZONTAL));
   menuEntity.addComponent(new TextComponent(''));
   menuEntity.addComponent(IsVisibleComponent.create(true));
 
@@ -238,7 +238,7 @@ describe('InputSystem', () => {
       new MenuItem('Item 4', 'ACTION_4'),
       new MenuItem('Item 5', 'ACTION_5')
     ];
-    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(MenuComponent.create(items, ScrollStrategy.HORIZONTAL));
   menuEntity.addComponent(new TextComponent(''));
   menuEntity.addComponent(IsVisibleComponent.create(true));
 
@@ -279,7 +279,7 @@ describe('InputSystem', () => {
       new MenuItem('Item 2', 'ACTION_2'),
       new MenuItem('Item 3', 'ACTION_3')
     ];
-    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(MenuComponent.create(items, ScrollStrategy.HORIZONTAL));
   menuEntity.addComponent(new TextComponent(''));
   menuEntity.addComponent(IsVisibleComponent.create(true));
 
@@ -325,7 +325,7 @@ describe('InputSystem', () => {
       new MenuItem('Item 1', 'ACTION_1'),
       new MenuItem('Item 2', 'ACTION_2')
     ];
-    const menu = new MenuComponent(items);
+    const menu = MenuComponent.create(items, ScrollStrategy.HORIZONTAL);
     menu.setSelectedItemIndex(1); // Set to second item
     menuEntity.addComponent(menu);
     menuEntity.addComponent(new TextComponent(''));
@@ -355,7 +355,7 @@ describe('InputSystem', () => {
 
     const menuEntity = em.createEntity();
     const items = [new MenuItem('Item', 'ACTION')];
-    menuEntity.addComponent(new MenuComponent(items));
+    menuEntity.addComponent(MenuComponent.create(items, ScrollStrategy.HORIZONTAL));
     menuEntity.addComponent(new TextComponent(''));
     menuEntity.addComponent(new IsVisibleComponent(true));
 
@@ -631,7 +631,7 @@ describe('InputSystem with scroll strategies', () => {
     const menuEntity = em.createEntity();
     const items = [new MenuItem('One', 'one'), new MenuItem('Two', 'two')];
     // Create menu without specifying scroll strategy
-    const menu = new MenuComponent(items);
+    const menu = MenuComponent.create(items, ScrollStrategy.HORIZONTAL);
     menuEntity.addComponent(menu);
     menuEntity.addComponent(new TextComponent(''));
     menuEntity.addComponent(IsVisibleComponent.create(true));
