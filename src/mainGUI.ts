@@ -3,7 +3,7 @@ import { BuilderDirector } from './ecs/builder/BuilderDirector';
 import { SimulationBuilder } from './simulation/builder/SimulationBuilder';
 import { GuiBuilder } from './gui/builder/GuiBuilder';
 import { WorldComponent } from './geography/WorldComponent';
-import { TextBasedGui2 } from './gui/TextBasedGui2';
+import { TextBasedGui } from './gui/TextBasedGui';
 import { Simulation } from 'simulation/Simulation';
 
 /**
@@ -33,7 +33,7 @@ async function mainWithGUI(): Promise<void> {
   const guiEcs = guiDirector.build();
 
   // Create and start the GUI with pre-built ECS
-  const gui = TextBasedGui2.create(simulation, guiEcs);
+  const gui = TextBasedGui.create(simulation, guiEcs);
   
   try {
     await gui.start();

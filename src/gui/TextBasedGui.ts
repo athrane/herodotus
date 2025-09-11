@@ -11,7 +11,7 @@ import { Ecs } from '../ecs/Ecs';
  * The GUI has its own ECS instance, decoupled from the simulation ECS.
  */
 
-export class TextBasedGui2 {
+export class TextBasedGui {
     private readonly simulation: Simulation;
     private readonly readline: readline.Interface;
     private readonly guiEcsManager: GuiEcsManager;
@@ -30,7 +30,7 @@ export class TextBasedGui2 {
     static readonly SIMULATION_TICK_INTERVAL_MS = 2000;
 
     /**
-     * Creates an instance of TextBasedGui2.
+     * Creates an instance of TextBasedGui.
      * @param simulation The simulation instance to associate with the GUI.
      * @param guiEcs pre-built GUI ECS instance.
      */
@@ -61,7 +61,7 @@ export class TextBasedGui2 {
         this.startGuiRunning();
 
         // Start the GUI ECS system (fast updates for responsive UI)
-        this.guiEcsManager.start(TextBasedGui2.GUI_UPDATE_INTERVAL_MS);
+        this.guiEcsManager.start(TextBasedGui.GUI_UPDATE_INTERVAL_MS);
 
         // Start the simulation
         this.simulation.start();
@@ -108,7 +108,7 @@ export class TextBasedGui2 {
             if (this.simulation.getIsRunning() ) {
                 this.simulation.tick();
             }
-        }, TextBasedGui2.SIMULATION_TICK_INTERVAL_MS);
+        }, TextBasedGui.SIMULATION_TICK_INTERVAL_MS);
     }
 
     /**
@@ -267,11 +267,11 @@ export class TextBasedGui2 {
     }
 
     /**
-     * Creates a new instance of TextBasedGui2.
+     * Creates a new instance of TextBasedGui.
      * @param simulation The simulation instance to associate with the GUI.
      * @param guiEcs Optional pre-built GUI ECS instance.
      */
-    static create(simulation: Simulation, guiEcs: Ecs): TextBasedGui2 {
-        return new TextBasedGui2(simulation, guiEcs);
+    static create(simulation: Simulation, guiEcs: Ecs): TextBasedGui {
+        return new TextBasedGui(simulation, guiEcs);
     }
 }
