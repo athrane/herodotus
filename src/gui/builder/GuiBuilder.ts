@@ -26,6 +26,7 @@ import { ChoiceMenuViewSystem } from '../view/ChoiceMenuViewSystem';
 import { ScrollableMenuComponent } from '../menu/ScrollableMenuComponent';
 import { GuiHelper } from '../GuiHelper';
 import { ScreensComponent } from '../menu/ScreensComponent';
+import { ChronicleViewSystem } from '../view/ChronicleViewSystem';
 
 /**
  * GuiBuilder class is responsible for building a GUI ECS system.
@@ -83,6 +84,7 @@ export class GuiBuilder extends Builder {
         this.guiEcs.registerSystem(HeaderViewSystem.create(entityManager, this.simEcs));
         this.guiEcs.registerSystem(FooterViewSystem.create(entityManager));
         this.guiEcs.registerSystem(ChoiceMenuViewSystem.create(entityManager, this.simEcs));
+        this.guiEcs.registerSystem(ChronicleViewSystem.create(entityManager, this.simEcs));
 
         // 4. Dynamic text and menu text updates
         this.guiEcs.registerSystem(DynamicTextUpdateSystem.create(entityManager, this.simEcs));
@@ -168,20 +170,11 @@ export class GuiBuilder extends Builder {
         statusScreenEntity.addComponent(new PositionComponent(0, 2));
         statusScreenEntity.addComponent(IsVisibleComponent.create(false));
 
-        // Create chronicle screen entity (dynamic text for chronicle screen)
+        // Create chronicle screen entity (scrollable menu for chronicle screen)
         const chronicleScreenEntity = entityManager.createEntity();
         chronicleScreenEntity.addComponent(new NameComponent('ChronicleScreen'));
-         
-        /** 
-        chronicleScreenEntity.addComponent(new DynamicTextComponent((entityManager, this.simEcs.getEntityManager()) => {
-            // Simple chronicle text - can be enhanced later
-            return `Hello Chronicle`;
-        }));
-        **/
-        chronicleScreenEntity.addComponent(new DynamicTextComponent(() => {
-            // Simple chronicle text - can be enhanced later
-            return `Hello Chronicle`;
-        }));       
+        // Initialize with empty menu items - ChronicleViewSystem will populate them
+        chronicleScreenEntity.addComponent(ScrollableMenuComponent.createWithItemCount([], VISIBLE_ITEMS_COUNT));
         chronicleScreenEntity.addComponent(new TextComponent(''));
         chronicleScreenEntity.addComponent(new PositionComponent(0, 2));
         chronicleScreenEntity.addComponent(IsVisibleComponent.create(false));
