@@ -1,5 +1,6 @@
 import { MenuComponent } from './MenuComponent';
 import { MenuItem } from './MenuItem';
+import { ScrollStrategy } from './ScrollStrategy';
 import { TypeUtils } from '../../util/TypeUtils';
 
 /**
@@ -14,9 +15,10 @@ export class ScrollableMenuComponent extends MenuComponent {
      * Constructs a ScrollableMenuComponent with the given menu items and visible item count.
      * @param items The menu items to include in the menu.
      * @param visibleItemCount The number of items to display at once (default: 3).
+     * @param scrollStrategy The scroll strategy for navigation (defaults to HORIZONTAL).
      */
-    constructor(items: MenuItem[], visibleItemCount: number = 3) {
-        super(items);
+    constructor(items: MenuItem[], visibleItemCount: number = 3, scrollStrategy?: ScrollStrategy) {
+        super(items, scrollStrategy || ScrollStrategy.VERTICAL);
         TypeUtils.ensureNumber(visibleItemCount, "visibleItemCount must be a number");
         if (visibleItemCount <= 0) {
             throw new Error("visibleItemCount must be greater than 0");
@@ -162,12 +164,23 @@ export class ScrollableMenuComponent extends MenuComponent {
     }
 
     /**
-     * Creates a new ScrollableMenuComponent.
+     * Creates a new ScrollableMenuComponent instance (overrides parent to match signature).
+     * @param items The menu items to include in the menu.
+     * @param scrollStrategy The scroll strategy for navigation.
+     * @returns A new ScrollableMenuComponent instance with default visible item count of 3.
+     */
+    static create(items: MenuItem[], scrollStrategy: ScrollStrategy): ScrollableMenuComponent {
+        return new ScrollableMenuComponent(items, 3, scrollStrategy);
+    }
+
+    /**
+     * Creates a new ScrollableMenuComponent instance with custom visible item count.
      * @param items The menu items to include in the menu.
      * @param visibleItemCount The number of items to display at once.
+     * @param scrollStrategy The scroll strategy for navigation (defaults to VERTICAL).
      * @returns A new ScrollableMenuComponent instance.
      */
-    static create(items: MenuItem[], visibleItemCount: number = 3): ScrollableMenuComponent {
-        return new ScrollableMenuComponent(items, visibleItemCount);
+    static createWithItemCount(items: MenuItem[], visibleItemCount: number = 3, scrollStrategy: ScrollStrategy = ScrollStrategy.VERTICAL): ScrollableMenuComponent {
+        return new ScrollableMenuComponent(items, visibleItemCount, scrollStrategy);
     }
 }

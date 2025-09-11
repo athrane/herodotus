@@ -15,6 +15,7 @@ import { FooterViewSystem } from '../view/FooterViewSystem';
 import { DynamicTextUpdateSystem } from '../rendering/DynamicTextUpdateSystem';
 import { MenuComponent } from '../menu/MenuComponent';
 import { MenuItem } from '../menu/MenuItem';
+import { ScrollStrategy } from '../menu/ScrollStrategy';
 import { InputComponent } from '../view/InputComponent';
 import { MainControllerSystem } from '../controller/MainControllerSystem';
 import { ActionQueueComponent } from '../controller/ActionQueueComponent';
@@ -131,14 +132,14 @@ export class GuiBuilder extends Builder {
 
         // Create main menu entity
         const mainMenuItems = [
-            new MenuItem('Status', 'NAV_STATUS', 's'),
+            new MenuItem('Status', 'NAV_STATUS', 't'),
             new MenuItem('Choices', 'NAV_CHOICES', 'c'),
             new MenuItem('Chronicle', 'NAV_CHRONICLE', 'r'),
             new MenuItem('Quit', 'NAV_QUIT', 'q')
         ];
         const mainMenuEntity = entityManager.createEntity();
         mainMenuEntity.addComponent(new NameComponent('MainMenu'));
-        mainMenuEntity.addComponent(new MenuComponent(mainMenuItems));
+        mainMenuEntity.addComponent(MenuComponent.create(mainMenuItems, ScrollStrategy.HORIZONTAL));
         mainMenuEntity.addComponent(new TextComponent(''));
         mainMenuEntity.addComponent(new PositionComponent(0, 23));
         mainMenuEntity.addComponent(IsVisibleComponent.create(true));
@@ -148,7 +149,7 @@ export class GuiBuilder extends Builder {
         const choicesScreenEntity = entityManager.createEntity();
         choicesScreenEntity.addComponent(new NameComponent('ChoicesScreen'));
         // Initialize with empty menu items - ChoiceMenuSystem will populate them
-        choicesScreenEntity.addComponent(ScrollableMenuComponent.create([], VISIBLE_ITEMS_COUNT));
+        choicesScreenEntity.addComponent(ScrollableMenuComponent.createWithItemCount([], VISIBLE_ITEMS_COUNT));
         choicesScreenEntity.addComponent(new TextComponent(''));
         choicesScreenEntity.addComponent(new PositionComponent(0, 2));
         choicesScreenEntity.addComponent(IsVisibleComponent.create(false));

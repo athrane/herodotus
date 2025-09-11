@@ -1,6 +1,7 @@
 ﻿import { EntityManager } from '../../../src/ecs/EntityManager';
 import { MenuItem } from '../../../src/gui/menu/MenuItem';
 import { MenuComponent } from '../../../src/gui/menu/MenuComponent';
+import { ScrollStrategy } from '../../../src/gui/menu/ScrollStrategy';
 import { TextComponent } from '../../../src/gui/rendering/TextComponent';
 import { IsVisibleComponent } from '../../../src/gui/rendering/IsVisibleComponent';
 import { MenuTextUpdateSystem } from '../../../src/gui/menu/MenuTextUpdateSystem';
@@ -15,9 +16,9 @@ describe('MenuTextUpdateSystem', () => {
       new MenuItem('Load', 'load'),
     ];
 
-    entity.addComponent(new MenuComponent(items));
-  entity.addComponent(new TextComponent(''));
-  entity.addComponent(IsVisibleComponent.create(true));
+  entity.addComponent(new MenuComponent(items, ScrollStrategy.HORIZONTAL));
+    entity.addComponent(new TextComponent(''));
+    entity.addComponent(IsVisibleComponent.create(true));
 
     const system = new MenuTextUpdateSystem(em);
     system.update();
@@ -31,9 +32,9 @@ describe('MenuTextUpdateSystem', () => {
     const entity = em.createEntity();
 
     const items = [new MenuItem('Start', 'start')];
-    entity.addComponent(new MenuComponent(items));
-  entity.addComponent(new TextComponent(''));
-  entity.addComponent(IsVisibleComponent.create(true));
+  entity.addComponent(new MenuComponent(items, ScrollStrategy.HORIZONTAL));
+    entity.addComponent(new TextComponent(''));
+    entity.addComponent(IsVisibleComponent.create(true));
 
     const system = new MenuTextUpdateSystem(em);
     system.update();
@@ -50,9 +51,9 @@ describe('MenuTextUpdateSystem', () => {
       new MenuItem('Start', 'start'),
       new MenuItem('Load', 'load'),
     ];
-    entity.addComponent(new MenuComponent(items));
-  entity.addComponent(new TextComponent(''));
-  entity.addComponent(IsVisibleComponent.create(true));
+  entity.addComponent(new MenuComponent(items, ScrollStrategy.HORIZONTAL));
+    entity.addComponent(new TextComponent(''));
+    entity.addComponent(IsVisibleComponent.create(true));
 
     const system = new MenuTextUpdateSystem(em);
     system.update();
@@ -70,7 +71,7 @@ describe('MenuTextUpdateSystem', () => {
       new MenuItem('Load', 'load'),
       new MenuItem('Settings', 'settings'),
     ];
-    entity.addComponent(new MenuComponent(items));
+  entity.addComponent(new MenuComponent(items, ScrollStrategy.HORIZONTAL));
     entity.addComponent(new TextComponent(''));
     entity.addComponent(new IsVisibleComponent(true));
 
@@ -86,9 +87,9 @@ describe('MenuTextUpdateSystem', () => {
     const entity = em.createEntity();
 
     const items = [new MenuItem('One', 'one')];
-    entity.addComponent(new MenuComponent(items));
-  entity.addComponent(new TextComponent('keep-me'));
-  entity.addComponent(IsVisibleComponent.create(false));
+  entity.addComponent(new MenuComponent(items, ScrollStrategy.HORIZONTAL));
+    entity.addComponent(new TextComponent('keep-me'));
+    entity.addComponent(IsVisibleComponent.create(false));
 
     const system = new MenuTextUpdateSystem(em);
     system.update();
@@ -101,9 +102,9 @@ describe('MenuTextUpdateSystem', () => {
     const em = EntityManager.create();
     const entity = em.createEntity();
 
-    entity.addComponent(new MenuComponent([]));
-  entity.addComponent(new TextComponent('initial'));
-  entity.addComponent(IsVisibleComponent.create(true));
+  entity.addComponent(new MenuComponent([], ScrollStrategy.HORIZONTAL));
+    entity.addComponent(new TextComponent('initial'));
+    entity.addComponent(IsVisibleComponent.create(true));
 
     const system = new MenuTextUpdateSystem(em);
     system.update();
@@ -117,9 +118,9 @@ describe('MenuTextUpdateSystem', () => {
     const entity = em.createEntity();
 
     const items = [new MenuItem('Hidden', 'hidden')];
-  entity.addComponent(new MenuComponent(items));
+  entity.addComponent(new MenuComponent(items, ScrollStrategy.HORIZONTAL));
     // Intentionally do NOT add TextComponent
-  entity.addComponent(IsVisibleComponent.create(true));
+    entity.addComponent(IsVisibleComponent.create(true));
 
     const system = new MenuTextUpdateSystem(em);
     // Should not throw
@@ -135,7 +136,7 @@ describe('MenuTextUpdateSystem', () => {
     const entity = em.createEntity();
 
     const items = [new MenuItem('One', 'one')];
-    entity.addComponent(new MenuComponent(items));
+  entity.addComponent(new MenuComponent(items, ScrollStrategy.HORIZONTAL));
     entity.addComponent(new TextComponent('keep-me'));
     // Intentionally do NOT add IsVisibleComponent
 
@@ -143,8 +144,8 @@ describe('MenuTextUpdateSystem', () => {
     system.update();
 
     const textComp = entity.getComponent(TextComponent)!;
-  // When visibility component is missing the system should not process the entity
-  expect(textComp.getText()).toBe('keep-me');
+    // When visibility component is missing the system should not process the entity
+    expect(textComp.getText()).toBe('keep-me');
   });
 
   test('renders selected indicator at non-zero selected index', () => {
@@ -157,12 +158,12 @@ describe('MenuTextUpdateSystem', () => {
       new MenuItem('Third', 'third'),
     ];
 
-    const menu = new MenuComponent(items);
+  const menu = new MenuComponent(items, ScrollStrategy.HORIZONTAL);
     menu.setSelectedItemIndex(2); // select 'Third'
 
     entity.addComponent(menu);
-  entity.addComponent(new TextComponent(''));
-  entity.addComponent(IsVisibleComponent.create(true));
+    entity.addComponent(new TextComponent(''));
+    entity.addComponent(IsVisibleComponent.create(true));
 
     const system = new MenuTextUpdateSystem(em);
     system.update();
