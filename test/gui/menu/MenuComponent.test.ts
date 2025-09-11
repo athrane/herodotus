@@ -9,7 +9,7 @@ describe('MenuComponent (menu folder)', () => {
       new MenuItem('Load', 'load')
     ];
 
-    const menu = new MenuComponent(items);
+  const menu = new MenuComponent(items, ScrollStrategy.HORIZONTAL);
 
   // The implementation exposes getters instead of public fields
   expect(menu.getSelectedItemIndex()).toBe(0);
@@ -23,7 +23,7 @@ describe('MenuComponent (menu folder)', () => {
 
   test('empty items returns undefined for selected item', () => {
     const items: MenuItem[] = [];
-    const menu = new MenuComponent(items);
+  const menu = new MenuComponent(items, ScrollStrategy.HORIZONTAL);
 
   expect(menu.getSelectedItemIndex()).toBe(0);
   const itemsOut = menu.getItems();
@@ -32,19 +32,19 @@ describe('MenuComponent (menu folder)', () => {
   });
 
   test('constructor throws when items is not an array', () => {
-    // @ts-expect-error - intentionally passing wrong types
-    expect(() => new MenuComponent(null)).toThrow(TypeError);
+  // @ts-expect-error - intentionally passing wrong types
+  expect(() => new MenuComponent(null, ScrollStrategy.HORIZONTAL)).toThrow(TypeError);
     // @ts-expect-error - testing with number
-    expect(() => new MenuComponent(123)).toThrow(TypeError);
+  expect(() => new MenuComponent(123, ScrollStrategy.HORIZONTAL)).toThrow(TypeError);
     // @ts-expect-error - testing with object
-    expect(() => new MenuComponent({})).toThrow(TypeError);
+  expect(() => new MenuComponent({}, ScrollStrategy.HORIZONTAL)).toThrow(TypeError);
   });
 });
 
 describe('MenuComponent scroll strategy support', () => {
   test('defaults to HORIZONTAL scroll strategy', () => {
     const items: MenuItem[] = [new MenuItem('Start', 'start')];
-    const menu = new MenuComponent(items);
+      const menu = new MenuComponent(items, ScrollStrategy.HORIZONTAL);
     
     expect(menu.getScrollStrategy()).toBe(ScrollStrategy.HORIZONTAL);
   });
@@ -65,7 +65,7 @@ describe('MenuComponent scroll strategy support', () => {
 
   test('constructor works without scroll strategy parameter (backward compatibility)', () => {
     const items: MenuItem[] = [new MenuItem('Start', 'start')];
-    const menu = new MenuComponent(items);
+      const menu = new MenuComponent(items, ScrollStrategy.HORIZONTAL);
     
     expect(menu.getScrollStrategy()).toBe(ScrollStrategy.HORIZONTAL);
     expect(menu.getItems()).toEqual(items);
@@ -74,7 +74,7 @@ describe('MenuComponent scroll strategy support', () => {
 
   test('setScrollStrategy updates the strategy', () => {
     const items: MenuItem[] = [new MenuItem('Start', 'start')];
-    const menu = new MenuComponent(items);
+  const menu = new MenuComponent(items, ScrollStrategy.HORIZONTAL);
     
     menu.setScrollStrategy(ScrollStrategy.VERTICAL);
     expect(menu.getScrollStrategy()).toBe(ScrollStrategy.VERTICAL);
@@ -105,7 +105,7 @@ describe('MenuComponent scroll strategy support', () => {
 
   test('setScrollStrategy throws when strategy is invalid string', () => {
     const items: MenuItem[] = [new MenuItem('Start', 'start')];
-    const menu = new MenuComponent(items);
+  const menu = new MenuComponent(items, ScrollStrategy.HORIZONTAL);
     
     // @ts-expect-error - testing invalid scroll strategy
     expect(() => menu.setScrollStrategy('invalid')).toThrow(TypeError);
@@ -115,7 +115,7 @@ describe('MenuComponent scroll strategy support', () => {
 
   test('setScrollStrategy throws when strategy is not string', () => {
     const items: MenuItem[] = [new MenuItem('Start', 'start')];
-    const menu = new MenuComponent(items);
+    const menu = new MenuComponent(items, ScrollStrategy.HORIZONTAL);
     
     // @ts-expect-error - testing invalid scroll strategy type
     expect(() => menu.setScrollStrategy(123)).toThrow(TypeError);
