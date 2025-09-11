@@ -82,7 +82,7 @@ export class GuiBuilder extends Builder {
         // 3. GUI Views (dynamic content updates)
         this.guiEcs.registerSystem(HeaderViewSystem.create(entityManager, this.simEcs));
         this.guiEcs.registerSystem(FooterViewSystem.create(entityManager));
-        this.guiEcs.registerSystem(ChoiceMenuViewSystem.create(entityManager, this.simEcs.getEntityManager()));
+        this.guiEcs.registerSystem(ChoiceMenuViewSystem.create(entityManager, this.simEcs));
 
         // 4. Dynamic text and menu text updates
         this.guiEcs.registerSystem(DynamicTextUpdateSystem.create(entityManager, this.simEcs));
