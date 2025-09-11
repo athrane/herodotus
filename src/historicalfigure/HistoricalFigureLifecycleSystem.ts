@@ -56,7 +56,7 @@ export class HistoricalFigureLifecycleSystem extends System {
      * @returns The calculated death year.
      */
     protected calculateDeathYear(historicalFigure: HistoricalFigureComponent): number {
-        return historicalFigure.birthYear + historicalFigure.averageLifeSpan;
+        return historicalFigure.getHistoricalFigure().getBirthYear() + historicalFigure.getHistoricalFigure().getAverageLifeSpan();
     }
 
     /**
@@ -120,12 +120,12 @@ export class HistoricalFigureLifecycleSystem extends System {
      */
     private recordDeathEvent(historicalFigure: HistoricalFigureComponent, deathYear: number): void {
         // Calculate lifespan for the description
-        const lifespan = deathYear - historicalFigure.birthYear;
+        const lifespan = deathYear - historicalFigure.getHistoricalFigure().getBirthYear();
         
         // Always log the basic information (for backwards compatibility with tests)
-        console.log(`Historical figure ${historicalFigure.name} (died ${deathYear}) has died and exited the simulation.`);
-        console.log(`  - ${historicalFigure.name} lived for ${lifespan} years (${historicalFigure.birthYear}-${deathYear})`);
-        console.log(`  - Occupation: ${historicalFigure.occupation}, Culture: ${historicalFigure.culture}`);
+        console.log(`Historical figure ${historicalFigure.getHistoricalFigure().getName()} (died ${deathYear}) has died and exited the simulation.`);
+        console.log(`  - ${historicalFigure.getHistoricalFigure().getName()} lived for ${lifespan} years (${historicalFigure.getHistoricalFigure().getBirthYear()}-${deathYear})`);
+        console.log(`  - Occupation: ${historicalFigure.getHistoricalFigure().getOccupation()}, Culture: ${historicalFigure.getHistoricalFigure().getCulture()}`);
 
         // Try to create a chronicle event if the required components are available
         const chronicleComponent = this.getEntityManager().getSingletonComponent(ChronicleComponent);
@@ -144,13 +144,13 @@ export class HistoricalFigureLifecycleSystem extends System {
             
             // Create the chronicle event
             const event = ChronicleEvent.create(
-                `${historicalFigure.name} has died in ${deathYear}.`,
+                `${historicalFigure.getHistoricalFigure().getName()} has died in ${deathYear}.`,
                 eventType,
                 time,
                 place,
-                `The historical figure ${historicalFigure.name} has died in the year ${deathYear} at ${place.getName()}. ` +
-                `They lived for ${lifespan} years (${historicalFigure.birthYear}-${deathYear}). ` +
-                `Their occupation was ${historicalFigure.occupation} and they belonged to the ${historicalFigure.culture} culture.`,
+                `The historical figure ${historicalFigure.getHistoricalFigure().getName()} has died in the year ${deathYear} at ${place.getName()}. ` +
+                `They lived for ${lifespan} years (${historicalFigure.getHistoricalFigure().getBirthYear()}-${deathYear}). ` +
+                `Their occupation was ${historicalFigure.getHistoricalFigure().getOccupation()} and they belonged to the ${historicalFigure.getHistoricalFigure().getCulture()} culture.`,
                 historicalFigureInstance
             );
             

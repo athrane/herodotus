@@ -26,45 +26,7 @@ export class HistoricalFigureComponent extends Component {
         return this.historicalFigure;
     }
 
-    /**
-     * Gets the name of the historical figure (convenience method).
-     * @returns The name of the historical figure.
-     */
-    get name(): string {
-        return this.historicalFigure.getName();
-    }
 
-    /**
-     * Gets the birth year of the historical figure (convenience method).
-     * @returns The birth year of the historical figure.
-     */
-    get birthYear(): number {
-        return this.historicalFigure.getBirthYear();
-    }
-
-    /**
-     * Gets the average lifespan of the historical figure (convenience method).
-     * @returns The average lifespan of the historical figure.
-     */
-    get averageLifeSpan(): number {
-        return this.historicalFigure.getAverageLifeSpan();
-    }
-
-    /**
-     * Gets the culture of the historical figure (convenience method).
-     * @returns The culture of the historical figure.
-     */
-    get culture(): string {
-        return this.historicalFigure.getCulture();
-    }
-
-    /**
-     * Gets the occupation of the historical figure (convenience method).
-     * @returns The occupation of the historical figure.
-     */
-    get occupation(): string {
-        return this.historicalFigure.getOccupation();
-    }
 
     /**
      * Static factory method to create a HistoricalFigureComponent.

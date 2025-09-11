@@ -208,8 +208,8 @@ describe('HistoricalFigureBirthSystem', () => {
             const historicalFigureComponent = createEntityCall.find(component => 
                 component.constructor.name === 'HistoricalFigureComponent'
             );
-            expect(historicalFigureComponent.birthYear).toBe(testYear);
-            expect(historicalFigureComponent.averageLifeSpan).toBe(testYear + 50); // This field stores death year
+            expect(historicalFigureComponent.getHistoricalFigure().getBirthYear()).toBe(testYear);
+            expect(historicalFigureComponent.getHistoricalFigure().getAverageLifeSpan()).toBe(testYear + 50); // This field actually stores death year due to HistoricalFigureBirthSystem implementation
         });
 
         it('uses year from TimeComponent in chronicle event message', () => {
@@ -273,8 +273,8 @@ describe('HistoricalFigureBirthSystem', () => {
             const historicalFigureComponent = createEntityCall.find(component => 
                 component.constructor.name === 'HistoricalFigureComponent'
             );
-            expect(historicalFigureComponent.birthYear).toBe(timeComponentYear);
-            expect(historicalFigureComponent.birthYear).not.toBe(ignoredCurrentYear);
+            expect(historicalFigureComponent.getHistoricalFigure().getBirthYear()).toBe(timeComponentYear);
+            expect(historicalFigureComponent.getHistoricalFigure().getBirthYear()).not.toBe(ignoredCurrentYear);
 
             // Verify chronicle event also uses TimeComponent year
             const event = mockChronicleEventComponent.addEvent.mock.calls[0][0];
@@ -347,7 +347,7 @@ describe('HistoricalFigureBirthSystem', () => {
                 const historicalFigureComponent = createEntityCall.find(component => 
                     component.constructor.name === 'HistoricalFigureComponent'
                 );
-                expect(historicalFigureComponent.birthYear).toBe(testYear);
+                expect(historicalFigureComponent.getHistoricalFigure().getBirthYear()).toBe(testYear);
 
                 const event = mockChronicleEventComponent.addEvent.mock.calls[0][0];
                 expect(event.getHeading()).toContain(`Historical figure TestName was born in ${testYear}.`);
