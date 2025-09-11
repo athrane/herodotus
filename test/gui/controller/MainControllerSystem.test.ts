@@ -51,10 +51,10 @@ describe('MainControllerSystem', () => {
     expect(system.setActiveScreen).toHaveBeenCalledWith('choices');
   });
 
-  test('NAV_QUIT action is ignored (handled by TextBasedGui2)', () => {
+  test('NAV_QUIT action is ignored (handled by TextBasedGui)', () => {
     actionQueueComponent.addAction('NAV_QUIT');
     system.update();
-    // NAV_QUIT should be a no-op in MainControllerSystem since stopping is handled by TextBasedGui2
+    // NAV_QUIT should be a no-op in MainControllerSystem since stopping is handled by TextBasedGui
     expect(system.setActiveScreen).not.toHaveBeenCalled();
   });
 

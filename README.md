@@ -234,7 +234,7 @@ Each screen is implemented as a separate entity with appropriate components:
 - Maps screen names to entity IDs and handles screen initialization
 - Provides independent update frequency from the simulation
 
-**TextBasedGui2** (`src/gui/TextBasedGui2.ts`)
+**TextBasedGui** (`src/gui/TextBasedGui.ts`)
 - Advanced GUI class using separate ECS architecture for screen management
 - Uses its own ECS instance decoupled from the simulation ECS
 - Handles global navigation commands with independent update frequencies
@@ -269,7 +269,7 @@ MainControllerSystem (renamed from ActionSystem) is responsible for processing U
 - Delegates screen switching via internal `setActiveScreen()` method
 - Handles unknown actions gracefully (no-op)
 
-**Note:** Application termination (quit) is handled directly by `TextBasedGui2` key input processing, not through the controller system.
+**Note:** Application termination (quit) is handled directly by `TextBasedGui` key input processing, not through the controller system.
 
 **Test Coverage:**
 - Covered by unit tests that exercise navigation, queue handling, and menu selection behavior
@@ -374,7 +374,7 @@ The simulation creates a dedicated player entity with:
 ### Architecture
 
 #### Key Files
-- `src/gui/TextBasedGui2.ts` - Advanced GUI implementation using separate ECS architecture
+- `src/gui/TextBasedGui.ts` - Advanced GUI implementation using separate ECS architecture
 - `src/gui/GuiEcsManager.ts` - Manages separate GUI ECS instance, systems, and screen entities
 - `src/gui/ScreenRenderSystem.ts` - System for rendering active screens
 - `src/gui/IsActiveComponent.ts` - Component marking the active screen
@@ -443,7 +443,7 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 - Systems that declare `requiredComponents: [Base]` will process entities with `Base` or any subclass (e.g., `SubBase extends Base`). If you need stricter filtering, add a guard inside `processEntity()`.
 
 #### GUI / Rendering
-- `src/gui/TextBasedGui2.ts` — Text-based GUI main class (interactive mode entry)
+- `src/gui/TextBasedGui.ts` — Text-based GUI main class (interactive mode entry)
 - `src/gui/GuiEcsManager.ts` — Manages GUI-specific ECS instance, screens and systems
 - `src/gui/GuiHelper.ts` — Helper utilities for rendering and input handling
 - `src/gui/ScreenComponent.ts` — Component holding render and input handlers for a screen
