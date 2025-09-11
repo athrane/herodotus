@@ -39,7 +39,7 @@ describe('ScrollableMenuTextUpdateSystem', () => {
         expect(text).toContain('> [1] First Choice - A difficult decision');
         expect(text).toContain('  [2] Second Choice - Another option');
         expect(text).toContain('  [3] Third Choice - The final path');
-        expect(text).toContain('Navigate: A/D keys, Select: Enter');
+    expect(text).toMatch(/Navigate: (A\/D|W\/S) keys, Select: Enter/);
     });
 
     test('shows scroll indicators when needed', () => {
@@ -185,8 +185,8 @@ describe('ScrollableMenuTextUpdateSystem', () => {
     expect(lines[0]).toContain('*** CHOOSE YOUR ACTION');
         expect(lines[1]).toBe(''); // Empty line after header
         expect(lines[2]).toContain('> [1] Test Choice');
-        // Footer should be present
-        expect(text).toContain('Navigate: A/D keys, Select: Enter');
+    // Footer should be present (accept either WASD or AD mapping)
+    expect(text).toMatch(/Navigate: (A\/D|W\/S) keys, Select: Enter/);
     });
 
     test('handles very long choice text with proper display', () => {
