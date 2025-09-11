@@ -32,9 +32,9 @@ export class ComputeChoicesSystem extends System {
      * Logic:
      * 1. Read State: Reads the current state from the EventConsequence field 
      *    of the DataSetEvent in the entity's DataSetEventComponent
-     * 2. Find Triggers: Accesses the singleton DataSetComponent and filters 
-     *    for events where EventTrigger matches the current state
-     * 3. Generate Choices: Creates a ChoiceComponent with valid choices
+     * 2. Find causes: Accesses the singleton DataSetComponent and filters 
+     *    for events where cause matches the current state
+     * 3. Generate Choices: Creates a DilemmaComponent with valid choices
      *    and attaches it to the entity
      * 
      * @param entity - The entity to process (should be the player entity).
@@ -49,14 +49,15 @@ export class ComputeChoicesSystem extends System {
         const currentState = currentDataSetEvent.getEventConsequence();
 
         // Exit if current state isn't defined 
-        if (!currentState || currentState.trim() === '') return;        
+        if (!currentState) return;
+        if (currentState.trim() === '') return;
 
-        // Find triggers in the global DataSetComponent and filter by trigger
+        // Find causes in the global DataSetComponent and filter by cause
         const globalDataSetComponent = this.getEntityManager().getSingletonComponent(DataSetComponent);
         if (!globalDataSetComponent) return; 
 
-        // Find all events where EventTrigger matches the player's current state
-        const validChoices = globalDataSetComponent.find(event => 
+        // Find all events where cause matches the player's current state
+        const validChoices = globalDataSetComponent.find(event =>
             event.getCause() === currentState
         );
 
