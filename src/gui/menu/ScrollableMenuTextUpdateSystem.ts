@@ -211,14 +211,14 @@ export class ScrollableMenuTextUpdateSystem extends System {
         const canScrollDown = menu.canScrollDown();
         
         if (!canScrollUp && !canScrollDown) {
-            return 'Navigate: A/D keys, Select: Enter';
+            return 'Navigate: W/S keys, Select: Enter';
         }
 
         const scrollHints: string[] = [];
         if (canScrollUp) scrollHints.push('↑ More above');
         if (canScrollDown) scrollHints.push('↓ More below');
-        
-        return `Navigate: A/D keys, Select: Enter | ${scrollHints.join(' | ')}`;
+
+        return `Navigate: W/S keys, Select: Enter | ${scrollHints.join(' | ')}`;
     }
 
     /**
