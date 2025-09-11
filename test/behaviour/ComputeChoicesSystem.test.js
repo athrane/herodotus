@@ -2,7 +2,7 @@ import { ComputeChoicesSystem } from '../../src/behaviour/ComputeChoicesSystem';
 import { EntityManager } from '../../src/ecs/EntityManager';
 import { DataSetEventComponent } from '../../src/data/DataSetEventComponent';
 import { DataSetComponent } from '../../src/data/DataSetComponent';
-import { DilemmaComponent } from '../../src/behaviour/DilemmaComponent';
+import { ChoiceComponent } from '../../src/behaviour/ChoiceComponent';
 import { DataSetEvent } from '../../src/data/DataSetEvent';
 import { System } from '../../src/ecs/System';
 
@@ -117,8 +117,8 @@ describe('ComputeChoicesSystem', () => {
       // Process the player entity
       computeChoicesSystem.processEntity(playerEntity);
 
-      // Check that DilemmaComponent was created with correct choices
-      const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
+      // Check that ChoiceComponent was created with correct choices
+      const dilemmaComponent = playerEntity.getComponent(ChoiceComponent);
       expect(dilemmaComponent).toBeDefined();
 
       const choices = dilemmaComponent.getChoices();
@@ -128,17 +128,17 @@ describe('ComputeChoicesSystem', () => {
       expect(choices).not.toContain(unrelatedEvent);
     });
 
-    it('should update existing DilemmaComponent with new choices', () => {
-      // Add existing DilemmaComponent with some choices
-      const existingDilemmaComponent = DilemmaComponent.create([unrelatedEvent]);
-      playerEntity.addComponent(existingDilemmaComponent);
+    it('should update existing ChoiceComponent with new choices', () => {
+      // Add existing ChoiceComponent with some choices
+      const existingChoiceComponent = ChoiceComponent.create([unrelatedEvent]);
+      playerEntity.addComponent(existingChoiceComponent);
 
       // Process the player entity
       computeChoicesSystem.processEntity(playerEntity);
 
-      // Check that the same DilemmaComponent was updated
-      const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
-      expect(dilemmaComponent).toBe(existingDilemmaComponent);
+      // Check that the same ChoiceComponent was updated
+      const dilemmaComponent = playerEntity.getComponent(ChoiceComponent);
+      expect(dilemmaComponent).toBe(existingChoiceComponent);
 
       const choices = dilemmaComponent.getChoices();
       expect(choices).toHaveLength(2);
@@ -170,8 +170,8 @@ describe('ComputeChoicesSystem', () => {
       // Process the player entity
       computeChoicesSystem.processEntity(playerEntity);
 
-      // Check that DilemmaComponent was created with empty choices
-      const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
+      // Check that ChoiceComponent was created with empty choices
+      const dilemmaComponent = playerEntity.getComponent(ChoiceComponent);
       expect(dilemmaComponent).toBeDefined();
 
       const choices = dilemmaComponent.getChoices();
@@ -188,8 +188,8 @@ describe('ComputeChoicesSystem', () => {
         computeChoicesSystem.processEntity(entityWithoutComponent);
       }).not.toThrow();
 
-      // Should not create DilemmaComponent
-      const dilemmaComponent = entityWithoutComponent.getComponent(DilemmaComponent);
+      // Should not create ChoiceComponent
+      const dilemmaComponent = entityWithoutComponent.getComponent(ChoiceComponent);
       expect(dilemmaComponent).toBeUndefined();
     });
 
@@ -204,8 +204,8 @@ describe('ComputeChoicesSystem', () => {
         computeChoicesSystem.processEntity(playerEntity);
       }).not.toThrow();
 
-      // Should not create DilemmaComponent
-      const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
+      // Should not create ChoiceComponent
+      const dilemmaComponent = playerEntity.getComponent(ChoiceComponent);
       expect(dilemmaComponent).toBeUndefined();
     });
 
@@ -228,12 +228,12 @@ describe('ComputeChoicesSystem', () => {
       playerEntity.removeComponent(DataSetEventComponent);
       playerEntity.addComponent(DataSetEventComponent.create(emptyStateEvent));
 
-      // Should not throw error and should not create DilemmaComponent
+      // Should not throw error and should not create ChoiceComponent
       expect(() => {
         computeChoicesSystem.processEntity(playerEntity);
       }).not.toThrow();
 
-      const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
+      const dilemmaComponent = playerEntity.getComponent(ChoiceComponent);
       expect(dilemmaComponent).toBeUndefined();
     });
 
@@ -256,12 +256,12 @@ describe('ComputeChoicesSystem', () => {
       playerEntity.removeComponent(DataSetEventComponent);
       playerEntity.addComponent(DataSetEventComponent.create(whitespaceStateEvent));
 
-      // Should not throw error and should not create DilemmaComponent
+      // Should not throw error and should not create ChoiceComponent
       expect(() => {
         computeChoicesSystem.processEntity(playerEntity);
       }).not.toThrow();
 
-      const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
+      const dilemmaComponent = playerEntity.getComponent(ChoiceComponent);
       expect(dilemmaComponent).toBeUndefined();
     });
   });
@@ -279,7 +279,7 @@ describe('ComputeChoicesSystem', () => {
       // Process the player entity
       computeChoicesSystem.processEntity(playerEntity);
 
-      const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
+      const dilemmaComponent = playerEntity.getComponent(ChoiceComponent);
       const choices = dilemmaComponent.getChoices();
 
       // Verify that only events with matching triggers are included
@@ -312,7 +312,7 @@ describe('ComputeChoicesSystem', () => {
       computeChoicesSystem.processEntity(playerEntity);
 
       // Should not find matches due to case sensitivity
-      const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
+      const dilemmaComponent = playerEntity.getComponent(ChoiceComponent);
       expect(dilemmaComponent).toBeDefined();
 
       const choices = dilemmaComponent.getChoices();
@@ -351,7 +351,7 @@ describe('ComputeChoicesSystem', () => {
       // Process the player entity
       computeChoicesSystem.processEntity(playerEntity);
 
-      const dilemmaComponent = playerEntity.getComponent(DilemmaComponent);
+      const dilemmaComponent = playerEntity.getComponent(ChoiceComponent);
       const choices = dilemmaComponent.getChoices();
 
       // Should include original 2 choices plus 5 additional = 7 total

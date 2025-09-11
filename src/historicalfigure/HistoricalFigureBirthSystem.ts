@@ -15,7 +15,7 @@ import { EventType } from '../chronicle/EventType';
 import { Place } from '../generator/Place';
 import { DataSetEvent } from '../data/DataSetEvent';
 import { DataSetEventComponent } from '../data/DataSetEventComponent';
-import { DilemmaComponent } from '../behaviour/DilemmaComponent';
+import { ChoiceComponent } from '../behaviour/ChoiceComponent';
 
 /**
  * Manages the birth of historical figures.
@@ -113,12 +113,12 @@ export class HistoricalFigureBirthSystem extends System {
             "Tags": "birth, historical-figure, social, emergence"
         });
     
-        // Create a new entity for the historical figure with DilemmaComponent
+        // Create a new entity for the historical figure with ChoiceComponent
         this.getEntityManager().createEntity(
             NameComponent.create(name),
             historicalFigureComponent,
             DataSetEventComponent.create(birthEvent),
-            DilemmaComponent.create([]) // Start with empty choices, will be populated by DilemmaSystem
+            ChoiceComponent.create([]) // Start with empty choices, will be populated by ComputeChoicesSystem
         );
 
         // Log the birth event

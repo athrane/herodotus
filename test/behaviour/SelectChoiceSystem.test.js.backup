@@ -57,7 +57,7 @@ describe('SelectChoiceSystem', () => {
                 'Event Consequence': 'Starting state'
             });
 
-            const choiceComponent = ChoiceComponent.create([choice1, choice2]);
+            const choiceComponent = DilemmaComponent.create([choice1, choice2]);
             const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
 
             entity.addComponent(choiceComponent);
@@ -114,7 +114,7 @@ describe('SelectChoiceSystem', () => {
                 'Event Consequence': 'Result of choice one'
             });
 
-            const choiceComponent = ChoiceComponent.create([choice]);
+            const choiceComponent = DilemmaComponent.create([choice]);
             entity.addComponent(choiceComponent);
             // No DataSetEventComponent added
 
@@ -122,12 +122,12 @@ describe('SelectChoiceSystem', () => {
             system.processEntity(entity);
 
             // Assert
-            // ChoiceComponent should remain unchanged
-            expect(entity.hasComponent(ChoiceComponent)).toBe(true);
+            // DilemmaComponent should remain unchanged
+            expect(entity.hasComponent(DilemmaComponent)).toBe(true);
             expect(choiceComponent.getChoices().length).toBe(1);
         });
 
-        it('should remove ChoiceComponent when no choices are available', () => {
+        it('should remove DilemmaComponent when no choices are available', () => {
             // Arrange
             const initialEvent = new DataSetEvent({
                 'Event Type': 'Social',
@@ -136,7 +136,7 @@ describe('SelectChoiceSystem', () => {
                 'Event Consequence': 'Starting state'
             });
 
-            const choiceComponent = ChoiceComponent.create([]); // Empty choices
+            const choiceComponent = DilemmaComponent.create([]); // Empty choices
             const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
 
             entity.addComponent(choiceComponent);
@@ -146,9 +146,9 @@ describe('SelectChoiceSystem', () => {
             system.processEntity(entity);
 
             // Assert
-            // Should keep ChoiceComponent but it should still be empty
-            expect(entity.hasComponent(ChoiceComponent)).toBe(true);
-            const resultDilemmaComp = entity.getComponent(ChoiceComponent);
+            // Should keep DilemmaComponent but it should still be empty
+            expect(entity.hasComponent(DilemmaComponent)).toBe(true);
+            const resultDilemmaComp = entity.getComponent(DilemmaComponent);
             expect(resultDilemmaComp.getChoiceCount()).toBe(0);
             
             // DataSetEventComponent should remain unchanged
@@ -176,7 +176,7 @@ describe('SelectChoiceSystem', () => {
                 'Event Consequence': 'Starting state'
             });
 
-            const choiceComponent = ChoiceComponent.create(choices);
+            const choiceComponent = DilemmaComponent.create(choices);
             const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
 
             entity.addComponent(choiceComponent);
@@ -191,10 +191,10 @@ describe('SelectChoiceSystem', () => {
             const validChoiceNames = ['Choice 0', 'Choice 1', 'Choice 2', 'Choice 3', 'Choice 4'];
             expect(validChoiceNames).toContain(updatedDataSetEvent.getEventName());
 
-            // Should clear ChoiceComponent choices but keep the component
-            expect(entity.hasComponent(ChoiceComponent)).toBe(true);
-            const finalChoiceComponent = entity.getComponent(ChoiceComponent);
-            expect(finalChoiceComponent.getChoiceCount()).toBe(0);
+            // Should clear DilemmaComponent choices but keep the component
+            expect(entity.hasComponent(DilemmaComponent)).toBe(true);
+            const finalDilemmaComponent = entity.getComponent(DilemmaComponent);
+            expect(finalDilemmaComponent.getChoiceCount()).toBe(0);
         });
 
         it('should handle player entities differently - wait for GUI input', () => {
@@ -220,7 +220,7 @@ describe('SelectChoiceSystem', () => {
                 'Event Consequence': 'Starting state'
             });
 
-            const choiceComponent = ChoiceComponent.create([choice1, choice2]);
+            const choiceComponent = DilemmaComponent.create([choice1, choice2]);
             const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
             const playerComponent = PlayerComponent.create();
 
@@ -256,7 +256,7 @@ describe('SelectChoiceSystem', () => {
                 'Event Consequence': 'Result of choice two'
             });
 
-            const choiceComponent = ChoiceComponent.create([choice1, choice2]);
+            const choiceComponent = DilemmaComponent.create([choice1, choice2]);
             const dataSetEventComponent = DataSetEventComponent.create(choice1); // GUI has already selected choice1
             const playerComponent = PlayerComponent.create();
 
@@ -315,11 +315,11 @@ describe('SelectChoiceSystem', () => {
             });
 
             // Entity 1 with both required components
-            entity1.addComponent(ChoiceComponent.create([choice1]));
+            entity1.addComponent(DilemmaComponent.create([choice1]));
             entity1.addComponent(DataSetEventComponent.create(initialEvent1));
 
             // Entity 2 with both required components
-            entity2.addComponent(ChoiceComponent.create([choice2]));
+            entity2.addComponent(DilemmaComponent.create([choice2]));
             entity2.addComponent(DataSetEventComponent.create(initialEvent2));
 
             // Entity 3 with only one component (should be skipped)
@@ -330,15 +330,15 @@ describe('SelectChoiceSystem', () => {
 
             // Assert
             // Entity 1 should be processed
-            expect(entity1.hasComponent(ChoiceComponent)).toBe(true);
-            const entity1ChoiceComponent = entity1.getComponent(ChoiceComponent);
-            expect(entity1ChoiceComponent.getChoiceCount()).toBe(0);
+            expect(entity1.hasComponent(DilemmaComponent)).toBe(true);
+            const entity1DilemmaComponent = entity1.getComponent(DilemmaComponent);
+            expect(entity1DilemmaComponent.getChoiceCount()).toBe(0);
             expect(entity1.getComponent(DataSetEventComponent).getDataSetEvent().getEventName()).toBe('Choice A');
 
             // Entity 2 should be processed
-            expect(entity2.hasComponent(ChoiceComponent)).toBe(true);
-            const entity2ChoiceComponent = entity2.getComponent(ChoiceComponent);
-            expect(entity2ChoiceComponent.getChoiceCount()).toBe(0);
+            expect(entity2.hasComponent(DilemmaComponent)).toBe(true);
+            const entity2DilemmaComponent = entity2.getComponent(DilemmaComponent);
+            expect(entity2DilemmaComponent.getChoiceCount()).toBe(0);
             expect(entity2.getComponent(DataSetEventComponent).getDataSetEvent().getEventName()).toBe('Choice B');
 
             // Entity 3 should not be processed (still has original state)
@@ -360,7 +360,7 @@ describe('SelectChoiceSystem', () => {
                 }));
             }
 
-            const choiceComponent = ChoiceComponent.create(choices);
+            const choiceComponent = DilemmaComponent.create(choices);
             const initialEvent = new DataSetEvent({
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL',
@@ -398,7 +398,7 @@ describe('SelectChoiceSystem', () => {
                 'Event Consequence': 'Only Result'
             });
 
-            const choiceComponent = ChoiceComponent.create([singleChoice]);
+            const choiceComponent = DilemmaComponent.create([singleChoice]);
             const initialEvent = new DataSetEvent({
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL',
@@ -453,7 +453,7 @@ describe('SelectChoiceSystem', () => {
                 'Description': 'A political alliance has been established'
             });
 
-            const choiceComponent = ChoiceComponent.create([choice]);
+            const choiceComponent = DilemmaComponent.create([choice]);
             const initialEvent = new DataSetEvent({
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL',
@@ -490,7 +490,7 @@ describe('SelectChoiceSystem', () => {
                 'Description': 'New lands have been claimed'
             });
 
-            const choiceComponent = ChoiceComponent.create([choice]);
+            const choiceComponent = DilemmaComponent.create([choice]);
             const initialEvent = new DataSetEvent({
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL',
@@ -524,7 +524,7 @@ describe('SelectChoiceSystem', () => {
                 'Description': 'A new trade route has been established'
             });
 
-            const choiceComponent = ChoiceComponent.create([choice]);
+            const choiceComponent = DilemmaComponent.create([choice]);
             const initialEvent = new DataSetEvent({
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL',
@@ -572,7 +572,7 @@ describe('SelectChoiceSystem', () => {
                     'Description': `Description ${index}`
                 });
 
-                const choiceComponent = ChoiceComponent.create([choice]);
+                const choiceComponent = DilemmaComponent.create([choice]);
                 const initialEvent = new DataSetEvent({
                     'Event Type': 'Social',
                     'Event Trigger': 'INITIAL',
@@ -607,7 +607,7 @@ describe('SelectChoiceSystem', () => {
                 'Event Consequence': 'Decision made'
             });
 
-            const choiceComponent = ChoiceComponent.create([choice]);
+            const choiceComponent = DilemmaComponent.create([choice]);
             const initialEvent = new DataSetEvent({
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL',
@@ -637,7 +637,7 @@ describe('SelectChoiceSystem', () => {
                 'Description': 'A significant political decision'
             });
 
-            const choiceComponent = ChoiceComponent.create([choice]);
+            const choiceComponent = DilemmaComponent.create([choice]);
             const initialEvent = new DataSetEvent({
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL',
@@ -678,7 +678,7 @@ describe('SelectChoiceSystem', () => {
                 'Event Consequence': 'Valid result'
             });
 
-            const choiceComponent = ChoiceComponent.create([choice]);
+            const choiceComponent = DilemmaComponent.create([choice]);
             const dataSetEventComponent = DataSetEventComponent.create(invalidDataSetEvent);
 
             entity.addComponent(choiceComponent);

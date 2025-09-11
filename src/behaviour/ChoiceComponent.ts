@@ -7,15 +7,15 @@ import { TypeUtils } from '../util/TypeUtils';
  * This component is attached to an entity when choices are generated,
  * and represents all valid DataSetEvent options that can be selected for the current turn.
  */
-export class DilemmaComponent extends Component {
+export class ChoiceComponent extends Component {
     /**
-     * Array of DataSetEvent choices available for the current dilemma.
+     * Array of DataSetEvent choices available for the current choice selection.
      */
     private choices: DataSetEvent[];
 
     /**
-     * Creates an instance of DilemmaComponent.
-     * @param choices - The array of DataSetEvent choices available for the current dilemma.
+     * Creates an instance of ChoiceComponent.
+     * @param choices - The array of DataSetEvent choices available for the current choice selection.
      */
     constructor(choices: DataSetEvent[]) {
         super();
@@ -38,7 +38,7 @@ export class DilemmaComponent extends Component {
     }
 
     /**
-     * Sets new choices for the dilemma, replacing any existing choices.
+     * Sets new choices for the choice selection, replacing any existing choices.
      * @param newChoices - The new array of DataSetEvent choices.
      */
     setChoices(newChoices: DataSetEvent[]): void {
@@ -53,7 +53,7 @@ export class DilemmaComponent extends Component {
     }
 
     /**
-     * Clears all choices from the dilemma.
+     * Clears all choices from the choice selection.
      */
     clearChoices(): void {
         this.choices = [];
@@ -81,12 +81,12 @@ export class DilemmaComponent extends Component {
     }
 
     /**
-     * Creates a new instance of DilemmaComponent.
-     * This static factory method provides a standardized way to construct DilemmaComponent objects.
-     * @param choices - The array of DataSetEvent choices available for the current dilemma.
-     * @returns A new instance of DilemmaComponent.
+     * Creates a new instance of ChoiceComponent.
+     * This static factory method provides a standardized way to construct ChoiceComponent objects.
+     * @param choices - The array of DataSetEvent choices available for the current choice selection.
+     * @returns A new instance of ChoiceComponent.
      */
-    static create(choices: DataSetEvent[]): DilemmaComponent {
-        return new DilemmaComponent(choices);
+    static create(choices: DataSetEvent[]): ChoiceComponent {
+        return new ChoiceComponent(choices);
     }
 }
