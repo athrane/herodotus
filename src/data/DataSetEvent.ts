@@ -3,7 +3,7 @@
  */
 export class DataSetEvent {
   private readonly eventType: string;
-  private readonly eventTrigger: string;
+  private readonly cause: string;
   private readonly eventName: string;
   private readonly eventConsequence: string;
   private readonly heading: string;
@@ -22,7 +22,7 @@ export class DataSetEvent {
   constructor(data: any) {
     // Prefer DataSetEvent-specific keys to allow overrides, then "Event X", then short variants
     this.eventType = data["Event Type"];
-    this.eventTrigger = data["Event Trigger"];
+    this.cause = data["Event Trigger"];
     this.eventName = data["Event Name"];
     this.eventConsequence = data["Event Consequence"];
     this.heading = data["Heading"];
@@ -47,8 +47,8 @@ export class DataSetEvent {
    * Gets the event trigger.
    * @returns The event trigger.
    */
-  getEventTrigger(): string {
-    return this.eventTrigger;
+  getCause(): string {
+    return this.cause;
   }
 
   /**

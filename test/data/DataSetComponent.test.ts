@@ -50,7 +50,7 @@ describe('DataSetComponent', () => {
 
   it('find filters events by predicate', () => {
     const comp = DataSetComponent.create(events);
-    const filtered = comp.find(e => e.getEventTrigger() === 'Trigger2');
+  const filtered = comp.find(e => e.getCause() === 'Trigger2');
     expect(filtered.length).toBe(1);
     expect(filtered[0].getEventName()).toBe('Name2');
   });

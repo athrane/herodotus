@@ -57,7 +57,7 @@ export class ComputeChoicesSystem extends System {
 
         // Find all events where EventTrigger matches the player's current state
         const validChoices = globalDataSetComponent.find(event => 
-            event.getEventTrigger() === currentState
+            event.getCause() === currentState
         );
 
         // Update DilemmaComponent with valid choices

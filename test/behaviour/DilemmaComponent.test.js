@@ -227,7 +227,7 @@ describe('DilemmaComponent', () => {
       const retrievedChoice = component.getChoice(0);
       
       expect(retrievedChoice.getEventType()).toBe("Political");
-      expect(retrievedChoice.getEventTrigger()).toBe("Election");
+  expect(retrievedChoice.getCause()).toBe("Election");
       expect(retrievedChoice.getEventName()).toBe("Royal Election");
       expect(retrievedChoice.getEventConsequence()).toBe("New ruler appointed");
       expect(retrievedChoice.getHeading()).toBe("A New Era Begins");

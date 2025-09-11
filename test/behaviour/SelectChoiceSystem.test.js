@@ -99,7 +99,7 @@ describe('SelectChoiceSystem', () => {
             // DataSetEventComponent should remain unchanged
             const unchangedDataSetEvent = dataSetEventComponent.getDataSetEvent();
             expect(unchangedDataSetEvent.getEventName()).toBe('Initial Event');
-            expect(unchangedDataSetEvent.getEventTrigger()).toBe('INITIAL_STATE');
+            expect(unchangedDataSetEvent.getCause()).toBe('INITIAL_STATE');
 
             // No components should be removed
             expect(entity.hasComponent(DataSetEventComponent)).toBe(true);
@@ -420,7 +420,7 @@ describe('SelectChoiceSystem', () => {
                 
                 const resultEvent = dataSetEventComponent.getDataSetEvent();
                 expect(resultEvent.getEventName()).toBe('Only Choice');
-                expect(resultEvent.getEventTrigger()).toBe('ONLY_CHOICE');
+                expect(resultEvent.getCause()).toBe('ONLY_CHOICE');
                 expect(resultEvent.getEventType()).toBe('Political');
             }
         });

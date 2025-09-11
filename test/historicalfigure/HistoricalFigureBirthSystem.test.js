@@ -410,9 +410,9 @@ describe('HistoricalFigureBirthSystem', () => {
             const firstEvent = firstDataSetEventComponent.getDataSetEvent();
             const secondEvent = secondDataSetEventComponent.getDataSetEvent();
             
-            expect(firstEvent.getEventTrigger()).toMatch(/NPC_BIRTH_1970_\d+/);
-            expect(secondEvent.getEventTrigger()).toMatch(/NPC_BIRTH_1970_\d+/);
-            expect(firstEvent.getEventTrigger()).not.toBe(secondEvent.getEventTrigger());
+            expect(firstEvent.getCause()).toMatch(/NPC_BIRTH_1970_\d+/);
+            expect(secondEvent.getCause()).toMatch(/NPC_BIRTH_1970_\d+/);
+            expect(firstEvent.getCause()).not.toBe(secondEvent.getCause());
         });
 
         it('should create DataSetEvent with correct birth event data', () => {

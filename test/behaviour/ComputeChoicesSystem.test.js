@@ -284,7 +284,7 @@ describe('ComputeChoicesSystem', () => {
 
       // Verify that only events with matching triggers are included
       choices.forEach(choice => {
-        expect(choice.getEventTrigger()).toBe(currentEvent.getEventConsequence());
+  expect(choice.getCause()).toBe(currentEvent.getEventConsequence());
       });
     });
 

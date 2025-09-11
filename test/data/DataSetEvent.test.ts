@@ -19,7 +19,7 @@ describe('Event', () => {
   it('should construct an DataSetEvent from raw data', () => {
     const event = new DataSetEvent(sample);
     expect(event.getEventType()).toBe('TypeA');
-    expect(event.getEventTrigger()).toBe('TriggerA');
+  expect(event.getCause()).toBe('TriggerA');
     expect(event.getEventName()).toBe('NameA');
     expect(event.getEventConsequence()).toBe('ConsequenceA');
     expect(event.getHeading()).toBe('HeadingA');

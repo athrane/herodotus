@@ -36,7 +36,7 @@ describe('Player Initial Event Verification', () => {
         
         // Verify all fields are set
         expect(event.getEventType()).toBe('Political');
-        expect(event.getEventTrigger()).toBe('PLAYER_START');
+    expect(event.getCause()).toBe('PLAYER_START');
         expect(event.getEventName()).toBe('Rise to Power');
         expect(event.getEventConsequence()).toBe('Coronation');
         expect(event.getHeading()).toBe('A New Dawn Rises');
