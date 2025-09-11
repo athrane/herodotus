@@ -1,6 +1,8 @@
 import { System } from '../../ecs/System';
 import { Entity } from '../../ecs/Entity';
 import { EntityManager } from '../../ecs/EntityManager';
+import { Ecs } from '../../ecs/Ecs';
+import { TypeUtils } from '../../util/TypeUtils';
 import { ScrollableMenuComponent } from '../menu/ScrollableMenuComponent';
 import { MenuItem } from '../menu/MenuItem';
 import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
@@ -13,7 +15,7 @@ import { DataSetEvent } from '../../data/DataSetEvent';
  * Updates ScrollableMenuComponent with current available choices from the simulation.
  */
 export class ChoiceMenuViewSystem extends System {
-    private readonly simulationEntityManager: EntityManager;
+    private readonly simulationEcs: Ecs;
 
     /**
      * Maximum line width for menu items (accounting for menu formatting).
@@ -24,11 +26,12 @@ export class ChoiceMenuViewSystem extends System {
     /**
     * Creates a new ChoiceMenuViewSystem.
      * @param guiEntityManager The GUI entity manager.
-     * @param simulationEntityManager The simulation entity manager to read choices from.
+     * @param simulationEcs The simulation ECS instance to read choices from.
      */
-    constructor(guiEntityManager: EntityManager, simulationEntityManager: EntityManager) {
+    constructor(guiEntityManager: EntityManager, simulationEcs: Ecs) {
         super(guiEntityManager, [ScrollableMenuComponent, IsVisibleComponent]);
-        this.simulationEntityManager = simulationEntityManager;
+        TypeUtils.ensureInstanceOf(simulationEcs, Ecs);
+        this.simulationEcs = simulationEcs;
     }
 
     /**
@@ -62,7 +65,7 @@ export class ChoiceMenuViewSystem extends System {
      */
     private getPlayerChoices(): DataSetEvent[] {
         // Find player entity in simulation
-        const playerEntities = this.simulationEntityManager.getEntitiesWithComponents(PlayerComponent);
+        const playerEntities = this.simulationEcs.getEntityManager().getEntitiesWithComponents(PlayerComponent);
         if (playerEntities.length === 0) return [];
 
         // Get the first player entity
@@ -170,10 +173,10 @@ export class ChoiceMenuViewSystem extends System {
     /**
      * Creates a new ChoiceMenuViewSystem.
      * @param guiEntityManager The GUI entity manager.
-     * @param simulationEntityManager The simulation entity manager.
+     * @param simulationEcs The simulation ECS instance.
      * @returns A new ChoiceMenuViewSystem instance.
      */
-    static create(guiEntityManager: EntityManager, simulationEntityManager: EntityManager): ChoiceMenuViewSystem {
-        return new ChoiceMenuViewSystem(guiEntityManager, simulationEntityManager);
+    static create(guiEntityManager: EntityManager, simulationEcs: Ecs): ChoiceMenuViewSystem {
+        return new ChoiceMenuViewSystem(guiEntityManager, simulationEcs);
     }
 }
