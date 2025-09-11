@@ -34,8 +34,8 @@ describe('Player Entity Integration', () => {
         // Verify Player entity has HistoricalFigureComponent
         const historicalFigureComponent = playerEntity.getComponent(HistoricalFigureComponent);
         expect(historicalFigureComponent).toBeInstanceOf(HistoricalFigureComponent);
-        expect(historicalFigureComponent.name).toBe('Player Character');
-        expect(historicalFigureComponent.occupation).toBe('Ruler');
+        expect(historicalFigureComponent.getHistoricalFigure().getName()).toBe('Player Character');
+        expect(historicalFigureComponent.getHistoricalFigure().getOccupation()).toBe('Ruler');
 
         // Verify Player entity has DataSetEventComponent
         const dataSetEventComponent = playerEntity.getComponent(DataSetEventComponent);
