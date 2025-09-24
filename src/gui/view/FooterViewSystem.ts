@@ -29,7 +29,8 @@ export class FooterViewSystem extends System {
     }
 
     processEntity(entity: Entity): void {
-        // Get the name component
+
+        // Only process if entity is the footer entity
         const nameComponent = entity.getComponent(NameComponent);
         if (!nameComponent || nameComponent.getText() !== FooterViewSystem.FOOTER_ENTITY_NAME) return;
 
