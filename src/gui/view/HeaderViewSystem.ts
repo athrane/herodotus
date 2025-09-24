@@ -1,15 +1,16 @@
-import { System } from '../../ecs/System';
+import { FilteredSystem } from '../../ecs/FilteredSystem';
 import { EntityManager } from '../../ecs/EntityManager';
 import { NameComponent } from '../../ecs/NameComponent';
 import { TextComponent } from '../rendering/TextComponent';
 import { Entity } from '../../ecs/Entity';
 import { Ecs } from '../../ecs/Ecs';
 import { TimeComponent } from '../../time/TimeComponent';
+import { EntityFilters } from '../../ecs/EntityFilters';
 
 /**
  * System responsible for updating the header text entity with current game status.
  */
-export class HeaderViewSystem extends System {
+export class HeaderViewSystem extends FilteredSystem {
     private simulationEcs: Ecs;
 
     /**
@@ -23,24 +24,16 @@ export class HeaderViewSystem extends System {
      * @param simulationEcs The simulation ECS instance to get header info from.
      */
     constructor(entityManager: EntityManager, simulationEcs: Ecs) {
-        super(entityManager, [NameComponent, TextComponent]);
+        super(entityManager, [NameComponent, TextComponent], EntityFilters.byName(HeaderViewSystem.HEADER_ENTITY_NAME));
         this.simulationEcs = simulationEcs;
     }
-
-    processEntity(entity: Entity): void {
-
-        // Only process if entity is the header entity
-        const nameComponent = entity.getComponent(NameComponent);
-        if (!nameComponent || nameComponent.getText() !== HeaderViewSystem.HEADER_ENTITY_NAME) return;
-
-        // Get the text component
+    processFilteredEntity(entity: Entity): void {
+        // Get the text component (NameComponent presence is enforced by the filter)
         const textComponent = entity.getComponent(TextComponent);
         if (!textComponent) return;
 
-        // Compute header string
+        // Compute header string and update the text
         const headerString = this.computeHeaderString(this.simulationEcs);
-
-        // Update the text component (replace entity's text component)
         textComponent.setText(headerString);
     }
 

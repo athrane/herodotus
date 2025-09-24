@@ -1,13 +1,14 @@
-import { System } from '../../ecs/System';
+import { FilteredSystem } from '../../ecs/FilteredSystem';
 import { EntityManager } from '../../ecs/EntityManager';
 import { NameComponent } from '../../ecs/NameComponent';
 import { TextComponent } from '../rendering/TextComponent';
 import { Entity } from '../../ecs/Entity';
+import { EntityFilters } from '../../ecs/EntityFilters';
 
 /**
  * System responsible for updating the footer text entity with current game status.
  */
-export class FooterViewSystem extends System {
+export class FooterViewSystem extends FilteredSystem {
     private heartbeatPos: number = 0;
 
     /**
@@ -25,23 +26,17 @@ export class FooterViewSystem extends System {
      * @param entityManager The entity manager to use for querying entities.
      */
     constructor(entityManager: EntityManager) {
-        super(entityManager, [NameComponent, TextComponent]);
+        // Use a filter to only select the footer entity by name
+        super(entityManager, [NameComponent, TextComponent], EntityFilters.byName(FooterViewSystem.FOOTER_ENTITY_NAME));
     }
 
-    processEntity(entity: Entity): void {
-
-        // Only process if entity is the footer entity
-        const nameComponent = entity.getComponent(NameComponent);
-        if (!nameComponent || nameComponent.getText() !== FooterViewSystem.FOOTER_ENTITY_NAME) return;
-
-        // Get the text component
+    processFilteredEntity(entity: Entity): void {
+        // At this point the filter guarantees the entity is the footer entity and has the required components
         const textComponent = entity.getComponent(TextComponent);
         if (!textComponent) return;
 
-        // Compute heartbeat string
+        // Compute heartbeat string and update the text
         const heartbeat = this.renderHeartbeat();
-
-        // Compute footer string (heartbeat only, as per request)
         textComponent.setText(heartbeat);
     }
 
