@@ -14,11 +14,6 @@ export class GuiEcsManager {
     private guiUpdateInterval: NodeJS.Timeout | null = null;
     private isRunning: boolean = false;
 
-    /**
-     * Name of the Debug entity.
-     */
-    public static DEBUG_ENTITY_NAME = 'Debug';
-
     constructor(simulation: Simulation, guiEcs: Ecs) {
         TypeUtils.ensureInstanceOf(simulation, Simulation, "Expected simulation to be an instance of Simulation");
         TypeUtils.ensureInstanceOf(guiEcs, Ecs, "Expected guiEcs to be an instance of Ecs");
