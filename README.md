@@ -392,12 +392,91 @@ This section lists exported classes found in the codebase grouped by area (file 
 #### Core ECS
 - `src/ecs/Component.ts` — Component base class (marker for entity components)
 - `src/ecs/System.ts` — Base System class (logic executed against entities)
+- `src/ecs/FilteredSystem.ts` — Extended System class with automatic entity filtering capabilities; eliminates boilerplate code by pre-filtering entities before processing
+- `src/ecs/EntityFilters.ts` — Utility class providing reusable entity filter functions (byName, hasComponent, lacksComponent) with combinators (and, or, not)
 - `src/ecs/SystemManager.ts` — Manages systems lifecycle and registration
 - `src/ecs/Entity.ts` — Entity abstraction (id and components)
 - `src/ecs/EntityManager.ts` — Manages entities and their components
 - `src/ecs/Ecs.ts` — High-level ECS facade (factory and orchestration)
 - `src/ecs/NameComponent.ts` — Component storing a human-readable name
 - `src/ecs/PlayerComponent.ts` — Marks an entity as the player
+
+##### FilteredSystem Architecture
+The Herodotus project includes an advanced system architecture that eliminates boilerplate code when systems need to process only specific entities. This is implemented through the `FilteredSystem` class and `EntityFilters` utility.
+
+**FilteredSystem Benefits:**
+- **Eliminates Boilerplate**: No more manual entity filtering in `processEntity()` methods
+- **Reusable Filters**: Common filters like name-based filtering are standardized
+- **Composable**: Multiple filters can be combined using `and()`, `or()`, and `not()` combinators
+- **Type Safety**: Full TypeScript support with proper inheritance from base `System` class
+- **Backward Compatible**: Existing systems continue to work unchanged
+
+**Core Classes:**
+- `src/ecs/FilteredSystem.ts` — Abstract system class that accepts an `EntityFilter` function and automatically filters entities before calling `processFilteredEntity()`
+- `src/ecs/EntityFilters.ts` — Static utility class providing common filter functions and combinators
+
+**FilteredSystem Usage Example:**
+```typescript
+// Before: Manual filtering with boilerplate
+class MySystem extends System {
+    processEntity(entity: Entity): void {
+        const nameComponent = this.entityManager.getComponent(entity, NameComponent);
+        if (nameComponent?.name !== 'SpecificScreen') {
+            return; // Boilerplate filtering code
+        }
+        // Actual processing logic...
+    }
+}
+
+// After: Automatic filtering, no boilerplate
+class MySystem extends FilteredSystem {
+    constructor(entityManager: EntityManager) {
+        super(entityManager, EntityFilters.byName('SpecificScreen'));
+    }
+    
+    processFilteredEntity(entity: Entity): void {
+        // Only actual processing logic - filtering handled automatically
+    }
+}
+```
+
+**Available Entity Filters:**
+- `EntityFilters.byName(name)` — Filter entities with specific NameComponent name
+- `EntityFilters.hasComponent(ComponentClass)` — Filter entities containing a specific component
+- `EntityFilters.lacksComponent(ComponentClass)` — Filter entities missing a specific component
+- `EntityFilters.and(filter1, filter2, ...)` — Combine filters with AND logic
+- `EntityFilters.or(filter1, filter2, ...)` — Combine filters with OR logic  
+- `EntityFilters.not(filter)` — Invert a filter with NOT logic
+
+**Filter Composition Example:**
+```typescript
+// Complex filtering: entities named 'Player' that have ChoiceComponent but lack TimeComponent
+const complexFilter = EntityFilters.and(
+    EntityFilters.byName('Player'),
+    EntityFilters.hasComponent(ChoiceComponent),
+    EntityFilters.not(EntityFilters.hasComponent(TimeComponent))
+);
+
+class ComplexSystem extends FilteredSystem {
+    constructor(entityManager: EntityManager) {
+        super(entityManager, complexFilter);
+    }
+    
+    processFilteredEntity(entity: Entity): void {
+        // Only processes entities matching the complex filter
+    }
+}
+```
+
+**Implementation Examples:**
+- `src/gui/view/ChronicleViewSystem.ts` — Uses `EntityFilters.byName('ChronicleScreen')` to process only chronicle screen entities
+- `src/gui/view/ChoiceMenuViewSystem.ts` — Uses `EntityFilters.byName('ChoicesScreen')` to populate choice menu only for choice screen entities
+
+**Architecture Integration:**
+- FilteredSystem maintains full compatibility with existing `System` base class
+- Uses static factory method `createFilteredSystem()` to avoid inheritance conflicts
+- Integrates seamlessly with `SystemManager` and existing ECS infrastructure
+- Extensive test coverage ensures reliability and proper error handling
 
 ##### Builder Pattern Classes
 The Herodotus project uses the Builder pattern to construct complex ECS instances with proper dependency management and construction order. The builder architecture provides a structured way to create simulation and GUI instances with all required components, systems, and entities.

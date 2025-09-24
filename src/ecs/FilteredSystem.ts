@@ -75,7 +75,7 @@ export class FilteredSystem extends System {
      * @param entityFilter Filter function to apply to entities before processing.
      * @returns A new FilteredSystem instance.
      */
-    static create(
+    static createFilteredSystem(
         entityManager: EntityManager,
         requiredComponents: Array<new (...args: any[]) => Component>,
         entityFilter: EntityFilter

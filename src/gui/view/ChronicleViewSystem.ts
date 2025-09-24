@@ -1,4 +1,5 @@
-import { System } from '../../ecs/System';
+import { FilteredSystem } from '../../ecs/FilteredSystem';
+import { EntityFilters } from '../../ecs/EntityFilters';
 import { EntityManager } from '../../ecs/EntityManager';
 import { Entity } from '../../ecs/Entity';
 import { TypeUtils } from '../../util/TypeUtils';
@@ -14,7 +15,7 @@ import { Ecs } from '../../ecs/Ecs';
  * System responsible for updating ScrollableMenuComponent with chronicle content from simulation.
  * Copies chronicle events into a scrollable menu for GUI display.
  */
-export class ChronicleViewSystem extends System {
+export class ChronicleViewSystem extends FilteredSystem {
   private readonly simulationEcs: Ecs;
   private readonly maxEvents: number;
 
@@ -28,7 +29,11 @@ export class ChronicleViewSystem extends System {
     TypeUtils.ensureInstanceOf(entityManager, EntityManager);
     TypeUtils.ensureInstanceOf(simulationEcs, Ecs);
     TypeUtils.ensureNumber(maxEvents, 'maxEvents must be a number');
-    super(entityManager, [ScrollableMenuComponent, IsVisibleComponent, IsActiveScreenComponent]);
+    
+    // Create filter for ChronicleScreen entities
+    const chronicleScreenFilter = EntityFilters.byName('ChronicleScreen');
+    
+    super(entityManager, [ScrollableMenuComponent, IsVisibleComponent, IsActiveScreenComponent], chronicleScreenFilter);
     this.simulationEcs = simulationEcs;
     this.maxEvents = maxEvents;
   }
@@ -36,17 +41,24 @@ export class ChronicleViewSystem extends System {
   /**
    * Processes a GUI entity that should display chronicle content.
    * Updates the entity's ScrollableMenuComponent with chronicle events from simulation.
+   * The FilteredSystem base class already filtered for ChronicleScreen entities.
    * @param entity The GUI entity to process.
    */
-  processEntity(entity: Entity): void {
-    const scrollable = entity.getComponent(ScrollableMenuComponent);
-    if (!scrollable) return;
+  processFilteredEntity(entity: Entity): void {
+    // Only process if this entity is visible
+    const isVisibleComponent = entity.getComponent(IsVisibleComponent);
+    if (!isVisibleComponent || !isVisibleComponent.isVisible()) return;
+
+    // Get the menu component 
+    const menuComponent = entity.getComponent(ScrollableMenuComponent);
+    if (!menuComponent) return;
 
     // Get chronicle component from simulation ECS
     const chronicleComponent = this.getChronicleComponent();
-    
+    if (!chronicleComponent) return;
+
     // Get events from chronicle component (empty array if no chronicle)
-    const events = chronicleComponent ? chronicleComponent.getEvents() : [];
+    const events = chronicleComponent.getEvents();
 
     // Limit to last N events for performance
     const lastEvents = events.slice(-this.maxEvents);
@@ -62,15 +74,12 @@ export class ChronicleViewSystem extends System {
         // Fallback if any method fails
         label = `Event ${idx}`;
       }
-      
+
       return new MenuItem(label, `CHRONICLE_SELECT_${idx}`);
     });
 
-    // Ensure vertical scroll strategy
-    this.ensureVerticalScrollStrategy(scrollable);
-
     // Update menu items using available API
-    this.updateMenuItems(entity, scrollable, menuItems);
+    this.updateMenuItems(entity, menuComponent, menuItems);
   }
 
   /**
@@ -102,19 +111,6 @@ export class ChronicleViewSystem extends System {
   }
 
   /**
-   * Ensures the scrollable menu uses vertical scroll strategy.
-   * @param scrollable The scrollable menu component.
-   */
-  private ensureVerticalScrollStrategy(scrollable: ScrollableMenuComponent): void {
-    // Check if setScrollStrategy method exists and use it
-    if (typeof (scrollable as any).setScrollStrategy === 'function') {
-      (scrollable as any).setScrollStrategy(ScrollStrategy.VERTICAL);
-    }
-    // If no setScrollStrategy method, the component should already be vertical by default
-    // or we'll recreate it in updateMenuItems if needed
-  }
-
-  /**
    * Updates the menu items in the scrollable component using available API methods.
    * @param entity The entity containing the scrollable component.
    * @param scrollable The scrollable menu component to update.
@@ -137,11 +133,11 @@ export class ChronicleViewSystem extends System {
     if (typeof (ScrollableMenuComponent as any).createWithItemCount === 'function') {
       const visibleCount = scrollable.getVisibleItemCount?.() ?? 10;
       const newComponent = (ScrollableMenuComponent as any).createWithItemCount(
-        menuItems, 
-        visibleCount, 
+        menuItems,
+        visibleCount,
         ScrollStrategy.VERTICAL
       );
-      
+
       entity.removeComponent(ScrollableMenuComponent);
       entity.addComponent(newComponent);
     }

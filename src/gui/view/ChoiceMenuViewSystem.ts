@@ -1,4 +1,5 @@
-import { System } from '../../ecs/System';
+import { FilteredSystem } from '../../ecs/FilteredSystem';
+import { EntityFilters } from '../../ecs/EntityFilters';
 import { Entity } from '../../ecs/Entity';
 import { EntityManager } from '../../ecs/EntityManager';
 import { Ecs } from '../../ecs/Ecs';
@@ -9,12 +10,16 @@ import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
 import { ChoiceComponent } from '../../behaviour/ChoiceComponent';
 import { PlayerComponent } from '../../ecs/PlayerComponent';
 import { DataSetEvent } from '../../data/DataSetEvent';
+import { IsActiveScreenComponent } from '../../gui/rendering/IsActiveScreenComponent';
+import { TimeComponent } from '../../time/TimeComponent';
+import { GuiHelper } from '../../gui/GuiHelper';
+import { NameComponent } from '../../ecs/NameComponent';
 
 /**
  * System that populates choice menu items from the player's ChoiceComponent.
  * Updates ScrollableMenuComponent with current available choices from the simulation.
  */
-export class ChoiceMenuViewSystem extends System {
+export class ChoiceMenuViewSystem extends FilteredSystem {
     private readonly simulationEcs: Ecs;
 
     /**
@@ -22,39 +27,43 @@ export class ChoiceMenuViewSystem extends System {
      * Screen is 80 chars, menu format is "> [N] " which is 6 chars, leaving 74 for content.
      */
     private readonly MAX_LINE_WIDTH = 74;
-    
+
     /**
     * Creates a new ChoiceMenuViewSystem.
      * @param guiEntityManager The GUI entity manager.
      * @param simulationEcs The simulation ECS instance to read choices from.
      */
     constructor(guiEntityManager: EntityManager, simulationEcs: Ecs) {
-        super(guiEntityManager, [ScrollableMenuComponent, IsVisibleComponent]);
+        super(guiEntityManager, [ScrollableMenuComponent, IsVisibleComponent, IsActiveScreenComponent], EntityFilters.byName('ChoicesScreen'));
         TypeUtils.ensureInstanceOf(simulationEcs, Ecs);
         this.simulationEcs = simulationEcs;
     }
 
     /**
-     * Processes a single choice menu entity.
+     * Processes a single choice menu entity that has already passed the name filter.
      * @param entity The entity to process.
      */
-    processEntity(entity: Entity): void {
+    processFilteredEntity(entity: Entity): void {
+        // Only process if this entity is visible
         const isVisibleComponent = entity.getComponent(IsVisibleComponent);
+        if (!isVisibleComponent || !isVisibleComponent.isVisible()) return;
+
+        // Debug: Display current year from simulation time component
+        const timeComponent = this.simulationEcs.getEntityManager().getSingletonComponent(TimeComponent);
+        const year = timeComponent ? timeComponent.getTime().getYear() : 0;
+        const entityName = entity.getComponent(NameComponent)?.getText() || "Unnamed";
+        GuiHelper.postDebugText(this.getEntityManager(), "D2", `ChoiceMenuViewSystem:Year: ${entityName} | ${year}`);
+
+        // Get the menu component 
         const menuComponent = entity.getComponent(ScrollableMenuComponent);
-
-        // Exit if visibility component is missing or not visible
-        if (!isVisibleComponent) return;
-        if (!isVisibleComponent.isVisible()) return;
-
-        // Exit if menu component is missing
         if (!menuComponent) return;
 
         // Get choices from simulation
         const choices = this.getPlayerChoices();
-        
+
         // Convert choices to menu items
         const menuItems = this.createMenuItemsFromChoices(choices);
-        
+
         // Update menu with new items, preserving selection where possible
         this.updateMenuItems(menuComponent, menuItems);
     }
@@ -70,9 +79,9 @@ export class ChoiceMenuViewSystem extends System {
 
         // Get the first player entity
         const playerEntity = playerEntities[0];
-        const choiceComponent = playerEntity.getComponent(ChoiceComponent);
 
         // Exit if no choice component is found
+        const choiceComponent = playerEntity.getComponent(ChoiceComponent);
         if (!choiceComponent) return [];
 
         return choiceComponent.getChoices() as DataSetEvent[];
@@ -88,7 +97,7 @@ export class ChoiceMenuViewSystem extends System {
             const text = this.formatChoiceText(choice);
             const actionID = `CHOICE_SELECT_${index}`;
             const hotkey = (index + 1).toString(); // 1-based numbering for hotkeys
-            
+
             return new MenuItem(text, actionID, hotkey);
         });
     }
@@ -102,12 +111,12 @@ export class ChoiceMenuViewSystem extends System {
     private formatChoiceText(choice: DataSetEvent): string {
         const name = choice.getEventName() || 'Unnamed Choice';
         const description = choice.getDescription();
-        
+
         let fullText = name;
         if (description && description.trim().length > 0) {
             fullText = `${name} - ${description}`;
         }
-        
+
         // Return text as-is, wrapping will be handled by ScrollableMenuTextUpdateSystem
         return fullText;
     }
@@ -120,7 +129,7 @@ export class ChoiceMenuViewSystem extends System {
     private updateMenuItems(menu: ScrollableMenuComponent, newItems: MenuItem[]): void {
         const currentItems = menu.getItems();
         const currentSelectedIndex = menu.getSelectedItemIndex();
-        
+
         // Check if items actually changed to avoid unnecessary updates
         if (this.areMenuItemsEqual(currentItems, newItems)) {
             return;
@@ -128,17 +137,17 @@ export class ChoiceMenuViewSystem extends System {
 
         // Store currently selected item for restoration
         const currentSelectedItem = currentItems[currentSelectedIndex];
-        
+
         // Update items (this will reset selection to 0)
         menu.getItems().length = 0; // Clear current items
         menu.getItems().push(...newItems);
-        
+
         // Try to restore selection to same item or stay at same index
         if (currentSelectedItem && newItems.length > 0) {
             // Try to find same item by action ID
-            const matchingIndex = newItems.findIndex(item => 
+            const matchingIndex = newItems.findIndex(item =>
                 item.getActionID() === currentSelectedItem.getActionID());
-            
+
             if (matchingIndex >= 0) {
                 menu.setSelectedItemIndex(matchingIndex);
             } else {
@@ -161,7 +170,7 @@ export class ChoiceMenuViewSystem extends System {
         }
 
         for (let i = 0; i < items1.length; i++) {
-            if (items1[i].getText() !== items2[i].getText() || 
+            if (items1[i].getText() !== items2[i].getText() ||
                 items1[i].getActionID() !== items2[i].getActionID()) {
                 return false;
             }

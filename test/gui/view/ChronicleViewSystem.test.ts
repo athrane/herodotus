@@ -2,6 +2,7 @@ import { ChronicleViewSystem } from '../../../src/gui/view/ChronicleViewSystem';
 import { EntityManager } from '../../../src/ecs/EntityManager';
 import { Ecs } from '../../../src/ecs/Ecs';
 import { Entity } from '../../../src/ecs/Entity';
+import { NameComponent } from '../../../src/ecs/NameComponent';
 import { ScrollableMenuComponent } from '../../../src/gui/menu/ScrollableMenuComponent';
 import { IsVisibleComponent } from '../../../src/gui/rendering/IsVisibleComponent';
 import { IsActiveScreenComponent } from '../../../src/gui/rendering/IsActiveScreenComponent';
@@ -34,6 +35,7 @@ describe('ChronicleViewSystem', () => {
     
     // Create a test GUI entity with required components
     testEntity = guiEntityManager.createEntity();
+    testEntity.addComponent(NameComponent.create('ChronicleScreen')); // Required for EntityFilters.byName('ChronicleScreen')
     testEntity.addComponent(ScrollableMenuComponent.createWithItemCount([], 5, ScrollStrategy.VERTICAL));
     testEntity.addComponent(IsVisibleComponent.create(true));
     testEntity.addComponent(new IsActiveScreenComponent());

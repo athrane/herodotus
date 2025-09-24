@@ -4,6 +4,7 @@ import { ChoiceMenuViewSystem as ChoiceMenuSystem } from '../../../src/gui/view/
 import { ScrollableMenuComponent } from '../../../src/gui/menu/ScrollableMenuComponent';
 import { MenuItem } from '../../../src/gui/menu/MenuItem';
 import { IsVisibleComponent } from '../../../src/gui/rendering/IsVisibleComponent';
+import { IsActiveScreenComponent } from '../../../src/gui/rendering/IsActiveScreenComponent';
 import { PlayerComponent } from '../../../src/ecs/PlayerComponent';
 import { ChoiceComponent } from '../../../src/behaviour/ChoiceComponent';
 import { DataSetEvent } from '../../../src/data/DataSetEvent';
@@ -43,6 +44,7 @@ describe('ChoiceMenuViewSystem', () => {
         choiceMenuEntity.addComponent(new NameComponent('ChoicesScreen'));
         choiceMenuEntity.addComponent(ScrollableMenuComponent.createWithItemCount([], 3));
         choiceMenuEntity.addComponent(IsVisibleComponent.create(true));
+        choiceMenuEntity.addComponent(new IsActiveScreenComponent());
 
         // Create simulation player with dilemma choices
         const playerEntity = simulationEcs.getEntityManager().createEntity();
@@ -141,8 +143,10 @@ describe('ChoiceMenuViewSystem', () => {
 
     test('formats choice text correctly', () => {
         const choiceMenuEntity = guiEntityManager.createEntity();
+        choiceMenuEntity.addComponent(new NameComponent('ChoicesScreen'));
         choiceMenuEntity.addComponent(ScrollableMenuComponent.createWithItemCount([], 3));
         choiceMenuEntity.addComponent(IsVisibleComponent.create(true));
+        choiceMenuEntity.addComponent(new IsActiveScreenComponent());
 
         const playerEntity = simulationEcs.getEntityManager().createEntity();
         playerEntity.addComponent(new PlayerComponent());
@@ -198,6 +202,7 @@ describe('ChoiceMenuViewSystem', () => {
 
     test('handles selection when item count changes', () => {
         const choiceMenuEntity = guiEntityManager.createEntity();
+        choiceMenuEntity.addComponent(new NameComponent('ChoicesScreen'));
         const initialItems = [
             new MenuItem('Choice A', 'CHOICE_SELECT_0', '1'),
             new MenuItem('Choice B', 'CHOICE_SELECT_1', '2'),
@@ -207,6 +212,7 @@ describe('ChoiceMenuViewSystem', () => {
         menu.setSelectedItemIndex(2); // Select last item
         choiceMenuEntity.addComponent(menu);
         choiceMenuEntity.addComponent(IsVisibleComponent.create(true));
+        choiceMenuEntity.addComponent(new IsActiveScreenComponent());
 
         const playerEntity = simulationEcs.getEntityManager().createEntity();
         playerEntity.addComponent(new PlayerComponent());
@@ -227,9 +233,11 @@ describe('ChoiceMenuViewSystem', () => {
 
     test('avoids unnecessary updates when items unchanged', () => {
         const choiceMenuEntity = guiEntityManager.createEntity();
+        choiceMenuEntity.addComponent(new NameComponent('ChoicesScreen'));
         const menu = ScrollableMenuComponent.createWithItemCount([], 3);
         choiceMenuEntity.addComponent(menu);
         choiceMenuEntity.addComponent(IsVisibleComponent.create(true));
+        choiceMenuEntity.addComponent(new IsActiveScreenComponent());
 
         const playerEntity = simulationEcs.getEntityManager().createEntity();
         playerEntity.addComponent(new PlayerComponent());
@@ -252,8 +260,10 @@ describe('ChoiceMenuViewSystem', () => {
 
     test('handles multiple players by using first one', () => {
         const choiceMenuEntity = guiEntityManager.createEntity();
+        choiceMenuEntity.addComponent(new NameComponent('ChoicesScreen'));
         choiceMenuEntity.addComponent(ScrollableMenuComponent.createWithItemCount([], 3));
         choiceMenuEntity.addComponent(IsVisibleComponent.create(true));
+        choiceMenuEntity.addComponent(new IsActiveScreenComponent());
 
         // Create two players
         const player1 = simulationEcs.getEntityManager().createEntity();

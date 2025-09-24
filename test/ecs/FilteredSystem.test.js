@@ -1,4 +1,4 @@
-import { FilteredSystem, EntityFilter } from '../../src/ecs/FilteredSystem';
+import { FilteredSystem } from '../../src/ecs/FilteredSystem';
 import { Entity } from '../../src/ecs/Entity';
 import { Component } from '../../src/ecs/Component';
 import { EntityManager } from '../../src/ecs/EntityManager';
@@ -196,10 +196,10 @@ describe('FilteredSystem', () => {
     });
   });
 
-  describe('static create', () => {
+  describe('static createFilteredSystem', () => {
     it('should create a new FilteredSystem instance', () => {
       const filter = EntityFilters.hasComponent(TestComponent);
-      const system = FilteredSystem.create(entityManager, [TestComponent], filter);
+      const system = FilteredSystem.createFilteredSystem(entityManager, [TestComponent], filter);
       
       expect(system).toBeInstanceOf(FilteredSystem);
       expect(system.getEntityManager()).toBe(entityManager);
@@ -208,8 +208,8 @@ describe('FilteredSystem', () => {
 
     it('should validate parameters through constructor', () => {
       const filter = EntityFilters.all();
-      expect(() => FilteredSystem.create('not an entity manager', [], filter)).toThrow(TypeError);
-      expect(() => FilteredSystem.create(entityManager, [], 'not a function')).toThrow(TypeError);
+      expect(() => FilteredSystem.createFilteredSystem('not an entity manager', [], filter)).toThrow(TypeError);
+      expect(() => FilteredSystem.createFilteredSystem(entityManager, [], 'not a function')).toThrow(TypeError);
     });
   });
 

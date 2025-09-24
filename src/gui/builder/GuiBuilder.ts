@@ -27,6 +27,7 @@ import { ScrollableMenuComponent } from '../menu/ScrollableMenuComponent';
 import { GuiHelper } from '../GuiHelper';
 import { ScreensComponent } from '../menu/ScreensComponent';
 import { ChronicleViewSystem } from '../view/ChronicleViewSystem';
+import { IsActiveScreenComponent } from '../../gui/rendering/IsActiveScreenComponent';
 
 /**
  * GuiBuilder class is responsible for building a GUI ECS system.
@@ -151,7 +152,7 @@ export class GuiBuilder extends Builder {
         const choicesScreenEntity = entityManager.createEntity();
         choicesScreenEntity.addComponent(new NameComponent('ChoicesScreen'));
         // Initialize with empty menu items - ChoiceMenuSystem will populate them
-        choicesScreenEntity.addComponent(ScrollableMenuComponent.createWithItemCount([], VISIBLE_ITEMS_COUNT));
+        choicesScreenEntity.addComponent(ScrollableMenuComponent.createWithItemCount([], VISIBLE_ITEMS_COUNT, ScrollStrategy.VERTICAL));
         choicesScreenEntity.addComponent(new TextComponent(''));
         choicesScreenEntity.addComponent(new PositionComponent(0, 2));
         choicesScreenEntity.addComponent(IsVisibleComponent.create(false));
@@ -163,7 +164,7 @@ export class GuiBuilder extends Builder {
         statusScreenEntity.addComponent(new DynamicTextComponent((_guiEntityManager, _simulationEntityManager) => {
             // Simple status text - can be enhanced later
             //return `Simulation is ${this.simulation.getIsRunning() ? 'running' : 'stopped'}`;
-            return `Simulation is RUNNING'}`;
+            return `Simulation is RUNNING............`;
 
         }));
         statusScreenEntity.addComponent(new TextComponent(''));
@@ -174,7 +175,7 @@ export class GuiBuilder extends Builder {
         const chronicleScreenEntity = entityManager.createEntity();
         chronicleScreenEntity.addComponent(new NameComponent('ChronicleScreen'));
         // Initialize with empty menu items - ChronicleViewSystem will populate them
-        chronicleScreenEntity.addComponent(ScrollableMenuComponent.createWithItemCount([], VISIBLE_ITEMS_COUNT));
+        chronicleScreenEntity.addComponent(ScrollableMenuComponent.createWithItemCount([], VISIBLE_ITEMS_COUNT, ScrollStrategy.VERTICAL));
         chronicleScreenEntity.addComponent(new TextComponent(''));
         chronicleScreenEntity.addComponent(new PositionComponent(0, 2));
         chronicleScreenEntity.addComponent(IsVisibleComponent.create(false));
@@ -192,8 +193,8 @@ export class GuiBuilder extends Builder {
         screensEntity.addComponent(screensComponent);
 
         // Create UI debug entity
-        const actionDebugEntity = GuiHelper.createDebugEntity(entityManager, 'GuiEcsManager.DEBUG_ENTITY_NAME', 0, 22);
-        actionDebugEntity.addComponent(new DynamicTextComponent((guiEntityManager, simulationEntityManager) => {
+        const debugEntity1 = GuiHelper.createDebugEntity(entityManager, 'DebugEntity1', 0, 22);
+        debugEntity1.addComponent(new DynamicTextComponent((guiEntityManager, simulationEntityManager) => {
 
             simulationEntityManager.count();
 
@@ -216,9 +217,32 @@ export class GuiBuilder extends Builder {
             return `[V:${visibleNames}]`;
         }));
 
+        // Create UI debug entity
+        const debugEntity2 = GuiHelper.createDebugEntity(entityManager, 'DebugEntity2', 0, 21);
+        debugEntity2.addComponent(new DynamicTextComponent((guiEntityManager, simulationEntityManager) => {
+
+            simulationEntityManager.count();
+
+            // Get all entities with IsActiveScreenComponent
+            const allVisibleGuiEntities = guiEntityManager.getEntitiesWithComponents(IsActiveScreenComponent);
+            const names = allVisibleGuiEntities.map(entity => {
+                const activeScreenComponent = entity.getComponent(IsActiveScreenComponent);
+                if (!activeScreenComponent) return "x";
+
+                const nameComponent = entity.getComponent(NameComponent);
+                if (!nameComponent) return "y";
+                const name = nameComponent.getText();
+
+                return `+${name}`;
+            }).join('|');
+
+            return `[A:${names}]`;
+        }));
+
         // Create passive Debug Entity for the action system
-        let line = 20;
+        let line = 19;
         GuiHelper.createDebugEntity(entityManager, 'D1', 0, line++);
+        GuiHelper.createDebugEntity(entityManager, 'D2', 0, line++);
     }
 
     /**
