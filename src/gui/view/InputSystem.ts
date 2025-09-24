@@ -27,6 +27,7 @@ export class InputSystem extends System {
      * @param entitys The entities to process.
      */
     processEntity(entity: Entity): void {
+
         // Get the input component
         const inputComponent = this.getEntityManager().getSingletonComponent(InputComponent);
         if (!inputComponent) return;
@@ -36,8 +37,8 @@ export class InputSystem extends System {
         if (lastInput == null) return;
 
         // Only process if this entity is visible
-        const visibleComponent = entity.getComponent(IsVisibleComponent);
-        if (!visibleComponent || !visibleComponent.isVisible()) return;
+        const isVisibleComponent = entity.getComponent(IsVisibleComponent);
+        if (!isVisibleComponent || !isVisibleComponent.isVisible()) return;
 
         // Get menu component
         const menuComponent = entity.getComponent(MenuComponent);
