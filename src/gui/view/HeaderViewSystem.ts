@@ -28,7 +28,8 @@ export class HeaderViewSystem extends System {
     }
 
     processEntity(entity: Entity): void {
-        // Get the name component
+
+        // Only process if entity is the header entity
         const nameComponent = entity.getComponent(NameComponent);
         if (!nameComponent || nameComponent.getText() !== HeaderViewSystem.HEADER_ENTITY_NAME) return;
 
