@@ -30,20 +30,20 @@ export class ScrollableMenuTextUpdateSystem extends System {
      * @param entity The entity to process.
      */
     processEntity(entity: Entity): void {
-        const isVisibibleComponent = entity.getComponent(IsVisibleComponent);
+        
+        // Get the text component
         const textComponent = entity.getComponent(TextComponent);
-        const menuComponent = entity.getComponent(ScrollableMenuComponent);
-
-        // Exit if text component is missing
         if (!textComponent) return;
 
-        // Exit if visibility component is missing or not visible
-        if (!isVisibibleComponent || !isVisibibleComponent.isVisible()) {
+        // Only process if this entity is visible
+        const isVisibleComponent = entity.getComponent(IsVisibleComponent);
+        if (!isVisibleComponent || !isVisibleComponent.isVisible()) {
             textComponent.setText('');
             return;
         }
 
-        // Exit if menu component is missing
+        // Get the menu component
+        const menuComponent = entity.getComponent(ScrollableMenuComponent);
         if (!menuComponent) {
             textComponent.setText('');
             return;
