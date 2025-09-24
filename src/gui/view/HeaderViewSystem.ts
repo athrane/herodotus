@@ -6,6 +6,7 @@ import { Entity } from '../../ecs/Entity';
 import { Ecs } from '../../ecs/Ecs';
 import { TimeComponent } from '../../time/TimeComponent';
 import { EntityFilters } from '../../ecs/EntityFilters';
+import { TypeUtils } from '../../util/TypeUtils';
 
 /**
  * System responsible for updating the header text entity with current game status.
@@ -24,7 +25,10 @@ export class HeaderViewSystem extends FilteredSystem {
      * @param simulationEcs The simulation ECS instance to get header info from.
      */
     constructor(entityManager: EntityManager, simulationEcs: Ecs) {
-        super(entityManager, [NameComponent, TextComponent], EntityFilters.byName(HeaderViewSystem.HEADER_ENTITY_NAME));
+        TypeUtils.ensureInstanceOf(entityManager, EntityManager);
+        TypeUtils.ensureInstanceOf(simulationEcs, Ecs);
+        const filter = EntityFilters.byName(HeaderViewSystem.HEADER_ENTITY_NAME);
+        super(entityManager, [NameComponent, TextComponent], filter);
         this.simulationEcs = simulationEcs;
     }
     processFilteredEntity(entity: Entity): void {

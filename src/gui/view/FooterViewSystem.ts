@@ -4,6 +4,7 @@ import { NameComponent } from '../../ecs/NameComponent';
 import { TextComponent } from '../rendering/TextComponent';
 import { Entity } from '../../ecs/Entity';
 import { EntityFilters } from '../../ecs/EntityFilters';
+import { TypeUtils } from '../../util/TypeUtils';
 
 /**
  * System responsible for updating the footer text entity with current game status.
@@ -26,8 +27,9 @@ export class FooterViewSystem extends FilteredSystem {
      * @param entityManager The entity manager to use for querying entities.
      */
     constructor(entityManager: EntityManager) {
-        // Use a filter to only select the footer entity by name
-        super(entityManager, [NameComponent, TextComponent], EntityFilters.byName(FooterViewSystem.FOOTER_ENTITY_NAME));
+        TypeUtils.ensureInstanceOf(entityManager, EntityManager);
+        const filter = EntityFilters.byName(FooterViewSystem.FOOTER_ENTITY_NAME);
+        super(entityManager, [NameComponent, TextComponent], filter);
     }
 
     processFilteredEntity(entity: Entity): void {

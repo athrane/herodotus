@@ -23,18 +23,20 @@ export class ChoiceMenuViewSystem extends FilteredSystem {
     private readonly simulationEcs: Ecs;
 
     /**
-     * Maximum line width for menu items (accounting for menu formatting).
-     * Screen is 80 chars, menu format is "> [N] " which is 6 chars, leaving 74 for content.
+     * Name of the Choices screen entity.
      */
-    private readonly MAX_LINE_WIDTH = 74;
+    public static CHOICES_SCREEN_ENTITY_NAME = 'ChoicesScreen';
 
     /**
     * Creates a new ChoiceMenuViewSystem.
-     * @param guiEntityManager The GUI entity manager.
+     * @param entityManager The GUI entity manager.
      * @param simulationEcs The simulation ECS instance to read choices from.
      */
-    constructor(guiEntityManager: EntityManager, simulationEcs: Ecs) {
-        super(guiEntityManager, [ScrollableMenuComponent, IsVisibleComponent, IsActiveScreenComponent], EntityFilters.byName('ChoicesScreen'));
+    constructor(entityManager: EntityManager, simulationEcs: Ecs) {
+        TypeUtils.ensureInstanceOf(entityManager, EntityManager);
+        TypeUtils.ensureInstanceOf(simulationEcs, Ecs);
+        const filter = EntityFilters.byName(ChoiceMenuViewSystem.CHOICES_SCREEN_ENTITY_NAME);
+        super(entityManager, [ScrollableMenuComponent, IsVisibleComponent, IsActiveScreenComponent], filter);
         TypeUtils.ensureInstanceOf(simulationEcs, Ecs);
         this.simulationEcs = simulationEcs;
     }

@@ -150,7 +150,7 @@ export class GuiBuilder extends Builder {
         // Create choices screen entity (scrollable menu for dilemma choices)
         const VISIBLE_ITEMS_COUNT = 5;
         const choicesScreenEntity = entityManager.createEntity();
-        choicesScreenEntity.addComponent(new NameComponent('ChoicesScreen'));
+        choicesScreenEntity.addComponent(new NameComponent(ChoiceMenuViewSystem.CHOICES_SCREEN_ENTITY_NAME));
         // Initialize with empty menu items - ChoiceMenuSystem will populate them
         choicesScreenEntity.addComponent(ScrollableMenuComponent.createWithItemCount([], VISIBLE_ITEMS_COUNT, ScrollStrategy.VERTICAL));
         choicesScreenEntity.addComponent(new TextComponent(''));
@@ -173,7 +173,7 @@ export class GuiBuilder extends Builder {
 
         // Create chronicle screen entity (scrollable menu for chronicle screen)
         const chronicleScreenEntity = entityManager.createEntity();
-        chronicleScreenEntity.addComponent(new NameComponent('ChronicleScreen'));
+        chronicleScreenEntity.addComponent(new NameComponent(ChronicleViewSystem.CHRONICLE_SCREEN_ENTITY_NAME));
         // Initialize with empty menu items - ChronicleViewSystem will populate them
         chronicleScreenEntity.addComponent(ScrollableMenuComponent.createWithItemCount([], VISIBLE_ITEMS_COUNT, ScrollStrategy.VERTICAL));
         chronicleScreenEntity.addComponent(new TextComponent(''));

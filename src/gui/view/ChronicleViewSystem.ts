@@ -19,6 +19,11 @@ export class ChronicleViewSystem extends FilteredSystem {
   private readonly simulationEcs: Ecs;
   private readonly maxEvents: number;
 
+    /**
+     * Name of the Chronicle screen entity.
+     */
+    public static CHRONICLE_SCREEN_ENTITY_NAME = 'ChronicleScreen';
+
   /**
    * Constructor for the ChronicleViewSystem.
    * @param entityManager The GUI entity manager instance.
@@ -28,12 +33,9 @@ export class ChronicleViewSystem extends FilteredSystem {
   constructor(entityManager: EntityManager, simulationEcs: Ecs, maxEvents = 200) {
     TypeUtils.ensureInstanceOf(entityManager, EntityManager);
     TypeUtils.ensureInstanceOf(simulationEcs, Ecs);
-    TypeUtils.ensureNumber(maxEvents, 'maxEvents must be a number');
-    
-    // Create filter for ChronicleScreen entities
-    const chronicleScreenFilter = EntityFilters.byName('ChronicleScreen');
-    
-    super(entityManager, [ScrollableMenuComponent, IsVisibleComponent, IsActiveScreenComponent], chronicleScreenFilter);
+    TypeUtils.ensureNumber(maxEvents, 'maxEvents must be a number');    
+    const filter = EntityFilters.byName(ChronicleViewSystem.CHRONICLE_SCREEN_ENTITY_NAME);  
+    super(entityManager, [ScrollableMenuComponent, IsVisibleComponent, IsActiveScreenComponent], filter);
     this.simulationEcs = simulationEcs;
     this.maxEvents = maxEvents;
   }
