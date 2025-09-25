@@ -32,11 +32,11 @@ import { Ecs } from '../../ecs/Ecs';
  */
 export class SimulationBuilder extends Builder {
 
-   /** 
-     * The ECS  instance that is built by this builder.
-     * ! signifies that this property is not yet initialized.
-     */    
-    private simEcs!: Ecs;    
+    /** 
+      * The ECS  instance that is built by this builder.
+      * ! signifies that this property is not yet initialized.
+      */
+    private simEcs!: Ecs;
 
     /**
      * The array of dataset events that are loaded into the simulation.
@@ -69,19 +69,21 @@ export class SimulationBuilder extends Builder {
         const nameGenerator = NameGenerator.create();
         const worldGenerator = WorldGenerator.create(nameGenerator);
         const world = worldGenerator.generateWorld('Aethel');
+        const galaxyMapComponent = worldGenerator.generateGalaxyMap();
 
         // create global entity to hold simulation-wide state, like the current time.
         entityManager.createEntity(
             new NameComponent("Global"),
             new TimeComponent(Time.create(0)),
             new WorldComponent(world),
+            galaxyMapComponent,
             new ChronicleComponent(),
             DataSetComponent.create(this.dataSetEvents)
         );
 
         // Create the dedicated Player entity with DataSetEventComponent and HistoricalFigureComponent
         // Use a default created event as the initial game state context
-        const initialEvent = new DataSetEvent({ 
+        const initialEvent = new DataSetEvent({
             "Event Type": "Political",
             "Event Trigger": "PLAYER_START",
             "Event Name": "Rise to Power",
@@ -141,13 +143,13 @@ export class SimulationBuilder extends Builder {
         GeographicalFeaturesFactory.create();
     }
 
-/**
-     * @override
-     */
+    /**
+         * @override
+         */
     getEcs(): Ecs {
         return this.simEcs;
     }
-        
+
     /**
      * Static factory method to create a new instance of SimulationBuilder.
      * @returns A new SimulationBuilder instance.

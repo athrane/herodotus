@@ -1,5 +1,5 @@
 import { TypeUtils } from '../util/TypeUtils';
-import { Continent } from './Continent';
+import { Continent } from '../geography/planet/Continent';
 
 /**
  * Represents the entire world, which can contain multiple continents.

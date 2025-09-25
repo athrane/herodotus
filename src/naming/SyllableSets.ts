@@ -49,5 +49,21 @@ export const SyllableSets: Record<string, SyllableSet> = {
     initial: ['a', 'e', 'i', 'o', 'u', 'al', 'el', 'il', 'ol', 'ul', 'an', 'en', 'in', 'on', 'un'],
     middle: ['la', 'le', 'li', 'lo', 'lu', 'ra', 're', 'ri', 'ro', 'ru', 'sa', 'se', 'si', 'so', 'su'],
     final: ['a', 'e', 'i', 'o', 'u', 'l', 'm', 'n', 'r', 's']
+  },
+  /**
+   * Syllables tailored for naming galactic sectors.
+   */
+  SECTOR: {
+    initial: ['al', 'bel', 'car', 'del', 'el', 'gal', 'hel', 'kal', 'lor', 'mer', 'nor', 'or', 'par', 'quel', 'sel', 'tal', 'vel', 'xel', 'yor', 'zor'],
+    middle: ['an', 'ar', 'en', 'er', 'in', 'ir', 'on', 'or', 'un', 'ur', 'ast', 'est', 'ist', 'ost', 'ust'],
+    final: ['a', 'ar', 'en', 'es', 'ia', 'ion', 'is', 'on', 'or', 'os']
+  },
+  /**
+   * Syllables for naming individual planets within sectors.
+   */
+  PLANET: {
+    initial: ['ak', 'ba', 'cor', 'del', 'er', 'fen', 'gan', 'har', 'ion', 'jor', 'kal', 'lor', 'mor', 'nar', 'ol', 'pra', 'qua', 'rin', 'sel', 'tor', 'ul', 'var', 'xel', 'yor', 'zan'],
+    middle: ['a', 'ae', 'ai', 'ar', 'e', 'ei', 'ia', 'ir', 'o', 'oi', 'or', 'u', 'ul', 'ur', 'al', 'el', 'il', 'ol', 'ul'],
+    final: ['a', 'an', 'ar', 'ea', 'el', 'en', 'ia', 'ion', 'is', 'on', 'or', 'os', 'um', 'us']
   }
 } as const;

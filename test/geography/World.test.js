@@ -1,5 +1,5 @@
 import { World } from '../../src/geography/World.ts';
-import { Continent } from '../../src/geography/Continent.ts';
+import { Continent } from '../../src/geography/planet/Continent.ts';
 
 describe('World', () => {
   let world;

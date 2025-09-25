@@ -1,7 +1,9 @@
 import { WorldGenerator } from '../../../src/generator/world/WorldGenerator';
 import { NameGenerator } from '../../../src/naming/NameGenerator';
-import { GeographicalFeatureTypeRegistry } from '../../../src/geography/GeographicalFeatureTypeRegistry.ts';
-import { FeatureType } from '../../../src/geography/FeatureType.ts';
+import { GeographicalFeatureTypeRegistry } from '../../../src/geography/GeographicalFeatureTypeRegistry';
+import { FeatureType } from '../../../src/geography/FeatureType';
+import { GalaxyMapComponent } from '../../../src/geography/galaxy/GalaxyMapComponent';
+import { Continent } from '../../../src/geography/planet/Continent';
 
 describe('WorldGenerator', () => {
   let nameGenerator;
@@ -13,14 +15,17 @@ describe('WorldGenerator', () => {
     nameGenerator.generateSyllableName = jest.fn();
     
     worldGenerator = new WorldGenerator(nameGenerator);
+    GalaxyMapComponent.create().reset();
 
     // Mock the registry to return a predictable feature type
     const mockFeatureType = new FeatureType('Mountain', 'A large natural elevation of the earth\'s surface.');
     jest.spyOn(GeographicalFeatureTypeRegistry, 'getRandom').mockReturnValue(mockFeatureType);
+    jest.spyOn(GeographicalFeatureTypeRegistry, 'has').mockReturnValue(true);
   });
 
   afterEach(() => {
     jest.restoreAllMocks();
+    GalaxyMapComponent.create().reset();
   });
 
   describe('constructor', () => {
@@ -68,6 +73,56 @@ describe('WorldGenerator', () => {
       const newGenerator = WorldGenerator.create(nameGenerator);
       expect(newGenerator).toBeInstanceOf(WorldGenerator);
       expect(newGenerator).not.toBe(worldGenerator);
+    });
+  });
+
+  describe('generateGalaxyMap', () => {
+    it('should generate a galaxy with the expected number of sectors and planets', () => {
+      nameGenerator.generateSyllableName.mockImplementation((category) => `${category}-name`);
+
+      const galaxyMap = worldGenerator.generateGalaxyMap();
+
+      expect(galaxyMap).toBeInstanceOf(GalaxyMapComponent);
+      expect(galaxyMap.getSectorCount()).toBe(WorldGenerator.NUM_SECTORS);
+      expect(galaxyMap.getPlanetCount()).toBe(WorldGenerator.NUM_SECTORS * WorldGenerator.PLANETS_PER_SECTOR);
+
+      const sectors = galaxyMap.getSectors();
+      sectors.forEach((sector) => {
+        const planets = galaxyMap.getPlanetsInSector(sector.getId());
+        expect(planets.length).toBe(WorldGenerator.PLANETS_PER_SECTOR);
+      });
+
+      const samplePlanetId = `${sectors[0].getId()}-planet-1`;
+      const samplePlanet = galaxyMap.getPlanetById(samplePlanetId);
+      expect(samplePlanet).toBeDefined();
+      if (!samplePlanet) {
+        throw new Error('Expected sample planet to be defined');
+      }
+
+      const continents = samplePlanet.getContinents();
+      expect(continents).toHaveLength(WorldGenerator.CONTINENTS_PER_PLANET);
+      continents.forEach((continent) => {
+        expect(continent).toBeInstanceOf(Continent);
+        expect(continent.getFeatures().length).toBe(WorldGenerator.FEATURES_PER_PLANET_CONTINENT);
+      });
+
+      const primaryGate = `${sectors[0].getId()}-planet-1`;
+      const neighbours = galaxyMap.getConnectedPlanets(primaryGate);
+      expect(neighbours.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('should cache the generated galaxy map for later retrieval', () => {
+      nameGenerator.generateSyllableName.mockReturnValue('cached-name');
+
+      const galaxyMap = worldGenerator.generateGalaxyMap();
+      const cached = worldGenerator.getLatestGalaxyMap();
+
+      expect(cached).toBe(galaxyMap);
+    });
+
+    it('should throw if the latest galaxy map is requested before generation', () => {
+      const generator = WorldGenerator.create(nameGenerator);
+      expect(() => generator.getLatestGalaxyMap()).toThrow('Galaxy map has not been generated yet.');
     });
   });
 });
