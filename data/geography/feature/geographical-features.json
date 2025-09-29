@@ -1,0 +1,126 @@
+{
+  "MOUNTAIN": {
+    "key": "MOUNTAIN",
+    "displayName": "Mountain"
+  },
+  "RIVER": {
+    "key": "RIVER",
+    "displayName": "River"
+  },
+  "LAKE": {
+    "key": "LAKE",
+    "displayName": "Lake"
+  },
+  "FOREST": {
+    "key": "FOREST",
+    "displayName": "Forest"
+  },
+  "DESERT": {
+    "key": "DESERT",
+    "displayName": "Desert"
+  },
+  "SWAMP": {
+    "key": "SWAMP",
+    "displayName": "Swamp"
+  },
+  "PLAIN": {
+    "key": "PLAIN",
+    "displayName": "Plain"
+  },
+  "HILL": {
+    "key": "HILL",
+    "displayName": "Hill"
+  },
+  "VOLCANO": {
+    "key": "VOLCANO",
+    "displayName": "Volcano"
+  },
+  "GLACIER": {
+    "key": "GLACIER",
+    "displayName": "Glacier"
+  },
+  "ISLAND": {
+    "key": "ISLAND",
+    "displayName": "Island"
+  },
+  "ARCHIPELAGO": {
+    "key": "ARCHIPELAGO",
+    "displayName": "Archipelago"
+  },
+  "CANYON": {
+    "key": "CANYON",
+    "displayName": "Canyon"
+  },
+  "BAY": {
+    "key": "BAY",
+    "displayName": "Bay"
+  },
+  "GULF": {
+    "key": "GULF",
+    "displayName": "Gulf"
+  },
+  "PLATEAU": {
+    "key": "PLATEAU",
+    "displayName": "Plateau"
+  },
+  "FJORD": {
+    "key": "FJORD",
+    "displayName": "Fjord"
+  },
+  "OASIS": {
+    "key": "OASIS",
+    "displayName": "Oasis"
+  },
+  "MARSH": {
+    "key": "MARSH",
+    "displayName": "Marsh"
+  },
+  "CAVE": {
+    "key": "CAVE",
+    "displayName": "Cave"
+  },
+  "CLIFF": {
+    "key": "CLIFF",
+    "displayName": "Cliff"
+  },
+  "WATERFALL": {
+    "key": "WATERFALL",
+    "displayName": "Waterfall"
+  },
+  "CORAL_REEF": {
+    "key": "CORAL_REEF",
+    "displayName": "Coral Reef"
+  },
+  "TUNDRA": {
+    "key": "TUNDRA",
+    "displayName": "Tundra"
+  },
+  "VOLCANIC_ISLAND": {
+    "key": "VOLCANIC_ISLAND",
+    "displayName": "Volcanic Island"
+  },
+  "SAND_DUNE": {
+    "key": "SAND_DUNE",
+    "displayName": "Sand Dune"
+  },
+  "RIVER_DELTA": {
+    "key": "RIVER_DELTA",
+    "displayName": "River Delta"
+  },
+  "ESTUARY": {
+    "key": "ESTUARY",
+    "displayName": "Estuary"
+  },
+  "BORDER": {
+    "key": "BORDER",
+    "displayName": "Border"
+  },
+  "MOUNTAIN_RANGE": {
+    "key": "MOUNTAIN_RANGE",
+    "displayName": "Mountain Range"
+  },
+  "WETLAND": {
+    "key": "WETLAND",
+    "displayName": "Wetland"
+  }
+}
