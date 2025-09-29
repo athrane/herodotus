@@ -1,6 +1,6 @@
-import { GeographicalFeature } from '../../src/geography/GeographicalFeature.ts';
-import { FeatureType } from '../../src/geography/FeatureType.ts';
-import { GeographicalFeatureTypeRegistry } from '../../src/geography/GeographicalFeatureTypeRegistry.ts';
+import { GeographicalFeature } from '../../../src/geography/feature/GeographicalFeature.ts';
+import { FeatureType } from '../../../src/geography/feature/FeatureType.ts';
+import { GeographicalFeatureTypeRegistry } from '../../../src/geography/feature/GeographicalFeatureTypeRegistry.ts';
 
 // The import of DefaultFeatureTypes automatically populates the registry for our tests.
 

@@ -1,7 +1,7 @@
 import { WorldGenerator } from '../../../src/generator/world/WorldGenerator';
 import { NameGenerator } from '../../../src/naming/NameGenerator';
-import { GeographicalFeatureTypeRegistry } from '../../../src/geography/GeographicalFeatureTypeRegistry';
-import { FeatureType } from '../../../src/geography/FeatureType';
+import { GeographicalFeatureTypeRegistry } from '../../../src/geography/feature/GeographicalFeatureTypeRegistry';
+import { FeatureType } from '../../../src/geography/feature/FeatureType';
 import { GalaxyMapComponent } from '../../../src/geography/galaxy/GalaxyMapComponent';
 import { Continent } from '../../../src/geography/planet/Continent';
 

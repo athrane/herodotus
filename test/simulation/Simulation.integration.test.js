@@ -1,6 +1,6 @@
 import { Simulation } from '../../src/simulation/Simulation.ts';
 import { SimulationBuilder } from '../../src/simulation/builder/SimulationBuilder.ts';
-import { GeographicalFeatureTypeRegistry } from '../../src/geography/GeographicalFeatureTypeRegistry.ts';
+import { GeographicalFeatureTypeRegistry } from '../../src/geography/feature/GeographicalFeatureTypeRegistry.ts';
 
 describe('Simulation integration (no mocks)', () => {
   beforeEach(() => {

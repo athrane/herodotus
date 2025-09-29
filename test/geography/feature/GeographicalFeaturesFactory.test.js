@@ -1,5 +1,5 @@
-import { GeographicalFeaturesFactory } from '../../src/geography/GeographicalFeaturesFactory';
-import { GeographicalFeatureTypeRegistry } from '../../src/geography/GeographicalFeatureTypeRegistry';
+import { GeographicalFeaturesFactory } from '../../../src/geography/feature/GeographicalFeaturesFactory';
+import { GeographicalFeatureTypeRegistry } from '../../../src/geography/feature/GeographicalFeatureTypeRegistry';
 
 describe('GeographicalFeaturesFactory', () => {
     beforeEach(() => {

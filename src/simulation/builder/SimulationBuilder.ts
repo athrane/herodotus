@@ -5,7 +5,7 @@ import { TimeSystem } from '../../time/TimeSystem';
 import { TimeComponent } from '../../time/TimeComponent';
 import { NameComponent } from '../../ecs/NameComponent';
 import { WorldComponent } from '../../geography/WorldComponent';
-import { GeographicalFeaturesFactory } from '../../geography/GeographicalFeaturesFactory';
+import { GeographicalFeaturesFactory } from '../../geography/feature/GeographicalFeaturesFactory';
 import { HistoricalFigureComponent } from '../../historicalfigure/HistoricalFigureComponent';
 import { ChronicleComponent } from '../../chronicle/ChronicleComponent';
 import { HistoricalFigureLifecycleSystem } from '../../historicalfigure/HistoricalFigureLifecycleSystem';

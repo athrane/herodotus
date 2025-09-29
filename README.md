@@ -565,10 +565,10 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 - `src/geography/World.ts` — World model (collection of places and features)
 - `src/geography/WorldComponent.ts` — Component carrying world instance
 - `src/geography/Continent.ts` — Continent model
-- `src/geography/FeatureType.ts` — Feature type metadata
-- `src/geography/GeographicalFeature.ts` — Geographical feature instances
-- `src/geography/GeographicalFeaturesFactory.ts` — Factory to create features
-- `src/geography/GeographicalFeatureTypeRegistry.ts` — Registry of feature types
+- `src/geography/feature/FeatureType.ts` — Feature type metadata
+- `src/geography/feature/GeographicalFeature.ts` — Geographical feature instances
+- `src/geography/feature/GeographicalFeaturesFactory.ts` — Factory to create features
+- `src/geography/feature/GeographicalFeatureTypeRegistry.ts` — Registry of feature types
 - `src/generator/Place.ts` — Place model used during generation
 - `src/generator/world/WorldGenerator.ts` — World generator implementation
 

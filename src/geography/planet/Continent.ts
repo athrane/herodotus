@@ -1,5 +1,5 @@
 import { TypeUtils } from '../../util/TypeUtils';
-import { GeographicalFeature } from '../GeographicalFeature';
+import { GeographicalFeature } from '../feature/GeographicalFeature';
 
 /**
  * Represents a continent in the world.

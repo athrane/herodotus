@@ -1,6 +1,6 @@
 import { Continent } from '../../geography/planet/Continent';
-import { GeographicalFeature } from '../../geography/GeographicalFeature';
-import { GeographicalFeatureTypeRegistry } from '../../geography/GeographicalFeatureTypeRegistry';
+import { GeographicalFeature } from '../../geography/feature/GeographicalFeature';
+import { GeographicalFeatureTypeRegistry } from '../../geography/feature/GeographicalFeatureTypeRegistry';
 import { World } from '../../geography/World';
 import { GalaxyMapComponent } from '../../geography/galaxy/GalaxyMapComponent';
 import { Sector } from '../../geography/galaxy/Sector';
