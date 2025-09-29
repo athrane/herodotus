@@ -1,4 +1,4 @@
-import { GeographicalFeatureTypeRegistry } from './GeographicalFeatureTypeRegistry';
+import { GeographicalFeatureTypeRegistry } from '../../geography/feature/GeographicalFeatureTypeRegistry';
 
 /**
  * GeographicalFeaturesFactory is responsible for creating and registering
