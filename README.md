@@ -581,8 +581,7 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 - `src/chronicle/EventType.ts` — Event type metadata and helpers
 
 #### Historical Figures
-- `src/historicalfigure/HistoricalFigure.ts` — Model for historical figures
-- `src/historicalfigure/HistoricalFigureComponent.ts` — Component storing figure data
+- `src/historicalfigure/HistoricalFigureComponent.ts` — Component storing figure data and snapshot helpers
 - `src/historicalfigure/HistoricalFigureBirthSystem.ts` — System that seeds/births figures
 - `src/historicalfigure/HistoricalFigureLifecycleSystem.ts` — Manages lifecycle events for figures
 - `src/historicalfigure/HistoricalFigureInfluenceSystem.ts` — Applies influence changes to figures

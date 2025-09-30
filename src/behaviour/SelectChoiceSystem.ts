@@ -13,7 +13,6 @@ import { EventType } from '../chronicle/EventType';
 import { getEventCategoryFromString } from '../chronicle/EventCategory';
 import { Place } from '../generator/Place';
 import { HistoricalFigureComponent } from '../historicalfigure/HistoricalFigureComponent';
-import { HistoricalFigure } from '../historicalfigure/HistoricalFigure';
 import { PlayerComponent } from '../ecs/PlayerComponent';
 
 /**
@@ -27,7 +26,7 @@ export class SelectChoiceSystem extends System {
     /**
      * A constant representing an unknown historical figure used when no HistoricalFigureComponent is found.
      */
-    private static readonly UNKNOWN_HISTORICAL_FIGURE: HistoricalFigure = HistoricalFigure.create(
+    private static readonly UNKNOWN_HISTORICAL_FIGURE: HistoricalFigureComponent = HistoricalFigureComponent.create(
         "Unknown",
         0,
         50,
@@ -183,16 +182,16 @@ export class SelectChoiceSystem extends System {
     }
 
     /**
-     * Extracts a HistoricalFigure from the given entity.
-     * If the entity has a HistoricalFigureComponent, it returns the contained HistoricalFigure.
+     * Extracts a HistoricalFigureComponent from the given entity.
+     * If the entity has a HistoricalFigureComponent, it returns that instance.
      * @param entity - The entity to extract the historical figure from.
-     * @returns A HistoricalFigure representing the entity, or an unknown HistoricalFigure if no HistoricalFigureComponent is found.
+     * @returns A HistoricalFigureComponent representing the entity, or a shared unknown HistoricalFigureComponent if none is found.
      */
-    private getHistoricalFigureFromEntity(entity: Entity): HistoricalFigure {
+    private getHistoricalFigureFromEntity(entity: Entity): HistoricalFigureComponent {
         // Check if entity has HistoricalFigureComponent
         const historicalFigureComponent = entity.getComponent(HistoricalFigureComponent);
         if (historicalFigureComponent) {
-            return historicalFigureComponent.getHistoricalFigure();
+            return historicalFigureComponent;
         }
 
         // Return the unknown historical figure constant if entity has no HistoricalFigureComponent

@@ -34,8 +34,8 @@ export class HistoricalFigureInfluenceSystem extends System {
         if (!chronicle) return;
 
         // Simple event generation based on the historical figure's active years
-        const calculatedDeathYear = historicalFigure.birthYear + historicalFigure.averageLifeSpan;
-        if (currentYear >= historicalFigure.birthYear && currentYear <= calculatedDeathYear) {
+        const calculatedDeathYear = historicalFigure.getBirthYear() + historicalFigure.getAverageLifeSpan();
+        if (currentYear >= historicalFigure.getBirthYear() && currentYear <= calculatedDeathYear) {
 
             /** 
             const event = {

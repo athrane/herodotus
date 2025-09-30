@@ -113,7 +113,7 @@ export class HistoricalFigureBirthSystem extends System {
             "Tags": "birth, historical-figure, social, emergence"
         });
     
-        // Create a new entity for the historical figure with ChoiceComponent
+        // Create a new entity for the historical figure with components
         this.getEntityManager().createEntity(
             NameComponent.create(name),
             historicalFigureComponent,
@@ -129,7 +129,7 @@ export class HistoricalFigureBirthSystem extends System {
             time,
             place,
             `The historical figure named ${name} was born in the year ${year}. They will live for approximately ${lifespanYears} years.`,
-            historicalFigureComponent.getHistoricalFigure());
+            historicalFigureComponent);
         chronicleComponent.addEvent(event);
     }
 

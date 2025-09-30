@@ -9,7 +9,6 @@ import { WorldComponent } from '../../src/geography/WorldComponent';
 import { Time } from '../../src/time/Time';
 import { World } from '../../src/geography/World';
 import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent';
-import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure';
 import { PlayerComponent } from '../../src/ecs/PlayerComponent';
 
 describe('SelectChoiceSystem', () => {
@@ -479,8 +478,7 @@ describe('SelectChoiceSystem', () => {
 
         it('should record decision with historical figure when entity has HistoricalFigureComponent', () => {
             // Arrange
-            const historicalFigure = HistoricalFigure.create('Julius Caesar', 50, 70, 'Roman', 'Emperor');
-            const historicalFigureComponent = HistoricalFigureComponent.fromHistoricalFigure(historicalFigure);
+            const historicalFigureComponent = HistoricalFigureComponent.create('Julius Caesar', 50, 70, 'Roman', 'Emperor');
             
             const choice = new DataSetEvent({
                 'Event Type': 'Military',
@@ -509,7 +507,7 @@ describe('SelectChoiceSystem', () => {
             // Assert
             expect(chronicleComponent.getEvents().length).toBe(1);
             const recordedEvent = chronicleComponent.getEvents()[0];
-            expect(recordedEvent.getFigure()).toBe(historicalFigure);
+            expect(recordedEvent.getFigure()).toBe(historicalFigureComponent);
             expect(recordedEvent.getHeading()).toBe('Decision made: Conquer Territory');
             expect(recordedEvent.getEventType().getCategory()).toBe('Military');
         });
@@ -543,7 +541,7 @@ describe('SelectChoiceSystem', () => {
             // Assert
             expect(chronicleComponent.getEvents().length).toBe(1);
             const recordedEvent = chronicleComponent.getEvents()[0];
-            expect(recordedEvent.getFigure().getName()).toBe('Unknown');
+            expect(recordedEvent.getFigure()?.name).toBe('Unknown');
             expect(recordedEvent.getEventType().getCategory()).toBe('Economic');
         });
 

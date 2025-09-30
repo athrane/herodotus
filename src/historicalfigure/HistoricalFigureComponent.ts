@@ -1,69 +1,83 @@
 import { Component } from '../ecs/Component';
 import { TypeUtils } from '../util/TypeUtils';
-import { HistoricalFigure } from './HistoricalFigure';
 
 /**
- * A marker component to identify an entity as a historical figure.
- * Components are simple data containers. They should not contain any logic.
+ * Contract describing an object that can generate historical figure names.
+ */
+export interface HistoricalFigureNameGenerator {
+    generateHistoricalFigureName(culture: string, minLength: number, maxLength: number): string;
+}
+
+/**
+ * A component that stores historical figure metadata directly on an entity.
  */
 export class HistoricalFigureComponent extends Component {
-    private readonly historicalFigure: HistoricalFigure;
+    private readonly name: string;
+    private readonly birthYear: number;
+    private readonly averageLifeSpan: number;
+    private readonly culture: string;
+    private readonly occupation: string;
 
     /**
-     * @param historicalFigure - The historical figure instance.
+     * @param name - The name of the historical figure.
+     * @param birthYear - The birth year of the historical figure.
+     * @param averageLifeSpan - The expected lifespan in years for this historical figure.
+     * @param culture - The culture of the historical figure.
+     * @param occupation - The occupation of the historical figure.
      */
-    constructor(historicalFigure: HistoricalFigure) {
+    constructor(name: string, birthYear: number, averageLifeSpan: number, culture: string, occupation: string) {
         super();
-        TypeUtils.ensureInstanceOf(historicalFigure, HistoricalFigure, 'HistoricalFigureComponent historicalFigure must be a HistoricalFigure instance.');
-        this.historicalFigure = historicalFigure;
+        TypeUtils.ensureString(name, 'HistoricalFigure name must be a string.');
+        TypeUtils.ensureNumber(birthYear, 'HistoricalFigure birthYear must be a number.');
+        TypeUtils.ensureNumber(averageLifeSpan, 'HistoricalFigure averageLifeSpan must be a number.');
+        TypeUtils.ensureString(culture, 'HistoricalFigure culture must be a string.');
+        TypeUtils.ensureString(occupation, 'HistoricalFigure occupation must be a string.');
+
+        this.name = name;
+        this.birthYear = birthYear;
+        this.averageLifeSpan = averageLifeSpan;
+        this.culture = culture;
+        this.occupation = occupation;
     }
 
     /**
-     * Gets the historical figure instance.
-     * @returns The historical figure instance.
-     */
-    getHistoricalFigure(): HistoricalFigure {
-        return this.historicalFigure;
-    }
-
-    /**
-     * Gets the name of the historical figure (convenience method).
+     * Gets the name of the historical figure.
      * @returns The name of the historical figure.
      */
-    get name(): string {
-        return this.historicalFigure.getName();
+    getName(): string {
+        return this.name;
     }
 
     /**
-     * Gets the birth year of the historical figure (convenience method).
+     * Gets the birth year of the historical figure.
      * @returns The birth year of the historical figure.
      */
-    get birthYear(): number {
-        return this.historicalFigure.getBirthYear();
+    getBirthYear(): number {
+        return this.birthYear;
     }
 
     /**
-     * Gets the average lifespan of the historical figure (convenience method).
+     * Gets the average lifespan of the historical figure.
      * @returns The average lifespan of the historical figure.
      */
-    get averageLifeSpan(): number {
-        return this.historicalFigure.getAverageLifeSpan();
+    getAverageLifeSpan(): number {
+        return this.averageLifeSpan;
     }
 
     /**
-     * Gets the culture of the historical figure (convenience method).
-     * @returns The culture of the historical figure.
+     * Gets the culture of the historical figure.
+     * @return The culture of the historical figure.
      */
-    get culture(): string {
-        return this.historicalFigure.getCulture();
+    getCulture(): string {
+        return this.culture;
     }
 
     /**
-     * Gets the occupation of the historical figure (convenience method).
-     * @returns The occupation of the historical figure.
+     * Gets the occupation of the historical figure.
+     * @return The occupation of the historical figure.
      */
-    get occupation(): string {
-        return this.historicalFigure.getOccupation();
+    getOccupation(): string {
+        return this.occupation;
     }
 
     /**
@@ -73,19 +87,38 @@ export class HistoricalFigureComponent extends Component {
      * @param averageLifeSpan - The expected lifespan in years for this historical figure.
      * @param culture - The culture of the historical figure.
      * @param occupation - The occupation of the historical figure.
-     * @returns A new instance of HistoricalFigureComponent.
+     * @return A new instance of HistoricalFigureComponent.
      */
     static create(name: string, birthYear: number, averageLifeSpan: number, culture: string, occupation: string): HistoricalFigureComponent {
-        const historicalFigure = HistoricalFigure.create(name, birthYear, averageLifeSpan, culture, occupation);
-        return new HistoricalFigureComponent(historicalFigure);
+        return new HistoricalFigureComponent(name, birthYear, averageLifeSpan, culture, occupation);
     }
 
     /**
-     * Static factory method to create a HistoricalFigureComponent from an existing HistoricalFigure.
-     * @param historicalFigure - The historical figure instance.
-     * @returns A new instance of HistoricalFigureComponent.
+     * Generates a new HistoricalFigureComponent using a name generator.
+     * @param culture - The culture to generate a name from.
+     * @param nameGenerator - The generator to produce the historical figure name.
+     * @param birthYear - The birth year of the historical figure.
+     * @param averageLifeSpan - The expected lifespan in years for this historical figure.
+     * @param occupation - The occupation of the historical figure.
+     * @return A new instance of HistoricalFigureComponent.
      */
-    static fromHistoricalFigure(historicalFigure: HistoricalFigure): HistoricalFigureComponent {
-        return new HistoricalFigureComponent(historicalFigure);
+    static generate(
+        culture: string,
+        nameGenerator: HistoricalFigureNameGenerator,
+        birthYear: number,
+        averageLifeSpan: number,
+        occupation: string
+    ): HistoricalFigureComponent {
+        TypeUtils.ensureString(culture, 'HistoricalFigure culture must be a string.');
+        TypeUtils.ensureFunction(nameGenerator, 'HistoricalFigure nameGenerator must be an object with a generateHistoricalFigureName function.');
+        TypeUtils.ensureNumber(birthYear, 'HistoricalFigure birthYear must be a number.');
+        TypeUtils.ensureNumber(averageLifeSpan, 'HistoricalFigure averageLifeSpan must be a number.');
+        TypeUtils.ensureString(occupation, 'HistoricalFigure occupation must be a string.');
+
+        const name = nameGenerator.generateHistoricalFigureName(culture, 4, 8);
+        TypeUtils.ensureString(name, 'Generated historical figure name must be a string.');
+        TypeUtils.ensureNonEmptyString(name, 'Generated historical figure name must not be empty.');
+
+        return HistoricalFigureComponent.create(name, birthYear, averageLifeSpan, culture, occupation);
     }
 }
