@@ -3,12 +3,16 @@ import { Simulation } from '../../../src/simulation/Simulation.ts';
 import { NameComponent } from '../../../src/ecs/NameComponent.ts';
 import { HistoricalFigureComponent } from '../../../src/historicalfigure/HistoricalFigureComponent.ts';
 import { DataSetEventComponent } from '../../../src/data/DataSetEventComponent.ts';
+import { GeographicalFeatureTypeRegistry } from '../../../src/geography/feature/GeographicalFeatureTypeRegistry.ts';
 
 describe('Player Entity Integration', () => {
     let builder;
     let simulation;
 
     beforeEach(() => {
+        // Clear the registry to ensure clean state between tests
+        GeographicalFeatureTypeRegistry.clear();
+        
         builder = SimulationBuilder.create();
         builder.build();
         builder.buildData();

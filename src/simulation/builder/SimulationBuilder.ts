@@ -133,14 +133,19 @@ export class SimulationBuilder extends Builder {
      * @override
      */
     buildData(): void {
+
+        // Load dataset events from JSON data files
         this.dataSetEvents = loadEvents();
+
+        // Initialize geographical features in the registry
+        GeographicalFeaturesFactory.create();
     }
 
     /**
      * @override
      */
     buildComponents(): void {
-        GeographicalFeaturesFactory.create();
+        //GeographicalFeaturesFactory.create();
     }
 
     /**
