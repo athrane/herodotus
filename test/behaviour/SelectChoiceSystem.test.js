@@ -821,7 +821,7 @@ describe('SelectChoiceSystem', () => {
             expect(recordedEvent.getPlace().getName()).toBe('The Council Chambers');
         });
 
-        it('should fall back to default place when continent has no features', () => {
+        it('should fall back to planet name when continent has no features', () => {
             // Arrange - Create planet with continent but no features
             galaxyMapComponent.reset();
             const sector = Sector.create('test-sector', 'Test Sector');
@@ -866,9 +866,9 @@ describe('SelectChoiceSystem', () => {
             // Act
             system.processEntity(entity);
 
-            // Assert
+            // Assert - With the centralized implementation, it now uses planet name as fallback when no features are available
             const recordedEvent = chronicleComponent.getEvents()[0];
-            expect(recordedEvent.getPlace().getName()).toBe('The Council Chambers');
+            expect(recordedEvent.getPlace().getName()).toBe('Sparse Planet');
         });
 
         it('should use feature location format when available', () => {

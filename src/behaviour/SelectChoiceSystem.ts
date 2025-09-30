@@ -11,9 +11,9 @@ import { TimeComponent } from '../time/TimeComponent';
 import { GalaxyMapComponent } from '../geography/galaxy/GalaxyMapComponent';
 import { EventType } from '../chronicle/EventType';
 import { getEventCategoryFromString } from '../chronicle/EventCategory';
-import { Place } from '../generator/Place';
 import { HistoricalFigureComponent } from '../historicalfigure/HistoricalFigureComponent';
 import { PlayerComponent } from '../ecs/PlayerComponent';
+import { GeographicalUtils } from '../geography/GeographicalUtils';
 
 /**
  * The SelectChoiceSystem processes entities with ChoiceComponents to resolve
@@ -140,7 +140,7 @@ export class SelectChoiceSystem extends System {
         const currentTime = timeComponent.getTime();
         
         // Get a place from the galaxy map
-        const place = this.computeDecisionPlace(galaxyMapComponent);
+        const place = GeographicalUtils.computeRandomPlace(galaxyMapComponent, 'The Council Chambers');
 
         // Create an event type for the decision using the chosen event's type
         const eventCategory = getEventCategoryFromString(chosenEvent.getEventType());
@@ -164,29 +164,6 @@ export class SelectChoiceSystem extends System {
 
         // Add the event to the chronicle
         chronicleComponent.addEvent(chronicleEvent);
-    }
-
-    /**
-     * Computes a place for the decision event.
-     * This method retrieves a random geographical feature from the galaxy map.
-     * @param galaxyMap - The GalaxyMapComponent instance to get a random place from.
-     * @returns A Place instance representing the location where the decision was made.
-     */
-    private computeDecisionPlace(galaxyMap: GalaxyMapComponent): Place {
-        // Get a random planet from the galaxy map
-        const planet = galaxyMap.getRandomPlanet();
-        if (planet) {
-            const continents = planet.getContinents();
-            if (continents.length > 0) {
-                const randomContinent = continents[Math.floor(Math.random() * continents.length)];
-                const randomFeature = randomContinent.getRandomFeature();
-                if (randomFeature) {
-                    // Use format: "FeatureName, PlanetName" (consistent with birth/death systems)
-                    return Place.create(`${randomFeature.getName()}, ${planet.getName()}`);
-                }
-            }
-        }
-        return Place.create('The Council Chambers');
     }
 
     /**
