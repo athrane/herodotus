@@ -24,7 +24,7 @@ import { MenuTextUpdateSystem } from '../menu/MenuTextUpdateSystem';
 import { ScrollableMenuTextUpdateSystem } from '../menu/ScrollableMenuTextUpdateSystem';
 import { ChoiceMenuViewSystem } from '../view/ChoiceMenuViewSystem';
 import { ScrollableMenuComponent } from '../menu/ScrollableMenuComponent';
-import { GuiHelper } from '../GuiHelper';
+import { GuiHelper } from '../utils/GuiHelper';
 import { ScreensComponent } from '../menu/ScreensComponent';
 import { ChronicleViewSystem } from '../view/ChronicleViewSystem';
 import { IsActiveScreenComponent } from '../../gui/rendering/IsActiveScreenComponent';

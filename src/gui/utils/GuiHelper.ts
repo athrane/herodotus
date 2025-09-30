@@ -1,9 +1,9 @@
-import { EntityManager } from '../ecs/EntityManager';
-import { NameComponent } from '../ecs/NameComponent';
-import { TextComponent } from './rendering/TextComponent';
-import { IsVisibleComponent } from './rendering/IsVisibleComponent';
-import { PositionComponent } from './rendering/PositionComponent';
-import { Entity } from 'ecs/Entity';
+import { EntityManager } from '../../ecs/EntityManager';
+import { NameComponent } from '../../ecs/NameComponent';
+import { TextComponent } from '../rendering/TextComponent';
+import { IsVisibleComponent } from '../rendering/IsVisibleComponent';
+import { PositionComponent } from '../rendering/PositionComponent';
+import { Entity } from '../../ecs/Entity';
 
 /**
  * Helper class containing stateless utility functions for the GUI system.

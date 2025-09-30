@@ -12,7 +12,7 @@ import { PlayerComponent } from '../../ecs/PlayerComponent';
 import { DataSetEvent } from '../../data/DataSetEvent';
 import { IsActiveScreenComponent } from '../../gui/rendering/IsActiveScreenComponent';
 import { TimeComponent } from '../../time/TimeComponent';
-import { GuiHelper } from '../../gui/GuiHelper';
+import { GuiHelper } from '../utils/GuiHelper';
 import { NameComponent } from '../../ecs/NameComponent';
 
 /**
