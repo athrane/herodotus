@@ -16,8 +16,7 @@ export class GeographicalFeaturesFactory {
      * features loaded from JSON data, each identified by a unique key.
      */
     static create(): void {
-        const features = loadGeographicalFeatures();
-        
+        const features = loadGeographicalFeatures();        
         features.forEach(feature => {
             GeographicalFeatureTypeRegistry.register(feature.getKey(), feature.getDisplayName());
         });
