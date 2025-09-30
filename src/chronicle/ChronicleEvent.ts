@@ -1,6 +1,6 @@
 import { TypeUtils } from '../util/TypeUtils';
 import { Time } from '../time/Time';
-import { HistoricalFigure } from '../historicalfigure/HistoricalFigure';
+import { HistoricalFigureComponent } from '../historicalfigure/HistoricalFigureComponent';
 import { Place } from '../generator/Place';
 import { EventType } from './EventType';
 
@@ -12,7 +12,7 @@ export class ChronicleEvent {
   private readonly eventType: EventType;
   private readonly description: string;
   private readonly time: Time;
-  private readonly figure: HistoricalFigure | null;
+  private readonly figure: HistoricalFigureComponent | null;
   private readonly place: Place;
 
   /**
@@ -32,13 +32,13 @@ export class ChronicleEvent {
     time: Time,
     place: Place,
     description: string,
-    figure: HistoricalFigure | null = null
+    figure: HistoricalFigureComponent | null = null
   ) {
     TypeUtils.ensureString(heading, 'ChronicleEvent heading must be a string.');
     TypeUtils.ensureInstanceOf(eventType, EventType);
     TypeUtils.ensureInstanceOf(time, Time);
     if (figure !== null) {
-      TypeUtils.ensureInstanceOf(figure, HistoricalFigure);
+      TypeUtils.ensureInstanceOf(figure, HistoricalFigureComponent);
     }
     TypeUtils.ensureInstanceOf(place, Place);
     TypeUtils.ensureString(description, 'ChronicleEvent description must be a string.');
@@ -61,9 +61,9 @@ export class ChronicleEvent {
 
   /**
    * Returns the historical figure involved in the event, if any.
-   * @returns {HistoricalFigure | null}
+   * @returns {HistoricalFigureComponent | null}
    */
-  getFigure(): HistoricalFigure | null {
+  getFigure(): HistoricalFigureComponent | null {
     return this.figure;
   }
 
@@ -116,7 +116,7 @@ export class ChronicleEvent {
     time: Time,
     place: Place,
     description: string,
-    figure: HistoricalFigure | null = null
+    figure: HistoricalFigureComponent | null = null
   ): ChronicleEvent {
     return new ChronicleEvent(heading, eventType, time, place, description, figure);
   }

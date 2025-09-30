@@ -3,7 +3,7 @@ import { ChronicleEvent } from '../../src/chronicle/ChronicleEvent';
 import { EventType } from '../../src/chronicle/EventType';
 import { EventCategory } from '../../src/chronicle/EventCategory';
 import { Time } from '../../src/time/Time';
-import { HistoricalFigure } from '../../src/historicalfigure/HistoricalFigure';
+import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent';
 import { Place } from '../../src/generator/Place';
 
 describe('ChronicleComponent', () => {
@@ -12,12 +12,12 @@ describe('ChronicleComponent', () => {
   let eventType;
   let time;
   let place;
-  let figure;
+  let figureComponent;
 
   beforeEach(() => {
     eventType = new EventType(EventCategory.POLITICAL, 'Birth');
     time = new Time(484);
-    figure = HistoricalFigure.create('Herodotus', -484, 59, 'Greek', 'Historian');
+  figureComponent = HistoricalFigureComponent.create('Herodotus', -484, 59, 'Greek', 'Historian');
     place = new Place('Halicarnassus');
     
     sampleEvent1 = new ChronicleEvent(
@@ -26,7 +26,7 @@ describe('ChronicleComponent', () => {
       time,
       place,
       'The birth of the Father of History.',
-      figure
+      figureComponent
     );
     
     sampleEvent2 = new ChronicleEvent(

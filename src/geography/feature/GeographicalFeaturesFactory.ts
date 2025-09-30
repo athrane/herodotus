@@ -1,4 +1,4 @@
-import { GeographicalFeatureTypeRegistry } from './GeographicalFeatureTypeRegistry';
+import { GeographicalFeatureTypeRegistry } from '../../geography/feature/GeographicalFeatureTypeRegistry';
 import { loadGeographicalFeatures } from '../../data/geography/feature/loadGeographicalFeatures';
 
 /**

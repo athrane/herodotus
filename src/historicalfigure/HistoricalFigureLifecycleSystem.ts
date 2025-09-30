@@ -56,7 +56,7 @@ export class HistoricalFigureLifecycleSystem extends System {
      * @returns The calculated death year.
      */
     protected calculateDeathYear(historicalFigure: HistoricalFigureComponent): number {
-        return historicalFigure.birthYear + historicalFigure.averageLifeSpan;
+        return historicalFigure.getBirthYear() + historicalFigure.getAverageLifeSpan();
     }
 
     /**
@@ -120,12 +120,12 @@ export class HistoricalFigureLifecycleSystem extends System {
      */
     private recordDeathEvent(historicalFigure: HistoricalFigureComponent, deathYear: number): void {
         // Calculate lifespan for the description
-        const lifespan = deathYear - historicalFigure.birthYear;
+        const lifespan = deathYear - historicalFigure.getBirthYear();
         
         // Always log the basic information (for backwards compatibility with tests)
-        console.log(`Historical figure ${historicalFigure.name} (died ${deathYear}) has died and exited the simulation.`);
-        console.log(`  - ${historicalFigure.name} lived for ${lifespan} years (${historicalFigure.birthYear}-${deathYear})`);
-        console.log(`  - Occupation: ${historicalFigure.occupation}, Culture: ${historicalFigure.culture}`);
+        console.log(`Historical figure ${historicalFigure.getName()} (died ${deathYear}) has died and exited the simulation.`);
+        console.log(`  - ${historicalFigure.getName()} lived for ${lifespan} years (${historicalFigure.getBirthYear()}-${deathYear})`);
+        console.log(`  - Occupation: ${historicalFigure.getOccupation()}, Culture: ${historicalFigure.getCulture()}`);
 
         // Try to create a chronicle event if the required components are available
         const chronicleComponent = this.getEntityManager().getSingletonComponent(ChronicleComponent);
@@ -137,21 +137,19 @@ export class HistoricalFigureLifecycleSystem extends System {
             const place = this.computePlace(worldComponent.get());
             
             // Get the historical figure instance from the component
-            const historicalFigureInstance = historicalFigure.getHistoricalFigure();
-            
             // Create the event type for death
             const eventType = EventType.create(EventCategory.SOCIAL, 'Historical Figure Death');
             
             // Create the chronicle event
             const event = ChronicleEvent.create(
-                `${historicalFigure.name} has died in ${deathYear}.`,
+                `${historicalFigure.getName()} has died in ${deathYear}.`,
                 eventType,
                 time,
                 place,
-                `The historical figure ${historicalFigure.name} has died in the year ${deathYear} at ${place.getName()}. ` +
-                `They lived for ${lifespan} years (${historicalFigure.birthYear}-${deathYear}). ` +
-                `Their occupation was ${historicalFigure.occupation} and they belonged to the ${historicalFigure.culture} culture.`,
-                historicalFigureInstance
+                `The historical figure ${historicalFigure.getName()} has died in the year ${deathYear} at ${place.getName()}. ` +
+                `They lived for ${lifespan} years (${historicalFigure.getBirthYear()}-${deathYear}). ` +
+                `Their occupation was ${historicalFigure.getOccupation()} and they belonged to the ${historicalFigure.getCulture()} culture.`,
+            historicalFigure
             );
             
             // Add the event to the chronicle
