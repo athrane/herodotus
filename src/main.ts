@@ -1,7 +1,5 @@
-import { LogHelper } from './util/log/LogHelper';
 import { BuilderDirector } from './ecs/builder/BuilderDirector';
 import { SimulationBuilder } from './simulation/builder/SimulationBuilder';
-import { WorldComponent } from './geography/WorldComponent';
 import { ChronicleComponent } from './chronicle/ChronicleComponent';
 import { Simulation } from 'simulation/Simulation';
 
@@ -17,13 +15,6 @@ function main(): void {
   // create simulation
   const simulation = Simulation.create(simulationEcs);
 
-  // log the world details
-  const entityManager = simulation.getEntityManager();
-  const worldComponent = entityManager.getSingletonComponent(WorldComponent);
-  if (worldComponent) {
-    LogHelper.logWorldDetails(worldComponent.get());
-  }
-
   // start the simulation
   simulation.start();
 
@@ -36,9 +27,11 @@ function main(): void {
   simulation.stop();
 
   // print the chronicle
+  const entityManager = simulation.getEntityManager();
   const chronicleComponent = entityManager.getSingletonComponent(ChronicleComponent);
   if (chronicleComponent) {
-    LogHelper.logChronicleDetails(chronicleComponent.getEvents());
+    console.log("--- Chronicle Summary ---");
+    console.log(`Total events: ${chronicleComponent.getEvents().length}`);
   }
 }
 

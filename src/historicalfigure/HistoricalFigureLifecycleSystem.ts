@@ -10,8 +10,7 @@ import { EventType } from '../chronicle/EventType';
 import { EventCategory } from '../chronicle/EventCategory';
 import { Time } from '../time/Time';
 import { Place } from '../generator/Place';
-import { WorldComponent } from '../geography/WorldComponent';
-import { World } from '../geography/World';
+import { GalaxyMapComponent } from '../geography/galaxy/GalaxyMapComponent';
 
 /**
  * Manages the death and other life cycle events of historical figures based on their lifespan.
@@ -66,13 +65,13 @@ export class HistoricalFigureLifecycleSystem extends System {
      * @param deathYear - The calculated death year.
      */
     private handleHistoricalFigureDeath(entity: Entity, historicalFigure: HistoricalFigureComponent, deathYear: number): void {
-        
+
         // Record death event for potential chronicle/historical record
         this.recordDeathEvent(historicalFigure, deathYear);
-        
+
         // Clean up the entity by removing the HistoricalFigureComponent
         entity.removeComponent(HistoricalFigureComponent);
-        
+
         // Check if we should destroy the entity completely
         this.cleanupDeadEntity(entity);
     }
@@ -85,29 +84,32 @@ export class HistoricalFigureLifecycleSystem extends System {
     protected cleanupDeadEntity(entity: Entity): void {
         // Default behavior: keep the entity but without the HistoricalFigureComponent
         // This allows other systems to potentially track "deceased" entities if needed
-        
+
         // If needed, entity could be destroyed with:
         // this.getEntityManager().destroyEntity(entity.getId());
-        
+
         // Or marked with a "deceased" component for historical tracking
-        
+
         // Parameter is intentionally unused in base implementation but available for subclasses
         void entity; // Explicitly mark as intentionally unused
     }
 
     /**
      * Calculate a random place for the historical figure's death.
-     * This method retrieves a random geographical feature from the world.
-     * @param world - The world instance to get a random place from.
+     * This method retrieves a random geographical feature from the galaxy map.
+     * @param galaxyMap - The galaxy map instance to get a random place from.
      * @returns A Place instance representing the location of the historical figure's death.
      */
-    private computePlace(world: World): Place {
-        TypeUtils.ensureInstanceOf(world, World);
-        const continent = world.getRandomContinent();
-        if (continent) {
-            const randomFeature = continent.getRandomFeature();
-            if (randomFeature) {
-                return Place.create(randomFeature.getName());
+    private computePlace(galaxyMap: GalaxyMapComponent): Place {
+        const planet = galaxyMap.getRandomPlanet();
+        if (planet) {
+            const continents = planet.getContinents();
+            if (continents.length > 0) {
+                const randomContinent = continents[Math.floor(Math.random() * continents.length)];
+                const randomFeature = randomContinent.getRandomFeature();
+                if (randomFeature) {
+                    return Place.create(`${randomFeature.getName()}, ${planet.getName()}`);
+                }
             }
         }
         return Place.create('Unknown Location');
@@ -121,43 +123,42 @@ export class HistoricalFigureLifecycleSystem extends System {
     private recordDeathEvent(historicalFigure: HistoricalFigureComponent, deathYear: number): void {
         // Calculate lifespan for the description
         const lifespan = deathYear - historicalFigure.getBirthYear();
-        
+
         // Always log the basic information (for backwards compatibility with tests)
         console.log(`Historical figure ${historicalFigure.getName()} (died ${deathYear}) has died and exited the simulation.`);
         console.log(`  - ${historicalFigure.getName()} lived for ${lifespan} years (${historicalFigure.getBirthYear()}-${deathYear})`);
         console.log(`  - Occupation: ${historicalFigure.getOccupation()}, Culture: ${historicalFigure.getCulture()}`);
 
-        // Try to create a chronicle event if the required components are available
+        // Get the ChronicleComponent
         const chronicleComponent = this.getEntityManager().getSingletonComponent(ChronicleComponent);
-        const worldComponent = this.getEntityManager().getSingletonComponent(WorldComponent);
-        
-        if (chronicleComponent && worldComponent) {
-            // Create the time and place for the death event
-            const time = Time.create(deathYear);
-            const place = this.computePlace(worldComponent.get());
-            
-            // Get the historical figure instance from the component
-            // Create the event type for death
-            const eventType = EventType.create(EventCategory.SOCIAL, 'Historical Figure Death');
-            
-            // Create the chronicle event
-            const event = ChronicleEvent.create(
-                `${historicalFigure.getName()} has died in ${deathYear}.`,
-                eventType,
-                time,
-                place,
-                `The historical figure ${historicalFigure.getName()} has died in the year ${deathYear} at ${place.getName()}. ` +
-                `They lived for ${lifespan} years (${historicalFigure.getBirthYear()}-${deathYear}). ` +
-                `Their occupation was ${historicalFigure.getOccupation()} and they belonged to the ${historicalFigure.getCulture()} culture.`,
+        if (!chronicleComponent) return;
+
+        // Get GalaxyMapComponent - we know there's only one global entity with it
+        const galaxyMapComponent = this.getEntityManager().getSingletonComponent(GalaxyMapComponent);
+        if (!galaxyMapComponent) return;
+
+        // Create the time and place for the death event
+        const time = Time.create(deathYear);
+        const place = this.computePlace(galaxyMapComponent);
+
+        // Get the historical figure instance from the component
+        // Create the event type for death
+        const eventType = EventType.create(EventCategory.SOCIAL, 'Historical Figure Death');
+
+        // Create the chronicle event
+        const event = ChronicleEvent.create(
+            `${historicalFigure.getName()} has died in ${deathYear}.`,
+            eventType,
+            time,
+            place,
+            `The historical figure ${historicalFigure.getName()} has died in the year ${deathYear} at ${place.getName()}. ` +
+            `They lived for ${lifespan} years (${historicalFigure.getBirthYear()}-${deathYear}). ` +
+            `Their occupation was ${historicalFigure.getOccupation()} and they belonged to the ${historicalFigure.getCulture()} culture.`,
             historicalFigure
-            );
-            
-            // Add the event to the chronicle
-            chronicleComponent.addEvent(event);
-            
-            // Log additional information for chronicle recording
-            console.log(`  - Death recorded in chronicle at ${place.getName()}`);
-        }
+        );
+
+        // Add the event to the chronicle
+        chronicleComponent.addEvent(event);
     }
 
     /**

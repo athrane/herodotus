@@ -4,31 +4,31 @@ import { PlanetComponent } from '../planet/PlanetComponent';
 import { Sector } from './Sector';
 
 /**
- * Singleton component that models the galactic map as a graph of planets (nodes)
- * connected by space lanes (edges). Planets are grouped into sectors for
- * high-level regional play. The component offers query utilities that will be
- * consumed by systems handling territorial control, logistics, and events.
+ * Component that models the galactic map as a graph of planets (nodes)
+ * connected by space lanes (edges). 
+ * 
+ * Planets are grouped into sectors for high-level regional play. 
+ * 
+ * The component offers query utilities that will be consumed by systems handling territorial control, logistics, and events.
  */
 export class GalaxyMapComponent extends Component {
-    private static instance: GalaxyMapComponent | null = null;
-
     private readonly sectors: Map<string, Sector>;
     private readonly planets: Map<string, PlanetComponent>;
     private readonly adjacency: Map<string, Set<string>>;
 
     /**
-     * Private constructor to enforce singleton pattern.
+     * Constructor.
      */
-    private constructor() {
+    constructor() {
         super();
-    this.sectors = new Map<string, Sector>();
+        this.sectors = new Map<string, Sector>();
         this.planets = new Map<string, PlanetComponent>();
         this.adjacency = new Map<string, Set<string>>();
     }
 
     /**
      * Clears all registered sectors, planets, and connections. Useful when
-     * regenerating the galaxy using the singleton instance.
+     * regenerating the galaxy map.
      */
     reset(): void {
         this.sectors.clear();
@@ -164,14 +164,24 @@ export class GalaxyMapComponent extends Component {
     }
 
     /**
-     * Static factory method to access the singleton instance of the GalaxyMapComponent.
-     * @returns The singleton GalaxyMapComponent instance.
+     * Returns a random planet from the galaxy map.
+     * @returns A random planet component, or undefined if no planets exist.
+     */
+    getRandomPlanet(): PlanetComponent | undefined {
+        if (this.planets.size === 0) {
+            return undefined;
+        }
+        const planetsArray = Array.from(this.planets.values());
+        const randomIndex = Math.floor(Math.random() * planetsArray.length);
+        return planetsArray[randomIndex];
+    }
+
+    /**
+     * Static factory method to create GalaxyMapComponent.
+     * @returns GalaxyMapComponent instance.
      */
     static create(): GalaxyMapComponent {
-        if (!GalaxyMapComponent.instance) {
-            GalaxyMapComponent.instance = new GalaxyMapComponent();
-        }
-        return GalaxyMapComponent.instance;
+        return new GalaxyMapComponent();
     }
 
     /**

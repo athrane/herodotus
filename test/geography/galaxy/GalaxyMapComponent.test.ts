@@ -4,7 +4,7 @@ import { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } from '../
 import { Continent } from '../../../src/geography/planet/Continent';
 
 describe('GalaxyMapComponent', () => {
-  const galaxy = GalaxyMapComponent.create();
+  let galaxy: GalaxyMapComponent;
 
   const createPlanet = (id: string, sectorId = 'sector-1'): PlanetComponent =>
     PlanetComponent.create(
@@ -20,11 +20,7 @@ describe('GalaxyMapComponent', () => {
     );
 
   beforeEach(() => {
-    galaxy.reset();
-  });
-
-  it('returns a singleton instance', () => {
-    expect(GalaxyMapComponent.create()).toBe(galaxy);
+    galaxy = GalaxyMapComponent.create();
   });
 
   it('registers sectors and planets and associates them correctly', () => {
@@ -113,5 +109,25 @@ describe('GalaxyMapComponent', () => {
     expect(galaxy.getPlanetCount()).toBe(0);
     expect(galaxy.getSectors()).toEqual([]);
     expect(galaxy.getPlanetById('planet-a')).toBeUndefined();
+  });
+
+  it('returns undefined when getting random planet from empty galaxy', () => {
+    expect(galaxy.getRandomPlanet()).toBeUndefined();
+  });
+
+  it('returns a random planet from the galaxy', () => {
+    const sector = Sector.create('sector-1', 'Core Worlds');
+    galaxy.addSector(sector);
+    const planetA = createPlanet('planet-a');
+    const planetB = createPlanet('planet-b');
+    const planetC = createPlanet('planet-c');
+    galaxy.registerPlanet(planetA);
+    galaxy.registerPlanet(planetB);
+    galaxy.registerPlanet(planetC);
+
+    const randomPlanet = galaxy.getRandomPlanet();
+
+    expect(randomPlanet).toBeDefined();
+    expect([planetA, planetB, planetC]).toContain(randomPlanet);
   });
 });

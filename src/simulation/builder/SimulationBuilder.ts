@@ -4,7 +4,6 @@ import { Time } from '../../time/Time';
 import { TimeSystem } from '../../time/TimeSystem';
 import { TimeComponent } from '../../time/TimeComponent';
 import { NameComponent } from '../../ecs/NameComponent';
-import { WorldComponent } from '../../geography/WorldComponent';
 import { GeographicalFeaturesFactory } from '../../geography/feature/GeographicalFeaturesFactory';
 import { HistoricalFigureComponent } from '../../historicalfigure/HistoricalFigureComponent';
 import { ChronicleComponent } from '../../chronicle/ChronicleComponent';
@@ -65,17 +64,15 @@ export class SimulationBuilder extends Builder {
     buildEntities(): void {
         const entityManager: EntityManager = this.simEcs.getEntityManager();
 
-        // create world
+        // create galaxy map as the root game world object
         const nameGenerator = NameGenerator.create();
         const worldGenerator = WorldGenerator.create(nameGenerator);
-        const world = worldGenerator.generateWorld('Aethel');
         const galaxyMapComponent = worldGenerator.generateGalaxyMap();
 
         // create global entity to hold simulation-wide state, like the current time.
         entityManager.createEntity(
             new NameComponent("Global"),
             new TimeComponent(Time.create(0)),
-            new WorldComponent(world),
             galaxyMapComponent,
             new ChronicleComponent(),
             DataSetComponent.create(this.dataSetEvents)

@@ -1,7 +1,6 @@
 import { Continent } from '../../geography/planet/Continent';
 import { GeographicalFeature } from '../../geography/feature/GeographicalFeature';
 import { GeographicalFeatureTypeRegistry } from '../../geography/feature/GeographicalFeatureTypeRegistry';
-import { World } from '../../geography/World';
 import { GalaxyMapComponent } from '../../geography/galaxy/GalaxyMapComponent';
 import { Sector } from '../../geography/galaxy/Sector';
 import { PlanetComponent, PlanetResourceSpecialization, PlanetStatus } from '../../geography/planet/PlanetComponent';
@@ -88,24 +87,6 @@ export class WorldGenerator {
             }
         }
         return continent;
-    }
-
-    /**
-     * Generates a world with 3 continents, each having 50 geographical features.
-     *
-     * @param worldName - The name of the world.
-     * @returns A new world object.
-     */
-    generateWorld(worldName: string): World {
-        TypeUtils.ensureString(worldName, 'World name must be a string.');
-        const world = new World(worldName);
-
-        for (let i = 0; i < WorldGenerator.NUM_CONTINENTS; i++) {
-            const continentName = this.nameGenerator.generateSyllableName('GENERIC');
-            const continent = this.generateContinent(continentName, WorldGenerator.FEATURES_PER_CONTINENT);
-            world.addContinent(continent);
-        }
-        return world;
     }
 
     /**

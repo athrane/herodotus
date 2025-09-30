@@ -5,9 +5,13 @@ import { DataSetEventComponent } from '../../src/data/DataSetEventComponent';
 import { DataSetEvent } from '../../src/data/DataSetEvent';
 import { ChronicleComponent } from '../../src/chronicle/ChronicleComponent';
 import { TimeComponent } from '../../src/time/TimeComponent';
-import { WorldComponent } from '../../src/geography/WorldComponent';
+import { GalaxyMapComponent } from '../../src/geography/galaxy/GalaxyMapComponent';
+import { Sector } from '../../src/geography/galaxy/Sector';
+import { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } from '../../src/geography/planet/PlanetComponent';
+import { Continent } from '../../src/geography/planet/Continent';
+import { GeographicalFeature } from '../../src/geography/feature/GeographicalFeature';
+import { GeographicalFeatureTypeRegistry } from '../../src/geography/feature/GeographicalFeatureTypeRegistry';
 import { Time } from '../../src/time/Time';
-import { World } from '../../src/geography/World';
 import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent';
 import { PlayerComponent } from '../../src/ecs/PlayerComponent';
 
@@ -15,6 +19,53 @@ describe('SelectChoiceSystem', () => {
     let entityManager;
     let system;
     let entity;
+    // globalEntity is used to register singleton components with the EntityManager
+    // The variable itself doesn't need to be accessed after creation
+    // eslint-disable-next-line no-unused-vars
+    let globalEntity;
+    let chronicleComponent;
+    let timeComponent;
+    let galaxyMapComponent;
+
+    /**
+     * Helper function to set up singleton components needed for full system operation
+     */
+    const setupSingletonComponents = () => {
+        // Clear registry to ensure clean state
+        GeographicalFeatureTypeRegistry.clear();
+        
+        // Create singleton components
+        chronicleComponent = ChronicleComponent.create();
+        timeComponent = TimeComponent.create(Time.create(1, 1, 1000));
+        
+        // Create galaxy map with planet, continent, and feature
+        const featureType = GeographicalFeatureTypeRegistry.register('test_city', 'City');
+        const feature = GeographicalFeature.create('Test City', featureType);
+        const continent = Continent.create('Test Continent');
+        continent.addFeature(feature);
+        const planet = PlanetComponent.create(
+            'test-planet-1',
+            'Test Planet',
+            'test-sector-1',
+            'TestOwner',
+            PlanetStatus.NORMAL,
+            5,
+            1,
+            PlanetResourceSpecialization.AGRICULTURE,
+            [continent]
+        );
+        galaxyMapComponent = GalaxyMapComponent.create();
+        
+        // Register the sector first (required before registering planet)
+        const sector = Sector.create(planet.getSectorId(), 'Test Sector');
+        galaxyMapComponent.addSector(sector);
+        
+        // Now register the planet
+        galaxyMapComponent.registerPlanet(planet);
+
+        // Create a Global entity with all singleton components
+        globalEntity = entityManager.createEntity(chronicleComponent, timeComponent, galaxyMapComponent);
+    };
 
     beforeEach(() => {
         entityManager = new EntityManager();
@@ -426,20 +477,8 @@ describe('SelectChoiceSystem', () => {
     });
 
     describe('chronicle recording', () => {
-        let chronicleComponent;
-        let timeComponent;
-        let worldComponent;
-
         beforeEach(() => {
-            // Create and add singleton components for chronicle recording
-            chronicleComponent = ChronicleComponent.create();
-            timeComponent = TimeComponent.create(Time.create(1, 1, 1000));
-            worldComponent = new WorldComponent(World.create('Test World'));
-
-            // Create entities with singleton components
-            entityManager.createEntity(chronicleComponent);
-            entityManager.createEntity(timeComponent);
-            entityManager.createEntity(worldComponent);
+            setupSingletonComponents();
         });
 
         it('should record decision in chronicle when making a choice', () => {
@@ -695,6 +734,290 @@ describe('SelectChoiceSystem', () => {
             const createdSystem = SelectChoiceSystem.create(entityManager);
             expect(createdSystem).toBeInstanceOf(SelectChoiceSystem);
             expect(createdSystem.getEntityManager()).toBe(entityManager);
+        });
+    });
+
+    describe('computeDecisionPlace with edge cases', () => {
+        beforeEach(() => {
+            setupSingletonComponents();
+        });
+
+        it('should fall back to default place when galaxy map is empty', () => {
+            // Arrange - Create empty galaxy map
+            galaxyMapComponent.reset();
+            
+            const choice = new DataSetEvent({
+                'Event Type': 'Political',
+                'Event Trigger': 'CHOICE_1',
+                'Event Name': 'Test Choice',
+                'Event Consequence': 'Test consequence',
+                'Description': 'Test description'
+            });
+
+            const choiceComponent = ChoiceComponent.create([choice]);
+            const initialEvent = new DataSetEvent({
+                'Event Type': 'Social',
+                'Event Trigger': 'INITIAL',
+                'Event Name': 'Initial',
+                'Event Consequence': 'Initial state'
+            });
+            const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
+
+            entity.addComponent(choiceComponent);
+            entity.addComponent(dataSetEventComponent);
+
+            // Act
+            system.processEntity(entity);
+
+            // Assert
+            const recordedEvent = chronicleComponent.getEvents()[0];
+            expect(recordedEvent.getPlace().getName()).toBe('The Council Chambers');
+        });
+
+        it('should fall back to default place when planet has no continents', () => {
+            // Arrange - Create planet with no continents
+            galaxyMapComponent.reset();
+            const sector = Sector.create('test-sector', 'Test Sector');
+            galaxyMapComponent.addSector(sector);
+            
+            const planetWithNoContinents = PlanetComponent.create(
+                'empty-planet',
+                'Empty Planet',
+                'test-sector',
+                'TestOwner',
+                PlanetStatus.NORMAL,
+                5,
+                1,
+                PlanetResourceSpecialization.MINING,
+                [] // No continents
+            );
+            galaxyMapComponent.registerPlanet(planetWithNoContinents);
+
+            const choice = new DataSetEvent({
+                'Event Type': 'Political',
+                'Event Trigger': 'CHOICE_1',
+                'Event Name': 'Test Choice',
+                'Event Consequence': 'Test consequence',
+                'Description': 'Test description'
+            });
+
+            const choiceComponent = ChoiceComponent.create([choice]);
+            const initialEvent = new DataSetEvent({
+                'Event Type': 'Social',
+                'Event Trigger': 'INITIAL',
+                'Event Name': 'Initial',
+                'Event Consequence': 'Initial state'
+            });
+            const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
+
+            entity.addComponent(choiceComponent);
+            entity.addComponent(dataSetEventComponent);
+
+            // Act
+            system.processEntity(entity);
+
+            // Assert
+            const recordedEvent = chronicleComponent.getEvents()[0];
+            expect(recordedEvent.getPlace().getName()).toBe('The Council Chambers');
+        });
+
+        it('should fall back to default place when continent has no features', () => {
+            // Arrange - Create planet with continent but no features
+            galaxyMapComponent.reset();
+            const sector = Sector.create('test-sector', 'Test Sector');
+            galaxyMapComponent.addSector(sector);
+            
+            const emptyContinent = Continent.create('Empty Continent');
+            // Don't add any features to the continent
+            
+            const planetWithEmptyContinent = PlanetComponent.create(
+                'sparse-planet',
+                'Sparse Planet',
+                'test-sector',
+                'TestOwner',
+                PlanetStatus.NORMAL,
+                5,
+                1,
+                PlanetResourceSpecialization.TECHNOLOGY,
+                [emptyContinent]
+            );
+            galaxyMapComponent.registerPlanet(planetWithEmptyContinent);
+
+            const choice = new DataSetEvent({
+                'Event Type': 'Political',
+                'Event Trigger': 'CHOICE_1',
+                'Event Name': 'Test Choice',
+                'Event Consequence': 'Test consequence',
+                'Description': 'Test description'
+            });
+
+            const choiceComponent = ChoiceComponent.create([choice]);
+            const initialEvent = new DataSetEvent({
+                'Event Type': 'Social',
+                'Event Trigger': 'INITIAL',
+                'Event Name': 'Initial',
+                'Event Consequence': 'Initial state'
+            });
+            const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
+
+            entity.addComponent(choiceComponent);
+            entity.addComponent(dataSetEventComponent);
+
+            // Act
+            system.processEntity(entity);
+
+            // Assert
+            const recordedEvent = chronicleComponent.getEvents()[0];
+            expect(recordedEvent.getPlace().getName()).toBe('The Council Chambers');
+        });
+
+        it('should use feature location format when available', () => {
+            // This test verifies the place format is "FeatureName, PlanetName"
+            // Arrange is already done in setupSingletonComponents
+
+            const choice = new DataSetEvent({
+                'Event Type': 'Political',
+                'Event Trigger': 'CHOICE_1',
+                'Event Name': 'Test Choice',
+                'Event Consequence': 'Test consequence',
+                'Description': 'Test description'
+            });
+
+            const choiceComponent = ChoiceComponent.create([choice]);
+            const initialEvent = new DataSetEvent({
+                'Event Type': 'Social',
+                'Event Trigger': 'INITIAL',
+                'Event Name': 'Initial',
+                'Event Consequence': 'Initial state'
+            });
+            const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
+
+            entity.addComponent(choiceComponent);
+            entity.addComponent(dataSetEventComponent);
+
+            // Act
+            system.processEntity(entity);
+
+            // Assert
+            const recordedEvent = chronicleComponent.getEvents()[0];
+            const placeName = recordedEvent.getPlace().getName();
+            expect(placeName).toContain('Test City');
+            expect(placeName).toContain('Test Planet');
+            expect(placeName).toContain(', '); // Should follow format "Feature, Planet"
+        });
+    });
+
+    describe('singleton component dependencies', () => {
+        it('should handle missing TimeComponent gracefully', () => {
+            // Arrange - Set up without TimeComponent
+            chronicleComponent = ChronicleComponent.create();
+            galaxyMapComponent = GalaxyMapComponent.create();
+            const sector = Sector.create('test-sector', 'Test Sector');
+            galaxyMapComponent.addSector(sector);
+            
+            globalEntity = entityManager.createEntity(chronicleComponent, galaxyMapComponent);
+            // Note: No TimeComponent added
+
+            const choice = new DataSetEvent({
+                'Event Type': 'Political',
+                'Event Trigger': 'CHOICE_1',
+                'Event Name': 'Test Choice',
+                'Event Consequence': 'Test consequence'
+            });
+
+            const choiceComponent = ChoiceComponent.create([choice]);
+            const initialEvent = new DataSetEvent({
+                'Event Type': 'Social',
+                'Event Trigger': 'INITIAL',
+                'Event Name': 'Initial',
+                'Event Consequence': 'Initial state'
+            });
+            const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
+
+            entity.addComponent(choiceComponent);
+            entity.addComponent(dataSetEventComponent);
+
+            // Act & Assert - should not throw, but choice should still be processed
+            expect(() => system.processEntity(entity)).not.toThrow();
+            expect(dataSetEventComponent.getDataSetEvent().getEventName()).toBe('Test Choice');
+            expect(choiceComponent.getChoiceCount()).toBe(0);
+            
+            // No chronicle event should be recorded
+            expect(chronicleComponent.getEvents().length).toBe(0);
+        });
+
+        it('should handle missing GalaxyMapComponent gracefully', () => {
+            // Arrange - Set up without GalaxyMapComponent
+            chronicleComponent = ChronicleComponent.create();
+            timeComponent = TimeComponent.create(Time.create(1, 1, 1000));
+            
+            globalEntity = entityManager.createEntity(chronicleComponent, timeComponent);
+            // Note: No GalaxyMapComponent added
+
+            const choice = new DataSetEvent({
+                'Event Type': 'Political',
+                'Event Trigger': 'CHOICE_1',
+                'Event Name': 'Test Choice',
+                'Event Consequence': 'Test consequence'
+            });
+
+            const choiceComponent = ChoiceComponent.create([choice]);
+            const initialEvent = new DataSetEvent({
+                'Event Type': 'Social',
+                'Event Trigger': 'INITIAL',
+                'Event Name': 'Initial',
+                'Event Consequence': 'Initial state'
+            });
+            const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
+
+            entity.addComponent(choiceComponent);
+            entity.addComponent(dataSetEventComponent);
+
+            // Act & Assert - should not throw, but choice should still be processed
+            expect(() => system.processEntity(entity)).not.toThrow();
+            expect(dataSetEventComponent.getDataSetEvent().getEventName()).toBe('Test Choice');
+            expect(choiceComponent.getChoiceCount()).toBe(0);
+            
+            // No chronicle event should be recorded
+            expect(chronicleComponent.getEvents().length).toBe(0);
+        });
+
+        it('should work correctly when all singleton components are present', () => {
+            // Arrange
+            setupSingletonComponents();
+
+            const choice = new DataSetEvent({
+                'Event Type': 'Political',
+                'Event Trigger': 'CHOICE_1',
+                'Event Name': 'Test Choice',
+                'Event Consequence': 'Test consequence',
+                'Description': 'Test description'
+            });
+
+            const choiceComponent = ChoiceComponent.create([choice]);
+            const initialEvent = new DataSetEvent({
+                'Event Type': 'Social',
+                'Event Trigger': 'INITIAL',
+                'Event Name': 'Initial',
+                'Event Consequence': 'Initial state'
+            });
+            const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
+
+            entity.addComponent(choiceComponent);
+            entity.addComponent(dataSetEventComponent);
+
+            // Act
+            system.processEntity(entity);
+
+            // Assert - Everything should work
+            expect(dataSetEventComponent.getDataSetEvent().getEventName()).toBe('Test Choice');
+            expect(choiceComponent.getChoiceCount()).toBe(0);
+            expect(chronicleComponent.getEvents().length).toBe(1);
+            
+            const recordedEvent = chronicleComponent.getEvents()[0];
+            expect(recordedEvent.getHeading()).toBe('Decision made: Test Choice');
+            expect(recordedEvent.getPlace()).toBeDefined();
+            expect(recordedEvent.getTime()).toBeDefined();
         });
     });
 });

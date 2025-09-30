@@ -13,14 +13,12 @@ import { HistoricalFigureComponent } from '../../../src/historicalfigure/Histori
 
 // Mock the WorldGenerator to control its output
 jest.mock('../../../src/generator/world/WorldGenerator', () => {
-    const { World } = jest.requireActual('../../../src/geography/World.ts');
     const { GalaxyMapComponent } = jest.requireActual('../../../src/geography/galaxy/GalaxyMapComponent.ts');
     const { Sector } = jest.requireActual('../../../src/geography/galaxy/Sector.ts');
     const { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } = jest.requireActual('../../../src/geography/planet/PlanetComponent.ts');
     return {
         WorldGenerator: {
             create: jest.fn(() => ({
-                generateWorld: jest.fn(() => World.create('MockWorld')),
                 generateGalaxyMap: jest.fn(() => {
                     const map = GalaxyMapComponent.create();
                     map.reset();

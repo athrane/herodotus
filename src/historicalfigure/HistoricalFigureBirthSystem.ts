@@ -4,8 +4,7 @@ import { TimeComponent } from '../time/TimeComponent';
 import { EntityManager } from '../ecs/EntityManager';
 import { Entity} from '../ecs/Entity';
 import { TypeUtils } from '../util/TypeUtils';
-import { World } from '../geography/World';
-import { WorldComponent } from '../geography/WorldComponent';
+import { GalaxyMapComponent } from '../geography/galaxy/GalaxyMapComponent';
 import { ChronicleComponent } from '../chronicle/ChronicleComponent';
 import { NameGenerator } from '../naming/NameGenerator';
 import { NameComponent } from '../ecs/NameComponent';
@@ -46,7 +45,7 @@ export class HistoricalFigureBirthSystem extends System {
      * @param entityManager - The entity manager instance.
      */
     constructor(entityManager: EntityManager) {
-    super(entityManager, [TimeComponent, WorldComponent, ChronicleComponent]);
+    super(entityManager, [TimeComponent, GalaxyMapComponent, ChronicleComponent]);
         this.nameGenerator = NameGenerator.create();
     }
 
@@ -59,15 +58,17 @@ export class HistoricalFigureBirthSystem extends System {
         TypeUtils.ensureInstanceOf(entity, Entity);
         TypeUtils.ensureNumber(currentYear, 'currentYear must be a number.');
 
-        // Get components from the entity
+        // Get time component from the global entity
         const timeComponent = entity.getComponent(TimeComponent);
         if (!timeComponent) return;
 
-        const worldComponent = entity.getComponent(WorldComponent);
-        if (!worldComponent) return;
-
+        // Get chronicle component from the global entity
         const chronicleComponent = entity.getComponent(ChronicleComponent);
         if (!chronicleComponent) return;
+
+        // Get GalaxyMapComponent from the global entity
+        const galaxyMapComponent = entity.getComponent(GalaxyMapComponent);
+        if (!galaxyMapComponent) return;
 
         // exit if no historical figure is born
         if (!this.isBorn()) return;
@@ -86,7 +87,7 @@ export class HistoricalFigureBirthSystem extends System {
         const lifespanYears = this.calculateLifespan();
 
         // Get a random place for the historical figure
-        const place = this.computePlace(worldComponent.get());
+        const place = this.computePlace(galaxyMapComponent);
 
         // Create a HistoricalFigureComponent with a random lifespan    
         const historicalFigureComponent = HistoricalFigureComponent.create(
@@ -169,17 +170,23 @@ export class HistoricalFigureBirthSystem extends System {
 
     /**
      * Calculate a random place for the historical figure.
-     * This method retrieves a random geographical feature from the world.
-     * @param world - The world instance to get a random place from.
+     * This method retrieves a random geographical feature from the galaxy map.
+     * @param galaxyMap - The galaxy map component to get a random place from.
      * @returns A Place instance representing the location of the historical figure's birth.
      */
-    computePlace(world: World): Place {
-        TypeUtils.ensureInstanceOf(world, World);
-        const continent = world.getRandomContinent();
-        if (continent) {
-            const randomFeature = continent.getRandomFeature();
-            if (randomFeature) {
-                return Place.create(randomFeature.getName());
+    computePlace(galaxyMap: GalaxyMapComponent): Place {
+        // Get a random planet from the galaxy map
+        const planet = galaxyMap.getRandomPlanet();
+        if (planet) {
+            const continents = planet.getContinents();
+            if (continents && continents.length > 0) {
+                // Get a random continent from the planet
+                const randomContinent = continents[Math.floor(Math.random() * continents.length)];
+                const randomFeature = randomContinent.getRandomFeature();
+                if (randomFeature) {
+                    return Place.create(`${randomFeature.getName()}, ${planet.getName()}`);
+                }
+                return Place.create(planet.getName());
             }
         }
         return Place.create('Unknown Location');

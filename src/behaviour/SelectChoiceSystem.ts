@@ -8,7 +8,7 @@ import { TypeUtils } from '../util/TypeUtils';
 import { ChronicleComponent } from '../chronicle/ChronicleComponent';
 import { ChronicleEvent } from '../chronicle/ChronicleEvent';
 import { TimeComponent } from '../time/TimeComponent';
-import { WorldComponent } from '../geography/WorldComponent';
+import { GalaxyMapComponent } from '../geography/galaxy/GalaxyMapComponent';
 import { EventType } from '../chronicle/EventType';
 import { getEventCategoryFromString } from '../chronicle/EventCategory';
 import { Place } from '../generator/Place';
@@ -52,11 +52,13 @@ export class SelectChoiceSystem extends System {
     processEntity(entity: Entity): void {
         TypeUtils.ensureInstanceOf(entity, Entity, 'Entity must be a valid Entity instance.');
 
+        // Get choice components
         const choiceComponent = entity.getComponent(ChoiceComponent);
-        const dataSetEventComponent = entity.getComponent(DataSetEventComponent);
+        if (!choiceComponent) return;
 
-        // Exit if components are missing
-        if (!choiceComponent || !dataSetEventComponent) return;
+        // Get DataSetEventComponent        
+        const dataSetEventComponent = entity.getComponent(DataSetEventComponent);
+        if (!dataSetEventComponent) return;
 
         // Check if this is a player entity
         const isPlayerEntity = entity.hasComponent(PlayerComponent);
@@ -121,19 +123,24 @@ export class SelectChoiceSystem extends System {
      * @param chosenEvent - The DataSetEvent that was chosen.
      */
     private recordDecisionInChronicle(entity: Entity, chosenEvent: DataSetEvent): void {
-        // Get the required singleton components
-        const chronicleComponent = this.getEntityManager().getSingletonComponent(ChronicleComponent);
-        const timeComponent = this.getEntityManager().getSingletonComponent(TimeComponent);
-        const worldComponent = this.getEntityManager().getSingletonComponent(WorldComponent);
 
-        // Exit if any required components are missing
-        if (!chronicleComponent || !timeComponent || !worldComponent) return;
+        // Get chronicle component
+        const chronicleComponent = this.getEntityManager().getSingletonComponent(ChronicleComponent);
+        if(!chronicleComponent) return;
+
+        // Get time component and
+        const timeComponent = this.getEntityManager().getSingletonComponent(TimeComponent);
+        if(!timeComponent) return;
+
+        // Get galaxy map component
+        const galaxyMapComponent = this.getEntityManager().getSingletonComponent(GalaxyMapComponent);
+        if(!galaxyMapComponent) return;
         
         // Get the current time
         const currentTime = timeComponent.getTime();
         
-        // Get a place from the world
-        const place = this.computeDecisionPlace(worldComponent.get());
+        // Get a place from the galaxy map
+        const place = this.computeDecisionPlace(galaxyMapComponent);
 
         // Create an event type for the decision using the chosen event's type
         const eventCategory = getEventCategoryFromString(chosenEvent.getEventType());
@@ -161,20 +168,21 @@ export class SelectChoiceSystem extends System {
 
     /**
      * Computes a place for the decision event.
-     * This method retrieves a random geographical feature from the world.
-     * @param world - The world instance to get a random place from.
+     * This method retrieves a random geographical feature from the galaxy map.
+     * @param galaxyMap - The GalaxyMapComponent instance to get a random place from.
      * @returns A Place instance representing the location where the decision was made.
      */
-    private computeDecisionPlace(world: any): Place {
-        // For now, we'll use a generic location for decisions
-        // This could be enhanced to use the player's current location or
-        // a contextually relevant location based on the decision type
-        if (world && typeof world.getRandomContinent === 'function') {
-            const continent = world.getRandomContinent();
-            if (continent && typeof continent.getRandomFeature === 'function') {
-                const randomFeature = continent.getRandomFeature();
-                if (randomFeature && typeof randomFeature.getName === 'function') {
-                    return Place.create(randomFeature.getName());
+    private computeDecisionPlace(galaxyMap: GalaxyMapComponent): Place {
+        // Get a random planet from the galaxy map
+        const planet = galaxyMap.getRandomPlanet();
+        if (planet) {
+            const continents = planet.getContinents();
+            if (continents.length > 0) {
+                const randomContinent = continents[Math.floor(Math.random() * continents.length)];
+                const randomFeature = randomContinent.getRandomFeature();
+                if (randomFeature) {
+                    // Use format: "FeatureName, PlanetName" (consistent with birth/death systems)
+                    return Place.create(`${randomFeature.getName()}, ${planet.getName()}`);
                 }
             }
         }

@@ -1,8 +1,6 @@
-import { LogHelper } from './util/log/LogHelper';
 import { BuilderDirector } from './ecs/builder/BuilderDirector';
 import { SimulationBuilder } from './simulation/builder/SimulationBuilder';
 import { GuiBuilder } from './gui/builder/GuiBuilder';
-import { WorldComponent } from './geography/WorldComponent';
 import { TextBasedGui } from './gui/TextBasedGui';
 import { Simulation } from 'simulation/Simulation';
 
@@ -19,13 +17,6 @@ async function mainWithGUI(): Promise<void> {
 
   // create simulation
   const simulation = Simulation.create(simulationEcs);
-
-  // log the world details
-  const entityManager = simulation.getEntityManager();
-  const worldComponent = entityManager.getSingletonComponent(WorldComponent);
-  if (worldComponent) {
-    LogHelper.logWorldDetails(worldComponent.get());
-  }
 
   // create GUI ECS
   const guiBuilder = GuiBuilder.create(simulationEcs);
