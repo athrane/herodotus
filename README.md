@@ -10,7 +10,16 @@ This section provides an overview of the project's architecture and class struct
 
 All available npm scripts and what they do. Commands below are for PowerShell.
 
-- build — bundle `src/main.ts` to `dist/bundle.js` using esbuild.
+- build — bundle `src/main.ts` to `dist/bundle.js` using e- `src/gui/rendering/IsVisibleComponent.ts` — Visibility flag for renderable elements
+- `src/gui/rendering/IsActiveScreenComponent.ts` — Component marking an entity as the currently active screen for rendering
+- `src/gui/rendering/ScreenBufferClearSystem.ts` — Clears the screen buffer once per frame before text rendering; follows Single Responsibility Principle by separating buffer clearing from text updating logic
+- `src/gui/rendering/ScreenBufferRenderSystem.ts` — Renders the screen buffer to terminal
+- `src/gui/rendering/ScreenBufferTextUpdateSystem.ts` — Updates text entries in the screen buffer; implements Observer pattern within ECS architecture to monitor entities with text, position, and visibility components, then writes their content to the ScreenBufferComponent singleton for rendering
+- `src/gui/rendering/DynamicTextUpdateSystem.ts` — Updates TextComponent values by calling DynamicTextComponent callbacks for visible entities
+- `src/gui/view/HeaderViewSystem.ts` — Updates header area each tick
+- `src/gui/view/FooterViewSystem.ts` — Updates footer/status area
+- `src/gui/view/ChronicleViewSystem.ts` — Updates chronicle screen display with recent historical events
+- `src/gui/view/ChoiceMenuViewSystem.ts` — Populates choice menu from player's ChoiceComponent for decision-making interface
 	Purpose: produce an optimized ESM bundle for Node (no TypeScript at runtime), ideal for reproducible runs and CI.
 	- Run:
 		```powershell
@@ -524,10 +533,8 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 #### GUI / Rendering
 - `src/gui/TextBasedGui.ts` — Text-based GUI main class (interactive mode entry)
 - `src/gui/GuiEcsManager.ts` — Manages GUI-specific ECS instance, screens and systems
-- `src/gui/GuiHelper.ts` — Helper utilities for rendering and input handling
-- `src/gui/ScreenComponent.ts` — Component holding render and input handlers for a screen
-- `src/gui/screens/ScreenRenderSystem.ts` — System that renders and routes input for the active screen
-- `src/gui/screens/IsActiveScreenComponent.ts` — Component marking the active screen entity
+- `src/gui/GuiHelper.ts` — Stateless utility class providing common GUI functionality including debug entity creation and debug text posting for both ECS and non-ECS implementations
+
 
 ##### Rendering primitives
 - `src/gui/rendering/TextComponent.ts` — Static text display component
@@ -545,14 +552,16 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 #### Menu components & systems
 - `src/gui/menu/MenuItem.ts` — Menu item model (text + action id)
 - `src/gui/menu/MenuComponent.ts` — Holds an ordered list of `MenuItem`s and selection state with wrap-around navigation
-- `src/gui/menu/ActionComponent.ts` — Component storing an action identifier for menu items
-- `src/gui/menu/ActionSystem.ts` — System that processes UI action IDs from queue with screen switching and application lifecycle management
-- `src/gui/menu/ActionQueueComponent.ts` — Singleton component holding a FIFO queue of pending UI action IDs
-- `src/gui/menu/MenuRenderSystem.ts` — Renders `MenuComponent` items into a `TextComponent`, showing the selected item
+- `src/gui/menu/ScrollableMenuComponent.ts` — Extended MenuComponent with scrolling support for displaying limited items at a time with automatic viewport management
+- `src/gui/menu/ScreensComponent.ts` — Component that maps screen keys to entity IDs for screen navigation and management
+- `src/gui/menu/MenuTextUpdateSystem.ts` — Processes MenuComponent into TextComponent for single-line display with selection indicator
+- `src/gui/menu/ScrollableMenuTextUpdateSystem.ts` — Renders scrollable menus with headers, numbered lines, selection highlights, and scroll indicators
+- `src/gui/controller/ActionQueueComponent.ts` — Singleton component holding a FIFO queue of pending UI action IDs
+- `src/gui/controller/MainControllerSystem.ts` — System that processes UI action IDs from queue with screen switching and application lifecycle management
 
 #### View components & systems  
 - `src/gui/view/InputComponent.ts` — Stores last user input for menu screens
-- `src/gui/view/InputSystem.ts` — Processes user input for menus with navigation support for both WASD ('w'/'s') and arrow keys ('up'/'down'), plus 'enter' selection that dispatches actions to ActionSystem
+- `src/gui/view/InputSystem.ts` — Processes user input for menus with navigation support for A/D keys ('a'/'d') and arrow keys ('left'/'right'), plus 'enter' selection that dispatches actions to MainControllerSystem
 
 #### Simulation & Time
 - `src/simulation/Simulation.ts` — Main simulation (run loop and global state)
@@ -562,9 +571,11 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 - `src/time/TimeSystem.ts` — System advancing simulation time
 
 #### Geography & World Generation
-- `src/geography/World.ts` — World model (collection of places and features)
-- `src/geography/WorldComponent.ts` — Component carrying world instance
-- `src/geography/Continent.ts` — Continent model
+- `src/geography/planet/Continent.ts` — Continent model representing landmasses with geographical features
+- `src/geography/planet/PlanetComponent.ts` — Component encapsulating mutable planet state including status, resource specialization, and continents
+- `src/geography/galaxy/Sector.ts` — Named region of the galaxy tracking planets for regional gameplay systems
+- `src/geography/galaxy/GalaxyMapComponent.ts` — Component modeling the galactic map as a graph of planets connected by space lanes, grouped into sectors
+- `src/geography/GeographicalUtils.ts` — Utility class providing centralized geographical operations including random place computation from galaxy maps with fallback support
 - `src/geography/feature/FeatureType.ts` — Feature type metadata
 - `src/geography/feature/GeographicalFeature.ts` — Geographical feature instances
 - `src/geography/feature/GeographicalFeaturesFactory.ts` — Factory to create features
@@ -576,24 +587,29 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 - `src/data/DataSetComponent.ts` — Component for dataset storage on entities
 - `src/data/DataSetEvent.ts` — Data-set event model
 - `src/data/DataSetEventComponent.ts` — Component wrapping dataset events
+- `src/data/loadEvents.ts` — Utility function that loads events from JSON file into DataSetEvent instances
+- `src/data/geography/feature/GeographicalFeatureData.ts` — Represents geographical feature data loaded from JSON with runtime validation and type safety
 - `src/chronicle/ChronicleEvent.ts` — Chronicle event model
 - `src/chronicle/ChronicleComponent.ts` — Component that stores chronicle entries
 - `src/chronicle/EventType.ts` — Event type metadata and helpers
+- `src/chronicle/EventCategory.ts` — Defines event categories (Political, Social, Economic, etc.) as frozen constants with TypeScript type support
 
 #### Historical Figures
 - `src/historicalfigure/HistoricalFigureComponent.ts` — Component storing figure data and snapshot helpers
+- `src/historicalfigure/HistoricalFigureLocationComponent.ts` — Component tracking the location of historical figures (currently empty/placeholder)
 - `src/historicalfigure/HistoricalFigureBirthSystem.ts` — System that seeds/births figures
 - `src/historicalfigure/HistoricalFigureLifecycleSystem.ts` — Manages lifecycle events for figures
 - `src/historicalfigure/HistoricalFigureInfluenceSystem.ts` — Applies influence changes to figures
 
 #### Behaviour / Dilemmas
 - `src/behaviour/ChoiceComponent.ts` — Component holding current choice options
-- `src/behaviour/DilemmaSystem.ts` — System creating and scheduling dilemmas
-- `src/behaviour/DilemmaResolutionSystem.ts` — Resolves choices and records outcomes
+- `src/behaviour/ComputeChoicesSystem.ts` — System that generates and computes available choices for entities based on events and game state
+- `src/behaviour/SelectChoiceSystem.ts` — System that processes player choice selection and applies consequences
 
 #### Naming & Utilities
 - `src/naming/MarkovChain.ts` — Markov-chain utility used by name generation
 - `src/naming/NameGenerator.ts` — High-level name generator using syllable sets
+- `src/naming/SyllableSets.ts` — Collection of syllable sets for procedural name generation with linguistic variety (exported as interface and constants)
 - `src/util/TypeUtils.ts` — Runtime type checks and validators (ensureInstanceOf, ensureString, etc.)
 - `src/util/log/LogHelper.ts` — Simple logging helpers used across the project
 

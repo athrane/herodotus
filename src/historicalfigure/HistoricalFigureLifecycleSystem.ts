@@ -9,8 +9,8 @@ import { ChronicleEvent } from '../chronicle/ChronicleEvent';
 import { EventType } from '../chronicle/EventType';
 import { EventCategory } from '../chronicle/EventCategory';
 import { Time } from '../time/Time';
-import { Place } from '../generator/Place';
 import { GalaxyMapComponent } from '../geography/galaxy/GalaxyMapComponent';
+import { GeographicalUtils } from '../geography/GeographicalUtils';
 
 /**
  * Manages the death and other life cycle events of historical figures based on their lifespan.
@@ -95,27 +95,6 @@ export class HistoricalFigureLifecycleSystem extends System {
     }
 
     /**
-     * Calculate a random place for the historical figure's death.
-     * This method retrieves a random geographical feature from the galaxy map.
-     * @param galaxyMap - The galaxy map instance to get a random place from.
-     * @returns A Place instance representing the location of the historical figure's death.
-     */
-    private computePlace(galaxyMap: GalaxyMapComponent): Place {
-        const planet = galaxyMap.getRandomPlanet();
-        if (planet) {
-            const continents = planet.getContinents();
-            if (continents.length > 0) {
-                const randomContinent = continents[Math.floor(Math.random() * continents.length)];
-                const randomFeature = randomContinent.getRandomFeature();
-                if (randomFeature) {
-                    return Place.create(`${randomFeature.getName()}, ${planet.getName()}`);
-                }
-            }
-        }
-        return Place.create('Unknown Location');
-    }
-
-    /**
      * Records the death event for historical tracking.
      * @param historicalFigure - The historical figure component.
      * @param deathYear - The calculated death year.
@@ -139,7 +118,7 @@ export class HistoricalFigureLifecycleSystem extends System {
 
         // Create the time and place for the death event
         const time = Time.create(deathYear);
-        const place = this.computePlace(galaxyMapComponent);
+        const place = GeographicalUtils.computeRandomPlace(galaxyMapComponent);
 
         // Get the historical figure instance from the component
         // Create the event type for death

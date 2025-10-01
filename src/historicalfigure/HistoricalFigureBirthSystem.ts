@@ -11,10 +11,10 @@ import { NameComponent } from '../ecs/NameComponent';
 import { ChronicleEvent } from '../chronicle/ChronicleEvent';
 import { EventCategory } from '../chronicle/EventCategory';
 import { EventType } from '../chronicle/EventType';
-import { Place } from '../generator/Place';
 import { DataSetEvent } from '../data/DataSetEvent';
 import { DataSetEventComponent } from '../data/DataSetEventComponent';
 import { ChoiceComponent } from '../behaviour/ChoiceComponent';
+import { GeographicalUtils } from '../geography/GeographicalUtils';
 
 /**
  * Manages the birth of historical figures.
@@ -87,7 +87,7 @@ export class HistoricalFigureBirthSystem extends System {
         const lifespanYears = this.calculateLifespan();
 
         // Get a random place for the historical figure
-        const place = this.computePlace(galaxyMapComponent);
+        const place = GeographicalUtils.computeRandomPlace(galaxyMapComponent);
 
         // Create a HistoricalFigureComponent with a random lifespan    
         const historicalFigureComponent = HistoricalFigureComponent.create(
@@ -166,30 +166,6 @@ export class HistoricalFigureBirthSystem extends System {
         const u2 = Math.random();
         const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
         return z0 * stdDev + mean;
-    }
-
-    /**
-     * Calculate a random place for the historical figure.
-     * This method retrieves a random geographical feature from the galaxy map.
-     * @param galaxyMap - The galaxy map component to get a random place from.
-     * @returns A Place instance representing the location of the historical figure's birth.
-     */
-    computePlace(galaxyMap: GalaxyMapComponent): Place {
-        // Get a random planet from the galaxy map
-        const planet = galaxyMap.getRandomPlanet();
-        if (planet) {
-            const continents = planet.getContinents();
-            if (continents && continents.length > 0) {
-                // Get a random continent from the planet
-                const randomContinent = continents[Math.floor(Math.random() * continents.length)];
-                const randomFeature = randomContinent.getRandomFeature();
-                if (randomFeature) {
-                    return Place.create(`${randomFeature.getName()}, ${planet.getName()}`);
-                }
-                return Place.create(planet.getName());
-            }
-        }
-        return Place.create('Unknown Location');
     }
 
     /**
