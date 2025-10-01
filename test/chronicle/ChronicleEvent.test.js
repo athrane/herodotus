@@ -1,7 +1,7 @@
 import { ChronicleEvent } from '../../src/chronicle/ChronicleEvent';
 import { Time } from '../../src/time/Time';
 import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent';
-import { Place } from '../../src/generator/Place';
+import { Location } from '../../src/geography/Location';
 import { EventType } from '../../src/chronicle/EventType';
 
 describe('ChronicleEvent', () => {
@@ -17,7 +17,7 @@ describe('ChronicleEvent', () => {
     eventType = new EventType('Political', 'Birth');
     time = new Time(484);
   figureComponent = HistoricalFigureComponent.create('Herodotus', -484, 59, 'Greek', 'Historian');
-    place = new Place('Halicarnassus');
+    place = Location.create(null, null, 'Halicarnassus');
     description = 'The birth of the Father of History.';
   });
 

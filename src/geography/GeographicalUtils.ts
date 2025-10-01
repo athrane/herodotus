@@ -1,4 +1,4 @@
-import { Place } from '../generator/Place';
+import { Location } from './Location';
 import { GalaxyMapComponent } from './galaxy/GalaxyMapComponent';
 import { TypeUtils } from '../util/TypeUtils';
 
@@ -23,9 +23,9 @@ export class GeographicalUtils {
      * 
      * @param galaxyMap - The galaxy map component to get a random place from.
      * @param fallbackLocation - Optional fallback location name if no suitable place is found. Defaults to 'Unknown Location'.
-     * @returns A Place instance representing a random location.
+     * @returns A Location instance representing a random location.
      */
-    static computeRandomPlace(galaxyMap: GalaxyMapComponent, fallbackLocation: string = 'Unknown Location'): Place {
+    static computeRandomPlace(galaxyMap: GalaxyMapComponent, fallbackLocation: string = 'Unknown Location'): Location {
         TypeUtils.ensureInstanceOf(galaxyMap, GalaxyMapComponent);
         TypeUtils.ensureString(fallbackLocation, 'Fallback location must be a string.');
 
@@ -38,15 +38,15 @@ export class GeographicalUtils {
                 const randomContinent = continents[Math.floor(Math.random() * continents.length)];
                 const randomFeature = randomContinent.getRandomFeature();
                 if (randomFeature) {
-                    // Return format: "FeatureName, PlanetName"
-                    return Place.create(`${randomFeature.getName()}, ${planet.getName()}`);
+                    // Return Location with feature and planet
+                    return Location.create(randomFeature, planet);
                 }
-                // If no specific feature is available, return just the planet name
-                return Place.create(planet.getName());
+                // If no specific feature is available, return just the planet
+                return Location.create(null, planet);
             }
         }
         
         // Return the fallback location if no suitable place is found
-        return Place.create(fallbackLocation);
+        return Location.create(null, null, fallbackLocation);
     }
 }

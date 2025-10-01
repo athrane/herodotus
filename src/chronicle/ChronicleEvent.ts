@@ -1,7 +1,7 @@
 import { TypeUtils } from '../util/TypeUtils';
 import { Time } from '../time/Time';
 import { HistoricalFigureComponent } from '../historicalfigure/HistoricalFigureComponent';
-import { Place } from '../generator/Place';
+import { Location } from '../geography/Location';
 import { EventType } from './EventType';
 
 /**
@@ -13,7 +13,7 @@ export class ChronicleEvent {
   private readonly description: string;
   private readonly time: Time;
   private readonly figure: HistoricalFigureComponent | null;
-  private readonly place: Place;
+  private readonly place: Location;
 
   /**
    * Creates a new chronicle event.
@@ -30,7 +30,7 @@ export class ChronicleEvent {
     heading: string,
     eventType: EventType,
     time: Time,
-    place: Place,
+    place: Location,
     description: string,
     figure: HistoricalFigureComponent | null = null
   ) {
@@ -40,7 +40,7 @@ export class ChronicleEvent {
     if (figure !== null) {
       TypeUtils.ensureInstanceOf(figure, HistoricalFigureComponent);
     }
-    TypeUtils.ensureInstanceOf(place, Place);
+    TypeUtils.ensureInstanceOf(place, Location);
     TypeUtils.ensureString(description, 'ChronicleEvent description must be a string.');
 
     this.heading = heading;
@@ -69,9 +69,9 @@ export class ChronicleEvent {
 
   /**
    * Returns the place where the event occurs.
-   * @returns {Place}
+   * @returns {Location}
    */
-  getPlace(): Place {
+  getPlace(): Location {
     return this.place;
   }
 
@@ -114,7 +114,7 @@ export class ChronicleEvent {
     heading: string,
     eventType: EventType,
     time: Time,
-    place: Place,
+    place: Location,
     description: string,
     figure: HistoricalFigureComponent | null = null
   ): ChronicleEvent {

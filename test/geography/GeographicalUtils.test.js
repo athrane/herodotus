@@ -1,6 +1,6 @@
 import { GeographicalUtils } from '../../src/geography/GeographicalUtils';
 import { GalaxyMapComponent } from '../../src/geography/galaxy/GalaxyMapComponent';
-import { Place } from '../../src/generator/Place';
+import { Location } from '../../src/geography/Location';
 
 describe('GeographicalUtils', () => {
     let mockGalaxyMap;
@@ -28,7 +28,7 @@ describe('GeographicalUtils', () => {
 
             const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
 
-            expect(place).toBeInstanceOf(Place);
+            expect(place).toBeInstanceOf(Location);
             expect(place.getName()).toBe('TestFeature, TestPlanet');
         });
 
@@ -43,7 +43,7 @@ describe('GeographicalUtils', () => {
 
             const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
 
-            expect(place).toBeInstanceOf(Place);
+            expect(place).toBeInstanceOf(Location);
             expect(place.getName()).toBe('BarrenPlanet');
         });
 
@@ -53,7 +53,7 @@ describe('GeographicalUtils', () => {
 
             const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
 
-            expect(place).toBeInstanceOf(Place);
+            expect(place).toBeInstanceOf(Location);
             expect(place.getName()).toBe('Unknown Location');
         });
 
@@ -66,7 +66,7 @@ describe('GeographicalUtils', () => {
 
             const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
 
-            expect(place).toBeInstanceOf(Place);
+            expect(place).toBeInstanceOf(Location);
             expect(place.getName()).toBe('Unknown Location');
         });
 
@@ -79,7 +79,7 @@ describe('GeographicalUtils', () => {
 
             const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
 
-            expect(place).toBeInstanceOf(Place);
+            expect(place).toBeInstanceOf(Location);
             expect(place.getName()).toBe('Unknown Location');
         });
 
@@ -92,7 +92,7 @@ describe('GeographicalUtils', () => {
 
             const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
 
-            expect(place).toBeInstanceOf(Place);
+            expect(place).toBeInstanceOf(Location);
             expect(place.getName()).toBe('Unknown Location');
         });
 
@@ -103,7 +103,7 @@ describe('GeographicalUtils', () => {
             const customFallback = 'The Council Chambers';
             const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap, customFallback);
 
-            expect(place).toBeInstanceOf(Place);
+            expect(place).toBeInstanceOf(Location);
             expect(place.getName()).toBe(customFallback);
         });
 
@@ -126,7 +126,7 @@ describe('GeographicalUtils', () => {
 
             const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
 
-            expect(place).toBeInstanceOf(Place);
+            expect(place).toBeInstanceOf(Location);
             // The name should contain the planet name
             expect(place.getName()).toContain('MultiContinentPlanet');
             // Should have a feature name
