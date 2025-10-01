@@ -5,10 +5,10 @@
 **Herodotus** is a procedural world-building and history generation tool written in TypeScript. The project simulates the creation and evolution of civilizations, geographic features, and historical events using an Entity-Component-System (ECS) architecture. It includes both a command-line interface for automated simulation and an interactive text-based GUI for player-driven experiences.
 
 ### High-Level Repository Information
-- **Repository Size**: Medium (~550 files)
+- **Repository Size**: Medium (~550 files, ~73 exported classes)
 - **Primary Language**: TypeScript (ES2020, ESNext modules)
-- **Architecture**: Entity-Component-System (ECS) pattern
-- **Testing Framework**: Jest with ts-jest and babel-jest
+- **Architecture**: Entity-Component-System (ECS) pattern with dual-ECS for GUI
+- **Testing Framework**: Jest with ts-jest and babel-jest (both .ts and .js tests)
 - **Build Tools**: esbuild (primary), Rollup.js (alternative)
 - **Development Runtime**: tsx for TypeScript execution
 - **Target Platform**: Node.js
@@ -133,26 +133,52 @@ Configuration Files (Root):
 ### Core Architectural Patterns
 
 #### Entity-Component-System (ECS)
-- **Entities**: Simple numeric IDs managed by `EntityManager`
-- **Components**: Data-only classes extending base `Component` class
+- **Entities**: UUID-based IDs (`crypto.randomUUID()`) managed by `EntityManager`
+  - Components stored in `Map<string, Component>` keyed by constructor name
+  - Component matching uses instanceof semantics with exact-match preference
+  - `hasComponent(Base)` returns true for Base or any subclass instance
+  - `getComponent(Base)` prefers exact Base, falls back to first instanceof match
+- **Components**: Data-only classes extending base `Component` class (empty marker class)
   - Must use static factory methods (`create()`)
   - Must not contain business logic
-  - Example: `TimeComponent`, `NameComponent`, `WorldComponent`
+  - Added via `entity.addComponent()`, replacing existing component of same type
+  - Example: `TimeComponent`, `NameComponent`, `GalaxyMapComponent`
 - **Systems**: Logic-only classes extending base `System` class
-  - Process entities with specific component combinations
+  - Process entities with specific component combinations via `requiredComponents`
   - **Prefer overriding `processEntity()` over `update()`** for individual entity processing
   - Must use static factory methods (`create()`)
-  - Example: `TimeSystem`, `ComputeChoicesSystem`
+  - `update()` automatically filters entities by required components
+  - Example: `TimeSystem`, `ComputeChoicesSystem`, `HistoricalFigureLifecycleSystem`
+
+#### Dual-ECS Architecture (GUI)
+- **Simulation ECS**: Game logic, time progression, historical figures, choices
+- **GUI ECS**: Separate instance for screen management with independent update frequency
+- `GuiEcsManager` manages GUI ECS with configurable update interval (typically 2000ms)
+- GUI reads/writes simulation state through main ECS instance
+- Prevents GUI rendering from blocking simulation updates
+- Example: `src/gui/GuiEcsManager.ts`, `src/gui/builder/GuiBuilder.ts`
 
 #### Builder Pattern
-- `SimulationBuilder` constructs simulations
+- Abstract `Builder` class defines build order: `build()` → `buildData()` → `buildComponents()` → `buildSystems()` → `buildEntities()`
+- `BuilderDirector` orchestrates build sequence
+- `SimulationBuilder` constructs simulation ECS instances
+- `GuiBuilder` constructs GUI ECS instances (accepts simulation ECS for integration)
 - **Always integrate new features through this pattern**
-- Located in `src/simulation/builder/`
+- Located in `src/ecs/builder/` (base), `src/simulation/builder/` (simulation), `src/gui/builder/` (GUI)
+
+#### FilteredSystem Pattern
+- `FilteredSystem` extends `System` with automatic entity filtering before processing
+- Eliminates boilerplate filtering code in `processEntity()` methods
+- Uses `EntityFilter` functions for composable filtering logic
+- `EntityFilters` utility provides: `byName()`, `hasComponent()`, `lacksComponent()`, `and()`, `or()`, `not()`
+- Example: `ChronicleViewSystem` uses `EntityFilters.byName('ChronicleScreen')` to process only chronicle screen entities
+- Override `processFilteredEntity()` instead of `processEntity()` in subclasses
 
 #### Factory Methods
-- **All classes must provide static `create()` methods** - this is enforced
+- **All classes must provide static `create()` methods** - this is enforced project-wide
 - Constructor parameters are passed through to `create()` method
-- Example: `TimeComponent.create(year)` instead of `new TimeComponent(year)`
+- Enables consistent instantiation patterns across codebase
+- Example: `TimeComponent.create(Time.create(year))` instead of `new TimeComponent(new Time(year))`
 
 ### Key Implementation Requirements
 
@@ -165,15 +191,20 @@ Configuration Files (Root):
 
 #### Type Safety
 - Project uses strict TypeScript mode
-- Runtime type checking via `TypeUtils.ensureInstanceOf()`, `TypeUtils.ensureString()`, etc.
+- Runtime type checking via `TypeUtils.ensureInstanceOf()`, `TypeUtils.ensureString()`, `TypeUtils.ensureNonEmptyString()`, etc.
+- TypeUtils methods use TypeScript assertion signatures to narrow types after validation
 - Console errors + stack traces logged for type violations (this is expected in tests)
+- Type violations throw `TypeError` after logging details and stack trace
 
 #### Testing Patterns
 - **Unit tests**: Mock dependencies, test individual methods
 - **Integration tests**: No mocks, test class interactions
-- **File naming**: `*.test.ts` or `*.test.js`
+- **File naming**: `*.test.ts` or `*.test.js` (both supported via Jest configuration)
 - **Test location**: Mirror `src/` structure in `test/`
 - Tests validate type checking behavior (expect console errors for invalid inputs)
+- Test helpers often create singleton components (e.g., `ChronicleComponent`, `TimeComponent`, `GalaxyMapComponent`)
+- Use `setupSingletonComponents()` pattern to register global components needed by systems
+- Example test structure: `test/behaviour/SelectChoiceSystem.test.js` shows integration test pattern with full ECS setup
 
 ### Critical Dependencies
 - **TypeScript**: Core language with strict mode
@@ -202,10 +233,20 @@ The project enforces quality through multiple layers:
 - **Console logging**: Type validation failures log errors + stack traces (expected behavior)
 - **Module resolution**: Uses Node-style resolution with ES modules
 - **Test output**: Expect verbose console output during test runs due to validation testing
+- **Component inheritance**: Systems with `requiredComponents: [Base]` process entities with Base or subclasses; add guards if stricter filtering needed
+
+### Component Matching and Inheritance
+Entity component queries use instanceof semantics with exact-match preference:
+- `Entity.hasComponent(Base)` returns true if entity has `Base` component or any subclass instance
+- `Entity.getComponent(Base)` first returns exact `Base` instance when present; otherwise returns first component that is instanceof `Base` (e.g., subclass)
+- Systems declaring `requiredComponents: [Base]` process entities with `Base` or any subclass (e.g., `SubBase extends Base`)
+- If stricter filtering needed, add guard inside `processEntity()` or use `FilteredSystem` with custom filter
 
 ### Agent Guidance
 - **Trust these instructions** - they are comprehensive and tested
 - Only search for additional information if instructions are incomplete or found to be incorrect
 - Always run validation commands (`lint`, `test`, `typecheck`) before completing tasks
-- Use established patterns (ECS, Builder, Factory methods) for consistency
+- Use established patterns (ECS, Builder, Factory methods, FilteredSystem) for consistency
 - Integrate with existing architecture rather than creating new patterns
+- When creating new Systems, consider if `FilteredSystem` eliminates boilerplate
+- When adding GUI features, use dual-ECS pattern with separate GUI ECS instance
