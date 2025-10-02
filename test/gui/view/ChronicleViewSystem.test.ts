@@ -11,7 +11,7 @@ import { ChronicleEvent } from '../../../src/chronicle/ChronicleEvent';
 import { EventType } from '../../../src/chronicle/EventType';
 import { EventCategory } from '../../../src/chronicle/EventCategory';
 import { Time } from '../../../src/time/Time';
-import { Place } from '../../../src/generator/Place';
+import { Location } from '../../../src/geography/Location';
 import { MenuItem } from '../../../src/gui/menu/MenuItem';
 import { ScrollStrategy } from '../../../src/gui/menu/ScrollStrategy';
 
@@ -86,7 +86,7 @@ describe('ChronicleViewSystem', () => {
       // Create test chronicle events
       const eventType = new EventType(EventCategory.POLITICAL, 'Birth');
       const time = new Time(484);
-      const place = new Place('Halicarnassus');
+      const place = Location.create(null, null, 'Halicarnassus');
       
       const event1 = ChronicleEvent.create(
         'Birth of Herodotus',
@@ -156,7 +156,7 @@ describe('ChronicleViewSystem', () => {
       // Create 5 test chronicle events
       const eventType = new EventType(EventCategory.POLITICAL, 'Event');
       const time = new Time(100);
-      const place = new Place('TestPlace');
+      const place = Location.create(null, null, 'TestPlace');
       
       const events = [];
       for (let i = 0; i < 5; i++) {
@@ -225,7 +225,7 @@ describe('ChronicleViewSystem', () => {
       // Create multiple chronicle entities
       const eventType = new EventType(EventCategory.POLITICAL, 'Event');
       const time = new Time(100);
-      const place = new Place('TestPlace');
+      const place = Location.create(null, null, 'TestPlace');
       
       const event1 = ChronicleEvent.create('First Chronicle Event', eventType, time, place, 'First');
       const event2 = ChronicleEvent.create('Second Chronicle Event', eventType, time, place, 'Second');
@@ -257,7 +257,7 @@ describe('ChronicleViewSystem', () => {
       // Add chronicle to simulation
       const eventType = new EventType(EventCategory.POLITICAL, 'Test');
       const time = new Time(100);
-      const place = new Place('TestPlace');
+      const place = Location.create(null, null, 'TestPlace');
       const event = ChronicleEvent.create('New Event', eventType, time, place, 'Description');
       
       const chronicleEntity = simulationEntityManager.createEntity();

@@ -4,7 +4,7 @@ import { EventType } from '../../src/chronicle/EventType';
 import { EventCategory } from '../../src/chronicle/EventCategory';
 import { Time } from '../../src/time/Time';
 import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent';
-import { Place } from '../../src/generator/Place';
+import { Location } from '../../src/geography/Location';
 
 describe('ChronicleComponent', () => {
   let sampleEvent1;
@@ -18,7 +18,7 @@ describe('ChronicleComponent', () => {
     eventType = new EventType(EventCategory.POLITICAL, 'Birth');
     time = new Time(484);
   figureComponent = HistoricalFigureComponent.create('Herodotus', -484, 59, 'Greek', 'Historian');
-    place = new Place('Halicarnassus');
+    place = Location.create(null, null, 'Halicarnassus');
     
     sampleEvent1 = new ChronicleEvent(
       'Birth, Herodotus',
