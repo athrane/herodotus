@@ -14,6 +14,7 @@ export class DynamicTextComponent extends Component {
    * @returns The current text to display.
    */
   public getText: (guiEntityManager: EntityManager, simulationEntityManager: EntityManager) => string;
+  private static nullInstance: DynamicTextComponent | null = null;
 
   /**
    * Constructs a DynamicTextComponent with the given text retrieval function.
@@ -23,5 +24,20 @@ export class DynamicTextComponent extends Component {
     super();
     TypeUtils.ensureFunction(getText, "getText must be a function");
     this.getText = getText;
+  }
+
+  /**
+   * Returns a null object instance of DynamicTextComponent.
+   * This instance serves as a safe, neutral placeholder when a DynamicTextComponent is not available.
+   * @returns A null DynamicTextComponent instance that returns empty string.
+   */
+  static get Null(): DynamicTextComponent {
+    if (!DynamicTextComponent.nullInstance) {
+      const instance = Object.create(DynamicTextComponent.prototype);
+      instance.getText = () => '';
+      Object.freeze(instance);
+      DynamicTextComponent.nullInstance = instance;
+    }
+    return DynamicTextComponent.nullInstance!;
   }
 }

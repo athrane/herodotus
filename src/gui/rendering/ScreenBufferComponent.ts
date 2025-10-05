@@ -11,6 +11,7 @@ export class ScreenBufferComponent extends Component {
     private buffer: string[][];
     private cursorRow: number;
     private cursorCol: number;
+    private static nullInstance: ScreenBufferComponent | null = null;
 
     /**
      * Creates a new ScreenBufferComponent.
@@ -20,6 +21,27 @@ export class ScreenBufferComponent extends Component {
         this.buffer = this.createEmptyBuffer();
         this.cursorRow = 0;
         this.cursorCol = 0;
+    }
+
+    /**
+     * Returns a null object instance of ScreenBufferComponent.
+     * This instance serves as a safe, neutral placeholder when a ScreenBufferComponent is not available.
+     * @returns A null ScreenBufferComponent instance with empty buffer.
+     */
+    static get Null(): ScreenBufferComponent {
+        if (!ScreenBufferComponent.nullInstance) {
+            const instance = Object.create(ScreenBufferComponent.prototype);
+            const emptyBuffer: string[][] = [];
+            for (let row = 0; row < ScreenBufferComponent.ROWS; row++) {
+                emptyBuffer[row] = new Array(ScreenBufferComponent.COLS).fill(' ');
+            }
+            instance.buffer = emptyBuffer;
+            instance.cursorRow = 0;
+            instance.cursorCol = 0;
+            Object.freeze(instance);
+            ScreenBufferComponent.nullInstance = instance;
+        }
+        return ScreenBufferComponent.nullInstance!;
     }
 
     /**

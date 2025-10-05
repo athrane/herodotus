@@ -11,6 +11,7 @@ export class MenuComponent extends Component {
   private items: MenuItem[];
   private selectedIndex: number = 0;
   private scrollStrategy: ScrollStrategy;
+  private static nullInstance: MenuComponent | null = null;
 
   /**
    * Constructs a MenuComponent with the given menu items and scroll strategy.
@@ -26,6 +27,23 @@ export class MenuComponent extends Component {
     }
     this.items = items;
     this.scrollStrategy = scrollStrategy;
+  }
+
+  /**
+   * Returns a null object instance of MenuComponent.
+   * This instance serves as a safe, neutral placeholder when a MenuComponent is not available.
+   * @returns A null MenuComponent instance with empty items array.
+   */
+  static get Null(): MenuComponent {
+    if (!MenuComponent.nullInstance) {
+      const instance = Object.create(MenuComponent.prototype);
+      instance.items = [];
+      instance.selectedIndex = 0;
+      instance.scrollStrategy = ScrollStrategy.VERTICAL;
+      Object.freeze(instance);
+      MenuComponent.nullInstance = instance;
+    }
+    return MenuComponent.nullInstance!;
   }
 
   /**

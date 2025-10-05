@@ -9,6 +9,7 @@ export class Sector {
     private readonly id: string;
     private readonly name: string;
     private readonly planetIds: Set<string>;
+    private static nullInstance: Sector | null = null;
 
     /**
      * Creates a new Sector instance.
@@ -30,6 +31,23 @@ export class Sector {
                 this.planetIds.add(planetId);
             }
         }
+    }
+
+    /**
+     * Returns a null object instance of Sector.
+     * This instance serves as a safe, neutral placeholder when a Sector is not available.
+     * @returns A null Sector instance with default values.
+     */
+    static get Null(): Sector {
+        if (!Sector.nullInstance) {
+            const instance = Object.create(Sector.prototype);
+            instance.id = '';
+            instance.name = '';
+            instance.planetIds = new Set<string>();
+            Object.freeze(instance);
+            Sector.nullInstance = instance;
+        }
+        return Sector.nullInstance!;
     }
 
     /**

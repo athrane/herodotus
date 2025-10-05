@@ -9,6 +9,7 @@ import { GeographicalFeatureTypeRegistry } from './GeographicalFeatureTypeRegist
 export class GeographicalFeature {
     private readonly name: string;
     private readonly type: FeatureType;
+    private static nullInstance: GeographicalFeature | null = null;
 
     /**
      * Creates an instance of GeographicalFeature.
@@ -27,6 +28,22 @@ export class GeographicalFeature {
         this.name = name;
         this.type = type;
         Object.freeze(this);
+    }
+
+    /**
+     * Returns a null object instance of GeographicalFeature.
+     * This instance serves as a safe, neutral placeholder when a GeographicalFeature is not available.
+     * @returns A null GeographicalFeature instance with empty name and FeatureType.Null.
+     */
+    static get Null(): GeographicalFeature {
+        if (!GeographicalFeature.nullInstance) {
+            const instance = Object.create(GeographicalFeature.prototype);
+            instance.name = '';
+            instance.type = FeatureType.Null;
+            Object.freeze(instance);
+            GeographicalFeature.nullInstance = instance;
+        }
+        return GeographicalFeature.nullInstance!;
     }
 
     /**

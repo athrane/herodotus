@@ -7,6 +7,7 @@ import { TypeUtils } from '../../util/TypeUtils';
 export class FeatureType {
   private readonly key: string;
   private readonly displayName: string;
+  private static nullInstance: FeatureType | null = null;
 
   /**
    * @param key - A unique identifier for the feature type (e.g., 'MOUNTAIN').
@@ -33,5 +34,21 @@ export class FeatureType {
    */
   getName(): string {
     return this.displayName;
+  }
+
+  /**
+   * Returns a null object instance of FeatureType.
+   * This instance serves as a safe, neutral placeholder when a FeatureType is not available.
+   * @returns A null FeatureType instance with empty string values.
+   */
+  static get Null(): FeatureType {
+    if (!FeatureType.nullInstance) {
+      const instance = Object.create(FeatureType.prototype);
+      instance.key = '';
+      instance.displayName = '';
+      Object.freeze(instance);
+      FeatureType.nullInstance = instance;
+    }
+    return FeatureType.nullInstance!;
   }
 }

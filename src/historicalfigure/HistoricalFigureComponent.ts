@@ -17,6 +17,7 @@ export class HistoricalFigureComponent extends Component {
     private readonly averageLifeSpan: number;
     private readonly culture: string;
     private readonly occupation: string;
+    private static nullInstance: HistoricalFigureComponent | null = null;
 
     /**
      * @param name - The name of the historical figure.
@@ -38,6 +39,25 @@ export class HistoricalFigureComponent extends Component {
         this.averageLifeSpan = averageLifeSpan;
         this.culture = culture;
         this.occupation = occupation;
+    }
+
+    /**
+     * Returns a null object instance of HistoricalFigureComponent.
+     * This instance serves as a safe, neutral placeholder when a HistoricalFigureComponent is not available.
+     * @returns A null HistoricalFigureComponent instance with default values.
+     */
+    static get Null(): HistoricalFigureComponent {
+        if (!HistoricalFigureComponent.nullInstance) {
+            const instance = Object.create(HistoricalFigureComponent.prototype);
+            instance.name = '';
+            instance.birthYear = 0;
+            instance.averageLifeSpan = 0;
+            instance.culture = '';
+            instance.occupation = '';
+            Object.freeze(instance);
+            HistoricalFigureComponent.nullInstance = instance;
+        }
+        return HistoricalFigureComponent.nullInstance!;
     }
 
     /**

@@ -5,6 +5,7 @@ import { Component } from '../../ecs/Component';
  */
 export class InputComponent extends Component {
   private lastInput: string | null = null;
+  private static nullInstance: InputComponent | null = null;
 
   /**
    * Gets the last user input.
@@ -35,6 +36,21 @@ export class InputComponent extends Component {
    */
   isDefined(): boolean {
     return this.lastInput !== null;
+  }
+
+  /**
+   * Returns a null object instance of InputComponent.
+   * This instance serves as a safe, neutral placeholder when an InputComponent is not available.
+   * @returns A null InputComponent instance with no input.
+   */
+  static get Null(): InputComponent {
+    if (!InputComponent.nullInstance) {
+      const instance = Object.create(InputComponent.prototype);
+      instance.lastInput = null;
+      Object.freeze(instance);
+      InputComponent.nullInstance = instance;
+    }
+    return InputComponent.nullInstance!;
   }
 
 }

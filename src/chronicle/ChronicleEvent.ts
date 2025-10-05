@@ -14,6 +14,7 @@ export class ChronicleEvent {
   private readonly time: Time;
   private readonly figure: HistoricalFigureComponent | null;
   private readonly place: Place;
+  private static nullInstance: ChronicleEvent | null = null;
 
   /**
    * Creates a new chronicle event.
@@ -49,6 +50,26 @@ export class ChronicleEvent {
     this.figure = figure;
     this.place = place;
     this.description = description;
+  }
+
+  /**
+   * Returns a null object instance of ChronicleEvent.
+   * This instance serves as a safe, neutral placeholder when a ChronicleEvent is not available.
+   * @returns A null ChronicleEvent instance with default values.
+   */
+  static get Null(): ChronicleEvent {
+    if (!ChronicleEvent.nullInstance) {
+      const instance = Object.create(ChronicleEvent.prototype);
+      instance.heading = '';
+      instance.eventType = EventType.Null;
+      instance.description = '';
+      instance.time = Time.Null;
+      instance.figure = null;
+      instance.place = Place.Null;
+      Object.freeze(instance);
+      ChronicleEvent.nullInstance = instance;
+    }
+    return ChronicleEvent.nullInstance!;
   }
 
   /**

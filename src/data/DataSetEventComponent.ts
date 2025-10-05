@@ -11,6 +11,7 @@ export class DataSetEventComponent extends Component {
    * @type {DataSetEvent}
    */
   private dataSetEvent: DataSetEvent;
+  private static nullInstance: DataSetEventComponent | null = null;
 
   /**
    * Creates an instance of DataSetEventComponent.
@@ -20,6 +21,21 @@ export class DataSetEventComponent extends Component {
     super();
     TypeUtils.ensureInstanceOf(dataSetEvent, DataSetEvent, 'DataSetEvent must be a valid DataSetEvent instance.');
     this.dataSetEvent = dataSetEvent;
+  }
+
+  /**
+   * Returns a null object instance of DataSetEventComponent.
+   * This instance serves as a safe, neutral placeholder when a DataSetEventComponent is not available.
+   * @returns A null DataSetEventComponent instance with DataSetEvent.Null.
+   */
+  static get Null(): DataSetEventComponent {
+    if (!DataSetEventComponent.nullInstance) {
+      const instance = Object.create(DataSetEventComponent.prototype);
+      instance.dataSetEvent = DataSetEvent.Null;
+      Object.freeze(instance);
+      DataSetEventComponent.nullInstance = instance;
+    }
+    return DataSetEventComponent.nullInstance!;
   }
 
   /**

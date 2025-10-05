@@ -9,6 +9,7 @@ export class NameComponent extends Component {
    * @type {string}
    */
   private readonly text: string;
+  private static nullInstance: NameComponent | null = null;
 
   /**
    * Creates an instance of NameComponent.
@@ -26,6 +27,21 @@ export class NameComponent extends Component {
    */
   getText(): string {
   return this.text;
+  }
+
+  /**
+   * Returns a null object instance of NameComponent.
+   * This instance serves as a safe, neutral placeholder when a NameComponent is not available.
+   * @returns A null NameComponent instance with empty string text.
+   */
+  static get Null(): NameComponent {
+    if (!NameComponent.nullInstance) {
+      const instance = Object.create(NameComponent.prototype);
+      instance.text = '';
+      Object.freeze(instance);
+      NameComponent.nullInstance = instance;
+    }
+    return NameComponent.nullInstance!;
   }
 
   /**

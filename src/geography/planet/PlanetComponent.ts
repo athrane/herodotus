@@ -37,6 +37,7 @@ export class PlanetComponent extends Component {
     private fortificationLevel: number;
     private resourceSpecialization: PlanetResourceSpecialization;
     private readonly continents: Continent[];
+    private static nullInstance: PlanetComponent | null = null;
 
     /**
      * Creates a new PlanetComponent.
@@ -82,6 +83,29 @@ export class PlanetComponent extends Component {
         this.fortificationLevel = PlanetComponent.clampFortification(fortificationLevel);
         this.resourceSpecialization = resourceSpecialization;
     this.continents = [...continents];
+    }
+
+    /**
+     * Returns a null object instance of PlanetComponent.
+     * This instance serves as a safe, neutral placeholder when a PlanetComponent is not available.
+     * @returns A null PlanetComponent instance with default values.
+     */
+    static get Null(): PlanetComponent {
+        if (!PlanetComponent.nullInstance) {
+            const instance = Object.create(PlanetComponent.prototype);
+            instance.id = '';
+            instance.name = '';
+            instance.sectorId = '';
+            instance.ownership = '';
+            instance.status = PlanetStatus.NORMAL;
+            instance.developmentLevel = 1;
+            instance.fortificationLevel = 0;
+            instance.resourceSpecialization = PlanetResourceSpecialization.AGRICULTURE;
+            instance.continents = [];
+            Object.freeze(instance);
+            PlanetComponent.nullInstance = instance;
+        }
+        return PlanetComponent.nullInstance!;
     }
 
     /**

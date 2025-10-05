@@ -5,6 +5,7 @@ import { Component } from '../../ecs/Component';
  */
 export class TextComponent extends Component {
     public lines: string[];
+    private static nullInstance: TextComponent | null = null;
 
     /**
      * Constructor for the TextComponent.
@@ -17,6 +18,21 @@ export class TextComponent extends Component {
         if (this.lines.length === 0) {
             this.lines.push('');
         }
+    }
+
+    /**
+     * Returns a null object instance of TextComponent.
+     * This instance serves as a safe, neutral placeholder when a TextComponent is not available.
+     * @returns A null TextComponent instance with empty text.
+     */
+    static get Null(): TextComponent {
+        if (!TextComponent.nullInstance) {
+            const instance = Object.create(TextComponent.prototype);
+            instance.lines = [''];
+            Object.freeze(instance);
+            TextComponent.nullInstance = instance;
+        }
+        return TextComponent.nullInstance!;
     }
 
     /**

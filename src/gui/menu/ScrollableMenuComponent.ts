@@ -10,6 +10,7 @@ import { TypeUtils } from '../../util/TypeUtils';
 export class ScrollableMenuComponent extends MenuComponent {
     private readonly visibleItemCount: number;
     private scrollOffset: number = 0;
+    private static _nullScrollableMenu: ScrollableMenuComponent | null = null;
 
     /**
      * Constructs a ScrollableMenuComponent with the given menu items and visible item count.
@@ -24,6 +25,27 @@ export class ScrollableMenuComponent extends MenuComponent {
             throw new Error("visibleItemCount must be greater than 0");
         }
         this.visibleItemCount = visibleItemCount;
+    }
+
+    /**
+     * Returns a null object instance of ScrollableMenuComponent.
+     * This instance serves as a safe, neutral placeholder when a ScrollableMenuComponent is not available.
+     * @returns A null ScrollableMenuComponent instance with empty items and default values.
+     */
+    static get Null(): ScrollableMenuComponent {
+        if (!ScrollableMenuComponent._nullScrollableMenu) {
+            const instance = Object.create(ScrollableMenuComponent.prototype);
+            // Set parent MenuComponent properties
+            instance.items = [];
+            instance.selectedIndex = 0;
+            instance.scrollStrategy = ScrollStrategy.VERTICAL;
+            // Set ScrollableMenuComponent properties
+            instance.visibleItemCount = 3;
+            instance.scrollOffset = 0;
+            Object.freeze(instance);
+            ScrollableMenuComponent._nullScrollableMenu = instance;
+        }
+        return ScrollableMenuComponent._nullScrollableMenu!;
     }
 
     /**
