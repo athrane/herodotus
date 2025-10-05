@@ -11,6 +11,11 @@ export class GeographicalFeature {
     private readonly type: FeatureType;
 
     /**
+     * A singleton instance representing a null geographical feature.
+     */
+    private static nullFeature: GeographicalFeature | null = null;
+
+    /**
      * Creates an instance of GeographicalFeature.
      * @param name - The specific name of the feature (e.g., "The River Run").
      * @param type - The registered type of the feature (e.g., GeographicalFeatureTypes.RIVER).
@@ -54,4 +59,18 @@ export class GeographicalFeature {
     static create(name: string, type: FeatureType): GeographicalFeature {
         return new GeographicalFeature(name, type);
     }
+
+/**
+     * Creates a null geographical feature representing an unknown feature.
+     * Uses lazy initialization to return the same instance on subsequent calls.
+     * @returns A GeographicalFeature instance representing an unknown feature.
+     */
+    static createNullFeature(): GeographicalFeature {
+        if (!GeographicalFeature.nullFeature) {
+            const nullType = GeographicalFeatureTypeRegistry.getNullFeatureType();
+            GeographicalFeature.nullFeature = GeographicalFeature.create('Unknown', nullType);
+        }
+        return GeographicalFeature.nullFeature;
+    }
+
 }
