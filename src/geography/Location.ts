@@ -7,45 +7,23 @@ import { PlanetComponent } from './planet/PlanetComponent';
  * A location is defined by its geographical feature and the planet it belongs to.
  */
 export class Location {
-  private readonly feature: GeographicalFeature | null;
-  private readonly planet: PlanetComponent | null;
+  private readonly feature: GeographicalFeature;
+  private readonly planet: PlanetComponent;
   private readonly name: string;
 
   /**
    * Creates an instance of Location.
-   * @param feature - The geographical feature at this location (optional).
-   * @param planet - The planet this location is on (optional).
-   * @param name - A fallback name for the location (used when feature/planet are not provided).
+   * @param feature - The geographical feature at this location.
+   * @param planet - The planet this location is on.
    */
-  constructor(feature: GeographicalFeature | null, planet: PlanetComponent | null, name?: string) {
-    // Allow duck-typing for testing purposes - check for required methods instead of strict instanceof
-    if (feature !== null) {
-      if (typeof feature !== 'object' || typeof (feature as any).getName !== 'function') {
-        TypeUtils.ensureInstanceOf(feature, GeographicalFeature);
-      }
-    }
-    if (planet !== null) {
-      if (typeof planet !== 'object' || typeof (planet as any).getName !== 'function') {
-        TypeUtils.ensureInstanceOf(planet, PlanetComponent);
-      }
-    }
-    if (name !== undefined) {
-      TypeUtils.ensureString(name, 'Location name must be a string.');
-    }
-
+  constructor(feature: GeographicalFeature, planet: PlanetComponent) {
+    TypeUtils.ensureInstanceOf(feature, GeographicalFeature);
+    TypeUtils.ensureInstanceOf(planet, PlanetComponent);
     this.feature = feature;
     this.planet = planet;
     
-    // Generate the name based on feature and planet, or use provided name
-    if (feature && planet) {
-      this.name = `${feature.getName()}, ${planet.getName()}`;
-    } else if (planet) {
-      this.name = planet.getName();
-    } else if (name !== undefined) {
-      this.name = name;
-    } else {
-      this.name = 'Unknown Location';
-    }
+    // Generate the name based on feature and planet
+    this.name = `${feature.getName()}, ${planet.getName()}`;
   }
 
   /**
@@ -58,14 +36,14 @@ export class Location {
   /**
    * Gets the geographical feature at this location.
    */
-  getFeature(): GeographicalFeature | null {
+  getFeature(): GeographicalFeature {
     return this.feature;
   }
 
   /**
    * Gets the planet this location is on.
    */
-  getPlanet(): PlanetComponent | null {
+  getPlanet(): PlanetComponent {
     return this.planet;
   }
 
@@ -74,7 +52,7 @@ export class Location {
    * @param feature - The geographical feature at this location.
    * @param planet - The planet this location is on.
    */
-  static create(feature: GeographicalFeature | null, planet: PlanetComponent | null, name?: string): Location {
-    return new Location(feature, planet, name);
+  static create(feature: GeographicalFeature, planet: PlanetComponent): Location {
+    return new Location(feature, planet);
   }
 }
