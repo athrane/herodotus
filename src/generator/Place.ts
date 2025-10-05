@@ -6,6 +6,7 @@ import { TypeUtils } from '../util/TypeUtils';
  */
 export class Place {
   private readonly name: string;
+  private static nullInstance: Place | null = null;
 
   /**
    * Creates an instance of Place.
@@ -21,6 +22,21 @@ export class Place {
    */
   getName(): string {
     return this.name;
+  }
+
+  /**
+   * Returns a null object instance of Place.
+   * This instance serves as a safe, neutral placeholder when a Place is not available.
+   * @returns A null Place instance with empty string name.
+   */
+  static get Null(): Place {
+    if (!Place.nullInstance) {
+      const instance = Object.create(Place.prototype);
+      instance.name = '';
+      Object.freeze(instance);
+      Place.nullInstance = instance;
+    }
+    return Place.nullInstance!;
   }
 
   /**

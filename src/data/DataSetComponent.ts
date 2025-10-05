@@ -17,6 +17,7 @@ export class DataSetComponent extends Component {
    * Immutable array of all Events.
    */
   private readonly events: ReadonlyArray<DataSetEvent>;
+  private static nullInstance: DataSetComponent | null = null;
 
   /**
    * Private constructor to enforce usage of factory method.
@@ -42,6 +43,22 @@ export class DataSetComponent extends Component {
     }
     this.eventMap = map;
     this.events = Object.freeze(events.slice()); // Keep all original events in order
+  }
+
+  /**
+   * Returns a null object instance of DataSetComponent.
+   * This instance serves as a safe, neutral placeholder when a DataSetComponent is not available.
+   * @returns A null DataSetComponent instance with empty event list.
+   */
+  static get Null(): DataSetComponent {
+    if (!DataSetComponent.nullInstance) {
+      const instance = Object.create(DataSetComponent.prototype);
+      instance.eventMap = new Map<string, DataSetEvent[]>();
+      instance.events = Object.freeze([]);
+      Object.freeze(instance);
+      DataSetComponent.nullInstance = instance;
+    }
+    return DataSetComponent.nullInstance!;
   }
 
   /**

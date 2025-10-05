@@ -14,6 +14,7 @@ export class DataSetEvent {
   private readonly description: string;
   private readonly consequence: string;
   private readonly tags: string;
+  private static nullInstance: DataSetEvent | null = null;
 
   /**
    * Constructs a DataSetEvent instance from a JSON object.
@@ -33,6 +34,32 @@ export class DataSetEvent {
     this.description = data["Description"];
     this.consequence = data["Consequence"];
     this.tags = data["Tags"];
+  }
+
+  /**
+   * Returns a null object instance of DataSetEvent.
+   * This instance serves as a safe, neutral placeholder when a DataSetEvent is not available.
+   * @returns A null DataSetEvent instance with empty string values.
+   */
+  static get Null(): DataSetEvent {
+    if (!DataSetEvent.nullInstance) {
+      const instance = Object.create(DataSetEvent.prototype);
+      instance.eventType = '';
+      instance.cause = '';
+      instance.eventName = '';
+      instance.eventConsequence = '';
+      instance.heading = '';
+      instance.place = '';
+      instance.primaryActor = '';
+      instance.secondaryActor = '';
+      instance.motive = '';
+      instance.description = '';
+      instance.consequence = '';
+      instance.tags = '';
+      Object.freeze(instance);
+      DataSetEvent.nullInstance = instance;
+    }
+    return DataSetEvent.nullInstance!;
   }
 
   /**

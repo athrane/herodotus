@@ -9,6 +9,7 @@ import { TypeUtils } from '../util/TypeUtils';
  */
 export class TimeComponent extends Component {
   private time: Time;
+  private static _nullInstanceTimeComponent: TimeComponent | null = null;
 
   /**
    * Creates an instance of TimeComponent.
@@ -35,6 +36,21 @@ export class TimeComponent extends Component {
   setTime(time: Time): void {
     TypeUtils.ensureInstanceOf(time, Time, 'time must be an instance of the Time class.');
     this.time = time;
+  }
+
+  /**
+   * Returns a null object instance of TimeComponent.
+   * This instance serves as a safe, neutral placeholder when a TimeComponent is not available.
+   * @returns A null TimeComponent instance with Time.Null.
+   */
+  static get Null(): TimeComponent {
+    if (!TimeComponent._nullInstanceTimeComponent) {
+      const instance = Object.create(TimeComponent.prototype);
+      instance.time = Time.Null;
+      Object.freeze(instance);
+      TimeComponent._nullInstanceTimeComponent = instance;
+    }
+    return TimeComponent._nullInstanceTimeComponent!;
   }
 
   /**

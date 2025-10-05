@@ -7,6 +7,7 @@ import { EventCategory } from './EventCategory';
 export class EventType {
   private readonly category: string;
   private readonly name: string;
+  private static nullInstance: EventType | null = null;
 
   /**
    * Creates an instance of EventType.
@@ -43,6 +44,22 @@ export class EventType {
    */
   getName(): string {
     return this.name;
+  }
+
+  /**
+   * Returns a null object instance of EventType.
+   * This instance serves as a safe, neutral placeholder when an EventType is not available.
+   * @returns A null EventType instance with Social category and empty name.
+   */
+  static get Null(): EventType {
+    if (!EventType.nullInstance) {
+      const instance = Object.create(EventType.prototype);
+      instance.category = EventCategory.SOCIAL;
+      instance.name = '';
+      Object.freeze(instance);
+      EventType.nullInstance = instance;
+    }
+    return EventType.nullInstance!;
   }
 
   /**

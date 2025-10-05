@@ -15,6 +15,7 @@ export class GalaxyMapComponent extends Component {
     private readonly sectors: Map<string, Sector>;
     private readonly planets: Map<string, PlanetComponent>;
     private readonly adjacency: Map<string, Set<string>>;
+    private static nullInstance: GalaxyMapComponent | null = null;
 
     /**
      * Constructor.
@@ -24,6 +25,23 @@ export class GalaxyMapComponent extends Component {
         this.sectors = new Map<string, Sector>();
         this.planets = new Map<string, PlanetComponent>();
         this.adjacency = new Map<string, Set<string>>();
+    }
+
+    /**
+     * Returns a null object instance of GalaxyMapComponent.
+     * This instance serves as a safe, neutral placeholder when a GalaxyMapComponent is not available.
+     * @returns A null GalaxyMapComponent instance with empty maps.
+     */
+    static get Null(): GalaxyMapComponent {
+        if (!GalaxyMapComponent.nullInstance) {
+            const instance = Object.create(GalaxyMapComponent.prototype);
+            instance.sectors = new Map<string, Sector>();
+            instance.planets = new Map<string, PlanetComponent>();
+            instance.adjacency = new Map<string, Set<string>>();
+            Object.freeze(instance);
+            GalaxyMapComponent.nullInstance = instance;
+        }
+        return GalaxyMapComponent.nullInstance!;
     }
 
     /**

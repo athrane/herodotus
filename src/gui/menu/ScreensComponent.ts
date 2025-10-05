@@ -6,6 +6,7 @@ import { Component } from '../../ecs/Component';
  */
 export class ScreensComponent extends Component {
   private readonly screens: Map<string, string>;
+  private static nullInstance: ScreensComponent | null = null;
 
   /**
    * Creates an empty instance of ScreensComponent.
@@ -13,6 +14,21 @@ export class ScreensComponent extends Component {
   constructor() {
     super();
     this.screens = new Map<string, string>();
+  }
+
+  /**
+   * Returns a null object instance of ScreensComponent.
+   * This instance serves as a safe, neutral placeholder when a ScreensComponent is not available.
+   * @returns A null ScreensComponent instance with empty screens map.
+   */
+  static get Null(): ScreensComponent {
+    if (!ScreensComponent.nullInstance) {
+      const instance = Object.create(ScreensComponent.prototype);
+      instance.screens = new Map<string, string>();
+      Object.freeze(instance);
+      ScreensComponent.nullInstance = instance;
+    }
+    return ScreensComponent.nullInstance!;
   }
 
   /**

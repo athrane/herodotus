@@ -6,6 +6,7 @@ import { Component } from '../../ecs/Component';
 export class IsVisibleComponent extends Component {
     private visible: boolean;
     private readonly immutable: boolean;
+    private static nullInstance: IsVisibleComponent | null = null;
 
     /**
      * Constructor for the IsVisibleComponent.
@@ -16,6 +17,22 @@ export class IsVisibleComponent extends Component {
         super();
         this.visible = visible;
         this.immutable = immutable;
+    }
+
+    /**
+     * Returns a null object instance of IsVisibleComponent.
+     * This instance serves as a safe, neutral placeholder when an IsVisibleComponent is not available.
+     * @returns A null IsVisibleComponent instance with invisible and immutable state.
+     */
+    static get Null(): IsVisibleComponent {
+        if (!IsVisibleComponent.nullInstance) {
+            const instance = Object.create(IsVisibleComponent.prototype);
+            instance.visible = false;
+            instance.immutable = true;
+            Object.freeze(instance);
+            IsVisibleComponent.nullInstance = instance;
+        }
+        return IsVisibleComponent.nullInstance!;
     }
 
     /**

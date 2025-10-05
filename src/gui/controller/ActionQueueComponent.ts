@@ -5,6 +5,7 @@ import { Component } from '../../ecs/Component';
  */
 export class ActionQueueComponent extends Component {
   public queue: string[] = [];
+  private static nullInstance: ActionQueueComponent | null = null;
 
   /**
    * Adds an action to the queue.
@@ -27,5 +28,20 @@ export class ActionQueueComponent extends Component {
    */   
   public clear(): void {
     this.queue = [];
+  }
+
+  /**
+   * Returns a null object instance of ActionQueueComponent.
+   * This instance serves as a safe, neutral placeholder when an ActionQueueComponent is not available.
+   * @returns A null ActionQueueComponent instance with empty queue.
+   */
+  static get Null(): ActionQueueComponent {
+    if (!ActionQueueComponent.nullInstance) {
+      const instance = Object.create(ActionQueueComponent.prototype);
+      instance.queue = [];
+      Object.freeze(instance);
+      ActionQueueComponent.nullInstance = instance;
+    }
+    return ActionQueueComponent.nullInstance!;
   }
 }

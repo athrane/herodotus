@@ -7,6 +7,7 @@ import { GeographicalFeature } from '../feature/GeographicalFeature';
 export class Continent {
   private readonly name: string;
   private readonly features: GeographicalFeature[];
+  private static nullInstance: Continent | null = null;
 
   /**
    * Creates an instance of Continent.
@@ -16,6 +17,22 @@ export class Continent {
     TypeUtils.ensureString(name, 'Continent name must be a string.');
     this.name = name;
     this.features = [];
+  }
+
+  /**
+   * Returns a null object instance of Continent.
+   * This instance serves as a safe, neutral placeholder when a Continent is not available.
+   * @returns A null Continent instance with empty name and no features.
+   */
+  static get Null(): Continent {
+    if (!Continent.nullInstance) {
+      const instance = Object.create(Continent.prototype);
+      instance.name = '';
+      instance.features = [];
+      Object.freeze(instance);
+      Continent.nullInstance = instance;
+    }
+    return Continent.nullInstance!;
   }
 
   /**

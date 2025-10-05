@@ -12,6 +12,7 @@ export class ChoiceComponent extends Component {
      * Array of DataSetEvent choices available for the current choice selection.
      */
     private choices: DataSetEvent[];
+    private static nullInstance: ChoiceComponent | null = null;
 
     /**
      * Creates an instance of ChoiceComponent.
@@ -27,6 +28,21 @@ export class ChoiceComponent extends Component {
         }
 
         this.choices = [...choices];
+    }
+
+    /**
+     * Returns a null object instance of ChoiceComponent.
+     * This instance serves as a safe, neutral placeholder when a ChoiceComponent is not available.
+     * @returns A null ChoiceComponent instance with empty choices array.
+     */
+    static get Null(): ChoiceComponent {
+        if (!ChoiceComponent.nullInstance) {
+            const instance = Object.create(ChoiceComponent.prototype);
+            instance.choices = [];
+            Object.freeze(instance);
+            ChoiceComponent.nullInstance = instance;
+        }
+        return ChoiceComponent.nullInstance!;
     }
 
     /**

@@ -9,6 +9,7 @@ import { ChronicleEvent } from './ChronicleEvent';
 export class ChronicleComponent extends Component {
   /** Internal list of events (ChronicleEvent instances only). */
   private events: ChronicleEvent[] = [];
+  private static nullInstance: ChronicleComponent | null = null;
 
   /**
    * @param events - Initial events to seed the component with.
@@ -20,6 +21,21 @@ export class ChronicleComponent extends Component {
     for (const event of events) {
       this.addEvent(event);
     }
+  }
+
+  /**
+   * Returns a null object instance of ChronicleComponent.
+   * This instance serves as a safe, neutral placeholder when a ChronicleComponent is not available.
+   * @returns A null ChronicleComponent instance with empty events array.
+   */
+  static get Null(): ChronicleComponent {
+    if (!ChronicleComponent.nullInstance) {
+      const instance = Object.create(ChronicleComponent.prototype);
+      instance.events = [];
+      Object.freeze(instance);
+      ChronicleComponent.nullInstance = instance;
+    }
+    return ChronicleComponent.nullInstance!;
   }
 
   /**

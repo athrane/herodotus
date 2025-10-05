@@ -7,6 +7,7 @@ import { TypeUtils } from '../../../util/TypeUtils';
 export class GeographicalFeatureData {
   private readonly key: string;
   private readonly displayName: string;
+  private static nullInstance: GeographicalFeatureData | null = null;
 
   /**
    * Creates a new GeographicalFeatureData instance from JSON data.
@@ -19,6 +20,22 @@ export class GeographicalFeatureData {
     this.key = data.key;
     this.displayName = data.displayName;
     Object.freeze(this); // Make instances immutable
+  }
+
+  /**
+   * Returns a null object instance of GeographicalFeatureData.
+   * This instance serves as a safe, neutral placeholder when a GeographicalFeatureData is not available.
+   * @returns A null GeographicalFeatureData instance with empty string values.
+   */
+  static get Null(): GeographicalFeatureData {
+    if (!GeographicalFeatureData.nullInstance) {
+      const instance = Object.create(GeographicalFeatureData.prototype);
+      instance.key = '';
+      instance.displayName = '';
+      Object.freeze(instance);
+      GeographicalFeatureData.nullInstance = instance;
+    }
+    return GeographicalFeatureData.nullInstance!;
   }
 
   /**
