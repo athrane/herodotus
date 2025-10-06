@@ -47,6 +47,72 @@ describe('PlanetComponent continents', () => {
     expect(updated).toHaveLength(2);
     expect(updated[1]).toBe(newContinent);
   });
+
+  it('returns the null continent when no continents are defined', () => {
+    const planet = PlanetComponent.create(
+      'planet-3',
+      'Empty Planet',
+      'sector-3',
+      'Owner',
+      PlanetStatus.NORMAL,
+      5,
+      2,
+      PlanetResourceSpecialization.AGRICULTURE,
+      []
+    );
+
+    const continent = planet.getRandomContinent();
+    expect(continent).toBe(Continent.createNullContinent());
+  });
+
+  it('returns a continent when continents are defined', () => {
+    const continent1 = Continent.create('Alpha');
+    const continent2 = Continent.create('Beta');
+    const continent3 = Continent.create('Gamma');
+    
+    const planet = PlanetComponent.create(
+      'planet-4',
+      'Multi-Continent Planet',
+      'sector-4',
+      'Owner',
+      PlanetStatus.NORMAL,
+      5,
+      2,
+      PlanetResourceSpecialization.AGRICULTURE,
+      [continent1, continent2, continent3]
+    );
+
+    const randomContinent = planet.getRandomContinent();
+    expect([continent1, continent2, continent3]).toContain(randomContinent);
+  });
+
+  it('returns different continents over multiple calls (probabilistic)', () => {
+    const continent1 = Continent.create('Alpha');
+    const continent2 = Continent.create('Beta');
+    const continent3 = Continent.create('Gamma');
+    
+    const planet = PlanetComponent.create(
+      'planet-5',
+      'Random Test Planet',
+      'sector-5',
+      'Owner',
+      PlanetStatus.NORMAL,
+      5,
+      2,
+      PlanetResourceSpecialization.AGRICULTURE,
+      [continent1, continent2, continent3]
+    );
+
+    // Get multiple random continents
+    const results = new Set();
+    for (let i = 0; i < 20; i++) {
+      results.add(planet.getRandomContinent().getName());
+    }
+
+    // With 20 iterations on 3 continents, we should get at least 2 different ones
+    // This is probabilistic but extremely unlikely to fail
+    expect(results.size).toBeGreaterThanOrEqual(2);
+  });
 });
 
 describe('PlanetComponent core properties', () => {

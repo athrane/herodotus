@@ -576,11 +576,11 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 - `src/geography/galaxy/Sector.ts` — Named region of the galaxy tracking planets for regional gameplay systems
 - `src/geography/galaxy/GalaxyMapComponent.ts` — Component modeling the galactic map as a graph of planets connected by space lanes, grouped into sectors
 - `src/geography/GeographicalUtils.ts` — Utility class providing centralized geographical operations including random place computation from galaxy maps with fallback support
+- `src/geography/Location.ts` — Location model representing a place defined by its geographical feature and planet
 - `src/geography/feature/FeatureType.ts` — Feature type metadata
 - `src/geography/feature/GeographicalFeature.ts` — Geographical feature instances
 - `src/geography/feature/GeographicalFeaturesFactory.ts` — Factory to create features
 - `src/geography/feature/GeographicalFeatureTypeRegistry.ts` — Registry of feature types
-- `src/generator/Place.ts` — Place model used during generation
 - `src/generator/world/WorldGenerator.ts` — World generator implementation
 
 #### Data & Chronicle

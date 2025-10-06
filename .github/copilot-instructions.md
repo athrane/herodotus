@@ -184,10 +184,25 @@ Configuration Files (Root):
 
 #### Coding Conventions
 1. **Static Factory Methods**: Every class must have `static create()` method
-2. **Type Validation**: Use `TypeUtils` for parameter validation
-3. **ES Modules**: Use `import`/`export` syntax exclusively
-4. **File Organization**: One class per file, PascalCase filenames
-5. **JSDoc**: Document all public classes and methods
+2. **Null Object Pattern**: Data classes (ECS components, domain objects) should implement the null object pattern
+   - Provide a static factory method (e.g., `createNullFeature()`, `createNull()`) that returns a singleton null instance
+   - Use lazy initialization: create the null instance only on first access
+   - Store in a private static field (e.g., `private static nullFeature: GeographicalFeature | null = null`)
+   - Example pattern:
+     ```typescript
+     private static nullInstance: MyClass | null = null;
+     
+     static createNull(): MyClass {
+         if (!MyClass.nullInstance) {
+             MyClass.nullInstance = MyClass.create(/* null values */);
+         }
+         return MyClass.nullInstance;
+     }
+     ```
+3. **Type Validation**: Use `TypeUtils` for parameter validation
+4. **ES Modules**: Use `import`/`export` syntax exclusively
+5. **File Organization**: One class per file, PascalCase filenames
+6. **JSDoc**: Document all public classes and methods
 
 #### Type Safety
 - Project uses strict TypeScript mode

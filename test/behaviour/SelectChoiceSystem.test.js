@@ -692,9 +692,9 @@ describe('SelectChoiceSystem', () => {
             // Assert
             expect(chronicleComponent.getEvents().length).toBe(1);
             const recordedEvent = chronicleComponent.getEvents()[0];
-            expect(recordedEvent.getPlace()).toBeDefined();
-            expect(recordedEvent.getPlace().getName()).toBeDefined();
-            expect(typeof recordedEvent.getPlace().getName()).toBe('string');
+            expect(recordedEvent.getLocation()).toBeDefined();
+            expect(recordedEvent.getLocation().getName()).toBeDefined();
+            expect(typeof recordedEvent.getLocation().getName()).toBe('string');
         });
     });
 
@@ -769,12 +769,13 @@ describe('SelectChoiceSystem', () => {
             // Act
             system.processEntity(entity);
 
-            // Assert
-            const recordedEvent = chronicleComponent.getEvents()[0];
-            expect(recordedEvent.getPlace().getName()).toBe('The Council Chambers');
+            // Assert - Event should be recorded with null planet location
+            const events = chronicleComponent.getEvents();
+            expect(events).toHaveLength(1);
+            expect(events[0].getLocation().getPlanet().getId()).toBe('NULL_PLANET');
         });
 
-        it('should fall back to default place when planet has no continents', () => {
+        it('should fall back to planet name fallback feature when planet has no continents', () => {
             // Arrange - Create planet with no continents
             galaxyMapComponent.reset();
             const sector = Sector.create('test-sector', 'Test Sector');
@@ -818,7 +819,7 @@ describe('SelectChoiceSystem', () => {
 
             // Assert
             const recordedEvent = chronicleComponent.getEvents()[0];
-            expect(recordedEvent.getPlace().getName()).toBe('The Council Chambers');
+            expect(recordedEvent.getLocation().getName()).toBe('Unknown, Empty Planet');
         });
 
         it('should fall back to planet name when continent has no features', () => {
@@ -866,9 +867,9 @@ describe('SelectChoiceSystem', () => {
             // Act
             system.processEntity(entity);
 
-            // Assert - With the centralized implementation, it now uses planet name as fallback when no features are available
+            // Assert - With the centralized implementation, it now returns null feature name when no features are available
             const recordedEvent = chronicleComponent.getEvents()[0];
-            expect(recordedEvent.getPlace().getName()).toBe('Sparse Planet');
+            expect(recordedEvent.getLocation().getName()).toBe('Unknown, Sparse Planet');
         });
 
         it('should use feature location format when available', () => {
@@ -900,7 +901,7 @@ describe('SelectChoiceSystem', () => {
 
             // Assert
             const recordedEvent = chronicleComponent.getEvents()[0];
-            const placeName = recordedEvent.getPlace().getName();
+            const placeName = recordedEvent.getLocation().getName();
             expect(placeName).toContain('Test City');
             expect(placeName).toContain('Test Planet');
             expect(placeName).toContain(', '); // Should follow format "Feature, Planet"
@@ -1016,7 +1017,7 @@ describe('SelectChoiceSystem', () => {
             
             const recordedEvent = chronicleComponent.getEvents()[0];
             expect(recordedEvent.getHeading()).toBe('Decision made: Test Choice');
-            expect(recordedEvent.getPlace()).toBeDefined();
+            expect(recordedEvent.getLocation()).toBeDefined();
             expect(recordedEvent.getTime()).toBeDefined();
         });
     });

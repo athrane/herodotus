@@ -86,10 +86,8 @@ export class HistoricalFigureBirthSystem extends System {
         // define a lifespan in years for the historical figure
         const lifespanYears = this.calculateLifespan();
 
-        // Get a random place for the historical figure
-        const place = GeographicalUtils.computeRandomPlace(galaxyMapComponent);
-
-        // Create a HistoricalFigureComponent with a random lifespan    
+        // Get a random location for the historical figure
+        const location = GeographicalUtils.computeRandomLocation(galaxyMapComponent);
         const historicalFigureComponent = HistoricalFigureComponent.create(
             name,
             year,
@@ -105,11 +103,11 @@ export class HistoricalFigureBirthSystem extends System {
             "Event Name": `Birth of ${name}`,
             "Event Consequence": `Birth`,
             "Heading": "A New Figure Emerges",
-            "Place": place.getName(),
+            "Location": location.getName(),
             "Primary Actor": name,
             "Secondary Actor": "The Community",
             "Motive": "Natural birth and emergence into society",
-            "Description": `${name} was born in ${place.getName()} during the year ${year}. This individual is destined to become a notable figure in history, with an expected lifespan of ${lifespanYears} years.`,
+            "Description": `${name} was born in ${location.getName()} during the year ${year}. This individual is destined to become a notable figure in history, with an expected lifespan of ${lifespanYears} years.`,
             "Consequence": `The world gains a new historical figure who may influence future events`,
             "Tags": "birth, historical-figure, social, emergence"
         });
@@ -128,7 +126,7 @@ export class HistoricalFigureBirthSystem extends System {
             `Historical figure ${name} was born in ${year}.`,
             eventType,
             time,
-            place,
+            location,
             `The historical figure named ${name} was born in the year ${year}. They will live for approximately ${lifespanYears} years.`,
             historicalFigureComponent);
         chronicleComponent.addEvent(event);

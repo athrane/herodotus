@@ -76,4 +76,40 @@ describe('GeographicalFeature', () => {
         }).toThrow(TypeError);
     });
 
+    describe('createNullFeature', () => {
+        it('should create a null feature with Unknown name', () => {
+            const nullFeature = GeographicalFeature.createNullFeature();
+            
+            expect(nullFeature.getName()).toBe('Unknown');
+        });
+
+        it('should use the null feature type from registry', () => {
+            const nullFeature = GeographicalFeature.createNullFeature();
+            const expectedNullType = GeographicalFeatureTypeRegistry.getNullFeatureType();
+            
+            expect(nullFeature.getType()).toStrictEqual(expectedNullType);
+        });
+
+        it('should return the same instance on multiple calls (singleton)', () => {
+            const firstCall = GeographicalFeature.createNullFeature();
+            const secondCall = GeographicalFeature.createNullFeature();
+            const thirdCall = GeographicalFeature.createNullFeature();
+            
+            expect(firstCall).toBe(secondCall);
+            expect(secondCall).toBe(thirdCall);
+        });
+
+        it('should be frozen (immutable)', () => {
+            const nullFeature = GeographicalFeature.createNullFeature();
+            
+            expect(Object.isFrozen(nullFeature)).toBe(true);
+        });
+
+        it('should be a valid GeographicalFeature instance', () => {
+            const nullFeature = GeographicalFeature.createNullFeature();
+            
+            expect(nullFeature).toBeInstanceOf(GeographicalFeature);
+        });
+    });
+
 });

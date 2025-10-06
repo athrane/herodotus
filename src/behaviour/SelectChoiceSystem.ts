@@ -22,7 +22,7 @@ import { GeographicalUtils } from '../geography/GeographicalUtils';
  * to prepare for the next choice generation cycle.
  */
 export class SelectChoiceSystem extends System {
-    
+
     /**
      * A constant representing an unknown historical figure used when no HistoricalFigureComponent is found.
      */
@@ -71,7 +71,7 @@ export class SelectChoiceSystem extends System {
         if (isPlayerEntity) {
             // Check if the current DataSetEvent is one of the available choices
             const currentEvent = dataSetEventComponent.getDataSetEvent();
-            const isChoiceMade = choices.some(choice => 
+            const isChoiceMade = choices.some(choice =>
                 choice.getEventName() === currentEvent?.getEventName() &&
                 choice.getDescription() === currentEvent?.getDescription()
             );
@@ -126,23 +126,21 @@ export class SelectChoiceSystem extends System {
 
         // Get chronicle component
         const chronicleComponent = this.getEntityManager().getSingletonComponent(ChronicleComponent);
-        if(!chronicleComponent) return;
+        if (!chronicleComponent) return;
 
         // Get time component and
         const timeComponent = this.getEntityManager().getSingletonComponent(TimeComponent);
-        if(!timeComponent) return;
+        if (!timeComponent) return;
 
         // Get galaxy map component
         const galaxyMapComponent = this.getEntityManager().getSingletonComponent(GalaxyMapComponent);
-        if(!galaxyMapComponent) return;
-        
+        if (!galaxyMapComponent) return;
+
         // Get the current time
         const currentTime = timeComponent.getTime();
-        
-        // Get a place from the galaxy map
-        const place = GeographicalUtils.computeRandomPlace(galaxyMapComponent, 'The Council Chambers');
 
-        // Create an event type for the decision using the chosen event's type
+        // Get a random location from the galaxy map
+        const location = GeographicalUtils.computeRandomLocation(galaxyMapComponent);
         const eventCategory = getEventCategoryFromString(chosenEvent.getEventType());
         const eventType = EventType.create(eventCategory, chosenEvent.getEventName());
 
@@ -157,7 +155,7 @@ export class SelectChoiceSystem extends System {
             heading,
             eventType,
             currentTime,
-            place,
+            location,
             description,
             historicalFigure
         );

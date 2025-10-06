@@ -116,9 +116,9 @@ export class HistoricalFigureLifecycleSystem extends System {
         const galaxyMapComponent = this.getEntityManager().getSingletonComponent(GalaxyMapComponent);
         if (!galaxyMapComponent) return;
 
-        // Create the time and place for the death event
+        // Create the time and location for the death event
         const time = Time.create(deathYear);
-        const place = GeographicalUtils.computeRandomPlace(galaxyMapComponent);
+        const location = GeographicalUtils.computeRandomLocation(galaxyMapComponent);
 
         // Get the historical figure instance from the component
         // Create the event type for death
@@ -129,8 +129,8 @@ export class HistoricalFigureLifecycleSystem extends System {
             `${historicalFigure.getName()} has died in ${deathYear}.`,
             eventType,
             time,
-            place,
-            `The historical figure ${historicalFigure.getName()} has died in the year ${deathYear} at ${place.getName()}. ` +
+            location,
+            `The historical figure ${historicalFigure.getName()} has died in the year ${deathYear} at ${location.getName()}. ` +
             `They lived for ${lifespan} years (${historicalFigure.getBirthYear()}-${deathYear}). ` +
             `Their occupation was ${historicalFigure.getOccupation()} and they belonged to the ${historicalFigure.getCulture()} culture.`,
             historicalFigure

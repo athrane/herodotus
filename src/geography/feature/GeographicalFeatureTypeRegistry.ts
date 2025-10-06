@@ -7,6 +7,14 @@ import { FeatureType } from './FeatureType';
  * This is implemented as a static class to enforce a single registry instance.
  */
 export class GeographicalFeatureTypeRegistry {
+
+    /**
+     * @constant
+     * @description The null geographical feature to use for unknown regions.
+     * @default UNKNOWN
+     */
+    static readonly GEOGRAPHICAL_FEATURE_NULL: string = "UNKNOWN";
+
     /**
      * A map to store FeatureType instances, keyed by their unique 'key'.
      */
@@ -80,7 +88,9 @@ export class GeographicalFeatureTypeRegistry {
      */
     static getRandom(): FeatureType | undefined {
         if (this.types.size === 0) {
-            return undefined;
+            // register the null feature type if none exist and return it
+            this.registerNullFeatureType();
+            return this.get(this.GEOGRAPHICAL_FEATURE_NULL);
         }
         const types = this.getAll();
         const randomIndex = Math.floor(Math.random() * types.length);
@@ -94,4 +104,26 @@ export class GeographicalFeatureTypeRegistry {
     static clear(): void {
         this.types.clear();
     }
+
+    /**
+     * Registers the null geographical feature type if not already registered.
+     * This ensures that the 'UNKNOWN' type is always available for fallback scenarios.
+     */
+    static registerNullFeatureType() {
+        if (!this.has(this.GEOGRAPHICAL_FEATURE_NULL)) {
+            this.register(this.GEOGRAPHICAL_FEATURE_NULL, 'Unknown');
+        }
+    }
+
+    /**
+     * Retrieves the null geographical feature type, registering it if necessary.
+     * @returns The 'UNKNOWN' FeatureType instance.
+     */
+    static getNullFeatureType(): FeatureType {
+        if (!this.has(this.GEOGRAPHICAL_FEATURE_NULL)) {
+            this.registerNullFeatureType();
+        }
+        return this.get(this.GEOGRAPHICAL_FEATURE_NULL)!;
+    }
+
 }

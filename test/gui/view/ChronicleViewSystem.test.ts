@@ -11,9 +11,42 @@ import { ChronicleEvent } from '../../../src/chronicle/ChronicleEvent';
 import { EventType } from '../../../src/chronicle/EventType';
 import { EventCategory } from '../../../src/chronicle/EventCategory';
 import { Time } from '../../../src/time/Time';
-import { Place } from '../../../src/generator/Place';
+import { Location } from '../../../src/geography/Location';
+import { GeographicalFeature } from '../../../src/geography/feature/GeographicalFeature';
+import { GeographicalFeatureTypeRegistry } from '../../../src/geography/feature/GeographicalFeatureTypeRegistry';
+import { PlanetComponent } from '../../../src/geography/planet/PlanetComponent';
+import { PlanetStatus } from '../../../src/geography/planet/PlanetComponent';
+import { PlanetResourceSpecialization } from '../../../src/geography/planet/PlanetComponent';
+import { Continent } from '../../../src/geography/planet/Continent';
 import { MenuItem } from '../../../src/gui/menu/MenuItem';
 import { ScrollStrategy } from '../../../src/gui/menu/ScrollStrategy';
+
+/**
+ * Helper function to create a test location with mock feature and planet.
+ */
+function createTestLocation(locationName: string): Location {
+  // Register feature type if not already registered
+  if (!GeographicalFeatureTypeRegistry.has('TEST_CITY')) {
+    GeographicalFeatureTypeRegistry.register('TEST_CITY', 'City');
+  }
+  const featureType = GeographicalFeatureTypeRegistry.get('TEST_CITY')!;
+  const feature = GeographicalFeature.create(locationName, featureType);
+  
+  const continent = Continent.create('Test Continent');
+  const planet = PlanetComponent.create(
+    'test-planet-1',
+    'Test Planet',
+    'test-sector-1',
+    'TestOwner',
+    PlanetStatus.NORMAL,
+    5,
+    1,
+    PlanetResourceSpecialization.AGRICULTURE,
+    [continent]
+  );
+  
+  return Location.create(feature, planet);
+}
 
 describe('ChronicleViewSystem', () => {
   let guiEntityManager: EntityManager;
@@ -86,7 +119,7 @@ describe('ChronicleViewSystem', () => {
       // Create test chronicle events
       const eventType = new EventType(EventCategory.POLITICAL, 'Birth');
       const time = new Time(484);
-      const place = new Place('Halicarnassus');
+      const place = createTestLocation('Halicarnassus');
       
       const event1 = ChronicleEvent.create(
         'Birth of Herodotus',
@@ -156,7 +189,7 @@ describe('ChronicleViewSystem', () => {
       // Create 5 test chronicle events
       const eventType = new EventType(EventCategory.POLITICAL, 'Event');
       const time = new Time(100);
-      const place = new Place('TestPlace');
+      const place = createTestLocation('TestPlace');
       
       const events = [];
       for (let i = 0; i < 5; i++) {
@@ -225,7 +258,7 @@ describe('ChronicleViewSystem', () => {
       // Create multiple chronicle entities
       const eventType = new EventType(EventCategory.POLITICAL, 'Event');
       const time = new Time(100);
-      const place = new Place('TestPlace');
+      const place = createTestLocation('TestPlace');
       
       const event1 = ChronicleEvent.create('First Chronicle Event', eventType, time, place, 'First');
       const event2 = ChronicleEvent.create('Second Chronicle Event', eventType, time, place, 'Second');
@@ -257,7 +290,7 @@ describe('ChronicleViewSystem', () => {
       // Add chronicle to simulation
       const eventType = new EventType(EventCategory.POLITICAL, 'Test');
       const time = new Time(100);
-      const place = new Place('TestPlace');
+      const place = createTestLocation('TestPlace');
       const event = ChronicleEvent.create('New Event', eventType, time, place, 'Description');
       
       const chronicleEntity = simulationEntityManager.createEntity();

@@ -1,4 +1,8 @@
 {
+  "UNKNOWN": {
+    "key": "UNKNOWN",
+    "displayName": "Unknown"
+  },
   "MOUNTAIN": {
     "key": "MOUNTAIN",
     "displayName": "Mountain"

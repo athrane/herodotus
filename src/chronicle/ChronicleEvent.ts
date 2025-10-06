@@ -1,7 +1,7 @@
 import { TypeUtils } from '../util/TypeUtils';
 import { Time } from '../time/Time';
 import { HistoricalFigureComponent } from '../historicalfigure/HistoricalFigureComponent';
-import { Place } from '../generator/Place';
+import { Location } from '../geography/Location';
 import { EventType } from './EventType';
 
 /**
@@ -13,7 +13,7 @@ export class ChronicleEvent {
   private readonly description: string;
   private readonly time: Time;
   private readonly figure: HistoricalFigureComponent | null;
-  private readonly place: Place;
+  private readonly location: Location;
 
   /**
    * Creates a new chronicle event.
@@ -21,7 +21,7 @@ export class ChronicleEvent {
    * @param heading - Short, human-readable title for the event.
    * @param eventType - The typed category of the event.
    * @param time - The time at which the event occurs.
-   * @param place - The place/location where the event occurs.
+   * @param location - The place/location where the event occurs.
    * @param description - A longer human-readable description of the event.
    * @param figure - The historical figure involved in the event, if any. Defaults to null.
    * @throws {TypeError} If any argument fails runtime validation (type/instance checks).
@@ -30,7 +30,7 @@ export class ChronicleEvent {
     heading: string,
     eventType: EventType,
     time: Time,
-    place: Place,
+    location: Location,
     description: string,
     figure: HistoricalFigureComponent | null = null
   ) {
@@ -40,14 +40,14 @@ export class ChronicleEvent {
     if (figure !== null) {
       TypeUtils.ensureInstanceOf(figure, HistoricalFigureComponent);
     }
-    TypeUtils.ensureInstanceOf(place, Place);
+    TypeUtils.ensureInstanceOf(location, Location);
     TypeUtils.ensureString(description, 'ChronicleEvent description must be a string.');
 
     this.heading = heading;
     this.eventType = eventType;
     this.time = time;
     this.figure = figure;
-    this.place = place;
+    this.location = location;
     this.description = description;
   }
 
@@ -68,11 +68,11 @@ export class ChronicleEvent {
   }
 
   /**
-   * Returns the place where the event occurs.
-   * @returns {Place}
+   * Returns the location where the event occurs.
+   * @returns {Location}
    */
-  getPlace(): Place {
-    return this.place;
+  getLocation(): Location {
+    return this.location;
   }
 
   /**
@@ -105,7 +105,7 @@ export class ChronicleEvent {
    * @param heading - Short, human-readable title for the event.
    * @param eventType - The typed category of the event.
    * @param time - The time at which the event occurs.
-   * @param place - The place/location where the event occurs.
+   * @param location - The location where the event occurs.
    * @param description - A longer human-readable description of the event.
    * @param figure - The historical figure involved in the event, if any. Defaults to null.
    * @returns {ChronicleEvent}
@@ -114,10 +114,10 @@ export class ChronicleEvent {
     heading: string,
     eventType: EventType,
     time: Time,
-    place: Place,
+    location: Location,
     description: string,
     figure: HistoricalFigureComponent | null = null
   ): ChronicleEvent {
-    return new ChronicleEvent(heading, eventType, time, place, description, figure);
+    return new ChronicleEvent(heading, eventType, time, location, description, figure);
   }
 }
