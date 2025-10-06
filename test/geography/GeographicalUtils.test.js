@@ -1,6 +1,10 @@
 import { GeographicalUtils } from '../../src/geography/GeographicalUtils';
 import { GalaxyMapComponent } from '../../src/geography/galaxy/GalaxyMapComponent';
 import { Location } from '../../src/geography/Location';
+import { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } from '../../src/geography/planet/PlanetComponent';
+import { Continent } from '../../src/geography/planet/Continent';
+import { GeographicalFeature } from '../../src/geography/feature/GeographicalFeature';
+import { GeographicalFeatureTypeRegistry } from '../../src/geography/feature/GeographicalFeatureTypeRegistry';
 
 describe('GeographicalUtils', () => {
     let mockGalaxyMap;
@@ -8,6 +12,8 @@ describe('GeographicalUtils', () => {
     beforeEach(() => {
         // Create a proper GalaxyMapComponent instance
         mockGalaxyMap = GalaxyMapComponent.create();
+        // Clear registry to ensure clean state
+        GeographicalFeatureTypeRegistry.clear();
     });
 
     afterEach(() => {
@@ -15,122 +21,174 @@ describe('GeographicalUtils', () => {
     });
 
     describe('computeRandomPlace', () => {
-        it('should return a place with feature and planet name when both are available', () => {
-            // Mock a planet with continents and features
-            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue({
-                getName: () => 'TestPlanet',
-                getContinents: () => [{
-                    getRandomFeature: () => ({
-                        getName: () => 'TestFeature'
-                    })
-                }]
-            });
+        it('should return a Location with feature and planet name when both are available', () => {
+            // Create proper instances
+            const featureType = GeographicalFeatureTypeRegistry.register('test_city', 'City');
+            const feature = GeographicalFeature.create('TestFeature', featureType);
+            const continent = Continent.create('Test Continent');
+            continent.addFeature(feature);
+            const planet = PlanetComponent.create(
+                'test-planet-1',
+                'TestPlanet',
+                'test-sector-1',
+                'TestOwner',
+                PlanetStatus.NORMAL,
+                5,
+                1,
+                PlanetResourceSpecialization.AGRICULTURE,
+                [continent]
+            );
+            
+            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+            const location = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
 
-            expect(place).toBeInstanceOf(Location);
-            expect(place.getName()).toBe('TestFeature, TestPlanet');
+            expect(location).toBeInstanceOf(Location);
+            expect(location.getName()).toBe('TestFeature, TestPlanet');
+            expect(location.getFeature()).toBe(feature);
+            expect(location.getPlanet()).toBe(planet);
         });
 
-        it('should return only planet name when no features are available', () => {
-            // Mock a planet with continents but no features
-            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue({
-                getName: () => 'BarrenPlanet',
-                getContinents: () => [{
-                    getRandomFeature: () => null
-                }]
-            });
+        it('should return Location with null feature when no features are available', () => {
+            // Create planet with continent but no features
+            const continent = Continent.create('Empty Continent');
+            // Don't add any features to the continent
+            const planet = PlanetComponent.create(
+                'barren-planet-1',
+                'BarrenPlanet',
+                'test-sector-1',
+                'TestOwner',
+                PlanetStatus.NORMAL,
+                5,
+                1,
+                PlanetResourceSpecialization.AGRICULTURE,
+                [continent]
+            );
 
-            const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            expect(place).toBeInstanceOf(Location);
-            expect(place.getName()).toBe('BarrenPlanet');
+            const location = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+
+            expect(location).toBeInstanceOf(Location);
+            // Null feature has name "Unknown" per null object pattern
+            expect(location.getName()).toBe('Unknown, BarrenPlanet');
+            expect(location.getFeature().getName()).toBe('Unknown');
+            expect(location.getPlanet()).toBe(planet);
         });
 
-        it('should return default fallback when no planet is available', () => {
-            // Mock no planet
-            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(null);
+        it('should return Location with null feature when planet has no continents', () => {
+            // Create planet with no continents
+            const planet = PlanetComponent.create(
+                'empty-planet-1',
+                'EmptyPlanet',
+                'test-sector-1',
+                'TestOwner',
+                PlanetStatus.NORMAL,
+                5,
+                1,
+                PlanetResourceSpecialization.AGRICULTURE,
+                []  // No continents
+            );
 
-            const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            expect(place).toBeInstanceOf(Location);
-            expect(place.getName()).toBe('Unknown Location');
+            const location = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+
+            expect(location).toBeInstanceOf(Location);
+            // Null feature has name "Unknown" per null object pattern
+            expect(location.getName()).toBe('Unknown, EmptyPlanet');
+            expect(location.getFeature().getName()).toBe('Unknown');
         });
 
-        it('should return default fallback when planet has no continents', () => {
-            // Mock a planet with no continents
-            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue({
-                getName: () => 'EmptyPlanet',
-                getContinents: () => []
-            });
+        it('should return Location with null feature when continents is null', () => {
+            // Create planet with null continents - this actually uses empty array in practice
+            const planet = PlanetComponent.create(
+                'null-continents-planet-1',
+                'NullContinentsPlanet',
+                'test-sector-1',
+                'TestOwner',
+                PlanetStatus.NORMAL,
+                5,
+                1,
+                PlanetResourceSpecialization.AGRICULTURE,
+                []  // PlanetComponent doesn't allow null, so this is empty array
+            );
 
-            const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            expect(place).toBeInstanceOf(Location);
-            expect(place.getName()).toBe('Unknown Location');
+            const location = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+
+            expect(location).toBeInstanceOf(Location);
+            // Null feature has name "Unknown" per null object pattern
+            expect(location.getName()).toBe('Unknown, NullContinentsPlanet');
         });
 
-        it('should return default fallback when continents is null', () => {
-            // Mock a planet with null continents
-            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue({
-                getName: () => 'NullContinentsPlanet',
-                getContinents: () => null
-            });
+        it('should return Location with null feature when continents is undefined', () => {
+            // Create planet with empty continents - this is the closest to undefined in practice
+            const planet = PlanetComponent.create(
+                'undefined-continents-planet-1',
+                'UndefinedContinentsPlanet',
+                'test-sector-1',
+                'TestOwner',
+                PlanetStatus.NORMAL,
+                5,
+                1,
+                PlanetResourceSpecialization.AGRICULTURE,
+                []  // PlanetComponent doesn't allow undefined, so this is empty array
+            );
 
-            const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            expect(place).toBeInstanceOf(Location);
-            expect(place.getName()).toBe('Unknown Location');
-        });
+            const location = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
 
-        it('should return default fallback when continents is undefined', () => {
-            // Mock a planet with undefined continents
-            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue({
-                getName: () => 'UndefinedContinentsPlanet',
-                getContinents: () => undefined
-            });
-
-            const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
-
-            expect(place).toBeInstanceOf(Location);
-            expect(place.getName()).toBe('Unknown Location');
-        });
-
-        it('should use custom fallback location when provided', () => {
-            // Mock no planet
-            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(null);
-
-            const customFallback = 'The Council Chambers';
-            const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap, customFallback);
-
-            expect(place).toBeInstanceOf(Location);
-            expect(place.getName()).toBe(customFallback);
+            expect(location).toBeInstanceOf(Location);
+            // Null feature has name "Unknown" per null object pattern
+            expect(location.getName()).toBe('Unknown, UndefinedContinentsPlanet');
         });
 
         it('should handle multiple continents correctly', () => {
-            // Mock a planet with multiple continents
-            const mockContinents = [
-                { getRandomFeature: () => ({ getName: () => 'Feature1' }) },
-                { getRandomFeature: () => ({ getName: () => 'Feature2' }) },
-                { getRandomFeature: () => ({ getName: () => 'Feature3' }) }
-            ];
+            // Create multiple continents with features
+            const featureType = GeographicalFeatureTypeRegistry.register('multi_city', 'City');
+            
+            const feature1 = GeographicalFeature.create('Feature1', featureType);
+            const continent1 = Continent.create('Continent1');
+            continent1.addFeature(feature1);
+            
+            const feature2 = GeographicalFeature.create('Feature2', featureType);
+            const continent2 = Continent.create('Continent2');
+            continent2.addFeature(feature2);
+            
+            const feature3 = GeographicalFeature.create('Feature3', featureType);
+            const continent3 = Continent.create('Continent3');
+            continent3.addFeature(feature3);
 
-            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue({
-                getName: () => 'MultiContinentPlanet',
-                getContinents: () => mockContinents
-            });
+            const planet = PlanetComponent.create(
+                'multi-continent-planet-1',
+                'MultiContinentPlanet',
+                'test-sector-1',
+                'TestOwner',
+                PlanetStatus.NORMAL,
+                5,
+                1,
+                PlanetResourceSpecialization.AGRICULTURE,
+                [continent1, continent2, continent3]
+            );
+
+            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
             // Mock Math.random to select a specific continent
             const originalRandom = Math.random;
             Math.random = jest.fn(() => 0.5); // Should select middle continent
 
-            const place = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+            const location = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
 
-            expect(place).toBeInstanceOf(Location);
+            expect(location).toBeInstanceOf(Location);
             // The name should contain the planet name
-            expect(place.getName()).toContain('MultiContinentPlanet');
-            // Should have a feature name
-            expect(place.getName().split(', ').length).toBe(2);
+            expect(location.getName()).toContain('MultiContinentPlanet');
+            // Should have a feature name (format: "FeatureName, PlanetName")
+            expect(location.getName().split(', ').length).toBe(2);
+            expect(location.getPlanet()).toBe(planet);
+            expect(location.getFeature()).toBeInstanceOf(GeographicalFeature);
 
             // Restore Math.random
             Math.random = originalRandom;
@@ -147,36 +205,36 @@ describe('GeographicalUtils', () => {
             expect(console.error).toHaveBeenCalled();
         });
 
-        it('should throw TypeError when fallbackLocation is not a string', () => {
-            console.error = jest.fn();
-            console.trace = jest.fn();
+        it('should return consistent Location instances for same input', () => {
+            // Create deterministic planet
+            const featureType = GeographicalFeatureTypeRegistry.register('consistent_city', 'City');
+            const feature = GeographicalFeature.create('ConsistentFeature', featureType);
+            const continent = Continent.create('Consistent Continent');
+            continent.addFeature(feature);
+            const planet = PlanetComponent.create(
+                'consistent-planet-1',
+                'ConsistentPlanet',
+                'test-sector-1',
+                'TestOwner',
+                PlanetStatus.NORMAL,
+                5,
+                1,
+                PlanetResourceSpecialization.AGRICULTURE,
+                [continent]
+            );
 
-            expect(() => {
-                GeographicalUtils.computeRandomPlace(mockGalaxyMap, 123);
-            }).toThrow(TypeError);
+            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            expect(console.error).toHaveBeenCalled();
-        });
+            const location1 = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+            const location2 = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
 
-        it('should return consistent Place instances for same input', () => {
-            // Mock deterministic planet
-            jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue({
-                getName: () => 'ConsistentPlanet',
-                getContinents: () => [{
-                    getRandomFeature: () => ({
-                        getName: () => 'ConsistentFeature'
-                    })
-                }]
-            });
-
-            const place1 = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
-            const place2 = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
-
-            // Should be different instances
-            expect(place1).not.toBe(place2);
-            // But with same name
-            expect(place1.getName()).toBe(place2.getName());
-            expect(place1.getName()).toBe('ConsistentFeature, ConsistentPlanet');
+            // Should be different Location instances (new instances created each time)
+            expect(location1).not.toBe(location2);
+            // But with same name and data
+            expect(location1.getName()).toBe(location2.getName());
+            expect(location1.getName()).toBe('ConsistentFeature, ConsistentPlanet');
+            expect(location1.getFeature()).toBe(location2.getFeature());
+            expect(location1.getPlanet()).toBe(location2.getPlanet());
         });
     });
 });

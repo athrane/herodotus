@@ -1,5 +1,6 @@
 import { TypeUtils } from '../../util/TypeUtils';
 import { GeographicalFeature } from '../feature/GeographicalFeature';
+import type { PlanetComponent } from './PlanetComponent';
 
 /**
  * Represents a continent in the world.
@@ -7,6 +8,8 @@ import { GeographicalFeature } from '../feature/GeographicalFeature';
 export class Continent {
   private readonly name: string;
   private readonly features: GeographicalFeature[];
+  private static nullContinent: Continent | null = null;
+  private static nullPlanetRef: PlanetComponent | null = null;
 
   /**
    * Creates an instance of Continent.
@@ -45,11 +48,11 @@ export class Continent {
 
   /**
    * Gets a random geographical feature from the continent.
-   * @returns A random geographical feature or null if none exist.
+   * @returns A random geographical feature, or the null feature if none exist.
    */
-  getRandomFeature(): GeographicalFeature | null {
+  getRandomFeature(): GeographicalFeature {
     if (this.features.length === 0) {
-      return null;
+      return GeographicalFeature.createNullFeature();
     }
     return this.features[Math.floor(Math.random() * this.features.length)];
   }
@@ -62,4 +65,38 @@ export class Continent {
   static create(name: string): Continent {
     return new Continent(name);
   } 
+
+  /**
+   * Creates a Continent instance representing a null or unknown continent.
+   * Uses lazy initialization to return a singleton null instance.
+   * @returns A Continent instance representing a null or unknown continent.
+   */
+  static createNullContinent(): Continent {
+    if (!Continent.nullContinent) {
+      const nullFeature = GeographicalFeature.createNullFeature();
+      const continent = Continent.create('Null Continent');
+      continent.addFeature(nullFeature);
+      Continent.nullContinent = continent;
+    }
+    return Continent.nullContinent;
+  }
+
+  /**
+   * Sets the reference to the null planet for the null continent.
+   * This allows the Continent class to hold a reference to the null planet
+   * without creating a circular dependency at initialization time.
+   * @param nullPlanet - The null planet instance to reference.
+   */
+  static setNullPlanetReference(nullPlanet: PlanetComponent): void {
+    Continent.nullPlanetRef = nullPlanet;
+  }
+
+  /**
+   * Gets the reference to the null planet.
+   * @returns The null planet instance, or null if not set.
+   */
+  static getNullPlanetReference(): PlanetComponent | null {
+    return Continent.nullPlanetRef;
+  }
+
 }

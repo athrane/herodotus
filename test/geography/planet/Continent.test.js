@@ -65,9 +65,12 @@ describe('Continent', () => {
   });
 
   describe('getRandomFeature', () => {
-    it('should return null if no features exist', () => {
+    it('should return the null feature if no features exist', () => {
       const continent = Continent.create('Empty Continent');
-      expect(continent.getRandomFeature()).toBeNull();
+      const randomFeature = continent.getRandomFeature();
+      expect(randomFeature).toBeInstanceOf(GeographicalFeature);
+      expect(randomFeature.getName()).toBe('Unknown');
+      expect(randomFeature.getType().getKey()).toBe('UNKNOWN');
     });
 
     it('should return a random feature from the continent', () => {
@@ -95,6 +98,37 @@ describe('Continent', () => {
     it('should throw a TypeError if the feature is not an instance of GeographicalFeature', () => {
       const continent = Continent.create('Invalid Feature Continent');
       expect(() => continent.addFeature({})).toThrow(TypeError);
+    });
+  });
+
+  describe('createNullContinent', () => {
+    it('should create a null continent with the name "Null Continent"', () => {
+      const nullContinent = Continent.createNullContinent();
+      expect(nullContinent).toBeInstanceOf(Continent);
+      expect(nullContinent.getName()).toBe('Null Continent');
+    });
+
+    it('should return the same singleton instance on subsequent calls', () => {
+      const nullContinent1 = Continent.createNullContinent();
+      const nullContinent2 = Continent.createNullContinent();
+      expect(nullContinent1).toBe(nullContinent2);
+    });
+
+    it('should contain a null geographical feature', () => {
+      const nullContinent = Continent.createNullContinent();
+      const features = nullContinent.getFeatures();
+      expect(features.length).toBe(1);
+      expect(features[0]).toBeInstanceOf(GeographicalFeature);
+      expect(features[0].getName()).toBe('Unknown');
+      expect(features[0].getType().getKey()).toBe('UNKNOWN');
+    });
+
+    it('should return the null feature when getRandomFeature is called', () => {
+      const nullContinent = Continent.createNullContinent();
+      const randomFeature = nullContinent.getRandomFeature();
+      expect(randomFeature).toBeInstanceOf(GeographicalFeature);
+      expect(randomFeature.getName()).toBe('Unknown');
+      expect(randomFeature.getType().getKey()).toBe('UNKNOWN');
     });
   }); 
 

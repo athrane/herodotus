@@ -9,6 +9,13 @@ import { TypeUtils } from '../util/TypeUtils';
 export class GeographicalUtils {
 
     /**
+     * @constant
+     * @description The null geographical feature to use for unknown regions.
+     * @default UNKNOWN
+     */
+    static readonly GEOGRAPHICAL_FEATURE_NULL: string = "UNKNOWN";
+
+    /**
      * Private constructor to prevent instantiation.
      * This is a utility class with static methods only.
      */
@@ -20,33 +27,20 @@ export class GeographicalUtils {
      * Computes a random place from the galaxy map.
      * This method retrieves a random geographical feature from the galaxy map,
      * prioritizing specific features over general locations.
+     * Uses the null object pattern - getRandomFeature() always returns a valid feature.
      * 
      * @param galaxyMap - The galaxy map component to get a random place from.
-     * @param fallbackLocation - Optional fallback location name if no suitable place is found. Defaults to 'Unknown Location'.
      * @returns A Location instance representing a random location.
+     * @throws {Error} If no planets are available in the galaxy map.
      */
-    static computeRandomPlace(galaxyMap: GalaxyMapComponent, fallbackLocation: string = 'Unknown Location'): Location {
+    static computeRandomPlace(galaxyMap: GalaxyMapComponent): Location {
         TypeUtils.ensureInstanceOf(galaxyMap, GalaxyMapComponent);
-        TypeUtils.ensureString(fallbackLocation, 'Fallback location must be a string.');
 
         // Get a random planet from the galaxy map
         const planet = galaxyMap.getRandomPlanet();
-        if (planet) {
-            const continents = planet.getContinents();
-            if (continents && continents.length > 0) {
-                // Get a random continent from the planet
-                const randomContinent = continents[Math.floor(Math.random() * continents.length)];
-                const randomFeature = randomContinent.getRandomFeature();
-                if (randomFeature) {
-                    // Return Location with feature and planet
-                    return Location.create(randomFeature, planet);
-                }
-                // If no specific feature is available, return just the planet
-                return Location.create(null, planet);
-            }
-        }
-        
-        // Return the fallback location if no suitable place is found
-        return Location.create(null, null, fallbackLocation);
+        const randomContinent = planet.getRandomContinent();
+        const randomFeature = randomContinent.getRandomFeature();
+        return Location.create(randomFeature, planet);
     }
+
 }

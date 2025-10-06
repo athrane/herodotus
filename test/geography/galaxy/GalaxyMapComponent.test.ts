@@ -111,8 +111,18 @@ describe('GalaxyMapComponent', () => {
     expect(galaxy.getPlanetById('planet-a')).toBeUndefined();
   });
 
-  it('returns undefined when getting random planet from empty galaxy', () => {
-    expect(galaxy.getRandomPlanet()).toBeUndefined();
+  it('returns null planet when getting random planet from empty galaxy', () => {
+    const nullPlanet = galaxy.getRandomPlanet();
+    expect(nullPlanet).toBeDefined();
+    expect(nullPlanet.getId()).toBe('NULL_PLANET');
+    expect(nullPlanet.getName()).toBe('Null Planet');
+    expect(nullPlanet.getSectorId()).toBe('NULL_SECTOR');
+  });
+
+  it('returns the same null planet instance for consecutive calls on empty galaxy', () => {
+    const nullPlanet1 = galaxy.getRandomPlanet();
+    const nullPlanet2 = galaxy.getRandomPlanet();
+    expect(nullPlanet1).toBe(nullPlanet2);
   });
 
   it('returns a random planet from the galaxy', () => {

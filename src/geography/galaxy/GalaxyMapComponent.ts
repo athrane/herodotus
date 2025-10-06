@@ -165,11 +165,12 @@ export class GalaxyMapComponent extends Component {
 
     /**
      * Returns a random planet from the galaxy map.
-     * @returns A random planet component, or undefined if no planets exist.
+     * If no planets exist, returns a null planet representing an empty galaxy.
+     * @returns A random planet component, or a null planet if no planets exist.
      */
-    getRandomPlanet(): PlanetComponent | undefined {
+    getRandomPlanet(): PlanetComponent {
         if (this.planets.size === 0) {
-            return undefined;
+            return PlanetComponent.createNullPlanet();
         }
         const planetsArray = Array.from(this.planets.values());
         const randomIndex = Math.floor(Math.random() * planetsArray.length);

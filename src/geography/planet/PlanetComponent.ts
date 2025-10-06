@@ -28,6 +28,22 @@ export enum PlanetResourceSpecialization {
  * characteristics for systems concerned with control, logistics, and events.
  */
 export class PlanetComponent extends Component {
+    /**
+     * @constant
+     * @description The identifier for the null planet used when no planets exist in the galaxy.
+     * @default NULL_PLANET
+     */
+    static readonly NULL_PLANET_ID: string = "NULL_PLANET";
+
+    /**
+     * @constant
+     * @description The identifier for the null sector used for the null planet.
+     * @default NULL_SECTOR
+     */
+    static readonly NULL_SECTOR_ID: string = "NULL_SECTOR";
+
+    private static nullPlanet: PlanetComponent | null = null;
+
     private readonly id: string;
     private readonly name: string;
     private readonly sectorId: string;
@@ -209,6 +225,19 @@ export class PlanetComponent extends Component {
     }
 
     /**
+     * Retrieves a random continent from the planet.
+     * If no continents are defined, returns the null continent.
+     * @returns A random continent instance or the null continent.
+     */
+    getRandomContinent(): Continent {
+        if (this.continents.length === 0) {
+            return Continent.createNullContinent();
+        }
+        const randomIndex = Math.floor(Math.random() * this.continents.length);
+        return this.continents[randomIndex];
+    }
+
+    /**
      * Factory method to create a planet component.
      * @param id - Unique identifier for the planet node in the galaxy graph.   
      * @param name - Display name of the planet.
@@ -243,6 +272,33 @@ export class PlanetComponent extends Component {
             resourceSpecialization,
             continents
         );
+    }
+
+    /**
+     * Creates a null planet to represent an empty galaxy.
+     * The null planet uses the NULL_PLANET_ID and NULL_SECTOR_ID constants.
+     * Uses lazy initialization to return a singleton null instance.
+     * Sets the reference in the Continent class to maintain the relationship.
+     * @returns A PlanetComponent representing a null planet with a single null continent.
+     */
+    static createNullPlanet(): PlanetComponent {
+        if (!PlanetComponent.nullPlanet) {
+            const nullContinent = Continent.createNullContinent();
+            PlanetComponent.nullPlanet = PlanetComponent.create(
+                PlanetComponent.NULL_PLANET_ID,
+                'Null Planet',
+                PlanetComponent.NULL_SECTOR_ID,
+                'None',
+                PlanetStatus.NORMAL,
+                1,
+                0,
+                PlanetResourceSpecialization.AGRICULTURE,
+                [nullContinent]
+            );
+            // Set the reference in Continent class
+            Continent.setNullPlanetReference(PlanetComponent.nullPlanet);
+        }
+        return PlanetComponent.nullPlanet;
     }
 
     /**
