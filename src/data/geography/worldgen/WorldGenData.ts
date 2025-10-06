@@ -5,7 +5,6 @@ import { TypeUtils } from '../../../util/TypeUtils';
  * This class provides runtime validation and type safety for world generation parameters.
  */
 export class WorldGenData {
-  private readonly numContinents: number;
   private readonly numSectors: number;
   private readonly planetsPerSector: number;
   private readonly featuresPerContinent: number;
@@ -19,14 +18,12 @@ export class WorldGenData {
    * @param data - The JSON object containing world generation configuration.
    */
   constructor(data: any) {
-    TypeUtils.ensureNumber(data?.numContinents, 'WorldGenData numContinents must be a number.');
     TypeUtils.ensureNumber(data?.numSectors, 'WorldGenData numSectors must be a number.');
     TypeUtils.ensureNumber(data?.planetsPerSector, 'WorldGenData planetsPerSector must be a number.');
     TypeUtils.ensureNumber(data?.featuresPerContinent, 'WorldGenData featuresPerContinent must be a number.');
     TypeUtils.ensureNumber(data?.continentsPerPlanet, 'WorldGenData continentsPerPlanet must be a number.');
     TypeUtils.ensureNumber(data?.featuresPerPlanetContinent, 'WorldGenData featuresPerPlanetContinent must be a number.');
 
-    this.numContinents = data.numContinents;
     this.numSectors = data.numSectors;
     this.planetsPerSector = data.planetsPerSector;
     this.featuresPerContinent = data.featuresPerContinent;
@@ -52,7 +49,6 @@ export class WorldGenData {
   static createNull(): WorldGenData {
     if (!WorldGenData.instance) {
       WorldGenData.instance = WorldGenData.create({
-        numContinents: 0,
         numSectors: 0,
         planetsPerSector: 0,
         featuresPerContinent: 0,
@@ -61,14 +57,6 @@ export class WorldGenData {
       });
     }
     return WorldGenData.instance;
-  }
-
-  /**
-   * Gets the number of continents to generate in the world.
-   * @returns The number of continents.
-   */
-  getNumContinents(): number {
-    return this.numContinents;
   }
 
   /**

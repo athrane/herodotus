@@ -1,4 +1,4 @@
-import worldGenDataRaw from '../worldgen.json';
+import worldGenDataRaw from '../../../../data/geography/world/worldgen.json';
 import { WorldGenData } from './WorldGenData';
 
 /**

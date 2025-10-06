@@ -14,54 +14,6 @@ import { WorldGenData } from '../../data/geography/worldgen/WorldGenData';
  */
 export class WorldGenerator {
 
-    /**
-     * @constant
-     * @description The number of continents to generate in the world.
-     * @default 3   
-     * @deprecated Use configuration from WorldGenData instead
-     */
-    static readonly NUM_CONTINENTS: number = 3;
-
-    /**
-     * @constant
-     * @description The number of sectors to generate in the galaxy.
-     * @default 3
-     * @deprecated Use configuration from WorldGenData instead
-     */
-    static readonly NUM_SECTORS: number = 3;
-
-    /**
-     * @constant
-     * @description The number of planets to generate per sector.
-     * @default 64
-     * @deprecated Use configuration from WorldGenData instead
-     */
-    static readonly PLANETS_PER_SECTOR: number = 64;
-
-    /**
-     * @constant
-     * @description The number of geographical features to generate per continent.
-     * @default 50
-     * @deprecated Use configuration from WorldGenData instead
-     */
-    static readonly FEATURES_PER_CONTINENT: number = 50;
-
-    /**
-     * @constant
-     * @description The number of continents to generate for each planet.
-     * @default 5
-     * @deprecated Use configuration from WorldGenData instead
-     */
-    static readonly CONTINENTS_PER_PLANET: number = 5;
-
-    /**
-     * @constant
-     * @description The number of geographical features to generate per planetary continent.
-     * @default 64
-     * @deprecated Use configuration from WorldGenData instead
-     */
-    static readonly FEATURES_PER_PLANET_CONTINENT: number = 64;
-
     private readonly nameGenerator: NameGenerator;
     private readonly config: WorldGenData;
     private latestGalaxyMap: GalaxyMapComponent | null;

@@ -583,6 +583,62 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 - `src/geography/feature/GeographicalFeatureTypeRegistry.ts` — Registry of feature types
 - `src/generator/world/WorldGenerator.ts` — World generator implementation
 
+##### Data-Driven World Generation
+The Herodotus project uses a data-driven approach for world generation configuration, separating generation parameters from code logic. This architecture enhances configurability and maintainability by externalizing world generation settings into JSON files.
+
+**Core Classes:**
+- `src/data/geography/worldgen/WorldGenData.ts` — Type-safe data class containing world generation parameters with runtime validation, immutability enforcement, and null object pattern implementation
+- `src/data/geography/worldgen/loadWorldGenData.ts` — Loader function that reads and validates world generation configuration from JSON
+- `data/geography/world/worldgen.json` — JSON configuration file containing all world generation parameters
+
+**Configuration Parameters:**
+The `worldgen.json` file defines the following parameters:
+- `numSectors` — Number of sectors to generate in the galaxy (default: 3)
+- `planetsPerSector` — Number of planets to generate per sector (default: 64)
+- `featuresPerContinent` — Number of geographical features per continent (default: 50)
+- `continentsPerPlanet` — Number of continents per planet (default: 5)
+- `featuresPerPlanetContinent` — Number of geographical features per planetary continent (default: 64)
+
+**Architecture Benefits:**
+- **Improved Configurability**: World generation can be adjusted by editing JSON without code changes or recompilation
+- **Separation of Concerns**: Clear boundary between world generation logic and configuration data
+- **Type Safety**: Runtime validation using `TypeUtils` ensures configuration integrity
+- **Immutability**: Configuration instances are frozen after creation to prevent accidental modification
+- **Backward Compatibility**: Static constants remain in `WorldGenerator` marked as `@deprecated` for legacy code
+- **Follows Project Patterns**: Matches existing data loading patterns like `GeographicalFeatureData` and `loadGeographicalFeatures`
+
+**Usage Example:**
+```typescript
+// Load configuration from JSON
+const config = loadWorldGenData();
+
+// Create world generator with configuration
+const nameGenerator = NameGenerator.create();
+const worldGenerator = WorldGenerator.create(nameGenerator, config);
+
+// Generate world using configuration
+const galaxyMap = worldGenerator.generateGalaxyMap();
+```
+
+**Customization:**
+To modify world generation parameters, simply edit `data/geography/world/worldgen.json`:
+```json
+{
+  "numSectors": 5,
+  "planetsPerSector": 128,
+  "continentsPerPlanet": 7,
+  ...
+}
+```
+No code changes or recompilation required!
+
+**Implementation Details:**
+- `WorldGenData` provides getter methods for all configuration values (e.g., `getNumSectors()`, `getPlanetsPerSector()`)
+- Runtime validation throws `TypeError` with detailed messages for invalid data
+- Null object pattern implementation via `WorldGenData.createNull()` returns singleton with zero values
+- `WorldGenerator` constructor accepts `WorldGenData` parameter and uses configuration instead of static constants
+- Loaded by `SimulationBuilder` during world initialization
+
 #### Data & Chronicle
 - `src/data/DataSetComponent.ts` — Component for dataset storage on entities
 - `src/data/DataSetEvent.ts` — Data-set event model

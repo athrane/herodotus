@@ -18,7 +18,6 @@ describe('WorldGenerator', () => {
     
     // Create a standard configuration for testing
     worldGenConfig = WorldGenData.create({
-      numContinents: 3,
       numSectors: 3,
       planetsPerSector: 64,
       featuresPerContinent: 50,

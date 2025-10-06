@@ -4,7 +4,6 @@ describe('WorldGenData', () => {
   describe('constructor and create', () => {
     it('should create a WorldGenData instance with valid data', () => {
       const data = {
-        numContinents: 3,
         numSectors: 3,
         planetsPerSector: 64,
         featuresPerContinent: 50,
@@ -15,7 +14,6 @@ describe('WorldGenData', () => {
       const worldGenData = WorldGenData.create(data);
 
       expect(worldGenData).toBeInstanceOf(WorldGenData);
-      expect(worldGenData.getNumContinents()).toBe(3);
       expect(worldGenData.getNumSectors()).toBe(3);
       expect(worldGenData.getPlanetsPerSector()).toBe(64);
       expect(worldGenData.getFeaturesPerContinent()).toBe(50);
@@ -25,7 +23,6 @@ describe('WorldGenData', () => {
 
     it('should be immutable after creation', () => {
       const data = {
-        numContinents: 3,
         numSectors: 3,
         planetsPerSector: 64,
         featuresPerContinent: 50,
@@ -38,22 +35,8 @@ describe('WorldGenData', () => {
       expect(Object.isFrozen(worldGenData)).toBe(true);
     });
 
-    it('should throw TypeError when numContinents is not a number', () => {
-      const data = {
-        numContinents: '3',
-        numSectors: 3,
-        planetsPerSector: 64,
-        featuresPerContinent: 50,
-        continentsPerPlanet: 5,
-        featuresPerPlanetContinent: 64
-      };
-
-      expect(() => WorldGenData.create(data)).toThrow(TypeError);
-    });
-
     it('should throw TypeError when numSectors is not a number', () => {
       const data = {
-        numContinents: 3,
         numSectors: '3',
         planetsPerSector: 64,
         featuresPerContinent: 50,
@@ -66,7 +49,6 @@ describe('WorldGenData', () => {
 
     it('should throw TypeError when planetsPerSector is not a number', () => {
       const data = {
-        numContinents: 3,
         numSectors: 3,
         planetsPerSector: '64',
         featuresPerContinent: 50,
@@ -79,7 +61,6 @@ describe('WorldGenData', () => {
 
     it('should throw TypeError when featuresPerContinent is not a number', () => {
       const data = {
-        numContinents: 3,
         numSectors: 3,
         planetsPerSector: 64,
         featuresPerContinent: '50',
@@ -92,7 +73,6 @@ describe('WorldGenData', () => {
 
     it('should throw TypeError when continentsPerPlanet is not a number', () => {
       const data = {
-        numContinents: 3,
         numSectors: 3,
         planetsPerSector: 64,
         featuresPerContinent: 50,
@@ -105,7 +85,6 @@ describe('WorldGenData', () => {
 
     it('should throw TypeError when featuresPerPlanetContinent is not a number', () => {
       const data = {
-        numContinents: 3,
         numSectors: 3,
         planetsPerSector: 64,
         featuresPerContinent: 50,
@@ -122,7 +101,6 @@ describe('WorldGenData', () => {
       const nullInstance = WorldGenData.createNull();
 
       expect(nullInstance).toBeInstanceOf(WorldGenData);
-      expect(nullInstance.getNumContinents()).toBe(0);
       expect(nullInstance.getNumSectors()).toBe(0);
       expect(nullInstance.getPlanetsPerSector()).toBe(0);
       expect(nullInstance.getFeaturesPerContinent()).toBe(0);
@@ -143,7 +121,6 @@ describe('WorldGenData', () => {
 
     beforeEach(() => {
       const data = {
-        numContinents: 5,
         numSectors: 7,
         planetsPerSector: 32,
         featuresPerContinent: 25,
@@ -151,10 +128,6 @@ describe('WorldGenData', () => {
         featuresPerPlanetContinent: 48
       };
       worldGenData = WorldGenData.create(data);
-    });
-
-    it('should return correct numContinents', () => {
-      expect(worldGenData.getNumContinents()).toBe(5);
     });
 
     it('should return correct numSectors', () => {

@@ -12,7 +12,6 @@ describe('loadWorldGenData', () => {
     const worldGenData = loadWorldGenData();
 
     // These values should match the JSON file
-    expect(worldGenData.getNumContinents()).toBe(3);
     expect(worldGenData.getNumSectors()).toBe(3);
     expect(worldGenData.getPlanetsPerSector()).toBe(64);
     expect(worldGenData.getFeaturesPerContinent()).toBe(50);
