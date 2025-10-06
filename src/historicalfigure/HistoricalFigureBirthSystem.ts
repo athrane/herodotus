@@ -15,6 +15,7 @@ import { DataSetEvent } from '../data/DataSetEvent';
 import { DataSetEventComponent } from '../data/DataSetEventComponent';
 import { ChoiceComponent } from '../behaviour/ChoiceComponent';
 import { GeographicalUtils } from '../geography/GeographicalUtils';
+import { HistoricalFigureBirthData } from '../data/historicalfigure/HistoricalFigureBirthData';
 
 /**
  * Manages the birth of historical figures.
@@ -22,31 +23,24 @@ import { GeographicalUtils } from '../geography/GeographicalUtils';
 export class HistoricalFigureBirthSystem extends System {
 
     /**
-     * The chance of a historical figure being born each year.
-     */
-    static readonly BIRTH_CHANCE_PER_YEAR: number = 0.05;
-
-    /**
-     * The mean lifespan of a historical figure in years.
-     */
-    static readonly NATURAL_LIFESPAN_MEAN: number = 70;
-
-    /**
-     * The standard deviation for the lifespan of a historical figure.
-     */
-    static readonly NATURAL_LIFESPAN_STD_DEV: number = 15;
-
-    /**
      * Name generator for historical figures.
      */
     private readonly nameGenerator: NameGenerator;
 
     /**
-     * @param entityManager - The entity manager instance.
+     * Configuration data for historical figure births.
      */
-    constructor(entityManager: EntityManager) {
-    super(entityManager, [TimeComponent, GalaxyMapComponent, ChronicleComponent]);
+    private readonly config: HistoricalFigureBirthData;
+
+    /**
+     * @param entityManager - The entity manager instance.
+     * @param config - The historical figure birth configuration.
+     */
+    constructor(entityManager: EntityManager, config: HistoricalFigureBirthData) {
+        super(entityManager, [TimeComponent, GalaxyMapComponent, ChronicleComponent]);
+        TypeUtils.ensureInstanceOf(config, HistoricalFigureBirthData);
         this.nameGenerator = NameGenerator.create();
+        this.config = config;
     }
 
     /**
@@ -140,7 +134,7 @@ export class HistoricalFigureBirthSystem extends System {
      * @returns True if the historical figure is born, false otherwise.
      */
     isBorn(): boolean {
-        return Math.random() < HistoricalFigureBirthSystem.BIRTH_CHANCE_PER_YEAR;
+        return Math.random() < this.config.getBirthChancePerYear();
     }
 
     /**
@@ -149,8 +143,8 @@ export class HistoricalFigureBirthSystem extends System {
      * @returns The calculated lifespan in years.
      */
     calculateLifespan(): number {
-        const mean = HistoricalFigureBirthSystem.NATURAL_LIFESPAN_MEAN;
-        const stdDev = HistoricalFigureBirthSystem.NATURAL_LIFESPAN_STD_DEV;
+        const mean = this.config.getNaturalLifespanMean();
+        const stdDev = this.config.getNaturalLifespanStdDev();
         return Math.max(1, Math.round(this.randomNormal(mean, stdDev)));
     }
 
@@ -170,9 +164,10 @@ export class HistoricalFigureBirthSystem extends System {
     /**
      * Static factory method to create a HistoricalFigureBirthSystem.
      * @param entityManager - The entity manager instance.
+     * @param config - The historical figure birth configuration.
      * @returns A new instance of HistoricalFigureBirthSystem.
      */
-    static create(entityManager: EntityManager): HistoricalFigureBirthSystem {
-        return new HistoricalFigureBirthSystem(entityManager);
+    static create(entityManager: EntityManager, config: HistoricalFigureBirthData): HistoricalFigureBirthSystem {
+        return new HistoricalFigureBirthSystem(entityManager, config);
     }
 }
