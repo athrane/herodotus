@@ -22,6 +22,7 @@ import { ChoiceComponent } from '../../behaviour/ChoiceComponent';
 import { PlayerComponent } from '../../ecs/PlayerComponent';
 import { Ecs } from '../../ecs/Ecs';
 import { loadWorldGenData } from '../../data/geography/worldgen/loadWorldGenData';
+import { GeographicalUtils } from '../../geography/GeographicalUtils';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -102,7 +103,8 @@ export class SimulationBuilder extends Builder {
             HistoricalFigureComponent.create("Player Character", 0, 70, "Unknown", "Ruler"),
             DataSetEventComponent.create(initialEvent),
             ChoiceComponent.create([]), // Start with empty choices, will be populated by ComputeChoicesSystem
-            PlayerComponent.create()
+            PlayerComponent.create(),
+            GeographicalUtils.computeRandomLocation(galaxyMapComponent)
         );
 
         // Create a sample historical figure

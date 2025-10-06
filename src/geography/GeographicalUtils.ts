@@ -1,4 +1,4 @@
-import { Location } from './Location';
+import { LocationComponent } from './LocationComponent';
 import { GalaxyMapComponent } from './galaxy/GalaxyMapComponent';
 import { TypeUtils } from '../util/TypeUtils';
 
@@ -7,13 +7,6 @@ import { TypeUtils } from '../util/TypeUtils';
  * Provides centralized methods for working with geographical data and locations.
  */
 export class GeographicalUtils {
-
-    /**
-     * @constant
-     * @description The null geographical feature to use for unknown regions.
-     * @default UNKNOWN
-     */
-    static readonly GEOGRAPHICAL_FEATURE_NULL: string = "UNKNOWN";
 
     /**
      * Private constructor to prevent instantiation.
@@ -30,17 +23,17 @@ export class GeographicalUtils {
      * Uses the null object pattern - getRandomFeature() always returns a valid feature.
      *
      * @param galaxyMap - The galaxy map component to get a random location from.
-     * @returns A Location instance representing a random location.
+     * @returns A LocationComponent instance representing a random location.
      * @throws {Error} If no planets are available in the galaxy map.
      */
-    static computeRandomLocation(galaxyMap: GalaxyMapComponent): Location {
+    static computeRandomLocation(galaxyMap: GalaxyMapComponent): LocationComponent {
         TypeUtils.ensureInstanceOf(galaxyMap, GalaxyMapComponent);
 
         // Get a random planet from the galaxy map
         const planet = galaxyMap.getRandomPlanet();
         const randomContinent = planet.getRandomContinent();
         const randomFeature = randomContinent.getRandomFeature();
-        return Location.create(randomFeature, planet);
+        return LocationComponent.create(randomFeature, planet);
     }
 
 }

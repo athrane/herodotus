@@ -11,7 +11,7 @@ import { ChronicleEvent } from '../../../src/chronicle/ChronicleEvent';
 import { EventType } from '../../../src/chronicle/EventType';
 import { EventCategory } from '../../../src/chronicle/EventCategory';
 import { Time } from '../../../src/time/Time';
-import { Location } from '../../../src/geography/Location';
+import { LocationComponent } from '../../../src/geography/LocationComponent';
 import { GeographicalFeature } from '../../../src/geography/feature/GeographicalFeature';
 import { GeographicalFeatureTypeRegistry } from '../../../src/geography/feature/GeographicalFeatureTypeRegistry';
 import { PlanetComponent } from '../../../src/geography/planet/PlanetComponent';
@@ -24,7 +24,7 @@ import { ScrollStrategy } from '../../../src/gui/menu/ScrollStrategy';
 /**
  * Helper function to create a test location with mock feature and planet.
  */
-function createTestLocation(locationName: string): Location {
+function createTestLocation(locationName: string): LocationComponent {
   // Register feature type if not already registered
   if (!GeographicalFeatureTypeRegistry.has('TEST_CITY')) {
     GeographicalFeatureTypeRegistry.register('TEST_CITY', 'City');
@@ -45,7 +45,7 @@ function createTestLocation(locationName: string): Location {
     [continent]
   );
   
-  return Location.create(feature, planet);
+  return LocationComponent.create(feature, planet);
 }
 
 describe('ChronicleViewSystem', () => {

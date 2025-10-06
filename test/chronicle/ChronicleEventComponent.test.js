@@ -4,7 +4,7 @@ import { EventType } from '../../src/chronicle/EventType';
 import { EventCategory } from '../../src/chronicle/EventCategory';
 import { Time } from '../../src/time/Time';
 import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent';
-import { Location } from '../../src/geography/Location';
+import { LocationComponent } from '../../src/geography/LocationComponent';
 import { GeographicalFeature } from '../../src/geography/feature/GeographicalFeature';
 import { GeographicalFeatureTypeRegistry } from '../../src/geography/feature/GeographicalFeatureTypeRegistry';
 import { PlanetComponent } from '../../src/geography/planet/PlanetComponent';
@@ -36,7 +36,7 @@ function createTestLocation(locationName) {
     [continent]
   );
   
-  return Location.create(feature, planet);
+  return LocationComponent.create(feature, planet);
 }
 
 describe('ChronicleComponent', () => {

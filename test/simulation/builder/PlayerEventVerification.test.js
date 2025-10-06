@@ -2,6 +2,7 @@ import { SimulationBuilder } from '../../../src/simulation/builder/SimulationBui
 import { Simulation } from '../../../src/simulation/Simulation.ts';
 import { NameComponent } from '../../../src/ecs/NameComponent.ts';
 import { DataSetEventComponent } from '../../../src/data/DataSetEventComponent.ts';
+import { LocationComponent } from '../../../src/geography/LocationComponent.ts';
 
 describe('Player Initial Event Verification', () => {
     let builder;
@@ -47,5 +48,10 @@ describe('Player Initial Event Verification', () => {
         expect(event.getDescription()).toContain('You have ascended to power');
         expect(event.getConsequence()).toContain('The player gains control');
         expect(event.getTags()).toBe('political, beginning, power, leadership');
+
+        // Verify Player entity has LocationComponent
+        const locationComponent = playerEntity.getComponent(LocationComponent);
+        expect(locationComponent).toBeInstanceOf(LocationComponent);
+        expect(locationComponent.getName()).toBeDefined();
     });
 });

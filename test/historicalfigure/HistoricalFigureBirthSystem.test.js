@@ -359,7 +359,7 @@ describe('HistoricalFigureBirthSystem', () => {
             expect(entityManager.createEntity).toHaveBeenCalledTimes(1);
             
             const createEntityCall = entityManager.createEntity.mock.calls[0];
-            expect(createEntityCall).toHaveLength(4); // NameComponent, HistoricalFigureComponent, DataSetEventComponent, ChoiceComponent
+            expect(createEntityCall).toHaveLength(5); // NameComponent, HistoricalFigureComponent, DataSetEventComponent, ChoiceComponent, LocationComponent
             
             // Verify DataSetEventComponent is included
             const dataSetEventComponent = createEntityCall.find(component => 

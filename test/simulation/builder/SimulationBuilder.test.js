@@ -10,6 +10,7 @@ import { SelectChoiceSystem } from '../../../src/behaviour/SelectChoiceSystem';
 import { DataSetComponent } from '../../../src/data/DataSetComponent.ts';
 import { DataSetEventComponent } from '../../../src/data/DataSetEventComponent.ts';
 import { HistoricalFigureComponent } from '../../../src/historicalfigure/HistoricalFigureComponent.ts';
+import { LocationComponent } from '../../../src/geography/LocationComponent.ts';
 
 // Mock the WorldGenerator to control its output
 jest.mock('../../../src/generator/world/WorldGenerator', () => {
@@ -126,11 +127,13 @@ describe('SimulationBuilder', () => {
         expect(dsComp.getByTrigger('EVT_1').length).toBeGreaterThan(0);
         expect(dsComp.getByTrigger('EVT_2').length).toBeGreaterThan(0);
 
-        // Check that the second call (Player entity) includes both HistoricalFigureComponent and DataSetEventComponent
+        // Check that the second call (Player entity) includes HistoricalFigureComponent, DataSetEventComponent, and LocationComponent
         const secondCall = entityManager.createEntity.mock.calls[1];
         const playerHistoricalFigure = secondCall.find(arg => arg instanceof HistoricalFigureComponent);
         const playerDataSetEvent = secondCall.find(arg => arg instanceof DataSetEventComponent);
+        const playerLocation = secondCall.find(arg => arg instanceof LocationComponent);
         expect(playerHistoricalFigure).toBeInstanceOf(HistoricalFigureComponent);
         expect(playerDataSetEvent).toBeInstanceOf(DataSetEventComponent);
+        expect(playerLocation).toBeInstanceOf(LocationComponent);
     });
 });

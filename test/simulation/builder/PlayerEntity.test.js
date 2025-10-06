@@ -3,6 +3,7 @@ import { Simulation } from '../../../src/simulation/Simulation.ts';
 import { NameComponent } from '../../../src/ecs/NameComponent.ts';
 import { HistoricalFigureComponent } from '../../../src/historicalfigure/HistoricalFigureComponent.ts';
 import { DataSetEventComponent } from '../../../src/data/DataSetEventComponent.ts';
+import { LocationComponent } from '../../../src/geography/LocationComponent.ts';
 import { GeographicalFeatureTypeRegistry } from '../../../src/geography/feature/GeographicalFeatureTypeRegistry.ts';
 
 describe('Player Entity Integration', () => {
@@ -45,6 +46,13 @@ describe('Player Entity Integration', () => {
         const dataSetEventComponent = playerEntity.getComponent(DataSetEventComponent);
         expect(dataSetEventComponent).toBeInstanceOf(DataSetEventComponent);
         expect(dataSetEventComponent.getDataSetEvent()).toBeDefined();
+
+        // Verify Player entity has LocationComponent
+        const locationComponent = playerEntity.getComponent(LocationComponent);
+        expect(locationComponent).toBeInstanceOf(LocationComponent);
+        expect(locationComponent.getName()).toBeDefined();
+        expect(locationComponent.getFeature()).toBeDefined();
+        expect(locationComponent.getPlanet()).toBeDefined();
     });
 
     it('should have separate Player and Global entities', () => {

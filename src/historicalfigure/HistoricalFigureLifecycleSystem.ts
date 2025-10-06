@@ -118,7 +118,7 @@ export class HistoricalFigureLifecycleSystem extends System {
 
         // Create the time and location for the death event
         const time = Time.create(deathYear);
-        const location = GeographicalUtils.computeRandomLocation(galaxyMapComponent);
+        const locationComponent = GeographicalUtils.computeRandomLocation(galaxyMapComponent);
 
         // Get the historical figure instance from the component
         // Create the event type for death
@@ -129,8 +129,8 @@ export class HistoricalFigureLifecycleSystem extends System {
             `${historicalFigure.getName()} has died in ${deathYear}.`,
             eventType,
             time,
-            location,
-            `The historical figure ${historicalFigure.getName()} has died in the year ${deathYear} at ${location.getName()}. ` +
+            locationComponent,
+            `The historical figure ${historicalFigure.getName()} has died in the year ${deathYear} at ${locationComponent.getName()}. ` +
             `They lived for ${lifespan} years (${historicalFigure.getBirthYear()}-${deathYear}). ` +
             `Their occupation was ${historicalFigure.getOccupation()} and they belonged to the ${historicalFigure.getCulture()} culture.`,
             historicalFigure

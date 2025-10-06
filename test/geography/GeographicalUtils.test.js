@@ -1,6 +1,6 @@
 import { GeographicalUtils } from '../../src/geography/GeographicalUtils';
 import { GalaxyMapComponent } from '../../src/geography/galaxy/GalaxyMapComponent';
-import { Location } from '../../src/geography/Location';
+import { LocationComponent } from '../../src/geography/LocationComponent';
 import { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } from '../../src/geography/planet/PlanetComponent';
 import { Continent } from '../../src/geography/planet/Continent';
 import { GeographicalFeature } from '../../src/geography/feature/GeographicalFeature';
@@ -21,7 +21,7 @@ describe('GeographicalUtils', () => {
     });
 
     describe('computeRandomLocation', () => {
-        it('should return a Location with feature and planet name when both are available', () => {
+        it('should return a LocationComponent with feature and planet name when both are available', () => {
             // Create proper instances
             const featureType = GeographicalFeatureTypeRegistry.register('test_city', 'City');
             const feature = GeographicalFeature.create('TestFeature', featureType);
@@ -43,13 +43,13 @@ describe('GeographicalUtils', () => {
 
             const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
 
-            expect(location).toBeInstanceOf(Location);
+            expect(location).toBeInstanceOf(LocationComponent);
             expect(location.getName()).toBe('TestFeature, TestPlanet');
             expect(location.getFeature()).toBe(feature);
             expect(location.getPlanet()).toBe(planet);
         });
 
-        it('should return Location with null feature when no features are available', () => {
+        it('should return LocationComponent with null feature when no features are available', () => {
             // Create planet with continent but no features
             const continent = Continent.create('Empty Continent');
             // Don't add any features to the continent
@@ -69,14 +69,14 @@ describe('GeographicalUtils', () => {
 
             const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
 
-            expect(location).toBeInstanceOf(Location);
+            expect(location).toBeInstanceOf(LocationComponent);
             // Null feature has name "Unknown" per null object pattern
             expect(location.getName()).toBe('Unknown, BarrenPlanet');
             expect(location.getFeature().getName()).toBe('Unknown');
             expect(location.getPlanet()).toBe(planet);
         });
 
-        it('should return Location with null feature when planet has no continents', () => {
+        it('should return LocationComponent with null feature when planet has no continents', () => {
             // Create planet with no continents
             const planet = PlanetComponent.create(
                 'empty-planet-1',
@@ -94,13 +94,13 @@ describe('GeographicalUtils', () => {
 
             const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
 
-            expect(location).toBeInstanceOf(Location);
+            expect(location).toBeInstanceOf(LocationComponent);
             // Null feature has name "Unknown" per null object pattern
             expect(location.getName()).toBe('Unknown, EmptyPlanet');
             expect(location.getFeature().getName()).toBe('Unknown');
         });
 
-        it('should return Location with null feature when continents is null', () => {
+        it('should return LocationComponent with null feature when continents is null', () => {
             // Create planet with null continents - this actually uses empty array in practice
             const planet = PlanetComponent.create(
                 'null-continents-planet-1',
@@ -118,12 +118,12 @@ describe('GeographicalUtils', () => {
 
             const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
 
-            expect(location).toBeInstanceOf(Location);
+            expect(location).toBeInstanceOf(LocationComponent);
             // Null feature has name "Unknown" per null object pattern
             expect(location.getName()).toBe('Unknown, NullContinentsPlanet');
         });
 
-        it('should return Location with null feature when continents is undefined', () => {
+        it('should return LocationComponent with null feature when continents is undefined', () => {
             // Create planet with empty continents - this is the closest to undefined in practice
             const planet = PlanetComponent.create(
                 'undefined-continents-planet-1',
@@ -141,7 +141,7 @@ describe('GeographicalUtils', () => {
 
             const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
 
-            expect(location).toBeInstanceOf(Location);
+            expect(location).toBeInstanceOf(LocationComponent);
             // Null feature has name "Unknown" per null object pattern
             expect(location.getName()).toBe('Unknown, UndefinedContinentsPlanet');
         });
@@ -182,7 +182,7 @@ describe('GeographicalUtils', () => {
 
             const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
 
-            expect(location).toBeInstanceOf(Location);
+            expect(location).toBeInstanceOf(LocationComponent);
             // The name should contain the planet name
             expect(location.getName()).toContain('MultiContinentPlanet');
             // Should have a feature name (format: "FeatureName, PlanetName")
@@ -205,7 +205,7 @@ describe('GeographicalUtils', () => {
             expect(console.error).toHaveBeenCalled();
         });
 
-        it('should return consistent Location instances for same input', () => {
+        it('should return consistent LocationComponent instances for same input', () => {
             // Create deterministic planet
             const featureType = GeographicalFeatureTypeRegistry.register('consistent_city', 'City');
             const feature = GeographicalFeature.create('ConsistentFeature', featureType);
@@ -228,7 +228,7 @@ describe('GeographicalUtils', () => {
             const location1 = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
             const location2 = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
 
-            // Should be different Location instances (new instances created each time)
+            // Should be different LocationComponent instances (new instances created each time)
             expect(location1).not.toBe(location2);
             // But with same name and data
             expect(location1.getName()).toBe(location2.getName());

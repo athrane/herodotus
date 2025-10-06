@@ -1,22 +1,27 @@
+import { Component } from '../ecs/Component';
 import { TypeUtils } from '../util/TypeUtils';
 import { GeographicalFeature } from './feature/GeographicalFeature';
 import { PlanetComponent } from './planet/PlanetComponent';
 
 /**
- * Represents a location in the simulation.
+ * Component representing a location in the simulation.
  * A location is defined by its geographical feature and the planet it belongs to.
+ * This component can be attached to any entity that has a position in the world.
  */
-export class Location {
+export class LocationComponent extends Component {
+  private static nullLocation: LocationComponent | null = null;
+  
   private readonly feature: GeographicalFeature;
   private readonly planet: PlanetComponent;
   private readonly name: string;
 
   /**
-   * Creates an instance of Location.
+   * Creates an instance of LocationComponent.
    * @param feature - The geographical feature at this location.
    * @param planet - The planet this location is on.
    */
   constructor(feature: GeographicalFeature, planet: PlanetComponent) {
+    super();
     TypeUtils.ensureInstanceOf(feature, GeographicalFeature);
     TypeUtils.ensureInstanceOf(planet, PlanetComponent);
     this.feature = feature;
@@ -48,11 +53,27 @@ export class Location {
   }
 
   /**
-   * Creates a new Location instance with a geographical feature and planet.
+   * Creates a new LocationComponent instance with a geographical feature and planet.
    * @param feature - The geographical feature at this location.
    * @param planet - The planet this location is on.
    */
-  static create(feature: GeographicalFeature, planet: PlanetComponent): Location {
-    return new Location(feature, planet);
+  static create(feature: GeographicalFeature, planet: PlanetComponent): LocationComponent {
+    return new LocationComponent(feature, planet);
+  }
+
+  /**
+   * Creates or returns a singleton null LocationComponent instance.
+   * This null object represents an invalid or uninitialized location.
+   * Uses lazy initialization to create the null instance only on first access.
+   * @returns A singleton null LocationComponent instance.
+   */
+  static createNullLocation(): LocationComponent {
+    if (!LocationComponent.nullLocation) {
+      LocationComponent.nullLocation = LocationComponent.create(
+        GeographicalFeature.createNullFeature(),
+        PlanetComponent.createNullPlanet()
+      );
+    }
+    return LocationComponent.nullLocation;
   }
 }
