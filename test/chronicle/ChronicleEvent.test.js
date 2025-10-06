@@ -62,7 +62,9 @@ describe('ChronicleEvent', () => {
       expect(entry.getHeading()).toBe(heading);
       expect(entry.getTime()).toBe(time);
       expect(entry.getFigure()).toBe(figureComponent);
-      expect(entry.getLocation()).toBe(place);
+      // Location should be cloned, not the same reference
+      expect(entry.getLocation()).not.toBe(place);
+      expect(entry.getLocation().getName()).toBe(place.getName());
       expect(entry.getDescription()).toBe(description);
     });
 
@@ -85,6 +87,123 @@ describe('ChronicleEvent', () => {
       expect(entry.getLocation().getName()).toBe('Halicarnassus, Test Planet');
       expect(entry.getDescription()).toBe('The birth of the Father of History.');
       expect(entry.getFigure()?.name).toBe('Herodotus');
+    });
+  });
+
+  describe('location immutability', () => {
+    it('should create a deep copy of the location to ensure immutability', () => {
+      // Create a location with a planet that has modifiable properties
+      const originalLocation = createTestLocation('Athens');
+      const originalPlanet = originalLocation.getPlanet();
+      const originalOwnership = originalPlanet.getOwnership();
+      const originalDevelopmentLevel = originalPlanet.getDevelopmentLevel();
+      
+      // Create the chronicle event
+      const event = new ChronicleEvent(heading, eventType, time, originalLocation, description, figureComponent);
+      
+      // Get the location from the event
+      const eventLocation = event.getLocation();
+      const eventPlanet = eventLocation.getPlanet();
+      
+      // Verify the location in the event is NOT the same reference as the original
+      expect(eventLocation).not.toBe(originalLocation);
+      expect(eventPlanet).not.toBe(originalPlanet);
+      
+      // Verify initial values match
+      expect(eventPlanet.getOwnership()).toBe(originalOwnership);
+      expect(eventPlanet.getDevelopmentLevel()).toBe(originalDevelopmentLevel);
+      expect(eventLocation.getName()).toBe('Athens, Test Planet');
+      
+      // Modify the original planet's mutable properties
+      originalPlanet.setOwnership('New Owner');
+      originalPlanet.setDevelopmentLevel(10);
+      
+      // Verify the event's location has NOT changed
+      expect(eventPlanet.getOwnership()).toBe(originalOwnership);
+      expect(eventPlanet.getDevelopmentLevel()).toBe(originalDevelopmentLevel);
+      
+      // Verify the original planet HAS changed
+      expect(originalPlanet.getOwnership()).toBe('New Owner');
+      expect(originalPlanet.getDevelopmentLevel()).toBe(10);
+    });
+
+    it('should preserve location data even when original location is modified after event creation', () => {
+      const location = createTestLocation('Sparta');
+      const planet = location.getPlanet();
+      const originalStatus = planet.getStatus();
+      
+      // Create event with the location
+      const event = ChronicleEvent.create(
+        'Test Event',
+        eventType,
+        time,
+        location,
+        'A test event',
+        null
+      );
+      
+      // Modify the original location's planet
+      planet.setStatus(PlanetStatus.BESIEGED);
+      planet.setFortificationLevel(5);
+      
+      // Verify the event's location remains unchanged
+      const eventPlanet = event.getLocation().getPlanet();
+      expect(eventPlanet.getStatus()).toBe(originalStatus);
+      expect(eventPlanet.getFortificationLevel()).not.toBe(5);
+    });
+
+    it('should handle null location cloning correctly', () => {
+      const nullLocation = LocationComponent.createNullLocation();
+      
+      // Create event with null location
+      const event = new ChronicleEvent(
+        'Null Event',
+        eventType,
+        time,
+        nullLocation,
+        'Event with null location'
+      );
+      
+      // Should not throw and should have a location
+      expect(event.getLocation()).toBeDefined();
+      expect(event.getLocation().getName()).toContain('Unknown');
+    });
+
+    it('should deeply clone continent features', () => {
+      // Create a location with features
+      if (!GeographicalFeatureTypeRegistry.has('TEST_MOUNTAIN')) {
+        GeographicalFeatureTypeRegistry.register('TEST_MOUNTAIN', 'Mountain');
+      }
+      const mountainType = GeographicalFeatureTypeRegistry.get('TEST_MOUNTAIN');
+      const mountain = GeographicalFeature.create('Mount Olympus', mountainType);
+      
+      const continent = Continent.create('Greece');
+      continent.addFeature(mountain);
+      
+      const planet = PlanetComponent.create(
+        'test-planet-features',
+        'Feature Planet',
+        'test-sector-features',
+        'TestOwner',
+        PlanetStatus.NORMAL,
+        5,
+        1,
+        PlanetResourceSpecialization.AGRICULTURE,
+        [continent]
+      );
+      
+      const location = LocationComponent.create(mountain, planet);
+      
+      // Create event
+      const event = new ChronicleEvent(heading, eventType, time, location, description);
+      
+      // Verify the location is cloned
+      expect(event.getLocation()).not.toBe(location);
+      expect(event.getLocation().getPlanet()).not.toBe(planet);
+      expect(event.getLocation().getFeature()).not.toBe(mountain);
+      
+      // But values should be the same
+      expect(event.getLocation().getFeature().getName()).toBe('Mount Olympus');
     });
   });
 });

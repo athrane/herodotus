@@ -76,4 +76,16 @@ export class LocationComponent extends Component {
     }
     return LocationComponent.nullLocation;
   }
+
+  /**
+   * Creates a deep copy of this LocationComponent.
+   * Clones the geographical feature and planet to ensure complete immutability.
+   * @returns A new LocationComponent instance with cloned feature and planet.
+   */
+  clone(): LocationComponent {
+    return LocationComponent.create(
+      this.feature.clone(),
+      this.planet.clone()
+    );
+  }
 }

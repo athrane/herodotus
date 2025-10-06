@@ -320,4 +320,24 @@ export class PlanetComponent extends Component {
         const clamped = Math.min(Math.max(Math.round(level), 0), 5);
         return clamped;
     }
+
+    /**
+     * Creates a deep copy of this PlanetComponent.
+     * Copies all planet properties and clones all continents.
+     * @returns A new PlanetComponent instance with the same properties and cloned continents.
+     */
+    clone(): PlanetComponent {
+        const clonedContinents = this.continents.map(continent => continent.clone());
+        return PlanetComponent.create(
+            this.id,
+            this.name,
+            this.sectorId,
+            this.ownership,
+            this.status,
+            this.developmentLevel,
+            this.fortificationLevel,
+            this.resourceSpecialization,
+            clonedContinents
+        );
+    }
 }

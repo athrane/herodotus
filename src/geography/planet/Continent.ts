@@ -99,4 +99,17 @@ export class Continent {
     return Continent.nullPlanetRef;
   }
 
+  /**
+   * Creates a deep copy of this Continent.
+   * Copies the continent's name and all features.
+   * @returns A new Continent instance with the same name and cloned features.
+   */
+  clone(): Continent {
+    const clonedContinent = Continent.create(this.name);
+    for (const feature of this.features) {
+      clonedContinent.addFeature(feature.clone());
+    }
+    return clonedContinent;
+  }
+
 }

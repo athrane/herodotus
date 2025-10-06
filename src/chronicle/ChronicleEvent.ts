@@ -47,7 +47,8 @@ export class ChronicleEvent {
     this.eventType = eventType;
     this.time = time;
     this.figure = figure;
-    this.location = location;
+    // Deep copy the location to ensure immutability
+    this.location = location.clone();
     this.description = description;
   }
 
