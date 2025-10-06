@@ -6,6 +6,7 @@ import { Sector } from '../../geography/galaxy/Sector';
 import { PlanetComponent, PlanetResourceSpecialization, PlanetStatus } from '../../geography/planet/PlanetComponent';
 import { TypeUtils } from '../../util/TypeUtils';
 import { NameGenerator } from '../../naming/NameGenerator';
+import { WorldGenData } from '../../data/geography/worldgen/WorldGenData';
 
 /**
  * A self-contained generator that orchestrates the creation of a world,
@@ -13,59 +14,21 @@ import { NameGenerator } from '../../naming/NameGenerator';
  */
 export class WorldGenerator {
 
-    /**
-     * @constant
-     * @description The number of continents to generate in the world.
-     * @default 3   
-     */
-    static readonly NUM_CONTINENTS: number = 3;
-
-    /**
-     * @constant
-     * @description The number of sectors to generate in the galaxy.
-     * @default 3
-     */
-    static readonly NUM_SECTORS: number = 3;
-
-    /**
-     * @constant
-     * @description The number of planets to generate per sector.
-     * @default 64
-     */
-    static readonly PLANETS_PER_SECTOR: number = 64;
-
-    /**
-     * @constant
-     * @description The number of geographical features to generate per continent.
-     * @default 50
-     */
-    static readonly FEATURES_PER_CONTINENT: number = 50;
-
-    /**
-     * @constant
-     * @description The number of continents to generate for each planet.
-     * @default 5
-     */
-    static readonly CONTINENTS_PER_PLANET: number = 5;
-
-    /**
-     * @constant
-     * @description The number of geographical features to generate per planetary continent.
-     * @default 64
-     */
-    static readonly FEATURES_PER_PLANET_CONTINENT: number = 64;
-
     private readonly nameGenerator: NameGenerator;
+    private readonly config: WorldGenData;
     private latestGalaxyMap: GalaxyMapComponent | null;
 
     /**
      * Creates an instance of WorldGenerator.
      *
      * @param nameGenerator - The name generator to use.
+     * @param config - The world generation configuration.
      */
-    constructor(nameGenerator: NameGenerator) {
+    constructor(nameGenerator: NameGenerator, config: WorldGenData) {
         TypeUtils.ensureInstanceOf(nameGenerator, NameGenerator);
+        TypeUtils.ensureInstanceOf(config, WorldGenData);
         this.nameGenerator = nameGenerator;
+        this.config = config;
         this.latestGalaxyMap = null;
     }
 
@@ -98,7 +61,7 @@ export class WorldGenerator {
         galaxyMap.reset();
 
         // Create sectors and planets
-        for (let sectorIndex = 0; sectorIndex < WorldGenerator.NUM_SECTORS; sectorIndex++) {
+        for (let sectorIndex = 0; sectorIndex < this.config.getNumSectors(); sectorIndex++) {
             const sectorId = `sector-${sectorIndex + 1}`;
             const sectorName = this.nameGenerator.generateSyllableName('SECTOR');
             const sector = Sector.create(sectorId, sectorName);
@@ -107,7 +70,7 @@ export class WorldGenerator {
             let previousPlanetId: string | null = null;
 
             // Create planets within the sector
-            for (let planetIndex = 0; planetIndex < WorldGenerator.PLANETS_PER_SECTOR; planetIndex++) {
+            for (let planetIndex = 0; planetIndex < this.config.getPlanetsPerSector(); planetIndex++) {
                 const planetId = `${sectorId}-planet-${planetIndex + 1}`;
                 const planetName = this.nameGenerator.generateSyllableName('PLANET');
                 const continents = this.generatePlanetContinents();
@@ -149,11 +112,11 @@ export class WorldGenerator {
      */
     private generatePlanetContinents(): Continent[] {
         const continents: Continent[] = [];
-        for (let i = 0; i < WorldGenerator.CONTINENTS_PER_PLANET; i++) {
+        for (let i = 0; i < this.config.getContinentsPerPlanet(); i++) {
             const continentName = this.nameGenerator.generateSyllableName('GENERIC');
             const continent = this.generateContinent(
                 continentName,
-                WorldGenerator.FEATURES_PER_PLANET_CONTINENT
+                this.config.getFeaturesPerPlanetContinent()
             );
             continents.push(continent);
         }
@@ -228,9 +191,10 @@ export class WorldGenerator {
      * Creates a new instance of WorldGenerator.
      *
      * @param nameGenerator - The name generator to use.
+     * @param config - The world generation configuration.
      * @returns A new WorldGenerator instance.
      */
-    static create(nameGenerator: NameGenerator): WorldGenerator {
-        return new WorldGenerator(nameGenerator);
+    static create(nameGenerator: NameGenerator, config: WorldGenData): WorldGenerator {
+        return new WorldGenerator(nameGenerator, config);
     }
 }

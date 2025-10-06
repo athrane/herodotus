@@ -21,6 +21,7 @@ import { SelectChoiceSystem } from '../../behaviour/SelectChoiceSystem';
 import { ChoiceComponent } from '../../behaviour/ChoiceComponent';
 import { PlayerComponent } from '../../ecs/PlayerComponent';
 import { Ecs } from '../../ecs/Ecs';
+import { loadWorldGenData } from '../../data/geography/worldgen/loadWorldGenData';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -66,7 +67,8 @@ export class SimulationBuilder extends Builder {
 
         // create galaxy map as the root game world object
         const nameGenerator = NameGenerator.create();
-        const worldGenerator = WorldGenerator.create(nameGenerator);
+        const worldGenConfig = loadWorldGenData();
+        const worldGenerator = WorldGenerator.create(nameGenerator, worldGenConfig);
         const galaxyMapComponent = worldGenerator.generateGalaxyMap();
 
         // create global entity to hold simulation-wide state, like the current time.
