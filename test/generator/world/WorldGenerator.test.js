@@ -4,17 +4,29 @@ import { GeographicalFeatureTypeRegistry } from '../../../src/geography/feature/
 import { FeatureType } from '../../../src/geography/feature/FeatureType';
 import { GalaxyMapComponent } from '../../../src/geography/galaxy/GalaxyMapComponent';
 import { Continent } from '../../../src/geography/planet/Continent';
+import { WorldGenData } from '../../../src/data/geography/worldgen/WorldGenData';
 
 describe('WorldGenerator', () => {
   let nameGenerator;
   let worldGenerator;
+  let worldGenConfig;
 
   beforeEach(() => {
     // Mock NameGenerator by creating an object that inherits its prototype
     nameGenerator = Object.create(NameGenerator.prototype);
     nameGenerator.generateSyllableName = jest.fn();
     
-    worldGenerator = new WorldGenerator(nameGenerator);
+    // Create a standard configuration for testing
+    worldGenConfig = WorldGenData.create({
+      numContinents: 3,
+      numSectors: 3,
+      planetsPerSector: 64,
+      featuresPerContinent: 50,
+      continentsPerPlanet: 5,
+      featuresPerPlanetContinent: 64
+    });
+    
+    worldGenerator = new WorldGenerator(nameGenerator, worldGenConfig);
     GalaxyMapComponent.create().reset();
 
     // Mock the registry to return a predictable feature type
@@ -34,7 +46,11 @@ describe('WorldGenerator', () => {
     });
 
     it('should throw an error if nameGenerator is not an instance of NameGenerator', () => {
-      expect(() => new WorldGenerator({})).toThrow(TypeError);
+      expect(() => new WorldGenerator({}, worldGenConfig)).toThrow(TypeError);
+    });
+
+    it('should throw an error if config is not an instance of WorldGenData', () => {
+      expect(() => new WorldGenerator(nameGenerator, {})).toThrow(TypeError);
     });
   });
 
@@ -70,7 +86,7 @@ describe('WorldGenerator', () => {
 
   describe('static create', () => {
     it('should return a new instance of WorldGenerator', () => {
-      const newGenerator = WorldGenerator.create(nameGenerator);
+      const newGenerator = WorldGenerator.create(nameGenerator, worldGenConfig);
       expect(newGenerator).toBeInstanceOf(WorldGenerator);
       expect(newGenerator).not.toBe(worldGenerator);
     });
@@ -83,13 +99,13 @@ describe('WorldGenerator', () => {
       const galaxyMap = worldGenerator.generateGalaxyMap();
 
       expect(galaxyMap).toBeInstanceOf(GalaxyMapComponent);
-      expect(galaxyMap.getSectorCount()).toBe(WorldGenerator.NUM_SECTORS);
-      expect(galaxyMap.getPlanetCount()).toBe(WorldGenerator.NUM_SECTORS * WorldGenerator.PLANETS_PER_SECTOR);
+      expect(galaxyMap.getSectorCount()).toBe(worldGenConfig.getNumSectors());
+      expect(galaxyMap.getPlanetCount()).toBe(worldGenConfig.getNumSectors() * worldGenConfig.getPlanetsPerSector());
 
       const sectors = galaxyMap.getSectors();
       sectors.forEach((sector) => {
         const planets = galaxyMap.getPlanetsInSector(sector.getId());
-        expect(planets.length).toBe(WorldGenerator.PLANETS_PER_SECTOR);
+        expect(planets.length).toBe(worldGenConfig.getPlanetsPerSector());
       });
 
       const samplePlanetId = `${sectors[0].getId()}-planet-1`;
@@ -100,10 +116,10 @@ describe('WorldGenerator', () => {
       }
 
       const continents = samplePlanet.getContinents();
-      expect(continents).toHaveLength(WorldGenerator.CONTINENTS_PER_PLANET);
+      expect(continents).toHaveLength(worldGenConfig.getContinentsPerPlanet());
       continents.forEach((continent) => {
         expect(continent).toBeInstanceOf(Continent);
-        expect(continent.getFeatures().length).toBe(WorldGenerator.FEATURES_PER_PLANET_CONTINENT);
+        expect(continent.getFeatures().length).toBe(worldGenConfig.getFeaturesPerPlanetContinent());
       });
 
       const primaryGate = `${sectors[0].getId()}-planet-1`;
@@ -121,7 +137,7 @@ describe('WorldGenerator', () => {
     });
 
     it('should throw if the latest galaxy map is requested before generation', () => {
-      const generator = WorldGenerator.create(nameGenerator);
+      const generator = WorldGenerator.create(nameGenerator, worldGenConfig);
       expect(() => generator.getLatestGalaxyMap()).toThrow('Galaxy map has not been generated yet.');
     });
   });
