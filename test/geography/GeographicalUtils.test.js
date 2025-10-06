@@ -20,7 +20,7 @@ describe('GeographicalUtils', () => {
         jest.restoreAllMocks();
     });
 
-    describe('computeRandomPlace', () => {
+    describe('computeRandomLocation', () => {
         it('should return a Location with feature and planet name when both are available', () => {
             // Create proper instances
             const featureType = GeographicalFeatureTypeRegistry.register('test_city', 'City');
@@ -41,7 +41,7 @@ describe('GeographicalUtils', () => {
             
             jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            const location = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
 
             expect(location).toBeInstanceOf(Location);
             expect(location.getName()).toBe('TestFeature, TestPlanet');
@@ -67,7 +67,7 @@ describe('GeographicalUtils', () => {
 
             jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            const location = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
 
             expect(location).toBeInstanceOf(Location);
             // Null feature has name "Unknown" per null object pattern
@@ -92,7 +92,7 @@ describe('GeographicalUtils', () => {
 
             jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            const location = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
 
             expect(location).toBeInstanceOf(Location);
             // Null feature has name "Unknown" per null object pattern
@@ -116,7 +116,7 @@ describe('GeographicalUtils', () => {
 
             jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            const location = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
 
             expect(location).toBeInstanceOf(Location);
             // Null feature has name "Unknown" per null object pattern
@@ -139,7 +139,7 @@ describe('GeographicalUtils', () => {
 
             jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            const location = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
 
             expect(location).toBeInstanceOf(Location);
             // Null feature has name "Unknown" per null object pattern
@@ -180,7 +180,7 @@ describe('GeographicalUtils', () => {
             const originalRandom = Math.random;
             Math.random = jest.fn(() => 0.5); // Should select middle continent
 
-            const location = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
 
             expect(location).toBeInstanceOf(Location);
             // The name should contain the planet name
@@ -199,7 +199,7 @@ describe('GeographicalUtils', () => {
             console.trace = jest.fn();
 
             expect(() => {
-                GeographicalUtils.computeRandomPlace({});
+                GeographicalUtils.computeRandomLocation({});
             }).toThrow(TypeError);
 
             expect(console.error).toHaveBeenCalled();
@@ -225,8 +225,8 @@ describe('GeographicalUtils', () => {
 
             jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            const location1 = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
-            const location2 = GeographicalUtils.computeRandomPlace(mockGalaxyMap);
+            const location1 = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
+            const location2 = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
 
             // Should be different Location instances (new instances created each time)
             expect(location1).not.toBe(location2);

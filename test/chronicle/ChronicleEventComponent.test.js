@@ -5,6 +5,39 @@ import { EventCategory } from '../../src/chronicle/EventCategory';
 import { Time } from '../../src/time/Time';
 import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent';
 import { Location } from '../../src/geography/Location';
+import { GeographicalFeature } from '../../src/geography/feature/GeographicalFeature';
+import { GeographicalFeatureTypeRegistry } from '../../src/geography/feature/GeographicalFeatureTypeRegistry';
+import { PlanetComponent } from '../../src/geography/planet/PlanetComponent';
+import { PlanetStatus } from '../../src/geography/planet/PlanetComponent';
+import { PlanetResourceSpecialization } from '../../src/geography/planet/PlanetComponent';
+import { Continent } from '../../src/geography/planet/Continent';
+
+/**
+ * Helper function to create a test location with mock feature and planet.
+ */
+function createTestLocation(locationName) {
+  // Register feature type if not already registered
+  if (!GeographicalFeatureTypeRegistry.has('TEST_CITY')) {
+    GeographicalFeatureTypeRegistry.register('TEST_CITY', 'City');
+  }
+  const featureType = GeographicalFeatureTypeRegistry.get('TEST_CITY');
+  const feature = GeographicalFeature.create(locationName, featureType);
+  
+  const continent = Continent.create('Test Continent');
+  const planet = PlanetComponent.create(
+    'test-planet-1',
+    'Test Planet',
+    'test-sector-1',
+    'TestOwner',
+    PlanetStatus.NORMAL,
+    5,
+    1,
+    PlanetResourceSpecialization.AGRICULTURE,
+    [continent]
+  );
+  
+  return Location.create(feature, planet);
+}
 
 describe('ChronicleComponent', () => {
   let sampleEvent1;
@@ -18,7 +51,7 @@ describe('ChronicleComponent', () => {
     eventType = new EventType(EventCategory.POLITICAL, 'Birth');
     time = new Time(484);
   figureComponent = HistoricalFigureComponent.create('Herodotus', -484, 59, 'Greek', 'Historian');
-    place = Location.create(null, null, 'Halicarnassus');
+    place = createTestLocation('Halicarnassus');
     
     sampleEvent1 = new ChronicleEvent(
       'Birth, Herodotus',

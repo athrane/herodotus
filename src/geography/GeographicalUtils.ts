@@ -24,16 +24,16 @@ export class GeographicalUtils {
     }
 
     /**
-     * Computes a random place from the galaxy map.
+     * Computes a random location from the galaxy map.
      * This method retrieves a random geographical feature from the galaxy map,
      * prioritizing specific features over general locations.
      * Uses the null object pattern - getRandomFeature() always returns a valid feature.
-     * 
-     * @param galaxyMap - The galaxy map component to get a random place from.
+     *
+     * @param galaxyMap - The galaxy map component to get a random location from.
      * @returns A Location instance representing a random location.
      * @throws {Error} If no planets are available in the galaxy map.
      */
-    static computeRandomPlace(galaxyMap: GalaxyMapComponent): Location {
+    static computeRandomLocation(galaxyMap: GalaxyMapComponent): Location {
         TypeUtils.ensureInstanceOf(galaxyMap, GalaxyMapComponent);
 
         // Get a random planet from the galaxy map

@@ -64,7 +64,7 @@ export class LogHelper {
             const figure = event.getFigure();
             console.log(`Figure: ${figure ? figure.getName() : 'N/A'}`);
             console.log(`Description: ${event.getDescription()}`);
-            console.log(`Place: ${event.getPlace().getName()}`);
+            console.log(`Place: ${event.getLocation().getName()}`);
             console.log(`Type: ${event.getEventType().getName()}`);
             console.log(`Category: ${event.getEventType().getCategory()}`);            
             console.log("---------------------");
