@@ -24,6 +24,7 @@ import { Ecs } from '../../ecs/Ecs';
 import { loadWorldGenData } from '../../data/geography/worldgen/loadWorldGenData';
 import { GeographicalUtils } from '../../geography/GeographicalUtils';
 import { loadHistoricalFigureBirthData } from '../../data/historicalfigure/loadHistoricalFigureBirthData';
+import { HistoricalFigureBirthData } from 'data/historicalfigure/HistoricalFigureBirthData';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -45,6 +46,12 @@ export class SimulationBuilder extends Builder {
      * ! signifies that this property is not yet initialized.
      */
     private dataSetEvents!: DataSetEvent[];
+
+    /**
+     * Configuration data for historical figure births.
+     * ! signifies that this property is not yet initialized.
+     */
+    private historicalFigureBirthConfig!: HistoricalFigureBirthData;
 
     /** 
      * Creates a new instance of SimulationBuilder.
@@ -122,12 +129,9 @@ export class SimulationBuilder extends Builder {
         const ecs = this.simEcs;
         const entityManager: EntityManager = this.simEcs.getEntityManager();
 
-        // Load historical figure birth configuration
-        const historicalFigureBirthConfig = loadHistoricalFigureBirthData();
-
         // Register systems using the Ecs facade
         ecs.registerSystem(new TimeSystem(entityManager));
-        ecs.registerSystem(new HistoricalFigureBirthSystem(entityManager, historicalFigureBirthConfig));
+        ecs.registerSystem(new HistoricalFigureBirthSystem(entityManager, this.historicalFigureBirthConfig));
         ecs.registerSystem(new HistoricalFigureLifecycleSystem(entityManager));
         ecs.registerSystem(new HistoricalFigureInfluenceSystem(entityManager));
         ecs.registerSystem(ComputeChoicesSystem.create(entityManager));
@@ -144,6 +148,9 @@ export class SimulationBuilder extends Builder {
 
         // Initialize geographical features in the registry
         GeographicalFeaturesFactory.create();
+
+        // Load historical figure configuration
+        this.historicalFigureBirthConfig = loadHistoricalFigureBirthData();
     }
 
     /**
