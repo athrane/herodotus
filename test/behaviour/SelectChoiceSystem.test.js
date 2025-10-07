@@ -14,6 +14,7 @@ import { GeographicalFeatureTypeRegistry } from '../../src/geography/feature/Geo
 import { Time } from '../../src/time/Time';
 import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent';
 import { PlayerComponent } from '../../src/ecs/PlayerComponent';
+import { LocationComponent } from '../../src/geography/LocationComponent';
 
 describe('SelectChoiceSystem', () => {
     let entityManager;
@@ -695,6 +696,93 @@ describe('SelectChoiceSystem', () => {
             expect(recordedEvent.getLocation()).toBeDefined();
             expect(recordedEvent.getLocation().getName()).toBeDefined();
             expect(typeof recordedEvent.getLocation().getName()).toBe('string');
+        });
+
+        it('should use entity\'s LocationComponent when available', () => {
+            // Arrange - Create a specific location for the entity
+            const featureType = GeographicalFeatureTypeRegistry.register('capital_city', 'Capital City');
+            const specificFeature = GeographicalFeature.create('Rome', featureType);
+            const specificContinent = Continent.create('Europe');
+            specificContinent.addFeature(specificFeature);
+            const specificPlanet = PlanetComponent.create(
+                'earth-planet-1',
+                'Earth',
+                'test-sector-1',
+                'TestOwner',
+                PlanetStatus.NORMAL,
+                5,
+                1,
+                PlanetResourceSpecialization.AGRICULTURE,
+                [specificContinent]
+            );
+            const entityLocation = LocationComponent.create(specificFeature, specificPlanet);
+
+            const choice = new DataSetEvent({
+                'Event Type': 'Military',
+                'Event Trigger': 'MILITARY_CHOICE',
+                'Event Name': 'Expand Empire',
+                'Event Consequence': 'Territory expanded',
+                'Description': 'The empire expands its borders'
+            });
+
+            const choiceComponent = ChoiceComponent.create([choice]);
+            const initialEvent = new DataSetEvent({
+                'Event Type': 'Social',
+                'Event Trigger': 'INITIAL',
+                'Event Name': 'Initial',
+                'Event Consequence': 'Initial state'
+            });
+            const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
+
+            entity.addComponent(choiceComponent);
+            entity.addComponent(dataSetEventComponent);
+            entity.addComponent(entityLocation); // Add the location component to the entity
+
+            // Act
+            system.processEntity(entity);
+
+            // Assert
+            expect(chronicleComponent.getEvents().length).toBe(1);
+            const recordedEvent = chronicleComponent.getEvents()[0];
+            expect(recordedEvent.getLocation()).toBe(entityLocation);
+            expect(recordedEvent.getLocation().getName()).toBe('Rome, Earth');
+            expect(recordedEvent.getLocation().getFeature().getName()).toBe('Rome');
+            expect(recordedEvent.getLocation().getPlanet().getName()).toBe('Earth');
+        });
+
+        it('should fall back to random location when entity has no LocationComponent', () => {
+            // Arrange
+            const choice = new DataSetEvent({
+                'Event Type': 'Economic',
+                'Event Trigger': 'ECONOMIC_CHOICE',
+                'Event Name': 'Trade Deal',
+                'Event Consequence': 'Trade established',
+                'Description': 'A new trade agreement is signed'
+            });
+
+            const choiceComponent = ChoiceComponent.create([choice]);
+            const initialEvent = new DataSetEvent({
+                'Event Type': 'Social',
+                'Event Trigger': 'INITIAL',
+                'Event Name': 'Initial',
+                'Event Consequence': 'Initial state'
+            });
+            const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
+
+            entity.addComponent(choiceComponent);
+            entity.addComponent(dataSetEventComponent);
+            // Note: No LocationComponent added - should fall back to random location
+
+            // Act
+            system.processEntity(entity);
+
+            // Assert
+            expect(chronicleComponent.getEvents().length).toBe(1);
+            const recordedEvent = chronicleComponent.getEvents()[0];
+            expect(recordedEvent.getLocation()).toBeDefined();
+            expect(recordedEvent.getLocation().getName()).toBeDefined();
+            // Should use the galaxy map's random location (Test City, Test Planet)
+            expect(recordedEvent.getLocation().getName()).toContain('Test');
         });
     });
 
