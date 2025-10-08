@@ -1,6 +1,6 @@
-import { HistoricalFigureBirthData } from '../../../src/data/historicalfigure/HistoricalFigureBirthData';
+import { HistoricalFigureData } from '../../../src/data/historicalfigure/HistoricalFigureData';
 
-describe('HistoricalFigureBirthData', () => {
+describe('HistoricalFigureData', () => {
     describe('constructor and create', () => {
         it('should create a valid instance with correct data', () => {
             const data = {
@@ -8,9 +8,9 @@ describe('HistoricalFigureBirthData', () => {
                 naturalLifespanMean: 70,
                 naturalLifespanStdDev: 15
             };
-            const config = HistoricalFigureBirthData.create(data);
+            const config = HistoricalFigureData.create(data);
             
-            expect(config).toBeInstanceOf(HistoricalFigureBirthData);
+            expect(config).toBeInstanceOf(HistoricalFigureData);
             expect(config.getBirthChancePerYear()).toBe(0.05);
             expect(config.getNaturalLifespanMean()).toBe(70);
             expect(config.getNaturalLifespanStdDev()).toBe(15);
@@ -22,7 +22,7 @@ describe('HistoricalFigureBirthData', () => {
                 naturalLifespanMean: 70,
                 naturalLifespanStdDev: 15
             };
-            const config = HistoricalFigureBirthData.create(data);
+            const config = HistoricalFigureData.create(data);
             
             expect(Object.isFrozen(config)).toBe(true);
         });
@@ -35,7 +35,7 @@ describe('HistoricalFigureBirthData', () => {
                 naturalLifespanStdDev: 15
             };
             
-            expect(() => HistoricalFigureBirthData.create(data)).toThrow(TypeError);
+            expect(() => HistoricalFigureData.create(data)).toThrow(TypeError);
         });
 
         it('should throw error if naturalLifespanMean is not a number', () => {
@@ -46,7 +46,7 @@ describe('HistoricalFigureBirthData', () => {
                 naturalLifespanStdDev: 15
             };
             
-            expect(() => HistoricalFigureBirthData.create(data)).toThrow(TypeError);
+            expect(() => HistoricalFigureData.create(data)).toThrow(TypeError);
         });
 
         it('should throw error if naturalLifespanStdDev is not a number', () => {
@@ -57,7 +57,7 @@ describe('HistoricalFigureBirthData', () => {
                 naturalLifespanStdDev: 'invalid'
             };
             
-            expect(() => HistoricalFigureBirthData.create(data)).toThrow(TypeError);
+            expect(() => HistoricalFigureData.create(data)).toThrow(TypeError);
         });
 
         it('should throw error if birthChancePerYear is missing', () => {
@@ -67,7 +67,7 @@ describe('HistoricalFigureBirthData', () => {
                 naturalLifespanStdDev: 15
             };
             
-            expect(() => HistoricalFigureBirthData.create(data)).toThrow(TypeError);
+            expect(() => HistoricalFigureData.create(data)).toThrow(TypeError);
         });
 
         it('should throw error if naturalLifespanMean is missing', () => {
@@ -77,7 +77,7 @@ describe('HistoricalFigureBirthData', () => {
                 naturalLifespanStdDev: 15
             };
             
-            expect(() => HistoricalFigureBirthData.create(data)).toThrow(TypeError);
+            expect(() => HistoricalFigureData.create(data)).toThrow(TypeError);
         });
 
         it('should throw error if naturalLifespanStdDev is missing', () => {
@@ -87,7 +87,7 @@ describe('HistoricalFigureBirthData', () => {
                 naturalLifespanMean: 70
             };
             
-            expect(() => HistoricalFigureBirthData.create(data)).toThrow(TypeError);
+            expect(() => HistoricalFigureData.create(data)).toThrow(TypeError);
         });
 
         it('should accept zero values', () => {
@@ -96,7 +96,7 @@ describe('HistoricalFigureBirthData', () => {
                 naturalLifespanMean: 0,
                 naturalLifespanStdDev: 0
             };
-            const config = HistoricalFigureBirthData.create(data);
+            const config = HistoricalFigureData.create(data);
             
             expect(config.getBirthChancePerYear()).toBe(0);
             expect(config.getNaturalLifespanMean()).toBe(0);
@@ -109,7 +109,7 @@ describe('HistoricalFigureBirthData', () => {
                 naturalLifespanMean: 150,
                 naturalLifespanStdDev: 50
             };
-            const config = HistoricalFigureBirthData.create(data);
+            const config = HistoricalFigureData.create(data);
             
             expect(config.getBirthChancePerYear()).toBe(1.0);
             expect(config.getNaturalLifespanMean()).toBe(150);
@@ -119,17 +119,17 @@ describe('HistoricalFigureBirthData', () => {
 
     describe('createNull', () => {
         it('should create a null instance with zero values', () => {
-            const nullConfig = HistoricalFigureBirthData.createNull();
+            const nullConfig = HistoricalFigureData.createNull();
             
-            expect(nullConfig).toBeInstanceOf(HistoricalFigureBirthData);
+            expect(nullConfig).toBeInstanceOf(HistoricalFigureData);
             expect(nullConfig.getBirthChancePerYear()).toBe(0);
             expect(nullConfig.getNaturalLifespanMean()).toBe(0);
             expect(nullConfig.getNaturalLifespanStdDev()).toBe(0);
         });
 
         it('should return the same singleton instance on multiple calls', () => {
-            const nullConfig1 = HistoricalFigureBirthData.createNull();
-            const nullConfig2 = HistoricalFigureBirthData.createNull();
+            const nullConfig1 = HistoricalFigureData.createNull();
+            const nullConfig2 = HistoricalFigureData.createNull();
             
             expect(nullConfig1).toBe(nullConfig2);
         });
@@ -137,7 +137,7 @@ describe('HistoricalFigureBirthData', () => {
 
     describe('getter methods', () => {
         it('should return correct birthChancePerYear', () => {
-            const config = HistoricalFigureBirthData.create({
+            const config = HistoricalFigureData.create({
                 birthChancePerYear: 0.123,
                 naturalLifespanMean: 70,
                 naturalLifespanStdDev: 15
@@ -147,7 +147,7 @@ describe('HistoricalFigureBirthData', () => {
         });
 
         it('should return correct naturalLifespanMean', () => {
-            const config = HistoricalFigureBirthData.create({
+            const config = HistoricalFigureData.create({
                 birthChancePerYear: 0.05,
                 naturalLifespanMean: 85,
                 naturalLifespanStdDev: 15
@@ -157,7 +157,7 @@ describe('HistoricalFigureBirthData', () => {
         });
 
         it('should return correct naturalLifespanStdDev', () => {
-            const config = HistoricalFigureBirthData.create({
+            const config = HistoricalFigureData.create({
                 birthChancePerYear: 0.05,
                 naturalLifespanMean: 70,
                 naturalLifespanStdDev: 20

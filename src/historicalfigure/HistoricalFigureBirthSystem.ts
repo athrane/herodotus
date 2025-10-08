@@ -15,7 +15,7 @@ import { DataSetEvent } from '../data/DataSetEvent';
 import { DataSetEventComponent } from '../data/DataSetEventComponent';
 import { ChoiceComponent } from '../behaviour/ChoiceComponent';
 import { GeographicalUtils } from '../geography/GeographicalUtils';
-import { HistoricalFigureBirthData } from '../data/historicalfigure/HistoricalFigureBirthData';
+import { HistoricalFigureData } from '../data/historicalfigure/HistoricalFigureData';
 
 /**
  * Manages the birth of historical figures.
@@ -28,17 +28,17 @@ export class HistoricalFigureBirthSystem extends System {
     private readonly nameGenerator: NameGenerator;
 
     /**
-     * Configuration data for historical figure births.
+     * Configuration data for historical figures.
      */
-    private readonly config: HistoricalFigureBirthData;
+    private readonly config: HistoricalFigureData;
 
     /**
      * @param entityManager - The entity manager instance.
-     * @param config - The historical figure birth configuration.
+     * @param config - The historical figure configuration.
      */
-    constructor(entityManager: EntityManager, config: HistoricalFigureBirthData) {
+    constructor(entityManager: EntityManager, config: HistoricalFigureData) {
         super(entityManager, [TimeComponent, GalaxyMapComponent, ChronicleComponent]);
-        TypeUtils.ensureInstanceOf(config, HistoricalFigureBirthData);
+        TypeUtils.ensureInstanceOf(config, HistoricalFigureData);
         this.nameGenerator = NameGenerator.create();
         this.config = config;
     }
@@ -164,10 +164,10 @@ export class HistoricalFigureBirthSystem extends System {
     /**
      * Static factory method to create a HistoricalFigureBirthSystem.
      * @param entityManager - The entity manager instance.
-     * @param config - The historical figure birth configuration.
+     * @param config - The historical figure configuration.
      * @returns A new instance of HistoricalFigureBirthSystem.
      */
-    static create(entityManager: EntityManager, config: HistoricalFigureBirthData): HistoricalFigureBirthSystem {
+    static create(entityManager: EntityManager, config: HistoricalFigureData): HistoricalFigureBirthSystem {
         return new HistoricalFigureBirthSystem(entityManager, config);
     }
 }

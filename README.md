@@ -653,7 +653,7 @@ No code changes or recompilation required!
 #### Historical Figures
 - `src/historicalfigure/HistoricalFigureComponent.ts` — Component storing figure data and snapshot helpers
 - `src/historicalfigure/HistoricalFigureLocationComponent.ts` — Component tracking the location of historical figures (currently empty/placeholder)
-- `src/historicalfigure/HistoricalFigureBirthSystem.ts` — System that seeds/births figures
+- `src/historicalfigure/HistoricalFigureBirthSystem.ts` — System that manages birth of historical figures
 - `src/historicalfigure/HistoricalFigureLifecycleSystem.ts` — Manages lifecycle events for figures
 - `src/historicalfigure/HistoricalFigureInfluenceSystem.ts` — Applies influence changes to figures
 

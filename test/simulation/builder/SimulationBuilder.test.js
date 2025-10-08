@@ -59,12 +59,12 @@ jest.mock('../../../src/data/loadEvents', () => {
     };
 });
 
-// Mock historical figure birth data loader
-jest.mock('../../../src/data/historicalfigure/loadHistoricalFigureBirthData', () => {
-    const { HistoricalFigureBirthData } = jest.requireActual('../../../src/data/historicalfigure/HistoricalFigureBirthData.ts');
+// Mock historical figure data loader
+jest.mock('../../../src/data/historicalfigure/loadHistoricalFigureData', () => {
+    const { HistoricalFigureData } = jest.requireActual('../../../src/data/historicalfigure/HistoricalFigureData.ts');
     return {
-        loadHistoricalFigureBirthData: jest.fn(() => 
-            HistoricalFigureBirthData.create({
+        loadHistoricalFigureData: jest.fn(() => 
+            HistoricalFigureData.create({
                 birthChancePerYear: 0.1,
                 naturalLifespanMean: 70,
                 naturalLifespanStdDev: 10

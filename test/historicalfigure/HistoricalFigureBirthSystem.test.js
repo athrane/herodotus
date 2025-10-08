@@ -12,7 +12,7 @@ import { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } from '../
 import { Continent } from '../../src/geography/planet/Continent';
 import { GeographicalFeature } from '../../src/geography/feature/GeographicalFeature';
 import { GeographicalFeatureTypeRegistry } from '../../src/geography/feature/GeographicalFeatureTypeRegistry';
-import { HistoricalFigureBirthData } from '../../src/data/historicalfigure/HistoricalFigureBirthData';
+import { HistoricalFigureData } from '../../src/data/historicalfigure/HistoricalFigureData';
 
 describe('HistoricalFigureBirthSystem', () => {
     let entityManager;
@@ -28,7 +28,7 @@ describe('HistoricalFigureBirthSystem', () => {
         entityManager = new EntityManager();
 
         // Create mock configuration
-        mockConfig = HistoricalFigureBirthData.create({
+        mockConfig = HistoricalFigureData.create({
             birthChancePerYear: 0.05,
             naturalLifespanMean: 70,
             naturalLifespanStdDev: 15
@@ -173,7 +173,7 @@ describe('HistoricalFigureBirthSystem', () => {
 
     it('isBorn returns true or false based on birthChancePerYear', () => {
         // Create a system with 100% birth chance
-        const alwaysBornConfig = HistoricalFigureBirthData.create({
+        const alwaysBornConfig = HistoricalFigureData.create({
             birthChancePerYear: 1,
             naturalLifespanMean: 70,
             naturalLifespanStdDev: 15
@@ -182,7 +182,7 @@ describe('HistoricalFigureBirthSystem', () => {
         expect(alwaysBornSystem.isBorn()).toBe(true);
         
         // Create a system with 0% birth chance
-        const neverBornConfig = HistoricalFigureBirthData.create({
+        const neverBornConfig = HistoricalFigureData.create({
             birthChancePerYear: 0,
             naturalLifespanMean: 70,
             naturalLifespanStdDev: 15
