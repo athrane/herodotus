@@ -14,6 +14,7 @@ import { getEventCategoryFromString } from '../chronicle/EventCategory';
 import { HistoricalFigureComponent } from '../historicalfigure/HistoricalFigureComponent';
 import { PlayerComponent } from '../ecs/PlayerComponent';
 import { GeographicalUtils } from '../geography/GeographicalUtils';
+import { LocationComponent } from '../geography/LocationComponent';
 
 /**
  * The SelectChoiceSystem processes entities with ChoiceComponents to resolve
@@ -139,8 +140,14 @@ export class SelectChoiceSystem extends System {
         // Get the current time
         const currentTime = timeComponent.getTime();
 
-        // Get a random location from the galaxy map
-        const location = GeographicalUtils.computeRandomLocation(galaxyMapComponent);
+        // Get the location from the entity's LocationComponent
+        let location = entity.getComponent(LocationComponent);
+
+        // If the entity doesn't have a location, get a random one as a fallback
+        if (!location) {
+            location = GeographicalUtils.computeRandomLocation(galaxyMapComponent);
+        }
+
         const eventCategory = getEventCategoryFromString(chosenEvent.getEventType());
         const eventType = EventType.create(eventCategory, chosenEvent.getEventName());
 
