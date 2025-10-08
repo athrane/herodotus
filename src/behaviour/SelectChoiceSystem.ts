@@ -13,7 +13,6 @@ import { EventType } from '../chronicle/EventType';
 import { getEventCategoryFromString } from '../chronicle/EventCategory';
 import { HistoricalFigureComponent } from '../historicalfigure/HistoricalFigureComponent';
 import { PlayerComponent } from '../ecs/PlayerComponent';
-import { GeographicalUtils } from '../geography/GeographicalUtils';
 import { LocationComponent } from '../geography/LocationComponent';
 
 /**
@@ -142,12 +141,9 @@ export class SelectChoiceSystem extends System {
 
         // Get the location from the entity's LocationComponent
         let location = entity.getComponent(LocationComponent);
+        if (!location) location = LocationComponent.createNullLocation();
 
-        // If the entity doesn't have a location, get a random one as a fallback
-        if (!location) {
-            location = GeographicalUtils.computeRandomLocation(galaxyMapComponent);
-        }
-
+        // create event type from chosen event
         const eventCategory = getEventCategoryFromString(chosenEvent.getEventType());
         const eventType = EventType.create(eventCategory, chosenEvent.getEventName());
 
