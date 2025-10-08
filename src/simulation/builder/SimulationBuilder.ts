@@ -23,6 +23,8 @@ import { PlayerComponent } from '../../ecs/PlayerComponent';
 import { Ecs } from '../../ecs/Ecs';
 import { loadWorldGenData } from '../../data/geography/worldgen/loadWorldGenData';
 import { GeographicalUtils } from '../../geography/GeographicalUtils';
+import { loadHistoricalFigureData } from '../../data/historicalfigure/loadHistoricalFigureData';
+import { HistoricalFigureData } from 'data/historicalfigure/HistoricalFigureData';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -44,6 +46,12 @@ export class SimulationBuilder extends Builder {
      * ! signifies that this property is not yet initialized.
      */
     private dataSetEvents!: DataSetEvent[];
+
+    /**
+     * Configuration data for historical figures.
+     * ! signifies that this property is not yet initialized.
+     */
+    private historicalFigureConfig!: HistoricalFigureData;
 
     /** 
      * Creates a new instance of SimulationBuilder.
@@ -123,7 +131,7 @@ export class SimulationBuilder extends Builder {
 
         // Register systems using the Ecs facade
         ecs.registerSystem(new TimeSystem(entityManager));
-        ecs.registerSystem(new HistoricalFigureBirthSystem(entityManager));
+        ecs.registerSystem(new HistoricalFigureBirthSystem(entityManager, this.historicalFigureConfig));
         ecs.registerSystem(new HistoricalFigureLifecycleSystem(entityManager));
         ecs.registerSystem(new HistoricalFigureInfluenceSystem(entityManager));
         ecs.registerSystem(ComputeChoicesSystem.create(entityManager));
@@ -140,6 +148,9 @@ export class SimulationBuilder extends Builder {
 
         // Initialize geographical features in the registry
         GeographicalFeaturesFactory.create();
+
+        // Load historical figure configuration
+        this.historicalFigureConfig = loadHistoricalFigureData();
     }
 
     /**

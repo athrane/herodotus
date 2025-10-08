@@ -12,6 +12,7 @@ import { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } from '../
 import { Continent } from '../../src/geography/planet/Continent';
 import { GeographicalFeature } from '../../src/geography/feature/GeographicalFeature';
 import { GeographicalFeatureTypeRegistry } from '../../src/geography/feature/GeographicalFeatureTypeRegistry';
+import { HistoricalFigureData } from '../../src/data/historicalfigure/HistoricalFigureData';
 
 describe('HistoricalFigureBirthSystem', () => {
     let entityManager;
@@ -21,9 +22,17 @@ describe('HistoricalFigureBirthSystem', () => {
     let mockChronicleEventComponent;
     let mockNameGenerator;
     let globalEntity;
+    let mockConfig;
 
     beforeEach(() => {
         entityManager = new EntityManager();
+
+        // Create mock configuration
+        mockConfig = HistoricalFigureData.create({
+            birthChancePerYear: 0.05,
+            naturalLifespanMean: 70,
+            naturalLifespanStdDev: 15
+        });
 
         // Mock dependencies
         const mockTime = Time.create(1970);
@@ -70,8 +79,7 @@ describe('HistoricalFigureBirthSystem', () => {
         // Spy on createEntity to track calls to historical figure creation
         jest.spyOn(entityManager, 'createEntity');
 
-        system = new HistoricalFigureBirthSystem(entityManager);
-        HistoricalFigureBirthSystem.BIRTH_CHANCE_PER_YEAR = 0.05;
+        system = new HistoricalFigureBirthSystem(entityManager, mockConfig);
     });
 
     afterEach(() => {
@@ -163,11 +171,24 @@ describe('HistoricalFigureBirthSystem', () => {
         expect(event.getHeading()).toContain('Historical figure TestName was born in 1970.');
     });
 
-    it('isBorn returns true or false based on BIRTH_CHANCE_PER_YEAR', () => {
-        HistoricalFigureBirthSystem.BIRTH_CHANCE_PER_YEAR = 1;
-        expect(system.isBorn()).toBe(true);
-        HistoricalFigureBirthSystem.BIRTH_CHANCE_PER_YEAR = 0;
-        expect(system.isBorn()).toBe(false);
+    it('isBorn returns true or false based on birthChancePerYear', () => {
+        // Create a system with 100% birth chance
+        const alwaysBornConfig = HistoricalFigureData.create({
+            birthChancePerYear: 1,
+            naturalLifespanMean: 70,
+            naturalLifespanStdDev: 15
+        });
+        const alwaysBornSystem = new HistoricalFigureBirthSystem(entityManager, alwaysBornConfig);
+        expect(alwaysBornSystem.isBorn()).toBe(true);
+        
+        // Create a system with 0% birth chance
+        const neverBornConfig = HistoricalFigureData.create({
+            birthChancePerYear: 0,
+            naturalLifespanMean: 70,
+            naturalLifespanStdDev: 15
+        });
+        const neverBornSystem = new HistoricalFigureBirthSystem(entityManager, neverBornConfig);
+        expect(neverBornSystem.isBorn()).toBe(false);
     });
 
     it('calculateLifespan returns a positive integer', () => {

@@ -1,0 +1,5 @@
+{
+  "birthChancePerYear": 0.05,
+  "naturalLifespanMean": 70,
+  "naturalLifespanStdDev": 15
+}

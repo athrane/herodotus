@@ -11,6 +11,7 @@ import { DataSetComponent } from '../../../src/data/DataSetComponent.ts';
 import { DataSetEventComponent } from '../../../src/data/DataSetEventComponent.ts';
 import { HistoricalFigureComponent } from '../../../src/historicalfigure/HistoricalFigureComponent.ts';
 import { LocationComponent } from '../../../src/geography/LocationComponent.ts';
+import { GeographicalFeatureTypeRegistry } from '../../../src/geography/feature/GeographicalFeatureTypeRegistry.ts';
 
 // Mock the WorldGenerator to control its output
 jest.mock('../../../src/generator/world/WorldGenerator', () => {
@@ -58,6 +59,20 @@ jest.mock('../../../src/data/loadEvents', () => {
     };
 });
 
+// Mock historical figure data loader
+jest.mock('../../../src/data/historicalfigure/loadHistoricalFigureData', () => {
+    const { HistoricalFigureData } = jest.requireActual('../../../src/data/historicalfigure/HistoricalFigureData.ts');
+    return {
+        loadHistoricalFigureData: jest.fn(() => 
+            HistoricalFigureData.create({
+                birthChancePerYear: 0.1,
+                naturalLifespanMean: 70,
+                naturalLifespanStdDev: 10
+            })
+        )
+    };
+});
+
 describe('SimulationBuilder', () => {
     let builder;
     let simulation;
@@ -65,6 +80,9 @@ describe('SimulationBuilder', () => {
     let systemManager;
 
     beforeEach(() => {
+        // Clear the GeographicalFeatureTypeRegistry to ensure clean state between tests
+        GeographicalFeatureTypeRegistry.clear();
+
         builder = SimulationBuilder.create();
         builder.build(); // build the simulation instance
         const ecs = builder.getEcs();
@@ -90,6 +108,8 @@ describe('SimulationBuilder', () => {
     });
 
     it('should build systems correctly', () => {
+        // buildData must be called before buildSystems to initialize historicalFigureBirthConfig
+        builder.buildData();
         builder.buildSystems();
 
         expect(systemManager.register).toHaveBeenCalledTimes(6);
