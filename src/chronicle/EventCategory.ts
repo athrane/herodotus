@@ -1,17 +1,11 @@
+import { loadEventCategories } from '../data/chronicle/loadEventCategories';
+
 /**
  * Defines the categories for historical events.
+ * Loaded from data/chronicle/event-category.json at module initialization.
  * Exported as a frozen object to prevent runtime mutation.
  */
-export const EventCategory = Object.freeze({
-  POLITICAL: 'Political',
-  SOCIAL: 'Social',
-  ECONOMIC: 'Economic',
-  TECHNOLOGICAL: 'Technological',
-  CULTURAL_RELIGIOUS: 'Cultural/Religious',
-  MILITARY: 'Military',
-  NATURAL: 'Natural',
-  MYTHICAL: 'Mythical',
-} as const);
+export const EventCategory = loadEventCategories();
 
 /**
  * Union of all category string values, e.g., 'Political' | 'Social' | ... 

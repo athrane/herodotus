@@ -155,4 +155,24 @@ export class TypeUtils {
       throw new TypeError(message || 'Expected an array');
     }
   }
+
+  /**
+   * Ensures that the provided value is an object (not null or array).
+   * If not, it throws an error with details about the type mismatch
+   * and prints the stack trace.
+   *
+   * @param value - The value to validate.
+   * @param message - Optional custom error message.
+   * @throws {TypeError} If the value is not an object or is null/array.
+   */
+  static ensureObject(value: unknown, message?: string): asserts value is Record<string, unknown> {
+    if (typeof value !== 'object' || value === null || Array.isArray(value)) {
+      const actualType = value === null ? 'null' : Array.isArray(value) ? 'array' : typeof value;
+      const expectedType = 'object';
+      const errorMessage = message || `Expected type ${expectedType}, but got ${actualType}`;
+      console.error(errorMessage);
+      console.trace("Object check failed");
+      throw new TypeError(errorMessage);
+    }
+  }
 }

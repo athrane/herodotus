@@ -1,0 +1,36 @@
+{
+  "categories": [
+    {
+      "key": "POLITICAL",
+      "value": "Political"
+    },
+    {
+      "key": "SOCIAL",
+      "value": "Social"
+    },
+    {
+      "key": "ECONOMIC",
+      "value": "Economic"
+    },
+    {
+      "key": "TECHNOLOGICAL",
+      "value": "Technological"
+    },
+    {
+      "key": "CULTURAL_RELIGIOUS",
+      "value": "Cultural/Religious"
+    },
+    {
+      "key": "MILITARY",
+      "value": "Military"
+    },
+    {
+      "key": "NATURAL",
+      "value": "Natural"
+    },
+    {
+      "key": "MYTHICAL",
+      "value": "Mythical"
+    }
+  ]
+}
