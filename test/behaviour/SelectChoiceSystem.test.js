@@ -744,7 +744,9 @@ describe('SelectChoiceSystem', () => {
             // Assert
             expect(chronicleComponent.getEvents().length).toBe(1);
             const recordedEvent = chronicleComponent.getEvents()[0];
-            expect(recordedEvent.getLocation()).toBe(entityLocation);
+            // Verify that the location is a copy (not the same reference)
+            expect(recordedEvent.getLocation()).not.toBe(entityLocation);
+            // Verify that the copied location has the same content
             expect(recordedEvent.getLocation().getName()).toBe('Rome, Earth');
             expect(recordedEvent.getLocation().getFeature().getName()).toBe('Rome');
             expect(recordedEvent.getLocation().getPlanet().getName()).toBe('Earth');
