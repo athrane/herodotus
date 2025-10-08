@@ -25,6 +25,7 @@ import { loadWorldGenData } from '../../data/geography/worldgen/loadWorldGenData
 import { GeographicalUtils } from '../../geography/GeographicalUtils';
 import { loadHistoricalFigureData } from '../../data/historicalfigure/loadHistoricalFigureData';
 import { HistoricalFigureData } from 'data/historicalfigure/HistoricalFigureData';
+import { RealmStateComponent } from '../../realm/RealmStateComponent';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -157,7 +158,13 @@ export class SimulationBuilder extends Builder {
      * @override
      */
     buildComponents(): void {
-        //GeographicalFeaturesFactory.create();
+        const entityManager: EntityManager = this.simEcs.getEntityManager();
+        
+        // Create singleton RealmState entity to hold realm-wide state
+        entityManager.createEntity(
+            new NameComponent("RealmState"),
+            RealmStateComponent.create()
+        );
     }
 
     /**
