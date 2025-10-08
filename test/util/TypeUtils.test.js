@@ -166,4 +166,43 @@ describe('TypeUtils', () => {
     });
   });
 
+  describe('ensureObject', () => {
+    it('should not throw for a plain object', () => {
+      expect(() => TypeUtils.ensureObject({})).not.toThrow();
+      expect(() => TypeUtils.ensureObject({ key: 'value' })).not.toThrow();
+      expect(() => TypeUtils.ensureObject({ nested: { key: 'value' } })).not.toThrow();
+    });
+
+    it('should throw a TypeError for null', () => {
+      expect(() => TypeUtils.ensureObject(null)).toThrow(new TypeError('Expected type object, but got null'));
+    });
+
+    it('should throw a TypeError for arrays', () => {
+      expect(() => TypeUtils.ensureObject([])).toThrow(new TypeError('Expected type object, but got array'));
+      expect(() => TypeUtils.ensureObject([1, 2, 3])).toThrow(new TypeError('Expected type object, but got array'));
+    });
+
+    it('should throw a TypeError for primitive values', () => {
+      expect(() => TypeUtils.ensureObject(123)).toThrow(new TypeError('Expected type object, but got number'));
+      expect(() => TypeUtils.ensureObject('string')).toThrow(new TypeError('Expected type object, but got string'));
+      expect(() => TypeUtils.ensureObject(true)).toThrow(new TypeError('Expected type object, but got boolean'));
+      expect(() => TypeUtils.ensureObject(undefined)).toThrow(new TypeError('Expected type object, but got undefined'));
+    });
+
+    it('should throw a TypeError for functions', () => {
+      expect(() => TypeUtils.ensureObject(() => {})).toThrow(new TypeError('Expected type object, but got function'));
+    });
+
+    it('should throw with custom message', () => {
+      expect(() => TypeUtils.ensureObject(null, 'Custom object error')).toThrow(new TypeError('Custom object error'));
+    });
+
+    it('should log an error and trace on failure', () => {
+      const expectedMessage = 'Expected type object, but got null';
+      expect(() => TypeUtils.ensureObject(null)).toThrow();
+      expect(errorSpy).toHaveBeenCalledWith(expectedMessage);
+      expect(traceSpy).toHaveBeenCalledWith('Object check failed');
+    });
+  });
+
 });
