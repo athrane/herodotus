@@ -101,6 +101,7 @@ export class ChronicleEvent {
 
   /**
    * Convenience factory for creating a ChronicleEvent with validation.
+   * Creates a shallow copy of the location to capture the location at the time of the event.
    *
    * @param heading - Short, human-readable title for the event.
    * @param eventType - The typed category of the event.
@@ -118,6 +119,8 @@ export class ChronicleEvent {
     description: string,
     figure: HistoricalFigureComponent | null = null
   ): ChronicleEvent {
-    return new ChronicleEvent(heading, eventType, time, location, description, figure);
+    // Create a shallow copy of the location to capture the location at the time of the event
+    const locationCopy = LocationComponent.create(location.getFeature(), location.getPlanet());
+    return new ChronicleEvent(heading, eventType, time, locationCopy, description, figure);
   }
 }

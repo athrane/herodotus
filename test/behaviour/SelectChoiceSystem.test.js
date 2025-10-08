@@ -744,13 +744,15 @@ describe('SelectChoiceSystem', () => {
             // Assert
             expect(chronicleComponent.getEvents().length).toBe(1);
             const recordedEvent = chronicleComponent.getEvents()[0];
-            expect(recordedEvent.getLocation()).toBe(entityLocation);
+            // Verify that the location is a copy (not the same reference)
+            expect(recordedEvent.getLocation()).not.toBe(entityLocation);
+            // Verify that the copied location has the same content
             expect(recordedEvent.getLocation().getName()).toBe('Rome, Earth');
             expect(recordedEvent.getLocation().getFeature().getName()).toBe('Rome');
             expect(recordedEvent.getLocation().getPlanet().getName()).toBe('Earth');
         });
 
-        it('should fall back to random location when entity has no LocationComponent', () => {
+        it('should use null location when entity has no LocationComponent', () => {
             // Arrange
             const choice = new DataSetEvent({
                 'Event Type': 'Economic',
@@ -771,7 +773,7 @@ describe('SelectChoiceSystem', () => {
 
             entity.addComponent(choiceComponent);
             entity.addComponent(dataSetEventComponent);
-            // Note: No LocationComponent added - should fall back to random location
+            // Note: No LocationComponent added - should use null location
 
             // Act
             system.processEntity(entity);
@@ -780,9 +782,7 @@ describe('SelectChoiceSystem', () => {
             expect(chronicleComponent.getEvents().length).toBe(1);
             const recordedEvent = chronicleComponent.getEvents()[0];
             expect(recordedEvent.getLocation()).toBeDefined();
-            expect(recordedEvent.getLocation().getName()).toBeDefined();
-            // Should use the galaxy map's random location (Test City, Test Planet)
-            expect(recordedEvent.getLocation().getName()).toContain('Test');
+            expect(recordedEvent.getLocation().getName()).toBe('Unknown, Null Planet');
         });
     });
 
@@ -825,12 +825,12 @@ describe('SelectChoiceSystem', () => {
         });
     });
 
-    describe('computeDecisionPlace with edge cases', () => {
+    describe('location handling without LocationComponent on entity', () => {
         beforeEach(() => {
             setupSingletonComponents();
         });
 
-        it('should fall back to default place when galaxy map is empty', () => {
+        it('should use null location when galaxy map is empty and entity has no LocationComponent', () => {
             // Arrange - Create empty galaxy map
             galaxyMapComponent.reset();
             
@@ -857,31 +857,16 @@ describe('SelectChoiceSystem', () => {
             // Act
             system.processEntity(entity);
 
-            // Assert - Event should be recorded with null planet location
+            // Assert - chronicle event should be recorded with null location
+            expect(dataSetEventComponent.getDataSetEvent().getEventName()).toBe('Test Choice');
+            expect(choiceComponent.getChoiceCount()).toBe(0);
             const events = chronicleComponent.getEvents();
             expect(events).toHaveLength(1);
-            expect(events[0].getLocation().getPlanet().getId()).toBe('NULL_PLANET');
+            expect(events[0].getLocation().getName()).toBe('Unknown, Null Planet');
         });
 
-        it('should fall back to planet name fallback feature when planet has no continents', () => {
-            // Arrange - Create planet with no continents
-            galaxyMapComponent.reset();
-            const sector = Sector.create('test-sector', 'Test Sector');
-            galaxyMapComponent.addSector(sector);
-            
-            const planetWithNoContinents = PlanetComponent.create(
-                'empty-planet',
-                'Empty Planet',
-                'test-sector',
-                'TestOwner',
-                PlanetStatus.NORMAL,
-                5,
-                1,
-                PlanetResourceSpecialization.MINING,
-                [] // No continents
-            );
-            galaxyMapComponent.registerPlanet(planetWithNoContinents);
-
+        it('should use null location when entity has no LocationComponent', () => {
+            // Arrange - galaxy map has planets but entity has no LocationComponent
             const choice = new DataSetEvent({
                 'Event Type': 'Political',
                 'Event Trigger': 'CHOICE_1',
@@ -901,17 +886,20 @@ describe('SelectChoiceSystem', () => {
 
             entity.addComponent(choiceComponent);
             entity.addComponent(dataSetEventComponent);
+            // Note: No LocationComponent added
 
             // Act
             system.processEntity(entity);
 
-            // Assert
-            const recordedEvent = chronicleComponent.getEvents()[0];
-            expect(recordedEvent.getLocation().getName()).toBe('Unknown, Empty Planet');
+            // Assert - chronicle event should be recorded with null location
+            expect(dataSetEventComponent.getDataSetEvent().getEventName()).toBe('Test Choice');
+            expect(choiceComponent.getChoiceCount()).toBe(0);
+            expect(chronicleComponent.getEvents()).toHaveLength(1);
+            expect(chronicleComponent.getEvents()[0].getLocation().getName()).toBe('Unknown, Null Planet');
         });
 
-        it('should fall back to planet name when continent has no features', () => {
-            // Arrange - Create planet with continent but no features
+        it('should use null location even with planets in galaxy when entity lacks LocationComponent', () => {
+            // Arrange - Create planet with continent but entity has no LocationComponent
             galaxyMapComponent.reset();
             const sector = Sector.create('test-sector', 'Test Sector');
             galaxyMapComponent.addSector(sector);
@@ -951,18 +939,39 @@ describe('SelectChoiceSystem', () => {
 
             entity.addComponent(choiceComponent);
             entity.addComponent(dataSetEventComponent);
+            // Note: No LocationComponent added
 
             // Act
             system.processEntity(entity);
 
-            // Assert - With the centralized implementation, it now returns null feature name when no features are available
-            const recordedEvent = chronicleComponent.getEvents()[0];
-            expect(recordedEvent.getLocation().getName()).toBe('Unknown, Sparse Planet');
+            // Assert - chronicle event should be recorded with null location
+            expect(dataSetEventComponent.getDataSetEvent().getEventName()).toBe('Test Choice');
+            expect(choiceComponent.getChoiceCount()).toBe(0);
+            expect(chronicleComponent.getEvents()).toHaveLength(1);
+            expect(chronicleComponent.getEvents()[0].getLocation().getName()).toBe('Unknown, Null Planet');
         });
 
-        it('should use feature location format when available', () => {
-            // This test verifies the place format is "FeatureName, PlanetName"
-            // Arrange is already done in setupSingletonComponents
+        it('should record chronicle event when entity has LocationComponent with valid location', () => {
+            // This test verifies that chronicle events ARE recorded when entity has a LocationComponent
+            // Arrange is done in setupSingletonComponents which creates a galaxy map with features
+            
+            // Create a specific location for the entity
+            const featureType = GeographicalFeatureTypeRegistry.register('test_settlement', 'Settlement');
+            const specificFeature = GeographicalFeature.create('Test City', featureType);
+            const specificContinent = Continent.create('Test Continent');
+            specificContinent.addFeature(specificFeature);
+            const specificPlanet = PlanetComponent.create(
+                'test-planet-2',
+                'Test Planet',
+                'test-sector-1',
+                'TestOwner',
+                PlanetStatus.NORMAL,
+                5,
+                1,
+                PlanetResourceSpecialization.AGRICULTURE,
+                [specificContinent]
+            );
+            const entityLocation = LocationComponent.create(specificFeature, specificPlanet);
 
             const choice = new DataSetEvent({
                 'Event Type': 'Political',
@@ -983,11 +992,13 @@ describe('SelectChoiceSystem', () => {
 
             entity.addComponent(choiceComponent);
             entity.addComponent(dataSetEventComponent);
+            entity.addComponent(entityLocation);
 
             // Act
             system.processEntity(entity);
 
-            // Assert
+            // Assert - chronicle event should be recorded
+            expect(chronicleComponent.getEvents()).toHaveLength(1);
             const recordedEvent = chronicleComponent.getEvents()[0];
             const placeName = recordedEvent.getLocation().getName();
             expect(placeName).toContain('Test City');
