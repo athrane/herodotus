@@ -161,7 +161,7 @@ export class SimulationBuilder extends Builder {
         this.historicalFigureConfig = loadHistoricalFigureData();
 
         // Load event categories from JSON configuration
-        this.eventCategories = loadEventCategories();
+        //this.eventCategories = loadEventCategories();
     }
 
     /**
