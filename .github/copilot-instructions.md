@@ -178,6 +178,7 @@ Configuration Files (Root):
 - **All classes must provide static `create()` methods** - this is enforced project-wide
 - Constructor parameters are passed through to `create()` method
 - Enables consistent instantiation patterns across codebase
+- **Static factory methods must be placed last in class files** - after all instance methods and properties
 - Example: `TimeComponent.create(Time.create(year))` instead of `new TimeComponent(new Time(year))`
 
 ### Type Documentation Guidelines
