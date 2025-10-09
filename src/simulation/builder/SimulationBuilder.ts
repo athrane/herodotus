@@ -27,6 +27,7 @@ import { loadHistoricalFigureData } from '../../data/historicalfigure/loadHistor
 import { HistoricalFigureData } from 'data/historicalfigure/HistoricalFigureData';
 import { loadEventCategories } from '../../data/chronicle/loadEventCategories';
 import { RealmStateComponent } from '../../realm/RealmStateComponent';
+import { FactionManagerComponent } from '../../realm/FactionManagerComponent';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -174,6 +175,12 @@ export class SimulationBuilder extends Builder {
         entityManager.createEntity(
             new NameComponent("RealmState"),
             RealmStateComponent.create()
+        );
+
+        // Create the FactionManager singleton entity
+        entityManager.createEntity(
+            new NameComponent("FactionManager"),
+            FactionManagerComponent.create()
         );
     }
 
