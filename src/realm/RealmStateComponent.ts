@@ -17,8 +17,9 @@ export type { ResourceHistoryEntry } from './ResourceHistoryEntry';
 /**
  * A singleton component that manages the global state of the dynasty's realm.
  * This component stores core resources (Treasury, Stability, Legitimacy, Hubris),
- * faction data (Influence and Allegiance), failure thresholds, modifiers, and
- * resource history.
+ * failure thresholds, modifiers, and resource history.
+ * 
+ * Faction management has been moved to FactionManagerComponent.
  * 
  * This component implements defensive copying for mutable collections
  */
@@ -34,12 +35,6 @@ export class RealmStateComponent extends Component {
   
   /** Core resource: Dynasty's overreach and arrogance level */
   private hubris: number;
-  
-  /** Faction data: Power and control of each faction within the realm */
-  private factionInfluence: Map<string, number>;
-  
-  /** Faction data: Loyalty of each faction to the player's dynasty */
-  private factionAllegiance: Map<string, number>;
   
   /** Critical threshold values for core resources */
   private failureThresholds: FailureThresholds;
@@ -60,8 +55,6 @@ export class RealmStateComponent extends Component {
    * @param stability - Initial stability value
    * @param legitimacy - Initial legitimacy value
    * @param hubris - Initial hubris value
-   * @param factionInfluence - Initial faction influence map
-   * @param factionAllegiance - Initial faction allegiance map
    * @param failureThresholds - Failure threshold configuration
    * @param modifiers - Initial modifiers array
    * @param resourceHistory - Initial resource history array
@@ -71,8 +64,6 @@ export class RealmStateComponent extends Component {
     stability: number,
     legitimacy: number,
     hubris: number,
-    factionInfluence: Map<string, number>,
-    factionAllegiance: Map<string, number>,
     failureThresholds: FailureThresholds,
     modifiers: RealmModifier[],
     resourceHistory: ResourceHistoryEntry[]
@@ -82,8 +73,6 @@ export class RealmStateComponent extends Component {
     this.stability = stability;
     this.legitimacy = legitimacy;
     this.hubris = hubris;
-    this.factionInfluence = new Map(factionInfluence);
-    this.factionAllegiance = new Map(factionAllegiance);
     this.failureThresholds = { ...failureThresholds };
     this.modifiers = [...modifiers];
     this.resourceHistory = [...resourceHistory];
@@ -155,100 +144,6 @@ export class RealmStateComponent extends Component {
   setHubris(value: number): void {
     TypeUtils.ensureNumber(value, 'hubris');
     this.hubris = value;
-  }
-
-  /**
-   * Gets the influence value for a specific faction.
-   * Returns a defensive copy to prevent external modification.
-   * 
-   * @param factionName - The name of the faction
-   * @returns The influence value, or 0 if faction not found
-   */
-  getFactionInfluence(factionName: string): number {
-    TypeUtils.ensureNonEmptyString(factionName, 'factionName');
-    return this.factionInfluence.get(factionName) ?? 0;
-  }
-
-  /**
-   * Sets the influence value for a specific faction with validation.
-   * 
-   * @param factionName - The name of the faction
-   * @param value - The new influence value
-   */
-  setFactionInfluence(factionName: string, value: number): void {
-    TypeUtils.ensureNonEmptyString(factionName, 'factionName');
-    TypeUtils.ensureNumber(value, 'influence value');
-    this.factionInfluence.set(factionName, value);
-  }
-
-  /**
-   * Checks if a faction exists in the influence map.
-   * 
-   * @param factionName - The name of the faction
-   * @returns True if faction exists, false otherwise
-   */
-  hasFactionInfluence(factionName: string): boolean {
-    TypeUtils.ensureNonEmptyString(factionName, 'factionName');
-    return this.factionInfluence.has(factionName);
-  }
-
-  /**
-   * Gets all faction influence data as an immutable copy.
-   * Returns a defensive copy to prevent external modification.
-   * 
-   * @returns A new Map containing all faction influence data
-   */
-  getAllFactionInfluence(): Map<string, number> {
-    return new Map(this.factionInfluence);
-  }
-
-  // ========================================================================
-  // Faction Allegiance Management
-  // ========================================================================
-
-  /**
-   * Gets the allegiance value for a specific faction.
-   * Returns a defensive copy to prevent external modification.
-   * 
-   * @param factionName - The name of the faction
-   * @returns The allegiance value, or 0 if faction not found
-   */
-  getFactionAllegiance(factionName: string): number {
-    TypeUtils.ensureNonEmptyString(factionName, 'factionName');
-    return this.factionAllegiance.get(factionName) ?? 0;
-  }
-
-  /**
-   * Sets the allegiance value for a specific faction with validation.
-   * 
-   * @param factionName - The name of the faction
-   * @param value - The new allegiance value
-   */
-  setFactionAllegiance(factionName: string, value: number): void {
-    TypeUtils.ensureNonEmptyString(factionName, 'factionName');
-    TypeUtils.ensureNumber(value, 'allegiance value');
-    this.factionAllegiance.set(factionName, value);
-  }
-
-  /**
-   * Checks if a faction exists in the allegiance map.
-   * 
-   * @param factionName - The name of the faction
-   * @returns True if faction exists, false otherwise
-   */
-  hasFactionAllegiance(factionName: string): boolean {
-    TypeUtils.ensureNonEmptyString(factionName, 'factionName');
-    return this.factionAllegiance.has(factionName);
-  }
-
-  /**
-   * Gets all faction allegiance data as an immutable copy.
-   * Returns a defensive copy to prevent external modification.
-   * 
-   * @returns A new Map containing all faction allegiance data
-   */
-  getAllFactionAllegiance(): Map<string, number> {
-    return new Map(this.factionAllegiance);
   }
 
   // ========================================================================
@@ -422,8 +317,6 @@ export class RealmStateComponent extends Component {
    * @param stability - Initial stability value (default: 50)
    * @param legitimacy - Initial legitimacy value (default: 50)
    * @param hubris - Initial hubris value (default: 0)
-   * @param factionInfluence - Initial faction influence map (default: empty)
-   * @param factionAllegiance - Initial faction allegiance map (default: empty)
    * @param failureThresholds - Failure threshold configuration (default: standard thresholds)
    * @param modifiers - Initial modifiers array (default: empty)
    * @param resourceHistory - Initial resource history array (default: empty)
@@ -434,8 +327,6 @@ export class RealmStateComponent extends Component {
     stability: number = 50,
     legitimacy: number = 50,
     hubris: number = 0,
-    factionInfluence: Map<string, number> = new Map(),
-    factionAllegiance: Map<string, number> = new Map(),
     failureThresholds: FailureThresholds = {
       treasury: 0,
       stability: 0,
@@ -449,8 +340,6 @@ export class RealmStateComponent extends Component {
     TypeUtils.ensureNumber(stability, 'stability');
     TypeUtils.ensureNumber(legitimacy, 'legitimacy');
     TypeUtils.ensureNumber(hubris, 'hubris');
-    TypeUtils.ensureInstanceOf(factionInfluence, Map, 'factionInfluence');
-    TypeUtils.ensureInstanceOf(factionAllegiance, Map, 'factionAllegiance');
     TypeUtils.ensureArray(modifiers, 'modifiers');
     TypeUtils.ensureArray(resourceHistory, 'resourceHistory');
 
@@ -459,8 +348,6 @@ export class RealmStateComponent extends Component {
       stability,
       legitimacy,
       hubris,
-      factionInfluence,
-      factionAllegiance,
       failureThresholds,
       modifiers,
       resourceHistory
@@ -480,8 +367,6 @@ export class RealmStateComponent extends Component {
         0,
         0,
         0,
-        new Map(),
-        new Map(),
         { treasury: 0, stability: 0, legitimacy: 0, hubris: 100 },
         [],
         []
