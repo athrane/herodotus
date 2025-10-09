@@ -201,7 +201,13 @@ Configuration Files (Root):
      ```
 3. **Type Validation**: Use `TypeUtils` for parameter validation
 4. **ES Modules**: Use `import`/`export` syntax exclusively
-5. **File Organization**: One class per file, PascalCase filenames
+5. **File Organization**: One type per file - classes, enums, and interfaces each in separate files with PascalCase filenames
+   - **Classes**: One class per file (e.g., `RealmStateComponent.ts`)
+   - **Enums**: One enum per file (e.g., `ModifierSourceType.ts`, `RealmResource.ts`)
+   - **Interfaces**: One interface per file (e.g., `FailureThresholds.ts`, `RealmModifier.ts`)
+   - **Exception**: Small, tightly-coupled helper interfaces (e.g., callback signatures) may remain with their class
+   - **Re-exports**: Main component files may re-export related types for consumer convenience
+   - **Example**: See `src/realm/` directory structure for reference implementation
 6. **JSDoc**: Document all public classes and methods
 
 #### Type Safety
