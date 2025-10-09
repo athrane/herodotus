@@ -25,6 +25,7 @@ import { loadWorldGenData } from '../../data/geography/worldgen/loadWorldGenData
 import { GeographicalUtils } from '../../geography/GeographicalUtils';
 import { loadHistoricalFigureData } from '../../data/historicalfigure/loadHistoricalFigureData';
 import { HistoricalFigureData } from 'data/historicalfigure/HistoricalFigureData';
+import { loadEventCategories } from '../../data/chronicle/loadEventCategories';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -52,6 +53,12 @@ export class SimulationBuilder extends Builder {
      * ! signifies that this property is not yet initialized.
      */
     private historicalFigureConfig!: HistoricalFigureData;
+
+    /**
+     * Event categories loaded from JSON configuration.
+     * ! signifies that this property is not yet initialized.
+     */
+    private eventCategories!: Record<string, string>;
 
     /** 
      * Creates a new instance of SimulationBuilder.
@@ -151,6 +158,9 @@ export class SimulationBuilder extends Builder {
 
         // Load historical figure configuration
         this.historicalFigureConfig = loadHistoricalFigureData();
+
+        // Load event categories from JSON configuration
+        this.eventCategories = loadEventCategories();
     }
 
     /**
