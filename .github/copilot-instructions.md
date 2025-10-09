@@ -180,6 +180,59 @@ Configuration Files (Root):
 - Enables consistent instantiation patterns across codebase
 - Example: `TimeComponent.create(Time.create(year))` instead of `new TimeComponent(new Time(year))`
 
+### Type Documentation Guidelines
+
+When documenting domain-specific types in these instructions, follow these patterns:
+
+#### Documenting Enums
+For each enum value, provide an inline comment explaining its purpose:
+```typescript
+enum ExampleEnum {
+  ValueOne = 'ValueOne',    // Brief description of what this value represents
+  ValueTwo = 'ValueTwo',    // Brief description of what this value represents
+}
+```
+
+#### Documenting Interfaces
+For each interface property, provide an inline comment explaining its purpose and constraints:
+```typescript
+interface ExampleInterface {
+  id: string;                // Unique identifier
+  propertyName: Type;        // Brief description (include constraints like "must be > 0" or "empty string means X")
+  optionalProp?: Type;       // Brief description (note if optional)
+}
+```
+
+#### Documenting Classes
+For component classes, provide a summary of key features rather than full implementation:
+```typescript
+// ExampleComponent (class)
+// Brief description of component's purpose
+// - Key data structure 1: description
+// - Key data structure 2: description
+// - Implements Null Object Pattern with createNull() factory method (if applicable)
+// - Re-exports related types for consumer convenience (if applicable)
+```
+
+#### Documentation Standards
+1. **Be concise**: One-line comments inline with each property/value
+2. **Be specific**: Explain the purpose, not just restate the name
+3. **Include constraints**: Note ranges, special values (e.g., "-1 for permanent"), or null semantics
+4. **Cross-reference**: Mention related types when helpful (e.g., "Entity ID of the source")
+5. **Location reference**: For complex classes, reference the source file (e.g., "See `src/module/ClassName.ts`")
+
+#### Example: Realm System Types
+The realm system (`src/realm/`) demonstrates these documentation patterns. Key types include:
+- **RealmResource** (enum): Four core dynasty resources (Treasury, Stability, Legitimacy, Hubris)
+- **ModifierSourceType** (enum): Sources of modifications (PlayerAction, NonPlayerAction, FactionInfluence, Event)
+- **ModifierType** (enum): Types of modifications (Flat, Percentage, Multiplier)
+- **RealmModifier** (interface): Active modification structure with inline comments per field
+- **FailureThresholds** (interface): Critical threshold values for resources
+- **ResourceHistoryEntry** (interface): Historical change tracking
+- **RealmStateComponent** (class): Singleton managing global dynasty state with re-exported types
+
+See `src/realm/*.ts` for complete implementation examples following these documentation patterns.
+
 ### Key Implementation Requirements
 
 #### Coding Conventions
