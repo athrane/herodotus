@@ -166,6 +166,144 @@ Configuration Files (Root):
 - **Always integrate new features through this pattern**
 - Located in `src/ecs/builder/` (base), `src/simulation/builder/` (simulation), `src/gui/builder/` (GUI)
 
+#### Data Loading Pattern
+The project uses a consistent pattern for loading and validating configuration data from JSON files:
+
+**File Structure:**
+- `data/` directory at project root contains all JSON configuration files
+- `src/data/` contains loading functions and data classes
+- Mirrors the `data/` directory structure (e.g., `src/data/geography/` for `data/geography/`)
+- Test files in `test/data/` mirror the `src/data/` structure
+
+**Data Class Pattern:**
+All data classes follow these conventions:
+
+1. **Immutability**: Classes represent immutable configuration loaded at startup
+   - Use `Object.freeze(this)` in constructor to prevent modification
+   - Return `ReadonlyArray` and `ReadonlyMap` types from getter methods
+   - Mark private fields as `readonly`
+
+2. **Runtime Validation**: Use `TypeUtils` for runtime type checking
+   - Validate in constructor using `TypeUtils.ensureString()`, `TypeUtils.ensureNumber()`, etc.
+   - Custom error messages identify the field: `'FieldName must be a type'`
+   - Validation runs before assignment to catch errors early
+
+3. **Static Factory Methods**: Every data class must have `static create()` method
+   - Constructor is public but factory method is preferred
+   - Enables consistent instantiation patterns
+   - Example: `GeographicalFeatureData.create(jsonData)`
+
+4. **Null Object Pattern**: Singleton data classes implement null object pattern
+   - Configuration singletons (e.g., `WorldGenData`, `HistoricalFigureData`) provide `createNull()`
+   - Uses lazy initialization with private static field
+   - Returns defaults for all values (typically 0 for numbers, empty strings for text)
+   - Example:
+     ```typescript
+     private static instance: MyData | null = null;
+     
+     static createNull(): MyData {
+         if (!MyData.instance) {
+             MyData.instance = MyData.create({ field1: 0, field2: '' });
+         }
+         return MyData.instance;
+     }
+     ```
+
+5. **Batch Loading**: Support for loading collections from JSON
+   - `static fromJsonObject(json)` for object-keyed collections
+   - `static fromJsonArray(json)` for array-based collections
+   - **Deterministic ordering**: Use `Object.keys(json).sort()` for consistent iteration
+   - Returns array of instances, not the raw map/object
+
+**Loader Function Pattern:**
+Loader functions are thin wrappers that import JSON and delegate to data classes:
+
+```typescript
+import dataRaw from '../../../data/path/to/file.json';
+import { DataClass } from './DataClass';
+
+/**
+ * Loads [description] from a JSON file.
+ * @returns [return type description]
+ */
+export function loadData(): DataClass {
+  return DataClass.create(dataRaw);
+}
+```
+
+**Validation Approaches:**
+The project uses two primary validation patterns:
+
+1. **Synchronous with TypeUtils** (standard pattern - used in 99% of loaders):
+   - Import JSON directly: `import dataRaw from '../../data/file.json'`
+   - Validate in data class constructor using `TypeUtils`
+   - Throws `TypeError` with descriptive message on validation failure
+   - Examples: `GeographicalFeatureData`, `HistoricalFigureData`, `WorldGenData`, `loadEventCategories()`
+
+2. **Simple transformation** (for pre-validated or simple data):
+   - Direct import and transformation without additional validation
+   - Use when JSON structure is trusted or simple
+   - Example: `DataSetEvent.fromJsonArray()` sorts keys deterministically
+
+**Component Integration:**
+Data is loaded during `SimulationBuilder.buildData()` phase:
+
+1. Builder calls loader function (synchronous or async)
+2. Stores loaded data in builder's private field
+3. Uses data during `buildComponents()` to initialize components
+4. Data classes are wrapped in Components or used directly
+5. Components containing data should also be immutable (frozen)
+
+**Example Data Class Structure:**
+```typescript
+import { TypeUtils } from '../../util/TypeUtils';
+
+export class ExampleData {
+  private readonly field1: string;
+  private readonly field2: number;
+  private static instance: ExampleData | null = null;
+
+  constructor(data: any) {
+    TypeUtils.ensureString(data?.field1, 'ExampleData field1 must be a string.');
+    TypeUtils.ensureNumber(data?.field2, 'ExampleData field2 must be a number.');
+    
+    this.field1 = data.field1;
+    this.field2 = data.field2;
+    Object.freeze(this);
+  }
+
+  static create(data: any): ExampleData {
+    return new ExampleData(data);
+  }
+
+  static createNull(): ExampleData {
+    if (!ExampleData.instance) {
+      ExampleData.instance = ExampleData.create({ field1: '', field2: 0 });
+    }
+    return ExampleData.instance;
+  }
+
+  getField1(): string { return this.field1; }
+  getField2(): number { return this.field2; }
+
+  static fromJsonObject(json: any): ExampleData[] {
+    if (!json || typeof json !== 'object' || Array.isArray(json)) {
+      throw new TypeError('Expected JSON object for data.');
+    }
+    return Object.keys(json).sort().map(key => ExampleData.create(json[key]));
+  }
+}
+```
+
+**Testing Patterns for Data Loading:**
+- Test successful loading with valid data
+- Test validation errors with invalid data (null, undefined, wrong types)
+- Test immutability with `Object.isFrozen()` checks
+- Test deterministic ordering for collections
+- Test null object pattern returns singleton
+- Mock console.error/trace in tests expecting validation errors
+- Use `test/data/` directory with valid and invalid JSON test fixtures
+
 #### FilteredSystem Pattern
 - `FilteredSystem` extends `System` with automatic entity filtering before processing
 - Eliminates boilerplate filtering code in `processEntity()` methods

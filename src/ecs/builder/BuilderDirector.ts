@@ -23,9 +23,9 @@ export class BuilderDirector {
      * This method orchestrates the building of systems, entities, and components.
      * @returns The built ECS instance.
      */
-    build(): Ecs {
+    async build(): Promise<Ecs> {
         this.builder.build();
-        this.builder.buildData();
+        await this.builder.buildData();
         this.builder.buildComponents();
         this.builder.buildSystems();
         this.builder.buildEntities();
