@@ -30,7 +30,7 @@ The design follows established ECS patterns:
 
 ### Component Structure
 
-#### File: `src/ecs/RandomComponent.ts`
+#### File: `src/random/RandomComponent.ts`
 
 ```typescript
 /**
@@ -65,7 +65,7 @@ export class RandomComponent extends Component {
 }
 ```
 
-#### File: `src/ecs/RandomState.ts`
+#### File: `src/random/RandomState.ts`
 
 ```typescript
 /**
@@ -79,7 +79,7 @@ export interface RandomState {
 }
 ```
 
-#### File: `src/ecs/SeededRandom.ts`
+#### File: `src/random/SeededRandom.ts`
 
 ```typescript
 /**
@@ -279,7 +279,7 @@ All classes follow project conventions:
 
 ### Unit Tests
 
-#### File: `test/ecs/RandomComponent.test.ts`
+#### File: `test/random/RandomComponent.test.ts`
 
 ```typescript
 describe('RandomComponent', () => {
@@ -331,7 +331,7 @@ describe('RandomComponent', () => {
 });
 ```
 
-#### File: `test/ecs/SeededRandom.test.ts`
+#### File: `test/random/SeededRandom.test.ts`
 
 ```typescript
 describe('SeededRandom', () => {
