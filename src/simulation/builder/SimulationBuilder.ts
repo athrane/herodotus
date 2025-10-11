@@ -28,6 +28,9 @@ import { HistoricalFigureData } from 'data/historicalfigure/HistoricalFigureData
 import { loadEventCategories } from '../../data/chronicle/loadEventCategories';
 import { RealmStateComponent } from '../../realm/RealmStateComponent';
 import { FactionManagerComponent } from '../../realm/FactionManagerComponent';
+import { loadRandomSeed } from '../../data/random/loadRandomSeed';
+import { RandomSeedData } from '../../data/random/RandomSeedData';
+import { RandomComponent } from '../../random/RandomComponent';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -62,6 +65,12 @@ export class SimulationBuilder extends Builder {
      */
     private eventCategories!: Record<string, string>;
 
+    /**
+     * Random seed configuration loaded from JSON.
+     * ! signifies that this property is not yet initialized.
+     */
+    private randomSeedConfig!: RandomSeedData;
+
     /** 
      * Creates a new instance of SimulationBuilder.
      * @constructor
@@ -93,9 +102,10 @@ export class SimulationBuilder extends Builder {
         entityManager.createEntity(
             new NameComponent("Global"),
             new TimeComponent(Time.create(0)),
+            RandomComponent.create(this.randomSeedConfig),            
             galaxyMapComponent,
             new ChronicleComponent(),
-            DataSetComponent.create(this.dataSetEvents)
+            DataSetComponent.create(this.dataSetEvents)            
         );
 
         // Create the dedicated Player entity with DataSetEventComponent and HistoricalFigureComponent
@@ -163,6 +173,9 @@ export class SimulationBuilder extends Builder {
 
         // Load event categories from JSON configuration
         this.eventCategories = loadEventCategories();
+
+        // Load random seed configuration
+        this.randomSeedConfig = loadRandomSeed();
     }
 
     /**
