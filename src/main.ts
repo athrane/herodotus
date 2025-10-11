@@ -6,11 +6,11 @@ import { Simulation } from 'simulation/Simulation';
 /**
  * The main entry point for the chronicle generation application.
  */
-async function main(): Promise<void> {
+function main(): void {
 
   // create simulation ECS
   const director = BuilderDirector.create(SimulationBuilder.create());
-  const simulationEcs = await director.build();
+  const simulationEcs = director.build();
 
   // create simulation
   const simulation = Simulation.create(simulationEcs);

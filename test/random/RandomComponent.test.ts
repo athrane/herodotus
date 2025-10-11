@@ -1,26 +1,28 @@
 import { RandomComponent } from '../../src/random/RandomComponent';
+import { RandomSeedData } from '../../src/data/random/RandomSeedData';
 
 describe('RandomComponent', () => {
     describe('constructor', () => {
-        it('should create component with valid seed', () => {
-            const component = new RandomComponent('test-seed');
+        it('should create component with valid seed data', () => {
+            const seedData = RandomSeedData.create({ seed: 'test-seed' });
+            const component = new RandomComponent(seedData);
             expect(component).toBeDefined();
             expect(component.getSeed()).toBe('test-seed');
             expect(component.getCallCount()).toBe(0);
         });
 
-        it('should throw TypeError for empty seed', () => {
-            expect(() => new RandomComponent('')).toThrow(TypeError);
+        it('should throw TypeError for invalid seed data', () => {
+            expect(() => new RandomComponent('invalid' as any)).toThrow(TypeError);
         });
 
-        it('should throw TypeError for non-string seed', () => {
-            expect(() => new RandomComponent(123 as any)).toThrow(TypeError);
+        it('should throw TypeError for null seed data', () => {
+            expect(() => new RandomComponent(null as any)).toThrow(TypeError);
         });
     });
 
     describe('next()', () => {
         it('should return values in [0, 1) range', () => {
-            const component = RandomComponent.create('range-test');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'range-test' }));
             for (let i = 0; i < 100; i++) {
                 const value = component.next();
                 expect(value).toBeGreaterThanOrEqual(0);
@@ -29,15 +31,15 @@ describe('RandomComponent', () => {
         });
 
         it('should return different values on successive calls', () => {
-            const component = RandomComponent.create('succession-test');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'succession-test' }));
             const first = component.next();
             const second = component.next();
             expect(first).not.toBe(second);
         });
 
         it('should return identical sequences for same seed', () => {
-            const component1 = RandomComponent.create('identical-seed');
-            const component2 = RandomComponent.create('identical-seed');
+            const component1 = RandomComponent.create(RandomSeedData.create({ seed: 'identical-seed' }));
+            const component2 = RandomComponent.create(RandomSeedData.create({ seed: 'identical-seed' }));
 
             const sequence1 = [];
             const sequence2 = [];
@@ -51,8 +53,8 @@ describe('RandomComponent', () => {
         });
 
         it('should return different sequences for different seeds', () => {
-            const component1 = RandomComponent.create('seed-alpha');
-            const component2 = RandomComponent.create('seed-beta');
+            const component1 = RandomComponent.create(RandomSeedData.create({ seed: 'seed-alpha' }));
+            const component2 = RandomComponent.create(RandomSeedData.create({ seed: 'seed-beta' }));
 
             const sequence1 = [];
             const sequence2 = [];
@@ -66,7 +68,7 @@ describe('RandomComponent', () => {
         });
 
         it('should increment call count', () => {
-            const component = RandomComponent.create('count-test');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'count-test' }));
             expect(component.getCallCount()).toBe(0);
             
             component.next();
@@ -80,7 +82,7 @@ describe('RandomComponent', () => {
 
     describe('nextInt()', () => {
         it('should return integers within [min, max] range', () => {
-            const component = RandomComponent.create('int-test');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'int-test' }));
             
             for (let i = 0; i < 100; i++) {
                 const value = component.nextInt(1, 10);
@@ -91,18 +93,18 @@ describe('RandomComponent', () => {
         });
 
         it('should return min when min == max', () => {
-            const component = RandomComponent.create('equal-test');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'equal-test' }));
             const value = component.nextInt(5, 5);
             expect(value).toBe(5);
         });
 
         it('should throw for min > max', () => {
-            const component = RandomComponent.create('invalid-range');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'invalid-range' }));
             expect(() => component.nextInt(10, 5)).toThrow(TypeError);
         });
 
         it('should handle negative ranges', () => {
-            const component = RandomComponent.create('negative-test');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'negative-test' }));
             
             for (let i = 0; i < 50; i++) {
                 const value = component.nextInt(-10, -1);
@@ -112,7 +114,7 @@ describe('RandomComponent', () => {
         });
 
         it('should handle ranges crossing zero', () => {
-            const component = RandomComponent.create('zero-crossing');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'zero-crossing' }));
             
             for (let i = 0; i < 50; i++) {
                 const value = component.nextInt(-5, 5);
@@ -122,7 +124,7 @@ describe('RandomComponent', () => {
         });
 
         it('should have uniform distribution', () => {
-            const component = RandomComponent.create('uniform-int-test');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'uniform-int-test' }));
             const min = 1;
             const max = 6; // Simulate a 6-sided die
             const counts = new Map();
@@ -149,19 +151,19 @@ describe('RandomComponent', () => {
         });
 
         it('should throw for non-number min', () => {
-            const component = RandomComponent.create('type-test');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'type-test' }));
             expect(() => component.nextInt('5' as any, 10)).toThrow(TypeError);
         });
 
         it('should throw for non-number max', () => {
-            const component = RandomComponent.create('type-test');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'type-test' }));
             expect(() => component.nextInt(5, '10' as any)).toThrow(TypeError);
         });
     });
 
     describe('nextBool()', () => {
         it('should return true or false', () => {
-            const component = RandomComponent.create('bool-test');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'bool-test' }));
             
             for (let i = 0; i < 100; i++) {
                 const value = component.nextBool();
@@ -170,7 +172,7 @@ describe('RandomComponent', () => {
         });
 
         it('should have ~50% distribution over large sample', () => {
-            const component = RandomComponent.create('bool-distribution');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'bool-distribution' }));
             let trueCount = 0;
             const samples = 10000;
 
@@ -189,7 +191,7 @@ describe('RandomComponent', () => {
 
     describe('nextChoice()', () => {
         it('should return element from array', () => {
-            const component = RandomComponent.create('choice-test');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'choice-test' }));
             const array = ['A', 'B', 'C', 'D', 'E'];
             
             for (let i = 0; i < 50; i++) {
@@ -199,18 +201,18 @@ describe('RandomComponent', () => {
         });
 
         it('should throw for empty array', () => {
-            const component = RandomComponent.create('empty-array');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'empty-array' }));
             expect(() => component.nextChoice([])).toThrow(TypeError);
         });
 
         it('should return only element for single-element array', () => {
-            const component = RandomComponent.create('single-element');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'single-element' }));
             const array = ['OnlyOne'];
             expect(component.nextChoice(array)).toBe('OnlyOne');
         });
 
         it('should have uniform distribution over array elements', () => {
-            const component = RandomComponent.create('choice-distribution');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'choice-distribution' }));
             const array = ['A', 'B', 'C', 'D'];
             const counts = new Map(array.map(item => [item, 0]));
             const samples = 4000;
@@ -231,7 +233,7 @@ describe('RandomComponent', () => {
         });
 
         it('should work with arrays of different types', () => {
-            const component = RandomComponent.create('type-variety');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'type-variety' }));
             
             const numbers = component.nextChoice([1, 2, 3, 4, 5]);
             expect(typeof numbers).toBe('number');
@@ -242,14 +244,14 @@ describe('RandomComponent', () => {
         });
 
         it('should throw for non-array input', () => {
-            const component = RandomComponent.create('non-array');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'non-array' }));
             expect(() => component.nextChoice('not an array' as any)).toThrow(TypeError);
         });
     });
 
     describe('state management', () => {
         it('should save and restore state correctly', () => {
-            const component = RandomComponent.create('state-save-test');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'state-save-test' }));
             
             // Advance state
             for (let i = 0; i < 50; i++) {
@@ -264,8 +266,8 @@ describe('RandomComponent', () => {
         });
 
         it('should continue sequence after state restoration', () => {
-            const component1 = RandomComponent.create('restore-test');
-            const component2 = RandomComponent.create('different-seed');
+            const component1 = RandomComponent.create(RandomSeedData.create({ seed: 'restore-test' }));
+            const component2 = RandomComponent.create(RandomSeedData.create({ seed: 'different-seed' }));
 
             // Advance component1
             for (let i = 0; i < 50; i++) {
@@ -294,7 +296,7 @@ describe('RandomComponent', () => {
         });
 
         it('should track call count accurately', () => {
-            const component = RandomComponent.create('count-accuracy');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'count-accuracy' }));
             
             component.next();
             component.next();
@@ -307,7 +309,7 @@ describe('RandomComponent', () => {
         });
 
         it('should serialize to RandomState interface', () => {
-            const component = RandomComponent.create('serialize-test');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'serialize-test' }));
             const state = component.getState();
 
             expect(state).toHaveProperty('seed');
@@ -319,7 +321,7 @@ describe('RandomComponent', () => {
         });
 
         it('should throw for invalid state seed', () => {
-            const component = RandomComponent.create('invalid-state');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'invalid-state' }));
             const invalidState = {
                 seed: '',
                 internalState: 12345,
@@ -329,7 +331,7 @@ describe('RandomComponent', () => {
         });
 
         it('should throw for invalid state internalState', () => {
-            const component = RandomComponent.create('invalid-state');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'invalid-state' }));
             const invalidState = {
                 seed: 'valid',
                 internalState: 'not-a-number' as any,
@@ -339,7 +341,7 @@ describe('RandomComponent', () => {
         });
 
         it('should throw for invalid state callCount', () => {
-            const component = RandomComponent.create('invalid-state');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'invalid-state' }));
             const invalidState = {
                 seed: 'valid',
                 internalState: 12345,
@@ -351,7 +353,7 @@ describe('RandomComponent', () => {
 
     describe('factory methods', () => {
         it('should create component via create()', () => {
-            const component = RandomComponent.create('factory-test');
+            const component = RandomComponent.create(RandomSeedData.create({ seed: 'factory-test' }));
             expect(component).toBeInstanceOf(RandomComponent);
             expect(component.getSeed()).toBe('factory-test');
         });
@@ -364,7 +366,7 @@ describe('RandomComponent', () => {
 
         it('should have null instance return fixed values', () => {
             const nullComponent = RandomComponent.createNull();
-            expect(nullComponent.getSeed()).toBe('null-random-seed');
+            expect(nullComponent.getSeed()).toBe('default-null-seed');
             
             // Null instance should still generate values (for compatibility)
             const value = nullComponent.next();

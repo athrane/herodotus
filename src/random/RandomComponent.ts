@@ -2,6 +2,7 @@ import { Component } from '../ecs/Component.js';
 import { TypeUtils } from '../util/TypeUtils.js';
 import { SeededRandom } from './SeededRandom.js';
 import { RandomState } from './RandomState.js';
+import { RandomSeedData } from '../data/random/RandomSeedData.js';
 
 /**
  * RandomComponent provides deterministic random number generation for the simulation.
@@ -15,11 +16,11 @@ export class RandomComponent extends Component {
     private rng: SeededRandom;
     private callCount: number;
 
-    constructor(seed: string) {
+    constructor(randomSeedData: RandomSeedData) {
         super();
-        TypeUtils.ensureNonEmptyString(seed, 'seed');
-        this.seed = seed;
-        this.rng = SeededRandom.create(seed);
+        TypeUtils.ensureInstanceOf(randomSeedData, RandomSeedData, 'randomSeedData');
+        this.seed = randomSeedData.getSeed();
+        this.rng = SeededRandom.create(this.seed);
         this.callCount = 0;
     }
 
@@ -138,11 +139,11 @@ export class RandomComponent extends Component {
     /**
      * Factory method to create RandomComponent instance.
      * 
-     * @param seed - String seed for RNG initialization
+     * @param randomSeedData - Random seed configuration data
      * @returns New RandomComponent instance
      */
-    static create(seed: string): RandomComponent {
-        return new RandomComponent(seed);
+    static create(randomSeedData: RandomSeedData): RandomComponent {
+        return new RandomComponent(randomSeedData);
     }
 
     /**
@@ -155,7 +156,7 @@ export class RandomComponent extends Component {
 
     static createNull(): RandomComponent {
         if (!RandomComponent.nullInstance) {
-            RandomComponent.nullInstance = RandomComponent.create('null-random-seed');
+            RandomComponent.nullInstance = RandomComponent.create(RandomSeedData.createNull());
         }
         return RandomComponent.nullInstance;
     }

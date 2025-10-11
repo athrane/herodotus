@@ -10,142 +10,64 @@ This section provides an overview of the project's architecture and class struct
 
 All available npm scripts and what they do. Commands below are for PowerShell.
 
-- build — bundle `src/main.ts` to `dist/bundle.js` using e- `src/gui/rendering/IsVisibleComponent.ts` — Visibility flag for renderable elements
-- `src/gui/rendering/IsActiveScreenComponent.ts` — Component marking an entity as the currently active screen for rendering
-- `src/gui/rendering/ScreenBufferClearSystem.ts` — Clears the screen buffer once per frame before text rendering; follows Single Responsibility Principle by separating buffer clearing from text updating logic
-- `src/gui/rendering/ScreenBufferRenderSystem.ts` — Renders the screen buffer to terminal
-- `src/gui/rendering/ScreenBufferTextUpdateSystem.ts` — Updates text entries in the screen buffer; implements Observer pattern within ECS architecture to monitor entities with text, position, and visibility components, then writes their content to the ScreenBufferComponent singleton for rendering
-- `src/gui/rendering/DynamicTextUpdateSystem.ts` — Updates TextComponent values by calling DynamicTextComponent callbacks for visible entities
-- `src/gui/view/HeaderViewSystem.ts` — Updates header area each tick
-- `src/gui/view/FooterViewSystem.ts` — Updates footer/status area
-- `src/gui/view/ChronicleViewSystem.ts` — Updates chronicle screen display with recent historical events
-- `src/gui/view/ChoiceMenuViewSystem.ts` — Populates choice menu from player's ChoiceComponent for decision-making interface
-	Purpose: produce an optimized ESM bundle for Node (no TypeScript at runtime), ideal for reproducible runs and CI.
-	- Run:
-		```powershell
-		npm run build
-		```
+#### Build Commands
+```powershell
+# Primary build - bundles src/main.ts to dist/bundle.js
+npm run build
 
-- start — alias for `start:bundle`.
-	Purpose: conventional entry to run the built bundle; safe default for production-like runs.
-	- Run:
-		```powershell
-		npm start
-		```
+# GUI build - bundles src/mainGUI.ts to dist/bundle-gui.js  
+npm run build:gui
+```
+**Build time**: ~40-50ms typically
+**Build output**: `dist/bundle.js` (~218KB) or `dist/bundle-gui.js`
 
-- start:bundle — builds (via prestart hook) and runs `node dist/bundle.js`.
-	Purpose: ensures the bundle is up to date, then executes the exact artifact that would be deployed.
-	- Run:
-		```powershell
-		npm run start:bundle
-		```
+#### Development & Execution
+```powershell
+# Run main CLI simulation directly (development)
+npm run dev
+# OR equivalently:
+npm run start:main
+npm run start:ts
 
-- prestart:bundle — automatic pre-hook that runs `npm run build` before `start:bundle`.
-	Purpose: guarantees the bundle reflects the latest sources without needing a separate build step.
+# Run interactive GUI
+npm run start:gui
 
-- start:main — run `src/main.ts` directly via tsx (no bundling).
-	Purpose: fastest developer loop; executes TypeScript directly with TS-aware loader, no files emitted.
-	- Run:
-		```powershell
-		npm run start:main
-		```
+# Run built bundle (production-like)
+npm start  # runs dist/bundle.js via Node
+```
 
-- dev — same as `start:main`; runs `src/main.ts` via tsx for fast iteration.
-	Purpose: convenient alias commonly used during active development.
-	- Run:
-		```powershell
-		npm run dev
-		```
+#### Testing & Validation
+```powershell
+# Run all tests (typically ~15 seconds)
+npm run test
 
-- start:ts — same as `start:main`; runs `src/main.ts` via tsx.
-	Purpose: alternate name if you prefer explicit "ts" in scripts or for CI environments.
-	- Run:
-		```powershell
-		npm run start:ts
-		```
+# Lint code (must pass for commits)
+npm run lint
 
-- start:gui — run the interactive text-based GUI simulation via tsx.
-	Purpose: launches the GUI interface for interactive gameplay with player decision-making and real-time simulation control.
-	- Run:
-		```powershell
-		npm run start:gui
-		```
+# Fix auto-fixable lint issues
+npm run lint:fix
 
-- build:gui — bundle `src/mainGUI.ts` to `dist/bundleGUI.js` using esbuild.
-	Purpose: produce an optimized ESM bundle for the GUI version, ideal for distribution and production deployment of the interactive interface.
-	- Run:
-		```powershell
-		npm run build:gui
-		```
+# TypeScript type checking (no compilation)
+npm run typecheck
+```
 
-- test — run Jest test suite.
-	Purpose: executes all unit tests using `jest.config.js`; use to validate behavior locally and in CI.
-	- Run:
-		```powershell
-		npm test
-		```
+#### Validation Sequence (ALWAYS run before committing)
+1. `npm run typecheck` - validates TypeScript types
+2. `npm run lint` - validates code style and catches errors
+3. `npm run test` - validates functionality
+4. `npm run build` - validates production bundle creation
 
-- start:bundle — builds (via prestart hook) and runs `node dist/bundle.js`.
-	Purpose: ensures the bundle is up to date, then executes the exact artifact that would be deployed.
-	- Run:
-		```powershell
-		npm run start:bundle
-		```
+### Pre-commit Hooks
+- **Husky** automatically runs on `git commit`:
+  1. `lint-staged` - lints only staged files with auto-fix
+  2. `npm run typecheck` - validates types across entire project
+- **If any pre-commit step fails, the commit is rejected**
 
-- prestart:bundle — automatic pre-hook that runs `npm run build` before `start:bundle`.
-	Purpose: guarantees the bundle reflects the latest sources without needing a separate build step.
-
-- start:main — run `src/main.ts` directly via tsx (no bundling).
-	Purpose: fastest developer loop; executes TypeScript directly with TS-aware loader, no files emitted.
-	- Run:
-		```powershell
-		npm run start:main
-		```
-
-- dev — same as `start:main`; runs `src/main.ts` via tsx for fast iteration.
-	Purpose: convenient alias commonly used during active development.
-	- Run:
-		```powershell
-		npm run dev
-		```
-
-- start:ts — same as `start:main`; runs `src/main.ts` via tsx.
-	Purpose: alternate name if you prefer explicit “ts” in scripts or for CI environments.
-	- Run:
-		```powershell
-		npm run start:ts
-		```
-
-- test — run Jest test suite.
-	Purpose: executes all unit tests using `jest.config.js`; use to validate behavior locally and in CI.
-	- Run:
-		```powershell
-		npm test
-		```
-
-- lint — run ESLint on the project.
-	Purpose: checks code quality and style across JS/TS; integrates with VS Code ESLint extension.
-	- Run:
-		```powershell
-		npm run lint
-		```
-
-- lint:fix — ESLint with automatic fixes.
-	Purpose: applies safe fixes where possible (formatting, simple refactors) to keep the codebase consistent.
-	- Run:
-		```powershell
-		npm run lint:fix
-		```
-
-- typecheck — run TypeScript type-checking without emitting files.
-	Purpose: validates types according to `tsconfig.json`; useful pre-commit or CI gate.
-	- Run:
-		```powershell
-		npm run typecheck
-		```
-
-- prepare — runs Husky install (managed by npm automatically on install).
-	Purpose: sets up Git hooks (e.g., pre-commit) defined by Husky; typically runs during `npm install`.
+### Common Build Issues & Solutions
+- **ESLint errors**: Run `npm run lint:fix` to auto-fix many issues
+- **TypeScript errors**: Check for missing imports, type mismatches
+- **Module resolution**: Ensure ES module syntax (`import`/`export`) is used
+- **Test timeouts**: Tests run in Node environment, typically complete in ~15s
 
 ## Text-Based GUI
 
@@ -188,12 +110,12 @@ Year: 0035 | Simulation: Running | Player: Player Character | Status: No pending
 *** DECISION REQUIRED *** (when applicable)
 [1] Economic Reform
     Type: Economic
-    Description: The kingdom's treasury is running low...
+    /* Lines 191-192 omitted */
     → Your choice will affect the kingdom's prosperity...
 
 [2] Maintain Status Quo
     Type: Economic  
-    Description: Keep current economic policies...
+    /* Lines 196-197 omitted */
     → The situation may worsen, but no disruption...
 
 ============================================================

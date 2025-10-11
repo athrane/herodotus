@@ -30,7 +30,7 @@ export abstract class Builder {
      * Builds and loads data for the ECS instance.
      * @abstract
      */
-    abstract buildData(): void | Promise<void>;
+    abstract buildData(): void;
 
     /**
      * Builds additional components and resources for the ECS instance.

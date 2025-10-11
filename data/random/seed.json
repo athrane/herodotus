@@ -1,5 +1,3 @@
 {
-    "version": "1.0",
-    "seed": "herodotus-default-seed",
-    "description": "Default random seed for Herodotus simulations. Change this value to generate different random sequences."
+    "seed": "herodotus-default-seed"
 }

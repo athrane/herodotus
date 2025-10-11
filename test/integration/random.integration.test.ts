@@ -1,14 +1,20 @@
-import { BuilderDirector } from '../../src/ecs/builder/BuilderDirector';
-import { SimulationBuilder } from '../../src/simulation/builder/SimulationBuilder';
-import { RandomComponent } from '../../src/random/RandomComponent';
-import { RandomSeedComponent } from '../../src/data/random/RandomSeedComponent';
-import { TimeComponent } from '../../src/time/TimeComponent';
-import { DataSetComponent } from '../../src/data/DataSetComponent';
+import { BuilderDirector } from '../../src/ecs/builder/BuilderDirector.js';
+import { SimulationBuilder } from '../../src/simulation/builder/SimulationBuilder.js';
+import { RandomComponent } from '../../src/random/RandomComponent.js';
+import { RandomSeedData } from '../../src/data/random/RandomSeedData.js';
+import { TimeComponent } from '../../src/time/TimeComponent.js';
+import { DataSetComponent } from '../../src/data/DataSetComponent.js';
+import { GeographicalFeatureTypeRegistry } from '../../src/geography/feature/GeographicalFeatureTypeRegistry.js';
 
 describe('Random Integration', () => {
-    it('should load seed from JSON and initialize RandomComponent', async () => {
+    // Clear the singleton registry before each test to avoid collisions
+    beforeEach(() => {
+        GeographicalFeatureTypeRegistry.clear();
+    });
+
+    it('should load seed from JSON and initialize RandomComponent', () => {
         const director = BuilderDirector.create(SimulationBuilder.create());
-        const ecs = await director.build();
+        const ecs = director.build();
         const entityManager = ecs.getEntityManager();
 
         // Verify global entity has RandomComponent
@@ -20,12 +26,12 @@ describe('Random Integration', () => {
 
         const randomComponent = globalEntity.getComponent(RandomComponent);
         expect(randomComponent).toBeDefined();
-        expect(randomComponent.getSeed()).toBe('herodotus-default-seed');
+        expect(randomComponent!.getSeed()).toBe('herodotus-default-seed');
     });
 
-    it('should attach RandomSeedComponent to DataSet entity', async () => {
+    it('should attach RandomSeedComponent to DataSet entity', () => {
         const director = BuilderDirector.create(SimulationBuilder.create());
-        const ecs = await director.build();
+        const ecs = director.build();
         const entityManager = ecs.getEntityManager();
 
         // Note: RandomSeedComponent is not actually attached in the current implementation
@@ -41,9 +47,9 @@ describe('Random Integration', () => {
         expect(randomComponent!.getSeed()).toBe('herodotus-default-seed');
     });
 
-    it('should attach RandomComponent to global entity', async () => {
+    it('should attach RandomComponent to global entity', () => {
         const director = BuilderDirector.create(SimulationBuilder.create());
-        const ecs = await director.build();
+        const ecs = director.build();
         const entityManager = ecs.getEntityManager();
 
         const globalEntities = entityManager.getEntitiesWithComponents(TimeComponent);
@@ -53,9 +59,9 @@ describe('Random Integration', () => {
         expect(globalEntity.hasComponent(RandomComponent)).toBe(true);
     });
 
-    it('should allow systems to access RandomComponent', async () => {
+    it('should allow systems to access RandomComponent', () => {
         const director = BuilderDirector.create(SimulationBuilder.create());
-        const ecs = await director.build();
+        const ecs = director.build();
         const entityManager = ecs.getEntityManager();
 
         // Simulate system access pattern
@@ -75,10 +81,10 @@ describe('Random Integration', () => {
         expect(intValue).toBeLessThanOrEqual(10);
     });
 
-    it('should produce identical sequences across multiple runs with same seed', async () => {
+    it('should produce identical sequences across multiple runs with same seed', () => {
         // First run
         const director1 = BuilderDirector.create(SimulationBuilder.create());
-        const ecs1 = await director1.build();
+        const ecs1 = director1.build();
         const entityManager1 = ecs1.getEntityManager();
         const randomComponent1 = entityManager1.getEntitiesWithComponents(RandomComponent)[0]
             .getComponent(RandomComponent);
@@ -89,9 +95,12 @@ describe('Random Integration', () => {
             sequence1.push(randomComponent1!.next());
         }
 
+        // Clear registry before second build to avoid "already registered" errors
+        GeographicalFeatureTypeRegistry.clear();
+
         // Second run
         const director2 = BuilderDirector.create(SimulationBuilder.create());
-        const ecs2 = await director2.build();
+        const ecs2 = director2.build();
         const entityManager2 = ecs2.getEntityManager();
         const randomComponent2 = entityManager2.getEntitiesWithComponents(RandomComponent)[0]
             .getComponent(RandomComponent);
@@ -106,9 +115,9 @@ describe('Random Integration', () => {
         expect(sequence1).toEqual(sequence2);
     });
 
-    it('should serialize and restore random state correctly', async () => {
+    it('should serialize and restore random state correctly', () => {
         const director = BuilderDirector.create(SimulationBuilder.create());
-        const ecs = await director.build();
+        const ecs = director.build();
         const entityManager = ecs.getEntityManager();
 
         const randomComponent = entityManager.getEntitiesWithComponents(RandomComponent)[0]
@@ -132,7 +141,7 @@ describe('Random Integration', () => {
         }
 
         // Create new component and restore state
-        const newComponent = RandomComponent.create('different-seed');
+        const newComponent = RandomComponent.create(RandomSeedData.create({ seed: 'different-seed' }));
         newComponent.setState(state);
 
         // Generate same sequence

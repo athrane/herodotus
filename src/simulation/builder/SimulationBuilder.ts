@@ -29,6 +29,7 @@ import { loadEventCategories } from '../../data/chronicle/loadEventCategories';
 import { RealmStateComponent } from '../../realm/RealmStateComponent';
 import { FactionManagerComponent } from '../../realm/FactionManagerComponent';
 import { loadRandomSeed } from '../../data/random/loadRandomSeed';
+import { RandomSeedData } from '../../data/random/RandomSeedData';
 import { RandomComponent } from '../../random/RandomComponent';
 
 /**
@@ -68,7 +69,7 @@ export class SimulationBuilder extends Builder {
      * Random seed configuration loaded from JSON.
      * ! signifies that this property is not yet initialized.
      */
-    private randomSeedData!: { seed: string };
+    private randomSeedConfig!: RandomSeedData;
 
     /** 
      * Creates a new instance of SimulationBuilder.
@@ -101,9 +102,10 @@ export class SimulationBuilder extends Builder {
         entityManager.createEntity(
             new NameComponent("Global"),
             new TimeComponent(Time.create(0)),
+            RandomComponent.create(this.randomSeedConfig),            
             galaxyMapComponent,
             new ChronicleComponent(),
-            DataSetComponent.create(this.dataSetEvents)
+            DataSetComponent.create(this.dataSetEvents)            
         );
 
         // Create the dedicated Player entity with DataSetEventComponent and HistoricalFigureComponent
@@ -158,7 +160,7 @@ export class SimulationBuilder extends Builder {
     /**
      * @override
      */
-    async buildData(): Promise<void> {
+    buildData(): void {
 
         // Load dataset events from JSON data files
         this.dataSetEvents = loadEvents();
@@ -173,9 +175,7 @@ export class SimulationBuilder extends Builder {
         this.eventCategories = loadEventCategories();
 
         // Load random seed configuration
-        const randomSeedPath = 'data/random/seed.json';
-        const randomSeed = await loadRandomSeed(randomSeedPath);
-        this.randomSeedData = { seed: randomSeed.seed };
+        this.randomSeedConfig = loadRandomSeed();
     }
 
     /**
@@ -195,13 +195,6 @@ export class SimulationBuilder extends Builder {
             new NameComponent("FactionManager"),
             FactionManagerComponent.create()
         );
-
-        // Initialize RandomComponent on the global entity
-        const globalEntities = entityManager.getEntitiesWithComponents(TimeComponent);
-        if (globalEntities.length > 0) {
-            const globalEntity = globalEntities[0];
-            globalEntity.addComponent(RandomComponent.create(this.randomSeedData.seed));
-        }
     }
 
     /**
