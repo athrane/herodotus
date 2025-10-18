@@ -26,7 +26,7 @@ import { GeographicalUtils } from '../../geography/GeographicalUtils';
 import { loadHistoricalFigureData } from '../../data/historicalfigure/loadHistoricalFigureData';
 import { HistoricalFigureData } from 'data/historicalfigure/HistoricalFigureData';
 import { loadEventCategories } from '../../data/chronicle/loadEventCategories';
-import { RealmStateComponent } from '../../realm/RealmStateComponent';
+import { RealmComponent } from '../../realm/RealmComponent';
 import { FactionManagerComponent } from '../../realm/FactionManagerComponent';
 import { loadRandomSeed } from '../../data/random/loadRandomSeed';
 import { RandomSeedData } from '../../data/random/RandomSeedData';
@@ -187,10 +187,10 @@ export class SimulationBuilder extends Builder {
     buildComponents(): void {
         const entityManager: EntityManager = this.simEcs.getEntityManager();
         
-        // Create the RealmState singleton entity
+        // Create the Realm singleton entity
         entityManager.createEntity(
-            new NameComponent("RealmState"),
-            RealmStateComponent.create()
+            new NameComponent("Realm"),
+            RealmComponent.create()
         );
 
         // Create the FactionManager singleton entity

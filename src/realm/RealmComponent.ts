@@ -23,7 +23,7 @@ export type { ResourceHistoryEntry } from './ResourceHistoryEntry';
  * 
  * This component implements defensive copying for mutable collections
  */
-export class RealmStateComponent extends Component {
+export class RealmComponent extends Component {
   /** Core resource: Financial resources available to the realm */
   private treasury: number;
   
@@ -46,7 +46,7 @@ export class RealmStateComponent extends Component {
   private resourceHistory: ResourceHistoryEntry[];
   
   /** Singleton null instance for Null Object Pattern */
-  private static nullInstance: RealmStateComponent | null = null;
+  private static nullInstance: RealmComponent | null = null;
 
   /**
    * Private constructor to enforce static factory method pattern.
@@ -310,7 +310,7 @@ export class RealmStateComponent extends Component {
   }
 
   /**
-   * Static factory method to create a new RealmStateComponent instance.
+   * Static factory method to create a new RealmComponent instance.
    * Creates with default starting values for a new dynasty.
    * 
    * @param treasury - Initial treasury value (default: 100)
@@ -320,7 +320,7 @@ export class RealmStateComponent extends Component {
    * @param failureThresholds - Failure threshold configuration (default: standard thresholds)
    * @param modifiers - Initial modifiers array (default: empty)
    * @param resourceHistory - Initial resource history array (default: empty)
-   * @returns A new RealmStateComponent instance
+   * @returns A new RealmComponent instance
    */
   static create(
     treasury: number = 100,
@@ -335,7 +335,7 @@ export class RealmStateComponent extends Component {
     },
     modifiers: RealmModifier[] = [],
     resourceHistory: ResourceHistoryEntry[] = []
-  ): RealmStateComponent {
+  ): RealmComponent {
     TypeUtils.ensureNumber(treasury, 'treasury');
     TypeUtils.ensureNumber(stability, 'stability');
     TypeUtils.ensureNumber(legitimacy, 'legitimacy');
@@ -343,7 +343,7 @@ export class RealmStateComponent extends Component {
     TypeUtils.ensureArray(modifiers, 'modifiers');
     TypeUtils.ensureArray(resourceHistory, 'resourceHistory');
 
-    return new RealmStateComponent(
+    return new RealmComponent(
       treasury,
       stability,
       legitimacy,
@@ -358,11 +358,11 @@ export class RealmStateComponent extends Component {
    * Static factory method to create a singleton null object instance.
    * Implements the Null Object Pattern with lazy initialization.
    * 
-   * @returns A singleton null RealmStateComponent instance
+   * @returns A singleton null RealmComponent instance
    */
-  static createNull(): RealmStateComponent {
-    if (!RealmStateComponent.nullInstance) {
-      RealmStateComponent.nullInstance = new RealmStateComponent(
+  static createNull(): RealmComponent {
+    if (!RealmComponent.nullInstance) {
+      RealmComponent.nullInstance = new RealmComponent(
         0,
         0,
         0,
@@ -372,7 +372,7 @@ export class RealmStateComponent extends Component {
         []
       );
     }
-    return RealmStateComponent.nullInstance;
+    return RealmComponent.nullInstance;
   }
 
 }

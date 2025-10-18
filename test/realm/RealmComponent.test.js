@@ -1,9 +1,9 @@
-import { RealmStateComponent } from '../../src/realm/RealmStateComponent';
+import { RealmComponent } from '../../src/realm/RealmComponent';
 import { RealmResource } from '../../src/realm/RealmResource';
 import { ModifierSourceType } from '../../src/realm/ModifierSourceType';
 import { ModifierType } from '../../src/realm/ModifierType';
 
-describe('RealmStateComponent', () => {
+describe('RealmComponent', () => {
   // ========================================================================
   // Factory Method Tests
   // ========================================================================
@@ -11,9 +11,9 @@ describe('RealmStateComponent', () => {
   describe('Factory Methods', () => {
     describe('create()', () => {
       it('should create instance with default values', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         
-        expect(component).toBeInstanceOf(RealmStateComponent);
+        expect(component).toBeInstanceOf(RealmComponent);
         expect(component.getTreasury()).toBe(100);
         expect(component.getStability()).toBe(50);
         expect(component.getLegitimacy()).toBe(50);
@@ -21,7 +21,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should create instance with custom values', () => {
-        const component = RealmStateComponent.create(
+        const component = RealmComponent.create(
           200,  // treasury
           75,   // stability
           80,   // legitimacy
@@ -44,7 +44,7 @@ describe('RealmStateComponent', () => {
           hubris: 90
         };
         
-        const component = RealmStateComponent.create(
+        const component = RealmComponent.create(
           100, 50, 50, 0,
           thresholds
         );
@@ -58,31 +58,31 @@ describe('RealmStateComponent', () => {
 
       it('should validate treasury parameter type', () => {
         expect(() => {
-          RealmStateComponent.create('invalid');
+          RealmComponent.create('invalid');
         }).toThrow(TypeError);
       });
 
       it('should validate stability parameter type', () => {
         expect(() => {
-          RealmStateComponent.create(100, 'invalid');
+          RealmComponent.create(100, 'invalid');
         }).toThrow(TypeError);
       });
 
       it('should validate legitimacy parameter type', () => {
         expect(() => {
-          RealmStateComponent.create(100, 50, 'invalid');
+          RealmComponent.create(100, 50, 'invalid');
         }).toThrow(TypeError);
       });
 
       it('should validate hubris parameter type', () => {
         expect(() => {
-          RealmStateComponent.create(100, 50, 50, 'invalid');
+          RealmComponent.create(100, 50, 50, 'invalid');
         }).toThrow(TypeError);
       });
 
       it('should validate modifiers parameter type', () => {
         expect(() => {
-          RealmStateComponent.create(
+          RealmComponent.create(
             100, 50, 50, 0,
             new Map(), new Map(),
             { treasury: 0, stability: 0, legitimacy: 0, hubris: 100 },
@@ -93,7 +93,7 @@ describe('RealmStateComponent', () => {
 
       it('should validate resourceHistory parameter type', () => {
         expect(() => {
-          RealmStateComponent.create(
+          RealmComponent.create(
             100, 50, 50, 0,
             new Map(), new Map(),
             { treasury: 0, stability: 0, legitimacy: 0, hubris: 100 },
@@ -106,9 +106,9 @@ describe('RealmStateComponent', () => {
 
     describe('createNull()', () => {
       it('should create null instance with zero values', () => {
-        const nullComponent = RealmStateComponent.createNull();
+        const nullComponent = RealmComponent.createNull();
         
-        expect(nullComponent).toBeInstanceOf(RealmStateComponent);
+        expect(nullComponent).toBeInstanceOf(RealmComponent);
         expect(nullComponent.getTreasury()).toBe(0);
         expect(nullComponent.getStability()).toBe(0);
         expect(nullComponent.getLegitimacy()).toBe(0);
@@ -116,8 +116,8 @@ describe('RealmStateComponent', () => {
       });
 
       it('should return same singleton instance on multiple calls', () => {
-        const instance1 = RealmStateComponent.createNull();
-        const instance2 = RealmStateComponent.createNull();
+        const instance1 = RealmComponent.createNull();
+        const instance2 = RealmComponent.createNull();
         
         expect(instance1).toBe(instance2);
       });
@@ -125,13 +125,13 @@ describe('RealmStateComponent', () => {
 
 
       it('should have empty modifier array', () => {
-        const nullComponent = RealmStateComponent.createNull();
+        const nullComponent = RealmComponent.createNull();
         
         expect(nullComponent.getAllModifiers().length).toBe(0);
       });
 
       it('should have empty resource history', () => {
-        const nullComponent = RealmStateComponent.createNull();
+        const nullComponent = RealmComponent.createNull();
         
         expect(nullComponent.getResourceHistory().length).toBe(0);
       });
@@ -145,36 +145,36 @@ describe('RealmStateComponent', () => {
   describe('Core Resource Management', () => {
     describe('Treasury', () => {
       it('should get treasury value', () => {
-        const component = RealmStateComponent.create(150);
+        const component = RealmComponent.create(150);
         expect(component.getTreasury()).toBe(150);
       });
 
       it('should set treasury value', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setTreasury(250);
         expect(component.getTreasury()).toBe(250);
       });
 
       it('should accept negative treasury values', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setTreasury(-50);
         expect(component.getTreasury()).toBe(-50);
       });
 
       it('should accept zero treasury value', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setTreasury(0);
         expect(component.getTreasury()).toBe(0);
       });
 
       it('should accept very large treasury values', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setTreasury(999999);
         expect(component.getTreasury()).toBe(999999);
       });
 
       it('should validate treasury setter type', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         expect(() => {
           component.setTreasury('invalid');
         }).toThrow(TypeError);
@@ -183,36 +183,36 @@ describe('RealmStateComponent', () => {
 
     describe('Stability', () => {
       it('should get stability value', () => {
-        const component = RealmStateComponent.create(100, 75);
+        const component = RealmComponent.create(100, 75);
         expect(component.getStability()).toBe(75);
       });
 
       it('should set stability value', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setStability(80);
         expect(component.getStability()).toBe(80);
       });
 
       it('should accept negative stability values', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setStability(-10);
         expect(component.getStability()).toBe(-10);
       });
 
       it('should accept zero stability value', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setStability(0);
         expect(component.getStability()).toBe(0);
       });
 
       it('should accept very large stability values', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setStability(1000);
         expect(component.getStability()).toBe(1000);
       });
 
       it('should validate stability setter type', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         expect(() => {
           component.setStability('invalid');
         }).toThrow(TypeError);
@@ -221,36 +221,36 @@ describe('RealmStateComponent', () => {
 
     describe('Legitimacy', () => {
       it('should get legitimacy value', () => {
-        const component = RealmStateComponent.create(100, 50, 85);
+        const component = RealmComponent.create(100, 50, 85);
         expect(component.getLegitimacy()).toBe(85);
       });
 
       it('should set legitimacy value', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setLegitimacy(90);
         expect(component.getLegitimacy()).toBe(90);
       });
 
       it('should accept negative legitimacy values', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setLegitimacy(-5);
         expect(component.getLegitimacy()).toBe(-5);
       });
 
       it('should accept zero legitimacy value', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setLegitimacy(0);
         expect(component.getLegitimacy()).toBe(0);
       });
 
       it('should accept very large legitimacy values', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setLegitimacy(500);
         expect(component.getLegitimacy()).toBe(500);
       });
 
       it('should validate legitimacy setter type', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         expect(() => {
           component.setLegitimacy('invalid');
         }).toThrow(TypeError);
@@ -259,36 +259,36 @@ describe('RealmStateComponent', () => {
 
     describe('Hubris', () => {
       it('should get hubris value', () => {
-        const component = RealmStateComponent.create(100, 50, 50, 25);
+        const component = RealmComponent.create(100, 50, 50, 25);
         expect(component.getHubris()).toBe(25);
       });
 
       it('should set hubris value', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setHubris(30);
         expect(component.getHubris()).toBe(30);
       });
 
       it('should accept negative hubris values', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setHubris(-20);
         expect(component.getHubris()).toBe(-20);
       });
 
       it('should accept zero hubris value', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setHubris(0);
         expect(component.getHubris()).toBe(0);
       });
 
       it('should accept very large hubris values', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.setHubris(200);
         expect(component.getHubris()).toBe(200);
       });
 
       it('should validate hubris setter type', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         expect(() => {
           component.setHubris('invalid');
         }).toThrow(TypeError);
@@ -314,7 +314,7 @@ describe('RealmStateComponent', () => {
 
     describe('Adding Modifiers', () => {
       it('should add a modifier', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const modifier = createTestModifier('mod1');
         
         component.addModifier(modifier);
@@ -325,7 +325,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should add multiple modifiers', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         
         component.addModifier(createTestModifier('mod1'));
         component.addModifier(createTestModifier('mod2'));
@@ -336,7 +336,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate modifier id', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const modifier = { ...createTestModifier('mod1'), id: '' };
         
         expect(() => {
@@ -345,7 +345,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate modifier sourceId', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const modifier = { ...createTestModifier('mod1'), sourceId: '' };
         
         expect(() => {
@@ -354,7 +354,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate modifier value', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const modifier = { ...createTestModifier('mod1'), value: 'invalid' };
         
         expect(() => {
@@ -363,7 +363,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate modifier duration', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const modifier = { ...createTestModifier('mod1'), duration: 'invalid' };
         
         expect(() => {
@@ -372,7 +372,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate modifier description', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const modifier = { ...createTestModifier('mod1'), description: '' };
         
         expect(() => {
@@ -383,7 +383,7 @@ describe('RealmStateComponent', () => {
 
     describe('Removing Modifiers', () => {
       it('should remove a modifier by id', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.addModifier(createTestModifier('mod1'));
         
         const removed = component.removeModifier('mod1');
@@ -393,7 +393,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should return false when removing non-existent modifier', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         
         const removed = component.removeModifier('non-existent');
         
@@ -401,7 +401,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should only remove specified modifier', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.addModifier(createTestModifier('mod1'));
         component.addModifier(createTestModifier('mod2'));
         component.addModifier(createTestModifier('mod3'));
@@ -414,7 +414,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate modifier id in removeModifier', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         
         expect(() => {
           component.removeModifier('');
@@ -424,7 +424,7 @@ describe('RealmStateComponent', () => {
 
     describe('Retrieving Modifiers', () => {
       it('should get modifier by id', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const modifier = createTestModifier('mod1');
         component.addModifier(modifier);
         
@@ -436,7 +436,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should return undefined for non-existent modifier', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         
         const result = component.getModifier('non-existent');
         
@@ -444,7 +444,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should get all modifiers as defensive copy', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.addModifier(createTestModifier('mod1'));
         component.addModifier(createTestModifier('mod2'));
         
@@ -457,7 +457,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should get modifiers by resource', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.addModifier(createTestModifier('mod1', RealmResource.Treasury));
         component.addModifier(createTestModifier('mod2', RealmResource.Stability));
         component.addModifier(createTestModifier('mod3', RealmResource.Treasury));
@@ -469,7 +469,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should get modifiers by source type', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const mod1 = { ...createTestModifier('mod1'), sourceType: ModifierSourceType.PlayerAction };
         const mod2 = { ...createTestModifier('mod2'), sourceType: ModifierSourceType.Event };
         const mod3 = { ...createTestModifier('mod3'), sourceType: ModifierSourceType.PlayerAction };
@@ -485,7 +485,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate modifier id in getModifier', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         
         expect(() => {
           component.getModifier('');
@@ -509,7 +509,7 @@ describe('RealmStateComponent', () => {
 
     describe('Adding History Entries', () => {
       it('should add resource history entry', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const entry = createHistoryEntry(1000, RealmResource.Treasury, 100, 150);
         
         component.addResourceHistoryEntry(entry);
@@ -520,7 +520,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should add multiple history entries', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         
         component.addResourceHistoryEntry(createHistoryEntry(1000, RealmResource.Treasury, 100, 150));
         component.addResourceHistoryEntry(createHistoryEntry(2000, RealmResource.Stability, 50, 60));
@@ -531,7 +531,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate timestamp', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const entry = { ...createHistoryEntry(1000, RealmResource.Treasury, 100, 150), timestamp: 'invalid' };
         
         expect(() => {
@@ -540,7 +540,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate oldValue', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const entry = { ...createHistoryEntry(1000, RealmResource.Treasury, 100, 150), oldValue: 'invalid' };
         
         expect(() => {
@@ -549,7 +549,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate newValue', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const entry = { ...createHistoryEntry(1000, RealmResource.Treasury, 100, 150), newValue: 'invalid' };
         
         expect(() => {
@@ -558,7 +558,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate source', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const entry = { ...createHistoryEntry(1000, RealmResource.Treasury, 100, 150), source: '' };
         
         expect(() => {
@@ -569,7 +569,7 @@ describe('RealmStateComponent', () => {
 
     describe('Retrieving History', () => {
       it('should get all resource history as defensive copy', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.addResourceHistoryEntry(createHistoryEntry(1000, RealmResource.Treasury, 100, 150));
         component.addResourceHistoryEntry(createHistoryEntry(2000, RealmResource.Stability, 50, 60));
         
@@ -582,7 +582,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should get history by resource', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.addResourceHistoryEntry(createHistoryEntry(1000, RealmResource.Treasury, 100, 150));
         component.addResourceHistoryEntry(createHistoryEntry(2000, RealmResource.Stability, 50, 60));
         component.addResourceHistoryEntry(createHistoryEntry(3000, RealmResource.Treasury, 150, 200));
@@ -594,7 +594,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should get history by time range', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.addResourceHistoryEntry(createHistoryEntry(1000, RealmResource.Treasury, 100, 150));
         component.addResourceHistoryEntry(createHistoryEntry(2000, RealmResource.Stability, 50, 60));
         component.addResourceHistoryEntry(createHistoryEntry(3000, RealmResource.Legitimacy, 50, 45));
@@ -608,7 +608,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should include boundaries in time range', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.addResourceHistoryEntry(createHistoryEntry(1000, RealmResource.Treasury, 100, 150));
         component.addResourceHistoryEntry(createHistoryEntry(2000, RealmResource.Stability, 50, 60));
         component.addResourceHistoryEntry(createHistoryEntry(3000, RealmResource.Legitimacy, 50, 45));
@@ -619,7 +619,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate time range parameters', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         
         expect(() => {
           component.getResourceHistoryByTimeRange('invalid', 2000);
@@ -633,7 +633,7 @@ describe('RealmStateComponent', () => {
 
     describe('Clearing History', () => {
       it('should clear all resource history', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         component.addResourceHistoryEntry(createHistoryEntry(1000, RealmResource.Treasury, 100, 150));
         component.addResourceHistoryEntry(createHistoryEntry(2000, RealmResource.Stability, 50, 60));
         
@@ -651,7 +651,7 @@ describe('RealmStateComponent', () => {
   describe('Failure Threshold Management', () => {
     describe('Getting Thresholds', () => {
       it('should get failure thresholds', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         
         const thresholds = component.getFailureThresholds();
         
@@ -663,7 +663,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should return defensive copy of thresholds', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         
         const thresholds = component.getFailureThresholds();
         thresholds.treasury = 999;
@@ -675,7 +675,7 @@ describe('RealmStateComponent', () => {
 
     describe('Setting Thresholds', () => {
       it('should set failure thresholds', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const newThresholds = {
           treasury: 10,
           stability: 15,
@@ -693,7 +693,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate treasury threshold', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const thresholds = {
           treasury: 'invalid',
           stability: 0,
@@ -707,7 +707,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate stability threshold', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const thresholds = {
           treasury: 0,
           stability: 'invalid',
@@ -721,7 +721,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate legitimacy threshold', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const thresholds = {
           treasury: 0,
           stability: 0,
@@ -735,7 +735,7 @@ describe('RealmStateComponent', () => {
       });
 
       it('should validate hubris threshold', () => {
-        const component = RealmStateComponent.create();
+        const component = RealmComponent.create();
         const thresholds = {
           treasury: 0,
           stability: 0,
