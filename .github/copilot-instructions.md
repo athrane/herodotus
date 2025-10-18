@@ -312,6 +312,134 @@ export class ExampleData {
 - Example: `ChronicleViewSystem` uses `EntityFilters.byName('ChronicleScreen')` to process only chronicle screen entities
 - Override `processFilteredEntity()` instead of `processEntity()` in subclasses
 
+#### Random Number Generation Pattern
+
+The project uses a centralized `RandomComponent` singleton for all random operations to ensure deterministic, reproducible simulations.
+
+**Core Principles**:
+1. **Never use `Math.random()` directly** in simulation code
+2. **Always access via `RandomComponent`** singleton
+3. **Pass as dependency** to non-ECS classes
+4. **Use dependency injection** for testability
+
+**Four Architecture Patterns for Random Access**:
+
+**Pattern #1: ECS System Pattern - Singleton Retrieval (MANDATORY)**
+
+Systems **MUST** retrieve `RandomComponent` at point of use via `getSingletonComponent()`. Never store as instance field.
+
+```typescript
+export class ExampleSystem extends System {
+    processEntity(entity: Entity): void {
+        // Retrieve RandomComponent via singleton
+        const randomComponent = this.getEntityManager()
+            .getSingletonComponent(RandomComponent);
+        if (!randomComponent) {
+            console.error('RandomComponent not found');
+            return;
+        }
+        
+        // Use random operations
+        const value = randomComponent.next();              // Float [0, 1)
+        const intValue = randomComponent.nextInt(1, 10);   // Int [1, 10]
+        const boolValue = randomComponent.nextBool();      // Boolean
+        const choice = randomComponent.nextChoice(array);  // Array element
+    }
+}
+```
+
+**Pattern #2: Standalone Class Pattern (Non-ECS Classes)**
+
+Non-ECS classes receive `RandomComponent` via dependency injection:
+
+```typescript
+export class ExampleGenerator {
+    private readonly randomComponent: RandomComponent;
+
+    constructor(randomComponent: RandomComponent) {
+        TypeUtils.ensureInstanceOf(randomComponent, RandomComponent);
+        this.randomComponent = randomComponent;
+    }
+
+    generate(): SomeType {
+        const value = this.randomComponent.nextInt(1, 100);
+        // ... use value
+    }
+
+    static create(randomComponent: RandomComponent): ExampleGenerator {
+        return new ExampleGenerator(randomComponent);
+    }
+}
+```
+
+**Pattern #3: Utility Class Pattern (Static Methods)**
+
+Utility methods accept `RandomComponent` when performing random operations OR calling Component methods that need it:
+
+```typescript
+export class GeographicalUtils {
+    static computeRandomLocation(
+        galaxyMap: GalaxyMapComponent,
+        randomComponent: RandomComponent
+    ): LocationComponent {
+        TypeUtils.ensureInstanceOf(randomComponent, RandomComponent);
+        
+        // Pass RandomComponent through to Component methods
+        const planet = galaxyMap.getRandomPlanet(randomComponent);
+        const continent = planet.getRandomContinent(randomComponent);
+        const feature = continent.getRandomFeature(randomComponent);
+        return LocationComponent.create(feature, planet);
+    }
+}
+```
+
+**Pattern #4: Component Method Pattern (Query Methods)**
+
+Component methods accept `RandomComponent` as parameter (Components cannot access EntityManager):
+
+```typescript
+export class GalaxyMapComponent extends Component {
+    getRandomPlanet(randomComponent: RandomComponent): PlanetComponent {
+        TypeUtils.ensureInstanceOf(randomComponent, RandomComponent);
+        
+        const planetsArray = Array.from(this.planets.values());
+        const index = randomComponent.nextInt(0, planetsArray.length - 1);
+        return planetsArray[index];
+    }
+}
+```
+
+**Testing Pattern**:
+
+```typescript
+import { createTestRandomComponent } from '../util/RandomTestUtils';
+
+describe('Determinism Tests', () => {
+    it('should produce identical results with same seed', () => {
+        const random1 = createTestRandomComponent('test-seed');
+        const random2 = createTestRandomComponent('test-seed');
+        
+        const result1 = operation(random1);
+        const result2 = operation(random2);
+        
+        expect(result1).toEqual(result2);
+    });
+});
+```
+
+**Key Benefits**:
+- ✅ Full simulation determinism
+- ✅ Reproducible testing scenarios
+- ✅ Reliable state serialization
+- ✅ Consistent random operation patterns
+
+**Critical Rules**:
+- ❌ Never use `Math.random()` in simulation code
+- ❌ Never store `RandomComponent` in System instance fields
+- ✅ Always retrieve via `getSingletonComponent()` in Systems
+- ✅ Always pass via constructor in standalone classes
+- ✅ Always pass as parameter to Component methods
+
 #### Factory Methods
 - **All classes must provide static `create()` methods** - this is enforced project-wide
 - Constructor parameters are passed through to `create()` method

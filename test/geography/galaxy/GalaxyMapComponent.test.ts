@@ -2,9 +2,12 @@ import { GalaxyMapComponent } from '../../../src/geography/galaxy/GalaxyMapCompo
 import { Sector } from '../../../src/geography/galaxy/Sector';
 import { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } from '../../../src/geography/planet/PlanetComponent';
 import { Continent } from '../../../src/geography/planet/Continent';
+import { createTestRandomComponent } from '../../util/RandomTestUtils';
+import { RandomComponent } from '../../../src/random/RandomComponent';
 
 describe('GalaxyMapComponent', () => {
   let galaxy: GalaxyMapComponent;
+  let randomComponent: RandomComponent;
 
   const createPlanet = (id: string, sectorId = 'sector-1'): PlanetComponent =>
     PlanetComponent.create(
@@ -21,6 +24,7 @@ describe('GalaxyMapComponent', () => {
 
   beforeEach(() => {
     galaxy = GalaxyMapComponent.create();
+    randomComponent = createTestRandomComponent('galaxy-map-test-seed');
   });
 
   it('registers sectors and planets and associates them correctly', () => {
@@ -112,7 +116,7 @@ describe('GalaxyMapComponent', () => {
   });
 
   it('returns null planet when getting random planet from empty galaxy', () => {
-    const nullPlanet = galaxy.getRandomPlanet();
+    const nullPlanet = galaxy.getRandomPlanet(randomComponent);
     expect(nullPlanet).toBeDefined();
     expect(nullPlanet.getId()).toBe('NULL_PLANET');
     expect(nullPlanet.getName()).toBe('Null Planet');
@@ -120,8 +124,8 @@ describe('GalaxyMapComponent', () => {
   });
 
   it('returns the same null planet instance for consecutive calls on empty galaxy', () => {
-    const nullPlanet1 = galaxy.getRandomPlanet();
-    const nullPlanet2 = galaxy.getRandomPlanet();
+    const nullPlanet1 = galaxy.getRandomPlanet(randomComponent);
+    const nullPlanet2 = galaxy.getRandomPlanet(randomComponent);
     expect(nullPlanet1).toBe(nullPlanet2);
   });
 
@@ -135,7 +139,7 @@ describe('GalaxyMapComponent', () => {
     galaxy.registerPlanet(planetB);
     galaxy.registerPlanet(planetC);
 
-    const randomPlanet = galaxy.getRandomPlanet();
+    const randomPlanet = galaxy.getRandomPlanet(randomComponent);
 
     expect(randomPlanet).toBeDefined();
     expect([planetA, planetB, planetC]).toContain(randomPlanet);

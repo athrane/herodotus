@@ -14,6 +14,7 @@ import { getEventCategoryFromString } from '../chronicle/EventCategory';
 import { HistoricalFigureComponent } from '../historicalfigure/HistoricalFigureComponent';
 import { PlayerComponent } from '../ecs/PlayerComponent';
 import { LocationComponent } from '../geography/LocationComponent';
+import { RandomComponent } from '../random/RandomComponent';
 
 /**
  * The SelectChoiceSystem processes entities with ChoiceComponents to resolve
@@ -90,7 +91,12 @@ export class SelectChoiceSystem extends System {
         }
 
         // For non-player entities, make an automatic choice
-        const chosenEvent = this.makeChoice(choices);
+        // Get random component
+        const randomComponent = this.getEntityManager().getSingletonComponent(RandomComponent);
+        if (!randomComponent) return;
+    
+        // Make a choice from the available options
+        const chosenEvent = this.makeChoice(choices, randomComponent);
 
         // Update the entity's DataSetEventComponent with the choice
         dataSetEventComponent.setDataSetEvent(chosenEvent);
@@ -109,11 +115,13 @@ export class SelectChoiceSystem extends System {
      * For non-player entities, it uses random selection.
      * 
      * @param choices - Array of available DataSetEvent choices.
+     * @param randomComponent - The RandomComponent to use for random number generation.
      * @returns The chosen DataSetEvent.
      */
-    private makeChoice(choices: readonly DataSetEvent[]): DataSetEvent {
+    private makeChoice(choices: readonly DataSetEvent[], randomComponent: RandomComponent): DataSetEvent {
+        TypeUtils.ensureInstanceOf(randomComponent, RandomComponent);
         // Random choice logic: select a random choice from available options
-        const randomIndex = Math.floor(Math.random() * choices.length);
+        const randomIndex = randomComponent.nextInt(0, choices.length - 1);
         return choices[randomIndex];
     }
 
@@ -174,11 +182,10 @@ export class SelectChoiceSystem extends System {
      * @returns A HistoricalFigureComponent representing the entity, or a shared unknown HistoricalFigureComponent if none is found.
      */
     private getHistoricalFigureFromEntity(entity: Entity): HistoricalFigureComponent {
-        // Check if entity has HistoricalFigureComponent
+
+        // Get HistoricalFigureComponent from entity
         const historicalFigureComponent = entity.getComponent(HistoricalFigureComponent);
-        if (historicalFigureComponent) {
-            return historicalFigureComponent;
-        }
+        if (historicalFigureComponent) return historicalFigureComponent;
 
         // Return the unknown historical figure constant if entity has no HistoricalFigureComponent
         return SelectChoiceSystem.UNKNOWN_HISTORICAL_FIGURE;

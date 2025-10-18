@@ -15,6 +15,7 @@ import { Time } from '../../src/time/Time';
 import { HistoricalFigureComponent } from '../../src/historicalfigure/HistoricalFigureComponent';
 import { PlayerComponent } from '../../src/ecs/PlayerComponent';
 import { LocationComponent } from '../../src/geography/LocationComponent';
+import { createTestRandomComponent } from '../util/RandomTestUtils';
 
 describe('SelectChoiceSystem', () => {
     let entityManager;
@@ -27,6 +28,7 @@ describe('SelectChoiceSystem', () => {
     let chronicleComponent;
     let timeComponent;
     let galaxyMapComponent;
+    let randomComponent;
 
     /**
      * Helper function to set up singleton components needed for full system operation
@@ -38,6 +40,7 @@ describe('SelectChoiceSystem', () => {
         // Create singleton components
         chronicleComponent = ChronicleComponent.create();
         timeComponent = TimeComponent.create(Time.create(1, 1, 1000));
+        randomComponent = createTestRandomComponent('select-choice-system-test-seed');
         
         // Create galaxy map with planet, continent, and feature
         const featureType = GeographicalFeatureTypeRegistry.register('test_city', 'City');
@@ -65,11 +68,12 @@ describe('SelectChoiceSystem', () => {
         galaxyMapComponent.registerPlanet(planet);
 
         // Create a Global entity with all singleton components
-        globalEntity = entityManager.createEntity(chronicleComponent, timeComponent, galaxyMapComponent);
+        globalEntity = entityManager.createEntity(chronicleComponent, timeComponent, galaxyMapComponent, randomComponent);
     };
 
     beforeEach(() => {
         entityManager = new EntityManager();
+        setupSingletonComponents(); // Create singleton components for each test
         system = new SelectChoiceSystem(entityManager);
         entity = entityManager.createEntity();
     });
@@ -91,21 +95,24 @@ describe('SelectChoiceSystem', () => {
                 'Event Type': 'Political',
                 'Event Trigger': 'CHOICE_1',
                 'Event Name': 'Choice One',
-                'Event Consequence': 'Result of choice one'
+                'Event Consequence': 'Result of choice one',
+                'Description': 'Political choice one description'
             });
 
             const choice2 = new DataSetEvent({
                 'Event Type': 'Economic',
                 'Event Trigger': 'CHOICE_2',
                 'Event Name': 'Choice Two',
-                'Event Consequence': 'Result of choice two'
+                'Event Consequence': 'Result of choice two',
+                'Description': 'Economic choice two description'
             });
 
             const initialEvent = new DataSetEvent({
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL_STATE',
                 'Event Name': 'Initial Event',
-                'Event Consequence': 'Starting state'
+                'Event Consequence': 'Starting state',
+                'Description': 'Initial state description'
             });
 
             const choiceComponent = ChoiceComponent.create([choice1, choice2]);
@@ -136,7 +143,8 @@ describe('SelectChoiceSystem', () => {
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL_STATE',
                 'Event Name': 'Initial Event',
-                'Event Consequence': 'Starting state'
+                'Event Consequence': 'Starting state',
+                'Description': 'Initial state description'
             });
 
             const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
@@ -162,7 +170,8 @@ describe('SelectChoiceSystem', () => {
                 'Event Type': 'Political',
                 'Event Trigger': 'CHOICE_1',
                 'Event Name': 'Choice One',
-                'Event Consequence': 'Result of choice one'
+                'Event Consequence': 'Result of choice one',
+                'Description': 'Political choice description'
             });
 
             const choiceComponent = ChoiceComponent.create([choice]);
@@ -184,7 +193,8 @@ describe('SelectChoiceSystem', () => {
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL_STATE',
                 'Event Name': 'Initial Event',
-                'Event Consequence': 'Starting state'
+                'Event Consequence': 'Starting state',
+                'Description': 'Initial state description'
             });
 
             const choiceComponent = ChoiceComponent.create([]); // Empty choices
@@ -216,7 +226,8 @@ describe('SelectChoiceSystem', () => {
                     'Event Type': 'Political',
                     'Event Trigger': `CHOICE_${i}`,
                     'Event Name': `Choice ${i}`,
-                    'Event Consequence': `Result of choice ${i}`
+                    'Event Consequence': `Result of choice ${i}`,
+                    'Description': `Description for choice ${i}`
                 }));
             }
 
@@ -224,7 +235,8 @@ describe('SelectChoiceSystem', () => {
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL_STATE',
                 'Event Name': 'Initial Event',
-                'Event Consequence': 'Starting state'
+                'Event Consequence': 'Starting state',
+                'Description': 'Initial state description'
             });
 
             const choiceComponent = ChoiceComponent.create(choices);
@@ -254,21 +266,24 @@ describe('SelectChoiceSystem', () => {
                 'Event Type': 'Political',
                 'Event Trigger': 'CHOICE_1',
                 'Event Name': 'Choice One',
-                'Event Consequence': 'Result of choice one'
+                'Event Consequence': 'Result of choice one',
+                'Description': 'Political choice one description'
             });
 
             const choice2 = new DataSetEvent({
                 'Event Type': 'Economic',
                 'Event Trigger': 'CHOICE_2',
                 'Event Name': 'Choice Two',
-                'Event Consequence': 'Result of choice two'
+                'Event Consequence': 'Result of choice two',
+                'Description': 'Economic choice two description'
             });
 
             const initialEvent = new DataSetEvent({
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL_STATE',
                 'Event Name': 'Initial Event',
-                'Event Consequence': 'Starting state'
+                'Event Consequence': 'Starting state',
+                'Description': 'Initial state description'
             });
 
             const choiceComponent = ChoiceComponent.create([choice1, choice2]);
@@ -297,14 +312,16 @@ describe('SelectChoiceSystem', () => {
                 'Event Type': 'Political',
                 'Event Trigger': 'CHOICE_1',
                 'Event Name': 'Choice One',
-                'Event Consequence': 'Result of choice one'
+                'Event Consequence': 'Result of choice one',
+                'Description': 'Political choice one description'
             });
 
             const choice2 = new DataSetEvent({
                 'Event Type': 'Economic',
                 'Event Trigger': 'CHOICE_2',
                 'Event Name': 'Choice Two',
-                'Event Consequence': 'Result of choice two'
+                'Event Consequence': 'Result of choice two',
+                'Description': 'Economic choice two description'
             });
 
             const choiceComponent = ChoiceComponent.create([choice1, choice2]);
@@ -341,28 +358,32 @@ describe('SelectChoiceSystem', () => {
                 'Event Type': 'Political',
                 'Event Trigger': 'CHOICE_A',
                 'Event Name': 'Choice A',
-                'Event Consequence': 'Result A'
+                'Event Consequence': 'Result A',
+                'Description': 'Political choice A description'
             });
 
             const choice2 = new DataSetEvent({
                 'Event Type': 'Economic',
                 'Event Trigger': 'CHOICE_B',
                 'Event Name': 'Choice B',
-                'Event Consequence': 'Result B'
+                'Event Consequence': 'Result B',
+                'Description': 'Economic choice B description'
             });
 
             const initialEvent1 = new DataSetEvent({
                 'Event Type': 'Social',
                 'Event Trigger': 'STATE_1',
                 'Event Name': 'State 1',
-                'Event Consequence': 'Initial state 1'
+                'Event Consequence': 'Initial state 1',
+                'Description': 'Initial state 1 description'
             });
 
             const initialEvent2 = new DataSetEvent({
                 'Event Type': 'Social',
                 'Event Trigger': 'STATE_2',
                 'Event Name': 'State 2',
-                'Event Consequence': 'Initial state 2'
+                'Event Consequence': 'Initial state 2',
+                'Description': 'Initial state 2 description'
             });
 
             // Entity 1 with both required components
@@ -407,7 +428,8 @@ describe('SelectChoiceSystem', () => {
                     'Event Type': 'Political',
                     'Event Trigger': `CHOICE_${i}`,
                     'Event Name': `Choice ${i}`,
-                    'Event Consequence': `Result ${i}`
+                    'Event Consequence': `Result ${i}`,
+                    'Description': `Description for choice ${i}`
                 }));
             }
 
@@ -416,7 +438,8 @@ describe('SelectChoiceSystem', () => {
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL',
                 'Event Name': 'Initial',
-                'Event Consequence': 'Initial state'
+                'Event Consequence': 'Initial state',
+                'Description': 'Initial state description'
             });
             const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
 
@@ -446,7 +469,8 @@ describe('SelectChoiceSystem', () => {
                 'Event Type': 'Political',
                 'Event Trigger': 'ONLY_CHOICE',
                 'Event Name': 'Only Choice',
-                'Event Consequence': 'Only Result'
+                'Event Consequence': 'Only Result',
+                'Description': 'Only choice description'
             });
 
             const choiceComponent = ChoiceComponent.create([singleChoice]);
@@ -454,7 +478,8 @@ describe('SelectChoiceSystem', () => {
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL',
                 'Event Name': 'Initial',
-                'Event Consequence': 'Initial state'
+                'Event Consequence': 'Initial state',
+                'Description': 'Initial state description'
             });
             const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
 
@@ -478,10 +503,8 @@ describe('SelectChoiceSystem', () => {
     });
 
     describe('chronicle recording', () => {
-        beforeEach(() => {
-            setupSingletonComponents();
-        });
-
+        // Note: setupSingletonComponents() already called in outer beforeEach
+        
         it('should record decision in chronicle when making a choice', () => {
             // Arrange
             const choice = new DataSetEvent({
@@ -793,14 +816,16 @@ describe('SelectChoiceSystem', () => {
                 'Event Type': null, // Invalid type
                 'Event Trigger': 'INVALID',
                 'Event Name': 'Invalid Event',
-                'Event Consequence': 'Invalid consequence'
+                'Event Consequence': 'Invalid consequence',
+                'Description': 'Invalid event description'
             });
 
             const choice = new DataSetEvent({
                 'Event Type': 'Political',
                 'Event Trigger': 'VALID_CHOICE',
                 'Event Name': 'Valid Choice',
-                'Event Consequence': 'Valid result'
+                'Event Consequence': 'Valid result',
+                'Description': 'Valid choice description'
             });
 
             const choiceComponent = ChoiceComponent.create([choice]);
@@ -826,10 +851,8 @@ describe('SelectChoiceSystem', () => {
     });
 
     describe('location handling without LocationComponent on entity', () => {
-        beforeEach(() => {
-            setupSingletonComponents();
-        });
-
+        // Note: setupSingletonComponents() already called in outer beforeEach
+        
         it('should use null location when galaxy map is empty and entity has no LocationComponent', () => {
             // Arrange - Create empty galaxy map
             galaxyMapComponent.reset();
@@ -1009,20 +1032,25 @@ describe('SelectChoiceSystem', () => {
 
     describe('singleton component dependencies', () => {
         it('should handle missing TimeComponent gracefully', () => {
-            // Arrange - Set up without TimeComponent
+            // Arrange - Create a fresh EntityManager without TimeComponent
+            entityManager = new EntityManager();
+            randomComponent = createTestRandomComponent('missing-time-test-seed');
             chronicleComponent = ChronicleComponent.create();
             galaxyMapComponent = GalaxyMapComponent.create();
             const sector = Sector.create('test-sector', 'Test Sector');
             galaxyMapComponent.addSector(sector);
             
-            globalEntity = entityManager.createEntity(chronicleComponent, galaxyMapComponent);
+            globalEntity = entityManager.createEntity(chronicleComponent, galaxyMapComponent, randomComponent);
             // Note: No TimeComponent added
+            system = new SelectChoiceSystem(entityManager);
+            entity = entityManager.createEntity();
 
             const choice = new DataSetEvent({
                 'Event Type': 'Political',
                 'Event Trigger': 'CHOICE_1',
                 'Event Name': 'Test Choice',
-                'Event Consequence': 'Test consequence'
+                'Event Consequence': 'Test consequence',
+                'Description': 'Test choice description'
             });
 
             const choiceComponent = ChoiceComponent.create([choice]);
@@ -1030,7 +1058,8 @@ describe('SelectChoiceSystem', () => {
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL',
                 'Event Name': 'Initial',
-                'Event Consequence': 'Initial state'
+                'Event Consequence': 'Initial state',
+                'Description': 'Initial state description'
             });
             const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
 
@@ -1047,18 +1076,23 @@ describe('SelectChoiceSystem', () => {
         });
 
         it('should handle missing GalaxyMapComponent gracefully', () => {
-            // Arrange - Set up without GalaxyMapComponent
+            // Arrange - Create a fresh EntityManager without GalaxyMapComponent
+            entityManager = new EntityManager();
+            randomComponent = createTestRandomComponent('missing-galaxy-test-seed');
             chronicleComponent = ChronicleComponent.create();
             timeComponent = TimeComponent.create(Time.create(1, 1, 1000));
             
-            globalEntity = entityManager.createEntity(chronicleComponent, timeComponent);
+            globalEntity = entityManager.createEntity(chronicleComponent, timeComponent, randomComponent);
             // Note: No GalaxyMapComponent added
+            system = new SelectChoiceSystem(entityManager);
+            entity = entityManager.createEntity();
 
             const choice = new DataSetEvent({
                 'Event Type': 'Political',
                 'Event Trigger': 'CHOICE_1',
                 'Event Name': 'Test Choice',
-                'Event Consequence': 'Test consequence'
+                'Event Consequence': 'Test consequence',
+                'Description': 'Test choice description'
             });
 
             const choiceComponent = ChoiceComponent.create([choice]);
@@ -1066,7 +1100,8 @@ describe('SelectChoiceSystem', () => {
                 'Event Type': 'Social',
                 'Event Trigger': 'INITIAL',
                 'Event Name': 'Initial',
-                'Event Consequence': 'Initial state'
+                'Event Consequence': 'Initial state',
+                'Description': 'Initial state description'
             });
             const dataSetEventComponent = DataSetEventComponent.create(initialEvent);
 
@@ -1084,7 +1119,7 @@ describe('SelectChoiceSystem', () => {
 
         it('should work correctly when all singleton components are present', () => {
             // Arrange
-            setupSingletonComponents();
+            // Note: setupSingletonComponents() already called in outer beforeEach
 
             const choice = new DataSetEvent({
                 'Event Type': 'Political',

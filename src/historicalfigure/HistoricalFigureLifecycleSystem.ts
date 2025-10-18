@@ -11,6 +11,7 @@ import { EventCategory } from '../chronicle/EventCategory';
 import { Time } from '../time/Time';
 import { GalaxyMapComponent } from '../geography/galaxy/GalaxyMapComponent';
 import { GeographicalUtils } from '../geography/GeographicalUtils';
+import { RandomComponent } from '../random/RandomComponent';
 
 /**
  * Manages the death and other life cycle events of historical figures based on their lifespan.
@@ -116,9 +117,13 @@ export class HistoricalFigureLifecycleSystem extends System {
         const galaxyMapComponent = this.getEntityManager().getSingletonComponent(GalaxyMapComponent);
         if (!galaxyMapComponent) return;
 
+        // Get random component from the global entity
+        const randomComponent = this.getEntityManager().getSingletonComponent(RandomComponent);
+        if (!randomComponent) return;
+
         // Create the time and location for the death event
         const time = Time.create(deathYear);
-        const locationComponent = GeographicalUtils.computeRandomLocation(galaxyMapComponent);
+        const locationComponent = GeographicalUtils.computeRandomLocation(galaxyMapComponent, randomComponent);
 
         // Get the historical figure instance from the component
         // Create the event type for death

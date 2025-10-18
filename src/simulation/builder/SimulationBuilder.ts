@@ -92,17 +92,20 @@ export class SimulationBuilder extends Builder {
     buildEntities(): void {
         const entityManager: EntityManager = this.simEcs.getEntityManager();
 
+        // Create RandomComponent first so it can be used by other components
+        const randomComponent = RandomComponent.create(this.randomSeedConfig);
+
         // create galaxy map as the root game world object
-        const nameGenerator = NameGenerator.create();
+        const nameGenerator = NameGenerator.create(randomComponent);
         const worldGenConfig = loadWorldGenData();
-        const worldGenerator = WorldGenerator.create(nameGenerator, worldGenConfig);
+        const worldGenerator = WorldGenerator.create(nameGenerator, randomComponent, worldGenConfig);
         const galaxyMapComponent = worldGenerator.generateGalaxyMap();
 
         // create global entity to hold simulation-wide state, like the current time.
         entityManager.createEntity(
             new NameComponent("Global"),
             new TimeComponent(Time.create(0)),
-            RandomComponent.create(this.randomSeedConfig),            
+            randomComponent,            
             galaxyMapComponent,
             new ChronicleComponent(),
             DataSetComponent.create(this.dataSetEvents)            
@@ -131,7 +134,7 @@ export class SimulationBuilder extends Builder {
             DataSetEventComponent.create(initialEvent),
             ChoiceComponent.create([]), // Start with empty choices, will be populated by ComputeChoicesSystem
             PlayerComponent.create(),
-            GeographicalUtils.computeRandomLocation(galaxyMapComponent)
+            GeographicalUtils.computeRandomLocation(galaxyMapComponent, randomComponent)
         );
 
         // Create a sample historical figure

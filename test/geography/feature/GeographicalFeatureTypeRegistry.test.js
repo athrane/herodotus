@@ -1,13 +1,17 @@
 import { GeographicalFeatureTypeRegistry } from '../../../src/geography/feature/GeographicalFeatureTypeRegistry.ts';
 import { FeatureType } from '../../../src/geography/feature/FeatureType.ts';
+import { createTestRandomComponent } from '../../util/RandomTestUtils.ts';
 
 describe('GeographicalFeatureTypeRegistry', () => {
+    let randomComponent;
 
     // Before each test, clear the registry to ensure a clean, isolated state.
     // This is crucial because the registry is a static singleton and its state
     // would otherwise persist between tests.
     beforeEach(() => {
         GeographicalFeatureTypeRegistry.clear();
+        // Create randomComponent with deterministic seed
+        randomComponent = createTestRandomComponent('feature-registry-test-seed');
     });
 
     describe('register()', () => {
@@ -94,7 +98,7 @@ describe('GeographicalFeatureTypeRegistry', () => {
 
     describe('getRandom()', () => {
         it('should register and return the null feature type when the registry is empty', () => {
-            const randomType = GeographicalFeatureTypeRegistry.getRandom();
+            const randomType = GeographicalFeatureTypeRegistry.getRandom(randomComponent);
             
             // Should automatically register the UNKNOWN type
             expect(randomType).toBeInstanceOf(FeatureType);
@@ -110,14 +114,14 @@ describe('GeographicalFeatureTypeRegistry', () => {
             const type1 = GeographicalFeatureTypeRegistry.register('RANDOM_1', 'Random 1');
             const type2 = GeographicalFeatureTypeRegistry.register('RANDOM_2', 'Random 2');
 
-            const randomType = GeographicalFeatureTypeRegistry.getRandom();
+            const randomType = GeographicalFeatureTypeRegistry.getRandom(randomComponent);
             expect(randomType).toBeInstanceOf(FeatureType);
             expect([type1, type2]).toContain(randomType);
         });
 
         it('should return the only registered item', () => {
             const type1 = GeographicalFeatureTypeRegistry.register('ONLY_ONE', 'Only One');
-            expect(GeographicalFeatureTypeRegistry.getRandom()).toBe(type1);
+            expect(GeographicalFeatureTypeRegistry.getRandom(randomComponent)).toBe(type1);
         });
     });
 

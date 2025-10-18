@@ -2,6 +2,7 @@ import { Component } from '../../ecs/Component';
 import { TypeUtils } from '../../util/TypeUtils';
 import { PlanetComponent } from '../planet/PlanetComponent';
 import { Sector } from './Sector';
+import { RandomComponent } from '../../random/RandomComponent';
 
 /**
  * Component that models the galactic map as a graph of planets (nodes)
@@ -166,14 +167,16 @@ export class GalaxyMapComponent extends Component {
     /**
      * Returns a random planet from the galaxy map.
      * If no planets exist, returns a null planet representing an empty galaxy.
+     * @param randomComponent - The RandomComponent to use for random number generation.
      * @returns A random planet component, or a null planet if no planets exist.
      */
-    getRandomPlanet(): PlanetComponent {
+    getRandomPlanet(randomComponent: RandomComponent): PlanetComponent {
+        TypeUtils.ensureInstanceOf(randomComponent, RandomComponent);
         if (this.planets.size === 0) {
             return PlanetComponent.createNullPlanet();
         }
         const planetsArray = Array.from(this.planets.values());
-        const randomIndex = Math.floor(Math.random() * planetsArray.length);
+        const randomIndex = randomComponent.nextInt(0, planetsArray.length - 1);
         return planetsArray[randomIndex];
     }
 

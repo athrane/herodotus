@@ -13,6 +13,8 @@ import { Continent } from '../../src/geography/planet/Continent';
 import { GeographicalFeature } from '../../src/geography/feature/GeographicalFeature';
 import { GeographicalFeatureTypeRegistry } from '../../src/geography/feature/GeographicalFeatureTypeRegistry';
 import { HistoricalFigureData } from '../../src/data/historicalfigure/HistoricalFigureData';
+import { RandomComponent } from '../../src/random/RandomComponent';
+import { createTestRandomComponent } from '../util/RandomTestUtils';
 
 describe('HistoricalFigureBirthSystem', () => {
     let entityManager;
@@ -23,9 +25,11 @@ describe('HistoricalFigureBirthSystem', () => {
     let mockNameGenerator;
     let globalEntity;
     let mockConfig;
+    let randomComponent;
 
     beforeEach(() => {
         entityManager = new EntityManager();
+        randomComponent = createTestRandomComponent('historical-figure-birth-test-seed');
 
         // Create mock configuration
         mockConfig = HistoricalFigureData.create({
@@ -75,6 +79,14 @@ describe('HistoricalFigureBirthSystem', () => {
             mockGalaxyMapComponent,
             mockChronicleEventComponent
         );
+
+        // Mock RandomComponent singleton
+        jest.spyOn(entityManager, 'getSingletonComponent').mockImplementation((componentClass) => {
+            if (componentClass === RandomComponent) {
+                return randomComponent;
+            }
+            return globalEntity.getComponent(componentClass);
+        });
 
         // Spy on createEntity to track calls to historical figure creation
         jest.spyOn(entityManager, 'createEntity');
@@ -179,7 +191,7 @@ describe('HistoricalFigureBirthSystem', () => {
             naturalLifespanStdDev: 15
         });
         const alwaysBornSystem = new HistoricalFigureBirthSystem(entityManager, alwaysBornConfig);
-        expect(alwaysBornSystem.isBorn()).toBe(true);
+        expect(alwaysBornSystem.isBorn(randomComponent)).toBe(true);
         
         // Create a system with 0% birth chance
         const neverBornConfig = HistoricalFigureData.create({
@@ -188,11 +200,11 @@ describe('HistoricalFigureBirthSystem', () => {
             naturalLifespanStdDev: 15
         });
         const neverBornSystem = new HistoricalFigureBirthSystem(entityManager, neverBornConfig);
-        expect(neverBornSystem.isBorn()).toBe(false);
+        expect(neverBornSystem.isBorn(randomComponent)).toBe(false);
     });
 
     it('calculateLifespan returns a positive integer', () => {
-        const lifespan = system.calculateLifespan();
+        const lifespan = system.calculateLifespan(randomComponent);
         expect(Number.isInteger(lifespan)).toBe(true);
         expect(lifespan).toBeGreaterThan(0);
     });

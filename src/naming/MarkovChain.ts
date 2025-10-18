@@ -1,4 +1,5 @@
 import { TypeUtils } from '../util/TypeUtils';
+import type { RandomComponent } from '../random/RandomComponent';
 
 /**
  * Represents a Markov chain for procedural name generation.
@@ -13,18 +14,22 @@ import { TypeUtils } from '../util/TypeUtils';
 export class MarkovChain {
   private readonly order: number;
   private readonly chains: Map<string, string[]>;
+  private readonly randomComponent: RandomComponent;
 
   /**
    * Creates an instance of MarkovChain.
    * @param trainingData - An array of strings to train the model.
    * @param order - The order of the Markov chain (the length of the character sequences to analyze).
+   * @param randomComponent - The RandomComponent instance for deterministic random operations
    */
-  constructor(trainingData: string[], order: number) {
+  constructor(trainingData: string[], order: number, randomComponent: RandomComponent) {
     TypeUtils.ensureArray(trainingData, 'Training data must be an array.');
     TypeUtils.ensureNumber(order, 'Order must be a number.');
+    TypeUtils.ensureInstanceOf(randomComponent, Object, 'RandomComponent must be provided.');
     
     this.order = order;
     this.chains = new Map();
+    this.randomComponent = randomComponent;
     this._train(trainingData);
   }
 
@@ -66,7 +71,7 @@ export class MarkovChain {
       return '';
     }
 
-    let currentGram = startingGrams[Math.floor(Math.random() * startingGrams.length)];
+    let currentGram = startingGrams[this.randomComponent.nextInt(0, startingGrams.length - 1)];
     let result = currentGram;
 
     while (result.length < maxLength) {
@@ -75,7 +80,7 @@ export class MarkovChain {
         break;
       }
 
-      const nextChar = nextChars[Math.floor(Math.random() * nextChars.length)];
+      const nextChar = nextChars[this.randomComponent.nextInt(0, nextChars.length - 1)];
       if (nextChar === '') {
         break;
       }
@@ -107,9 +112,10 @@ export class MarkovChain {
    * @static
    * @param trainingData - An array of strings to train the model.
    * @param order - The order of the Markov chain.
+   * @param randomComponent - The RandomComponent instance for deterministic random operations
    * @returns A new MarkovChain instance.
    */
-  static create(trainingData: string[], order: number): MarkovChain {
-    return new MarkovChain(trainingData, order);
+  static create(trainingData: string[], order: number, randomComponent: RandomComponent): MarkovChain {
+    return new MarkovChain(trainingData, order, randomComponent);
   }
 }
