@@ -324,7 +324,7 @@ The project uses a centralized `RandomComponent` singleton for all random operat
 
 **Four Architecture Patterns for Random Access**:
 
-**Pattern #1: ECS System Pattern - Singleton Retrieval (MANDATORY)**
+**Pattern 1: ECS System Pattern - Singleton Retrieval (MANDATORY)**
 
 Systems **MUST** retrieve `RandomComponent` at point of use via `getSingletonComponent()`. Never store as instance field.
 
@@ -348,7 +348,7 @@ export class ExampleSystem extends System {
 }
 ```
 
-**Pattern #2: Standalone Class Pattern (Non-ECS Classes)**
+**Pattern 2: Standalone Class Pattern (Non-ECS Classes)**
 
 Non-ECS classes receive `RandomComponent` via dependency injection:
 
@@ -372,7 +372,7 @@ export class ExampleGenerator {
 }
 ```
 
-**Pattern #3: Utility Class Pattern (Static Methods)**
+**Pattern 3: Utility Class Pattern (Static Methods)**
 
 Utility methods accept `RandomComponent` when performing random operations OR calling Component methods that need it:
 
@@ -393,7 +393,7 @@ export class GeographicalUtils {
 }
 ```
 
-**Pattern #4: Component Method Pattern (Query Methods)**
+**Pattern 4: Component Method Pattern (Query Methods)**
 
 Component methods accept `RandomComponent` as parameter (Components cannot access EntityManager):
 
