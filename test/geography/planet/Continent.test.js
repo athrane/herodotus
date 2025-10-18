@@ -1,10 +1,12 @@
 import { Continent } from '../../../src/geography/planet/Continent.ts';
 import { GeographicalFeature } from '../../../src/geography/feature/GeographicalFeature.ts';
 import { GeographicalFeatureTypeRegistry } from '../../../src/geography/feature/GeographicalFeatureTypeRegistry.ts';
+import { createTestRandomComponent } from '../../util/RandomTestUtils.ts';
 
 describe('Continent', () => {
     let featureType;
     let featureType2;
+    let randomComponent;
 
     // Before each test, clear the registry to ensure a clean, isolated state.
     // This is crucial because the registry is a static singleton and its state
@@ -20,6 +22,8 @@ describe('Continent', () => {
         const displayName2 = 'River';
         featureType2 = GeographicalFeatureTypeRegistry.register(key2, displayName2);
 
+        // Create randomComponent with deterministic seed
+        randomComponent = createTestRandomComponent('continent-test-seed');
     });
 
   describe('constructor', () => {
@@ -67,7 +71,7 @@ describe('Continent', () => {
   describe('getRandomFeature', () => {
     it('should return the null feature if no features exist', () => {
       const continent = Continent.create('Empty Continent');
-      const randomFeature = continent.getRandomFeature();
+      const randomFeature = continent.getRandomFeature(randomComponent);
       expect(randomFeature).toBeInstanceOf(GeographicalFeature);
       expect(randomFeature.getName()).toBe('Unknown');
       expect(randomFeature.getType().getKey()).toBe('UNKNOWN');
@@ -79,7 +83,7 @@ describe('Continent', () => {
       const feature2 = GeographicalFeature.create('River', featureType2);
       continent.addFeature(feature1);
       continent.addFeature(feature2);
-      const randomFeature = continent.getRandomFeature();
+      const randomFeature = continent.getRandomFeature(randomComponent);
       expect(randomFeature).toBeInstanceOf(GeographicalFeature);
       expect([feature1, feature2]).toContain(randomFeature);
     });
@@ -125,7 +129,7 @@ describe('Continent', () => {
 
     it('should return the null feature when getRandomFeature is called', () => {
       const nullContinent = Continent.createNullContinent();
-      const randomFeature = nullContinent.getRandomFeature();
+      const randomFeature = nullContinent.getRandomFeature(randomComponent);
       expect(randomFeature).toBeInstanceOf(GeographicalFeature);
       expect(randomFeature.getName()).toBe('Unknown');
       expect(randomFeature.getType().getKey()).toBe('UNKNOWN');

@@ -1,7 +1,14 @@
 import { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } from '../../../src/geography/planet/PlanetComponent';
 import { Continent } from '../../../src/geography/planet/Continent';
+import { createTestRandomComponent } from '../../util/RandomTestUtils';
+import { RandomComponent } from '../../../src/random/RandomComponent';
 
 describe('PlanetComponent continents', () => {
+  let randomComponent: RandomComponent;
+
+  beforeEach(() => {
+    randomComponent = createTestRandomComponent('planet-component-test-seed');
+  });
   it('stores provided continents without sharing the original array', () => {
     const continents = [Continent.create('Alpha')];
 
@@ -61,7 +68,7 @@ describe('PlanetComponent continents', () => {
       []
     );
 
-    const continent = planet.getRandomContinent();
+    const continent = planet.getRandomContinent(randomComponent);
     expect(continent).toBe(Continent.createNullContinent());
   });
 
@@ -82,7 +89,7 @@ describe('PlanetComponent continents', () => {
       [continent1, continent2, continent3]
     );
 
-    const randomContinent = planet.getRandomContinent();
+    const randomContinent = planet.getRandomContinent(randomComponent);
     expect([continent1, continent2, continent3]).toContain(randomContinent);
   });
 
@@ -106,7 +113,7 @@ describe('PlanetComponent continents', () => {
     // Get multiple random continents
     const results = new Set();
     for (let i = 0; i < 20; i++) {
-      results.add(planet.getRandomContinent().getName());
+      results.add(planet.getRandomContinent(randomComponent).getName());
     }
 
     // With 20 iterations on 3 continents, we should get at least 2 different ones

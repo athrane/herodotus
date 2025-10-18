@@ -16,16 +16,12 @@ import { DataSetEventComponent } from '../data/DataSetEventComponent';
 import { ChoiceComponent } from '../behaviour/ChoiceComponent';
 import { GeographicalUtils } from '../geography/GeographicalUtils';
 import { HistoricalFigureData } from '../data/historicalfigure/HistoricalFigureData';
+import { RandomComponent } from '../random/RandomComponent';
 
 /**
  * Manages the birth of historical figures.
  */
 export class HistoricalFigureBirthSystem extends System {
-
-    /**
-     * Name generator for historical figures.
-     */
-    private readonly nameGenerator: NameGenerator;
 
     /**
      * Configuration data for historical figures.
@@ -39,7 +35,6 @@ export class HistoricalFigureBirthSystem extends System {
     constructor(entityManager: EntityManager, config: HistoricalFigureData) {
         super(entityManager, [TimeComponent, GalaxyMapComponent, ChronicleComponent]);
         TypeUtils.ensureInstanceOf(config, HistoricalFigureData);
-        this.nameGenerator = NameGenerator.create();
         this.config = config;
     }
 
@@ -64,8 +59,12 @@ export class HistoricalFigureBirthSystem extends System {
         const galaxyMapComponent = entity.getComponent(GalaxyMapComponent);
         if (!galaxyMapComponent) return;
 
+        // Get random component from the global entity
+        const randomComponent = this.getEntityManager().getSingletonComponent(RandomComponent);
+        if (!randomComponent) return;
+
         // exit if no historical figure is born
-        if (!this.isBorn()) return;
+        if (!this.isBorn(randomComponent)) return;
 
         // get time
         const time = timeComponent.getTime();
@@ -75,13 +74,14 @@ export class HistoricalFigureBirthSystem extends System {
 
         // Generate a random name for the historical figure
         const culture = 'GENERIC';
-        const name = this.nameGenerator.generateHistoricalFigureName(culture, 4, 8);
+        const nameGenerator = NameGenerator.create(randomComponent);
+        const name = nameGenerator.generateHistoricalFigureName(culture, 4, 8);
 
         // define a lifespan in years for the historical figure
-        const lifespanYears = this.calculateLifespan();
+        const lifespanYears = this.calculateLifespan(randomComponent);
 
         // Get a random location for the historical figure
-        const locationComponent = GeographicalUtils.computeRandomLocation(galaxyMapComponent);
+        const locationComponent = GeographicalUtils.computeRandomLocation(galaxyMapComponent, randomComponent);
         const historicalFigureComponent = HistoricalFigureComponent.create(
             name,
             year,
@@ -93,7 +93,7 @@ export class HistoricalFigureBirthSystem extends System {
         // Create a DataSetEvent for the historical figure's birth
         const birthEvent = new DataSetEvent({
             "Event Type": "Social",
-            "Event Trigger": `NPC_BIRTH_${year}_${Math.floor(Math.random() * 10000)}`,
+            "Event Trigger": `NPC_BIRTH_${year}_${randomComponent.nextInt(0, 9999)}`,
             "Event Name": `Birth of ${name}`,
             "Event Consequence": `Birth`,
             "Heading": "A New Figure Emerges",
@@ -131,32 +131,38 @@ export class HistoricalFigureBirthSystem extends System {
      * Determine if a historical figure is born.
      * This method can be used to determine if a historical figure is born
      * based on the current year and the birth chance.
+     * @param randomComponent - The RandomComponent to use for random number generation.
      * @returns True if the historical figure is born, false otherwise.
      */
-    isBorn(): boolean {
-        return Math.random() < this.config.getBirthChancePerYear();
+    isBorn(randomComponent: RandomComponent): boolean {
+        TypeUtils.ensureInstanceOf(randomComponent, RandomComponent);
+        return randomComponent.next() < this.config.getBirthChancePerYear();
     }
 
     /**
      * Calculate a random lifespan for the historical figure.
      * This method uses a normal distribution to calculate the lifespan.
+     * @param randomComponent - The RandomComponent to use for random number generation.
      * @returns The calculated lifespan in years.
      */
-    calculateLifespan(): number {
+    calculateLifespan(randomComponent: RandomComponent): number {
+        TypeUtils.ensureInstanceOf(randomComponent, RandomComponent);
         const mean = this.config.getNaturalLifespanMean();
         const stdDev = this.config.getNaturalLifespanStdDev();
-        return Math.max(1, Math.round(this.randomNormal(mean, stdDev)));
+        return Math.max(1, Math.round(this.randomNormal(mean, stdDev, randomComponent)));
     }
 
     /**
      * Generate a normally distributed random number using the Box-Muller transform.
      * @param mean - The mean of the normal distribution.
      * @param stdDev - The standard deviation of the normal distribution.
+     * @param randomComponent - The RandomComponent to use for random number generation.
      * @returns A normally distributed random number.
      */
-    randomNormal(mean: number, stdDev: number): number {
-        const u1 = Math.random();
-        const u2 = Math.random();
+    randomNormal(mean: number, stdDev: number, randomComponent: RandomComponent): number {
+        TypeUtils.ensureInstanceOf(randomComponent, RandomComponent);
+        const u1 = randomComponent.next();
+        const u2 = randomComponent.next();
         const z0 = Math.sqrt(-2.0 * Math.log(u1)) * Math.cos(2.0 * Math.PI * u2);
         return z0 * stdDev + mean;
     }

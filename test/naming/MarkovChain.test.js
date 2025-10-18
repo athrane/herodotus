@@ -1,12 +1,15 @@
 import { MarkovChain } from '../../src/naming/MarkovChain.ts';
+import { createTestRandomComponent } from '../util/RandomTestUtils.ts';
 
 describe('MarkovChain', () => {
     const trainingData = ['alpha', 'beta', 'gamma'];
     const order = 2;
     let markovChain;
+    let randomComponent;
 
     beforeEach(() => {
-        markovChain = MarkovChain.create(trainingData, order);
+        randomComponent = createTestRandomComponent('markov-chain-test-seed');
+        markovChain = MarkovChain.create(trainingData, order, randomComponent);
     });
 
     describe('create', () => {
@@ -24,7 +27,7 @@ describe('MarkovChain', () => {
         });
 
         it('should return an empty string if no starting grams are available', () => {
-            const emptyChain = new MarkovChain([], 2);
+            const emptyChain = MarkovChain.create([], 2, randomComponent);
             const name = emptyChain.generateName(3, 8);
             expect(name).toBe('');
         });

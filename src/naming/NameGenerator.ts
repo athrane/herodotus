@@ -1,6 +1,7 @@
 import { SyllableSets, type SyllableSet } from './SyllableSets';
 import { MarkovChain } from './MarkovChain';
 import { TypeUtils } from '../util/TypeUtils';
+import type { RandomComponent } from '../random/RandomComponent';
 
 /**
  * Provides a flexible and powerful system for procedurally generating names.
@@ -14,12 +15,16 @@ import { TypeUtils } from '../util/TypeUtils';
 export class NameGenerator {
   private readonly syllableSets: Record<string, SyllableSet>;
   private readonly markovChains: Map<string, MarkovChain>;
+  private readonly randomComponent: RandomComponent;
 
   /**
    * Creates an instance of NameGenerator.
    * Initializes with a set of predefined syllable-based name generation patterns.
+   * @param randomComponent - The RandomComponent instance for deterministic random operations
    */
-  constructor() {
+  constructor(randomComponent: RandomComponent) {
+    TypeUtils.ensureInstanceOf(randomComponent, Object, 'RandomComponent must be provided.');
+    this.randomComponent = randomComponent;
     this.syllableSets = SyllableSets;
     this.markovChains = new Map();
   }
@@ -41,9 +46,9 @@ export class NameGenerator {
       throw new Error(`Syllable set "${setName}" not found.`);
     }
 
-    const initial = set.initial[Math.floor(Math.random() * set.initial.length)];
-    const middle = set.middle[Math.floor(Math.random() * set.middle.length)];
-    const final = set.final[Math.floor(Math.random() * set.final.length)];
+    const initial = set.initial[this.randomComponent.nextInt(0, set.initial.length - 1)];
+    const middle = set.middle[this.randomComponent.nextInt(0, set.middle.length - 1)];
+    const final = set.final[this.randomComponent.nextInt(0, set.final.length - 1)];
 
     const name = `${initial}${middle}${final}`;
 
@@ -65,7 +70,7 @@ export class NameGenerator {
     TypeUtils.ensureArray(trainingData, 'Training data must be an array.');
     TypeUtils.ensureNumber(order, 'Order must be a number.');
     
-    const chain = MarkovChain.create(trainingData, order);
+    const chain = MarkovChain.create(trainingData, order, this.randomComponent);
     this.markovChains.set(nameType, chain);
   }
 
@@ -114,9 +119,9 @@ export class NameGenerator {
       const trainingData: string[] = [];
       for (let i = 0; i < 100; i++) {
         let name = '';
-        name += syllableSet.initial[Math.floor(Math.random() * syllableSet.initial.length)];
-        name += syllableSet.middle[Math.floor(Math.random() * syllableSet.middle.length)];
-        name += syllableSet.final[Math.floor(Math.random() * syllableSet.final.length)];
+        name += syllableSet.initial[this.randomComponent.nextInt(0, syllableSet.initial.length - 1)];
+        name += syllableSet.middle[this.randomComponent.nextInt(0, syllableSet.middle.length - 1)];
+        name += syllableSet.final[this.randomComponent.nextInt(0, syllableSet.final.length - 1)];
         trainingData.push(name);
       }
       this.addMarkovChain(nameType, trainingData, 2);
@@ -128,9 +133,10 @@ export class NameGenerator {
    * Creates a new NameGenerator instance.
    *
    * @static
+   * @param randomComponent - The RandomComponent instance for deterministic random operations
    * @returns A new NameGenerator instance.
    */
-  static create(): NameGenerator {
-    return new NameGenerator();
+  static create(randomComponent: RandomComponent): NameGenerator {
+    return new NameGenerator(randomComponent);
   }
 }

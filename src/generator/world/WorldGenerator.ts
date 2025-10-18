@@ -7,6 +7,7 @@ import { PlanetComponent, PlanetResourceSpecialization, PlanetStatus } from '../
 import { TypeUtils } from '../../util/TypeUtils';
 import { NameGenerator } from '../../naming/NameGenerator';
 import { WorldGenData } from '../../data/geography/worldgen/WorldGenData';
+import { RandomComponent } from '../../random/RandomComponent';
 
 /**
  * A self-contained generator that orchestrates the creation of a world,
@@ -15,6 +16,7 @@ import { WorldGenData } from '../../data/geography/worldgen/WorldGenData';
 export class WorldGenerator {
 
     private readonly nameGenerator: NameGenerator;
+    private readonly randomComponent: RandomComponent;
     private readonly config: WorldGenData;
     private latestGalaxyMap: GalaxyMapComponent | null;
 
@@ -22,12 +24,15 @@ export class WorldGenerator {
      * Creates an instance of WorldGenerator.
      *
      * @param nameGenerator - The name generator to use.
+     * @param randomComponent - The RandomComponent for random number generation.
      * @param config - The world generation configuration.
      */
-    constructor(nameGenerator: NameGenerator, config: WorldGenData) {
+    constructor(nameGenerator: NameGenerator, randomComponent: RandomComponent, config: WorldGenData) {
         TypeUtils.ensureInstanceOf(nameGenerator, NameGenerator);
+        TypeUtils.ensureInstanceOf(randomComponent, RandomComponent);
         TypeUtils.ensureInstanceOf(config, WorldGenData);
         this.nameGenerator = nameGenerator;
+        this.randomComponent = randomComponent;
         this.config = config;
         this.latestGalaxyMap = null;
     }
@@ -42,7 +47,7 @@ export class WorldGenerator {
     generateContinent(name: string, numFeatures: number): Continent {
         const continent = new Continent(name);
         for (let i = 0; i < numFeatures; i++) {
-            const featureType = GeographicalFeatureTypeRegistry.getRandom();
+            const featureType = GeographicalFeatureTypeRegistry.getRandom(this.randomComponent);
             if (featureType) {
                 const featureName = this.nameGenerator.generateSyllableName('GENERIC');
                 const feature = new GeographicalFeature(featureName, featureType);
@@ -184,17 +189,18 @@ export class WorldGenerator {
      * @returns A random integer between min and max, inclusive.
      */
     private randomIntInclusive(min: number, max: number): number {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
+        return this.randomComponent.nextInt(min, max);
     }
 
     /**
      * Creates a new instance of WorldGenerator.
      *
      * @param nameGenerator - The name generator to use.
+     * @param randomComponent - The RandomComponent for random number generation.
      * @param config - The world generation configuration.
      * @returns A new WorldGenerator instance.
      */
-    static create(nameGenerator: NameGenerator, config: WorldGenData): WorldGenerator {
-        return new WorldGenerator(nameGenerator, config);
+    static create(nameGenerator: NameGenerator, randomComponent: RandomComponent, config: WorldGenData): WorldGenerator {
+        return new WorldGenerator(nameGenerator, randomComponent, config);
     }
 }

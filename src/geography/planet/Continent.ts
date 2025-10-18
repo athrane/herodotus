@@ -1,6 +1,7 @@
 import { TypeUtils } from '../../util/TypeUtils';
 import { GeographicalFeature } from '../feature/GeographicalFeature';
 import type { PlanetComponent } from './PlanetComponent';
+import { RandomComponent } from '../../random/RandomComponent';
 
 /**
  * Represents a continent in the world.
@@ -48,13 +49,15 @@ export class Continent {
 
   /**
    * Gets a random geographical feature from the continent.
+   * @param randomComponent - The RandomComponent to use for random number generation.
    * @returns A random geographical feature, or the null feature if none exist.
    */
-  getRandomFeature(): GeographicalFeature {
+  getRandomFeature(randomComponent: RandomComponent): GeographicalFeature {
+    TypeUtils.ensureInstanceOf(randomComponent, RandomComponent);
     if (this.features.length === 0) {
       return GeographicalFeature.createNullFeature();
     }
-    return this.features[Math.floor(Math.random() * this.features.length)];
+    return this.features[randomComponent.nextInt(0, this.features.length - 1)];
   }
 
   /**

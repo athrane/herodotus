@@ -1,6 +1,7 @@
 import { Component } from '../../ecs/Component';
 import { Continent } from '../../geography/planet/Continent';
 import { TypeUtils } from '../../util/TypeUtils';
+import { RandomComponent } from '../../random/RandomComponent';
 
 /**
  * Enumerates the operational state of a planet.
@@ -227,13 +228,15 @@ export class PlanetComponent extends Component {
     /**
      * Retrieves a random continent from the planet.
      * If no continents are defined, returns the null continent.
+     * @param randomComponent - The RandomComponent to use for random number generation.
      * @returns A random continent instance or the null continent.
      */
-    getRandomContinent(): Continent {
+    getRandomContinent(randomComponent: RandomComponent): Continent {
+        TypeUtils.ensureInstanceOf(randomComponent, RandomComponent);
         if (this.continents.length === 0) {
             return Continent.createNullContinent();
         }
-        const randomIndex = Math.floor(Math.random() * this.continents.length);
+        const randomIndex = randomComponent.nextInt(0, this.continents.length - 1);
         return this.continents[randomIndex];
     }
 

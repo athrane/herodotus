@@ -1,5 +1,6 @@
 import { TypeUtils } from '../../util/TypeUtils';
 import { FeatureType } from './FeatureType';
+import { RandomComponent } from '../../random/RandomComponent';
 
 /**
  * A registry for managing and providing access to all defined geographical feature types.
@@ -84,16 +85,18 @@ export class GeographicalFeatureTypeRegistry {
 
     /**
      * Returns a random FeatureType from the registry.
+     * @param randomComponent - The RandomComponent to use for random number generation.
      * @returns A random FeatureType, or undefined if no types are registered.
      */
-    static getRandom(): FeatureType | undefined {
+    static getRandom(randomComponent: RandomComponent): FeatureType | undefined {
+        TypeUtils.ensureInstanceOf(randomComponent, RandomComponent);
         if (this.types.size === 0) {
             // register the null feature type if none exist and return it
             this.registerNullFeatureType();
             return this.get(this.GEOGRAPHICAL_FEATURE_NULL);
         }
         const types = this.getAll();
-        const randomIndex = Math.floor(Math.random() * types.length);
+        const randomIndex = randomComponent.nextInt(0, types.length - 1);
         return types[randomIndex];
     }
 

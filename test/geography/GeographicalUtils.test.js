@@ -5,15 +5,19 @@ import { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } from '../
 import { Continent } from '../../src/geography/planet/Continent';
 import { GeographicalFeature } from '../../src/geography/feature/GeographicalFeature';
 import { GeographicalFeatureTypeRegistry } from '../../src/geography/feature/GeographicalFeatureTypeRegistry';
+import { createTestRandomComponent } from '../util/RandomTestUtils.ts';
 
 describe('GeographicalUtils', () => {
     let mockGalaxyMap;
+    let randomComponent;
 
     beforeEach(() => {
         // Create a proper GalaxyMapComponent instance
         mockGalaxyMap = GalaxyMapComponent.create();
         // Clear registry to ensure clean state
         GeographicalFeatureTypeRegistry.clear();
+        // Create random component with deterministic seed
+        randomComponent = createTestRandomComponent('geographical-utils-test-seed');
     });
 
     afterEach(() => {
@@ -41,7 +45,7 @@ describe('GeographicalUtils', () => {
             
             jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
+            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap, randomComponent);
 
             expect(location).toBeInstanceOf(LocationComponent);
             expect(location.getName()).toBe('TestFeature, TestPlanet');
@@ -67,7 +71,7 @@ describe('GeographicalUtils', () => {
 
             jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
+            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap, randomComponent);
 
             expect(location).toBeInstanceOf(LocationComponent);
             // Null feature has name "Unknown" per null object pattern
@@ -92,7 +96,7 @@ describe('GeographicalUtils', () => {
 
             jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
+            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap, randomComponent);
 
             expect(location).toBeInstanceOf(LocationComponent);
             // Null feature has name "Unknown" per null object pattern
@@ -116,7 +120,7 @@ describe('GeographicalUtils', () => {
 
             jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
+            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap, randomComponent);
 
             expect(location).toBeInstanceOf(LocationComponent);
             // Null feature has name "Unknown" per null object pattern
@@ -139,7 +143,7 @@ describe('GeographicalUtils', () => {
 
             jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
+            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap, randomComponent);
 
             expect(location).toBeInstanceOf(LocationComponent);
             // Null feature has name "Unknown" per null object pattern
@@ -180,7 +184,7 @@ describe('GeographicalUtils', () => {
             const originalRandom = Math.random;
             Math.random = jest.fn(() => 0.5); // Should select middle continent
 
-            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
+            const location = GeographicalUtils.computeRandomLocation(mockGalaxyMap, randomComponent);
 
             expect(location).toBeInstanceOf(LocationComponent);
             // The name should contain the planet name
@@ -225,8 +229,8 @@ describe('GeographicalUtils', () => {
 
             jest.spyOn(mockGalaxyMap, 'getRandomPlanet').mockReturnValue(planet);
 
-            const location1 = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
-            const location2 = GeographicalUtils.computeRandomLocation(mockGalaxyMap);
+            const location1 = GeographicalUtils.computeRandomLocation(mockGalaxyMap, randomComponent);
+            const location2 = GeographicalUtils.computeRandomLocation(mockGalaxyMap, randomComponent);
 
             // Should be different LocationComponent instances (new instances created each time)
             expect(location1).not.toBe(location2);

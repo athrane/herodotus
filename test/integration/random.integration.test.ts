@@ -124,7 +124,10 @@ describe('Random Integration', () => {
             .getComponent(RandomComponent);
         expect(randomComponent).toBeDefined();
 
-        // Advance state
+        // Note: RandomComponent has been used during build process, so callCount is already high
+        const callCountBeforeTest = randomComponent!.getCallCount();
+
+        // Advance state by 50 calls
         for (let i = 0; i < 50; i++) {
             randomComponent!.next();
         }
@@ -132,7 +135,7 @@ describe('Random Integration', () => {
         // Save state
         const state = randomComponent!.getState();
         expect(state.seed).toBe('herodotus-default-seed');
-        expect(state.callCount).toBe(50);
+        expect(state.callCount).toBe(callCountBeforeTest + 50);
 
         // Continue generating
         const afterSave = [];
