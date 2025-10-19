@@ -105,7 +105,7 @@ export class SimulationBuilder extends Builder {
         // Generate political landscape (realms controlling clusters of planets)
         const politicalGenerator = PoliticalLandscapeGenerator.create(
             nameGenerator,
-            worldGenConfig.getPolitical()
+            worldGenConfig.getRealmConfiguration()
         );
         const realmIds = politicalGenerator.generate(galaxyMapComponent, randomComponent, this.simEcs);
         console.log(`Generated ${realmIds.length} political realms`);

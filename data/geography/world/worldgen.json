@@ -4,7 +4,7 @@
   "featuresPerContinent": 50,
   "continentsPerPlanet": 5,
   "featuresPerPlanetContinent": 64,
-  "political": {
+  "realm": {
     "numberOfRealms": 5,
     "minPlanetsPerRealm": 3,
     "maxPlanetsPerRealm": 5,
