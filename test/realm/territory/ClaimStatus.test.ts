@@ -1,4 +1,4 @@
-import { ClaimStatus } from '../../src/realm/ClaimStatus';
+import { ClaimStatus } from '../../../src/realm/territory/ClaimStatus';
 
 describe('ClaimStatus', () => {
     it('should have Core status', () => {

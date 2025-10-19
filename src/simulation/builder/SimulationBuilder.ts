@@ -28,7 +28,7 @@ import { loadHistoricalFigureData } from '../../data/historicalfigure/loadHistor
 import { HistoricalFigureData } from 'data/historicalfigure/HistoricalFigureData';
 import { loadEventCategories } from '../../data/chronicle/loadEventCategories';
 import { RealmComponent } from '../../realm/RealmComponent';
-import { FactionManagerComponent } from '../../realm/FactionManagerComponent';
+import { FactionManagerComponent } from '../../realm/faction/FactionManagerComponent';
 import { loadRandomSeed } from '../../data/random/loadRandomSeed';
 import { RandomSeedData } from '../../data/random/RandomSeedData';
 import { RandomComponent } from '../../random/RandomComponent';

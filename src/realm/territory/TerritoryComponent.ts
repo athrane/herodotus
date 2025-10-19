@@ -1,6 +1,6 @@
-import { Component } from '../ecs/Component';
+import { Component } from '../../ecs/Component';
 import { ClaimStatus } from './ClaimStatus';
-import { TypeUtils } from '../util/TypeUtils';
+import { TypeUtils } from '../../util/TypeUtils';
 
 /**
  * Component that identifies an entity as a realm and tracks its territorial extent.

@@ -561,6 +561,39 @@ No code changes or recompilation required!
 - `WorldGenerator` constructor accepts `WorldGenData` parameter and uses configuration instead of static constants
 - Loaded by `SimulationBuilder` during world initialization
 
+#### Realm Management
+
+The realm system manages dynasties, territories, factions, and political dynamics. The module is organized into subdirectories for better maintainability.
+
+##### Territory Management (`src/realm/territory/`)
+- `src/realm/territory/ClaimStatus.ts` — Enum defining territorial claim statuses (Core = fully controlled, Claimed = primary claimant, Contested = multiple claimants)
+- `src/realm/territory/TerritoryComponent.ts` — Component tracking a realm's territorial extent via a map of planet IDs to ClaimStatus values; represents the spatial domain of a dynasty
+- `src/realm/territory/TerritoryClaimComponent.ts` — Component attached to planets tracking which realms claim them; manages multiple simultaneous claims and identifies the controlling realm
+
+##### Faction Management (`src/realm/faction/`)
+- `src/realm/faction/Faction.ts` — Domain class representing political or social factions within realms; tracks name, influence (0-100), and allegiance (0-100); implements Null Object Pattern
+- `src/realm/faction/FactionManagerComponent.ts` — Singleton component managing all factions in the simulation; provides CRUD operations and returns defensive copies to prevent external mutation
+
+##### Realm State & Resources
+- `src/realm/RealmStateComponent.ts` — Singleton component managing global dynasty state including resources (Treasury, Stability, Legitimacy, Hubris), modifiers, failure thresholds, and historical tracking
+- `src/realm/RealmResource.ts` — Enum defining the four core dynasty resources that drive gameplay mechanics
+- `src/realm/ModifierSourceType.ts` — Enum defining sources of resource modifications (PlayerAction, NonPlayerAction, FactionInfluence, Event)
+- `src/realm/ModifierType.ts` — Enum defining types of modifications applied to resources (Flat, Percentage, Multiplier)
+- `src/realm/RealmModifier.ts` — Interface describing active modifications to realm resources including source, type, value, duration, and description
+- `src/realm/FailureThresholds.ts` — Interface defining critical threshold values for each resource; when resources drop below thresholds, failure conditions trigger
+- `src/realm/ResourceHistoryEntry.ts` — Interface for tracking historical changes to resources over time
+- `src/realm/RealmComponent.ts` — Component representing an individual realm entity with name, leader, and founding year
+
+##### Realm Generation
+- `src/generator/realm/RealmGenerator.ts` — Generates initial realm configuration for the galaxy, assigning territorial claims and establishing the starting political landscape
+
+**Architecture Notes:**
+- Territory and faction systems are organizationally separated for clarity and future expansion
+- Components follow immutability patterns with frozen instances where appropriate
+- All classes implement static factory methods (`create()`) for consistent instantiation
+- Realm state uses singleton pattern for global dynasty management
+- Test files mirror source structure in `test/realm/territory/` and `test/realm/faction/`
+
 #### Data & Chronicle
 - `src/data/DataSetComponent.ts` — Component for dataset storage on entities
 - `src/data/DataSetEvent.ts` — Data-set event model

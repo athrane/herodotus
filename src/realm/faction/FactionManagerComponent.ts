@@ -1,5 +1,5 @@
-import { Component } from '../ecs/Component';
-import { TypeUtils } from '../util/TypeUtils';
+import { Component } from '../../ecs/Component';
+import { TypeUtils } from '../../util/TypeUtils';
 import { Faction } from './Faction';
 
 /**
