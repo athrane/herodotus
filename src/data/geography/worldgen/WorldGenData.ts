@@ -6,7 +6,7 @@ import { PoliticalLandscapeConfig } from '../../../generator/realm/PoliticalLand
  * This class provides runtime validation and type safety for world generation parameters.
  */
 export class WorldGenData {
-  private readonly numSectors: number;
+  private readonly numberOfSectors: number;
   private readonly planetsPerSector: number;
   private readonly featuresPerContinent: number;
   private readonly continentsPerPlanet: number;
@@ -20,13 +20,13 @@ export class WorldGenData {
    * @param data - The JSON object containing world generation configuration.
    */
   constructor(data: any) {
-    TypeUtils.ensureNumber(data?.numSectors, 'WorldGenData numSectors must be a number.');
+    TypeUtils.ensureNumber(data?.numberOfSectors, 'WorldGenData numberOfSectors must be a number.');
     TypeUtils.ensureNumber(data?.planetsPerSector, 'WorldGenData planetsPerSector must be a number.');
     TypeUtils.ensureNumber(data?.featuresPerContinent, 'WorldGenData featuresPerContinent must be a number.');
     TypeUtils.ensureNumber(data?.continentsPerPlanet, 'WorldGenData continentsPerPlanet must be a number.');
     TypeUtils.ensureNumber(data?.featuresPerPlanetContinent, 'WorldGenData featuresPerPlanetContinent must be a number.');
 
-    this.numSectors = data.numSectors;
+    this.numberOfSectors = data.numberOfSectors;
     this.planetsPerSector = data.planetsPerSector;
     this.featuresPerContinent = data.featuresPerContinent;
     this.continentsPerPlanet = data.continentsPerPlanet;
@@ -61,7 +61,7 @@ export class WorldGenData {
   static createNull(): WorldGenData {
     if (!WorldGenData.instance) {
       WorldGenData.instance = WorldGenData.create({
-        numSectors: 0,
+        numberOfSectors: 0,
         planetsPerSector: 0,
         featuresPerContinent: 0,
         continentsPerPlanet: 0,
@@ -82,8 +82,8 @@ export class WorldGenData {
    * Gets the number of sectors to generate in the galaxy.
    * @returns The number of sectors.
    */
-  getNumSectors(): number {
-    return this.numSectors;
+  getNumberOfSectors(): number {
+    return this.numberOfSectors;
   }
 
   /**

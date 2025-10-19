@@ -1,5 +1,5 @@
 {
-  "numSectors": 3,
+  "numberOfSectors": 3,
   "planetsPerSector": 64,
   "featuresPerContinent": 50,
   "continentsPerPlanet": 5,

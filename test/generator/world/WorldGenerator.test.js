@@ -23,7 +23,7 @@ describe('WorldGenerator', () => {
     
     // Create a standard configuration for testing
     worldGenConfig = WorldGenData.create({
-      numSectors: 3,
+      numberOfSectors: 3,
       planetsPerSector: 64,
       featuresPerContinent: 50,
       continentsPerPlanet: 5,
@@ -103,8 +103,8 @@ describe('WorldGenerator', () => {
       const galaxyMap = worldGenerator.generateGalaxyMap();
 
       expect(galaxyMap).toBeInstanceOf(GalaxyMapComponent);
-      expect(galaxyMap.getSectorCount()).toBe(worldGenConfig.getNumSectors());
-      expect(galaxyMap.getPlanetCount()).toBe(worldGenConfig.getNumSectors() * worldGenConfig.getPlanetsPerSector());
+      expect(galaxyMap.getSectorCount()).toBe(worldGenConfig.getNumberOfSectors());
+      expect(galaxyMap.getPlanetCount()).toBe(worldGenConfig.getNumberOfSectors() * worldGenConfig.getPlanetsPerSector());
 
       const sectors = galaxyMap.getSectors();
       sectors.forEach((sector) => {

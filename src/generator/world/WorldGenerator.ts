@@ -66,7 +66,7 @@ export class WorldGenerator {
         galaxyMap.reset();
 
         // Create sectors and planets
-        for (let sectorIndex = 0; sectorIndex < this.config.getNumSectors(); sectorIndex++) {
+        for (let sectorIndex = 0; sectorIndex < this.config.getNumberOfSectors(); sectorIndex++) {
             const sectorId = `sector-${sectorIndex + 1}`;
             const sectorName = this.nameGenerator.generateSyllableName('SECTOR');
             const sector = Sector.create(sectorId, sectorName);
