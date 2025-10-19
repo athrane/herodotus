@@ -32,6 +32,7 @@ import { FactionManagerComponent } from '../../realm/FactionManagerComponent';
 import { loadRandomSeed } from '../../data/random/loadRandomSeed';
 import { RandomSeedData } from '../../data/random/RandomSeedData';
 import { RandomComponent } from '../../random/RandomComponent';
+import { WorldGenData } from '../../data/geography/worldgen/WorldGenData';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -72,6 +73,12 @@ export class SimulationBuilder extends Builder {
      */
     private randomSeedConfig!: RandomSeedData;
 
+    /**
+     * Configuration data for world generation.
+     * ! signifies that this property is not yet initialized.
+     */
+    private worldGenConfig!: WorldGenData;
+
     /** 
      * Creates a new instance of SimulationBuilder.
      * @constructor
@@ -98,14 +105,13 @@ export class SimulationBuilder extends Builder {
 
         // create galaxy map as the root game world object
         const nameGenerator = NameGenerator.create(randomComponent);
-        const worldGenConfig = loadWorldGenData();
-        const worldGenerator = WorldGenerator.create(nameGenerator, randomComponent, worldGenConfig);
+        const worldGenerator = WorldGenerator.create(nameGenerator, randomComponent, this.worldGenConfig);
         const galaxyMapComponent = worldGenerator.generateGalaxyMap();
 
         // Generate political landscape (realms controlling clusters of planets)
         const politicalGenerator = PoliticalLandscapeGenerator.create(
             nameGenerator,
-            worldGenConfig.getRealmConfiguration()
+            this.worldGenConfig.getRealmConfiguration()
         );
         const realmIds = politicalGenerator.generate(galaxyMapComponent, randomComponent, this.simEcs);
         console.log(`Generated ${realmIds.length} political realms`);
@@ -188,6 +194,9 @@ export class SimulationBuilder extends Builder {
 
         // Load random seed configuration
         this.randomSeedConfig = loadRandomSeed();
+
+        // Load world generation configuration
+        this.worldGenConfig = loadWorldGenData();
     }
 
     /**
