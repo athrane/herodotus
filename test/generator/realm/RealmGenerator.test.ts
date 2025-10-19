@@ -1,5 +1,5 @@
-import { PoliticalLandscapeGenerator } from '../../../src/generator/realm/PoliticalLandscapeGenerator';
-import { PoliticalLandscapeConfig } from '../../../src/generator/realm/PoliticalLandscapeConfig';
+import { RealmGenerator } from '../../../src/generator/realm/RealmGenerator';
+import { RealmGeneratorConfig } from '../../../src/generator/realm/RealmGeneratorConfig';
 import { Ecs } from '../../../src/ecs/Ecs';
 import { GalaxyMapComponent } from '../../../src/geography/galaxy/GalaxyMapComponent';
 import { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } from '../../../src/geography/planet/PlanetComponent';
@@ -11,16 +11,16 @@ import { ClaimStatus } from '../../../src/realm/ClaimStatus';
 import { Sector } from '../../../src/geography/galaxy/Sector';
 import { createTestRandomComponent } from '../../util/RandomTestUtils';
 
-describe('PoliticalLandscapeGenerator', () => {
+describe('RealmGenerator', () => {
     let ecs: Ecs;
     let galaxyMap: GalaxyMapComponent;
     let nameGenerator: NameGenerator;
     let randomComponent: RandomComponent;
-    let config: PoliticalLandscapeConfig;
+    let config: RealmGeneratorConfig;
 
     beforeEach(() => {
         ecs = Ecs.create();
-        randomComponent = createTestRandomComponent('political-landscape-test-seed');
+        randomComponent = createTestRandomComponent('realm-generator-test-seed');
         
         // Create singleton entity with components
         const singletonEntity = ecs.getEntityManager().createEntity(randomComponent);
@@ -39,19 +39,19 @@ describe('PoliticalLandscapeGenerator', () => {
 
     describe('constructor validation', () => {
         it('should create with valid config', () => {
-            const generator = PoliticalLandscapeGenerator.create(nameGenerator, config);
-            expect(generator).toBeInstanceOf(PoliticalLandscapeGenerator);
+            const generator = RealmGenerator.create(nameGenerator, config);
+            expect(generator).toBeInstanceOf(RealmGenerator);
         });
 
         it('should throw error for minPlanetsPerRealm < 1', () => {
             const invalidConfig = { ...config, minPlanetsPerRealm: 0 };
-            expect(() => PoliticalLandscapeGenerator.create(nameGenerator, invalidConfig))
+            expect(() => RealmGenerator.create(nameGenerator, invalidConfig))
                 .toThrow('minPlanetsPerRealm must be at least 1.');
         });
 
         it('should throw error for maxPlanetsPerRealm < minPlanetsPerRealm', () => {
             const invalidConfig = { ...config, minPlanetsPerRealm: 5, maxPlanetsPerRealm: 3 };
-            expect(() => PoliticalLandscapeGenerator.create(nameGenerator, invalidConfig))
+            expect(() => RealmGenerator.create(nameGenerator, invalidConfig))
                 .toThrow('maxPlanetsPerRealm must be >= minPlanetsPerRealm.');
         });
     });
@@ -59,7 +59,7 @@ describe('PoliticalLandscapeGenerator', () => {
     describe('generate with insufficient planets', () => {
         it('should return empty array when no planets exist', () => {
             const mapEntity = ecs.getEntityManager().createEntity(galaxyMap);
-            const generator = PoliticalLandscapeGenerator.create(nameGenerator, config);
+            const generator = RealmGenerator.create(nameGenerator, config);
 
             const realmIds = generator.generate(galaxyMap, randomComponent, ecs);
             expect(realmIds).toEqual([]);
@@ -74,7 +74,7 @@ describe('PoliticalLandscapeGenerator', () => {
             config.numberOfRealms = 3;
             config.minPlanetsPerRealm = 2;
 
-            const generator = PoliticalLandscapeGenerator.create(nameGenerator, config);
+            const generator = RealmGenerator.create(nameGenerator, config);
             const realmIds = generator.generate(galaxyMap, randomComponent, ecs);
 
             expect(realmIds.length).toBeLessThanOrEqual(2);
@@ -89,14 +89,14 @@ describe('PoliticalLandscapeGenerator', () => {
         });
 
         it('should create requested number of realms', () => {
-            const generator = PoliticalLandscapeGenerator.create(nameGenerator, config);
+            const generator = RealmGenerator.create(nameGenerator, config);
             const realmIds = generator.generate(galaxyMap, randomComponent, ecs);
 
             expect(realmIds.length).toBe(3);
         });
 
         it('should create realm entities with TerritorialRealmComponent', () => {
-            const generator = PoliticalLandscapeGenerator.create(nameGenerator, config);
+            const generator = RealmGenerator.create(nameGenerator, config);
             const realmIds = generator.generate(galaxyMap, randomComponent, ecs);
 
             realmIds.forEach(realmId => {
@@ -109,7 +109,7 @@ describe('PoliticalLandscapeGenerator', () => {
         });
 
         it('should assign planets to realms with Core status', () => {
-            const generator = PoliticalLandscapeGenerator.create(nameGenerator, config);
+            const generator = RealmGenerator.create(nameGenerator, config);
             const realmIds = generator.generate(galaxyMap, randomComponent, ecs);
 
             realmIds.forEach(realmId => {
@@ -128,7 +128,7 @@ describe('PoliticalLandscapeGenerator', () => {
         });
 
         it('should add TerritoryClaimComponent to claimed planets', () => {
-            const generator = PoliticalLandscapeGenerator.create(nameGenerator, config);
+            const generator = RealmGenerator.create(nameGenerator, config);
             const realmIds = generator.generate(galaxyMap, randomComponent, ecs);
 
             realmIds.forEach(realmId => {
@@ -149,7 +149,7 @@ describe('PoliticalLandscapeGenerator', () => {
         });
 
         it('should not overlap planet claims between realms', () => {
-            const generator = PoliticalLandscapeGenerator.create(nameGenerator, config);
+            const generator = RealmGenerator.create(nameGenerator, config);
             const realmIds = generator.generate(galaxyMap, randomComponent, ecs);
 
             const allClaimedPlanets = new Set<string>();
@@ -167,7 +167,7 @@ describe('PoliticalLandscapeGenerator', () => {
         });
 
         it('should create bidirectional references between realms and planets', () => {
-            const generator = PoliticalLandscapeGenerator.create(nameGenerator, config);
+            const generator = RealmGenerator.create(nameGenerator, config);
             const realmIds = generator.generate(galaxyMap, randomComponent, ecs);
 
             realmIds.forEach(realmId => {

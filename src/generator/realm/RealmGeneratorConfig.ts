@@ -1,7 +1,7 @@
 /**
- * Configuration for political landscape generation.
+ * Configuration for realm generation.
  */
-export interface PoliticalLandscapeConfig {
+export interface RealmGeneratorConfig {
     /**
      * Total number of realms to generate (default: 5-7).
      */

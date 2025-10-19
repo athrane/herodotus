@@ -1,8 +1,8 @@
-import { PoliticalLandscapeConfig } from '../../../src/generator/realm/PoliticalLandscapeConfig';
+import { RealmGeneratorConfig } from '../../../src/generator/realm/RealmGeneratorConfig';
 
-describe('PoliticalLandscapeConfig', () => {
+describe('RealmGeneratorConfig', () => {
     it('should accept valid configuration', () => {
-        const config: PoliticalLandscapeConfig = {
+        const config: RealmGeneratorConfig = {
             numberOfRealms: 5,
             minPlanetsPerRealm: 3,
             maxPlanetsPerRealm: 5,
@@ -18,7 +18,7 @@ describe('PoliticalLandscapeConfig', () => {
     });
 
     it('should accept distributed spatial distribution', () => {
-        const config: PoliticalLandscapeConfig = {
+        const config: RealmGeneratorConfig = {
             numberOfRealms: 7,
             minPlanetsPerRealm: 3,
             maxPlanetsPerRealm: 4,
@@ -30,7 +30,7 @@ describe('PoliticalLandscapeConfig', () => {
     });
 
     it('should accept sectored spatial distribution', () => {
-        const config: PoliticalLandscapeConfig = {
+        const config: RealmGeneratorConfig = {
             numberOfRealms: 6,
             minPlanetsPerRealm: 4,
             maxPlanetsPerRealm: 5,

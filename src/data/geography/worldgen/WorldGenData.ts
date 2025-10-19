@@ -1,5 +1,5 @@
 import { TypeUtils } from '../../../util/TypeUtils';
-import { PoliticalLandscapeConfig } from '../../../generator/realm/PoliticalLandscapeConfig';
+import { RealmGeneratorConfig } from '../../../generator/realm/RealmGeneratorConfig';
 
 /**
  * Represents world generation configuration data loaded from JSON.
@@ -11,7 +11,7 @@ export class WorldGenData {
   private readonly featuresPerContinent: number;
   private readonly continentsPerPlanet: number;
   private readonly featuresPerPlanetContinent: number;
-  private readonly realmConfiguration: PoliticalLandscapeConfig;
+  private readonly realmConfiguration: RealmGeneratorConfig;
 
   private static instance: WorldGenData | null = null;
 
@@ -122,7 +122,7 @@ export class WorldGenData {
    * Gets the realm generation configuration.
    * @returns The realm configuration.
    */
-  getRealmConfiguration(): PoliticalLandscapeConfig {
+  getRealmConfiguration(): RealmGeneratorConfig {
     return this.realmConfiguration;
   }
 }

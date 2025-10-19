@@ -8,23 +8,23 @@ import { ClaimStatus } from '../../realm/ClaimStatus';
 import { NameComponent } from '../../ecs/NameComponent';
 import { TimeComponent } from '../../time/TimeComponent';
 import { RandomComponent } from '../../random/RandomComponent';
-import type { PoliticalLandscapeConfig } from './PoliticalLandscapeConfig';
+import type { RealmGeneratorConfig } from './RealmGeneratorConfig';
 
 /**
- * Generator that creates the initial political landscape of the galaxy.
+ * Generator that creates the initial realm configuration of the galaxy.
  * Procedurally generates realms that control clusters of 3-5 neighboring planets,
- * establishing territorial boundaries for inter-realm politics.
+ * establishing territorial boundaries for inter-realm dynamics.
  */
-export class PoliticalLandscapeGenerator {
+export class RealmGenerator {
     private readonly nameGenerator: NameGenerator;
-    private readonly config: PoliticalLandscapeConfig;
+    private readonly config: RealmGeneratorConfig;
 
     /**
-     * Creates a new PoliticalLandscapeGenerator.
+     * Creates a new RealmGenerator.
      * @param nameGenerator - Name generator for realm names
-     * @param config - Configuration for political landscape generation
+     * @param config - Configuration for realm generation
      */
-    constructor(nameGenerator: NameGenerator, config: PoliticalLandscapeConfig) {
+    constructor(nameGenerator: NameGenerator, config: RealmGeneratorConfig) {
         TypeUtils.ensureInstanceOf(nameGenerator, NameGenerator);
         TypeUtils.ensureNumber(config.numberOfRealms, 'numberOfRealms must be a number.');
         TypeUtils.ensureNumber(config.minPlanetsPerRealm, 'minPlanetsPerRealm must be a number.');
@@ -42,7 +42,7 @@ export class PoliticalLandscapeGenerator {
     }
 
     /**
-     * Generates the political landscape, creating realm entities with territorial claims.
+     * Generates realms, creating realm entities with territorial claims.
      * @param galaxyMap - Pre-generated galaxy map with planets
      * @param randomComponent - The random component for deterministic generation
      * @param ecs - The ECS instance to create entities in
@@ -257,14 +257,14 @@ export class PoliticalLandscapeGenerator {
     }
 
     /**
-     * Static factory method for creating PoliticalLandscapeGenerator instances.
+     * Static factory method for creating RealmGenerator instances.
      * @param nameGenerator - Name generator for realm names
-     * @param config - Configuration for political landscape generation
+     * @param config - Configuration for realm generation
      */
     static create(
         nameGenerator: NameGenerator,
-        config: PoliticalLandscapeConfig
-    ): PoliticalLandscapeGenerator {
-        return new PoliticalLandscapeGenerator(nameGenerator, config);
+        config: RealmGeneratorConfig
+    ): RealmGenerator {
+        return new RealmGenerator(nameGenerator, config);
     }
 }
