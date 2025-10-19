@@ -1,15 +1,17 @@
 import { TypeUtils } from '../../../util/TypeUtils';
+import { RealmGeneratorConfig } from '../../../generator/realm/RealmGeneratorConfig';
 
 /**
  * Represents world generation configuration data loaded from JSON.
  * This class provides runtime validation and type safety for world generation parameters.
  */
 export class WorldGenData {
-  private readonly numSectors: number;
+  private readonly numberOfSectors: number;
   private readonly planetsPerSector: number;
   private readonly featuresPerContinent: number;
   private readonly continentsPerPlanet: number;
   private readonly featuresPerPlanetContinent: number;
+  private readonly realmConfiguration: RealmGeneratorConfig;
 
   private static instance: WorldGenData | null = null;
 
@@ -18,17 +20,27 @@ export class WorldGenData {
    * @param data - The JSON object containing world generation configuration.
    */
   constructor(data: any) {
-    TypeUtils.ensureNumber(data?.numSectors, 'WorldGenData numSectors must be a number.');
+    TypeUtils.ensureNumber(data?.numberOfSectors, 'WorldGenData numberOfSectors must be a number.');
     TypeUtils.ensureNumber(data?.planetsPerSector, 'WorldGenData planetsPerSector must be a number.');
     TypeUtils.ensureNumber(data?.featuresPerContinent, 'WorldGenData featuresPerContinent must be a number.');
     TypeUtils.ensureNumber(data?.continentsPerPlanet, 'WorldGenData continentsPerPlanet must be a number.');
     TypeUtils.ensureNumber(data?.featuresPerPlanetContinent, 'WorldGenData featuresPerPlanetContinent must be a number.');
 
-    this.numSectors = data.numSectors;
+    this.numberOfSectors = data.numberOfSectors;
     this.planetsPerSector = data.planetsPerSector;
     this.featuresPerContinent = data.featuresPerContinent;
     this.continentsPerPlanet = data.continentsPerPlanet;
     this.featuresPerPlanetContinent = data.featuresPerPlanetContinent;
+
+    // Initialize realm configuration with defaults if not provided
+    this.realmConfiguration = {
+      numberOfRealms: data.realm?.numberOfRealms ?? 5,
+      minPlanetsPerRealm: data.realm?.minPlanetsPerRealm ?? 3,
+      maxPlanetsPerRealm: data.realm?.maxPlanetsPerRealm ?? 5,
+      ensurePlayerRealm: data.realm?.ensurePlayerRealm ?? true,
+      spatialDistribution: data.realm?.spatialDistribution ?? 'random'
+    };
+
     Object.freeze(this); // Make instances immutable
   }
 
@@ -49,11 +61,18 @@ export class WorldGenData {
   static createNull(): WorldGenData {
     if (!WorldGenData.instance) {
       WorldGenData.instance = WorldGenData.create({
-        numSectors: 0,
+        numberOfSectors: 0,
         planetsPerSector: 0,
         featuresPerContinent: 0,
         continentsPerPlanet: 0,
-        featuresPerPlanetContinent: 0
+        featuresPerPlanetContinent: 0,
+        realm: {
+          numberOfRealms: 0,
+          minPlanetsPerRealm: 0,
+          maxPlanetsPerRealm: 0,
+          ensurePlayerRealm: false,
+          spatialDistribution: 'random'
+        }
       });
     }
     return WorldGenData.instance;
@@ -63,8 +82,8 @@ export class WorldGenData {
    * Gets the number of sectors to generate in the galaxy.
    * @returns The number of sectors.
    */
-  getNumSectors(): number {
-    return this.numSectors;
+  getNumberOfSectors(): number {
+    return this.numberOfSectors;
   }
 
   /**
@@ -97,5 +116,13 @@ export class WorldGenData {
    */
   getFeaturesPerPlanetContinent(): number {
     return this.featuresPerPlanetContinent;
+  }
+
+  /**
+   * Gets the realm generation configuration.
+   * @returns The realm configuration.
+   */
+  getRealmConfiguration(): RealmGeneratorConfig {
+    return this.realmConfiguration;
   }
 }
