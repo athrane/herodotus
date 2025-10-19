@@ -1,5 +1,6 @@
 import { Builder } from '../../ecs/builder/Builder';
 import { WorldGenerator } from '../../generator/world/WorldGenerator';
+import { PoliticalLandscapeGenerator } from '../../generator/realm/PoliticalLandscapeGenerator';
 import { Time } from '../../time/Time';
 import { TimeSystem } from '../../time/TimeSystem';
 import { TimeComponent } from '../../time/TimeComponent';
@@ -100,6 +101,14 @@ export class SimulationBuilder extends Builder {
         const worldGenConfig = loadWorldGenData();
         const worldGenerator = WorldGenerator.create(nameGenerator, randomComponent, worldGenConfig);
         const galaxyMapComponent = worldGenerator.generateGalaxyMap();
+
+        // Generate political landscape (realms controlling clusters of planets)
+        const politicalGenerator = PoliticalLandscapeGenerator.create(
+            nameGenerator,
+            worldGenConfig.getPolitical()
+        );
+        const realmIds = politicalGenerator.generate(galaxyMapComponent, randomComponent, this.simEcs);
+        console.log(`Generated ${realmIds.length} political realms`);
 
         // create global entity to hold simulation-wide state, like the current time.
         entityManager.createEntity(

@@ -8,7 +8,14 @@ describe('WorldGenData', () => {
         planetsPerSector: 64,
         featuresPerContinent: 50,
         continentsPerPlanet: 5,
-        featuresPerPlanetContinent: 64
+        featuresPerPlanetContinent: 64,
+        political: {
+          numberOfRealms: 5,
+          minPlanetsPerRealm: 3,
+          maxPlanetsPerRealm: 5,
+          ensurePlayerRealm: true,
+          spatialDistribution: 'random'
+        }
       };
 
       const worldGenData = WorldGenData.create(data);
@@ -19,6 +26,29 @@ describe('WorldGenData', () => {
       expect(worldGenData.getFeaturesPerContinent()).toBe(50);
       expect(worldGenData.getContinentsPerPlanet()).toBe(5);
       expect(worldGenData.getFeaturesPerPlanetContinent()).toBe(64);
+      expect(worldGenData.getPolitical().numberOfRealms).toBe(5);
+      expect(worldGenData.getPolitical().minPlanetsPerRealm).toBe(3);
+      expect(worldGenData.getPolitical().maxPlanetsPerRealm).toBe(5);
+      expect(worldGenData.getPolitical().ensurePlayerRealm).toBe(true);
+      expect(worldGenData.getPolitical().spatialDistribution).toBe('random');
+    });
+
+    it('should use default political values when not provided', () => {
+      const data = {
+        numSectors: 3,
+        planetsPerSector: 64,
+        featuresPerContinent: 50,
+        continentsPerPlanet: 5,
+        featuresPerPlanetContinent: 64
+      };
+
+      const worldGenData = WorldGenData.create(data);
+
+      expect(worldGenData.getPolitical().numberOfRealms).toBe(5);
+      expect(worldGenData.getPolitical().minPlanetsPerRealm).toBe(3);
+      expect(worldGenData.getPolitical().maxPlanetsPerRealm).toBe(5);
+      expect(worldGenData.getPolitical().ensurePlayerRealm).toBe(true);
+      expect(worldGenData.getPolitical().spatialDistribution).toBe('random');
     });
 
     it('should be immutable after creation', () => {
@@ -106,6 +136,11 @@ describe('WorldGenData', () => {
       expect(nullInstance.getFeaturesPerContinent()).toBe(0);
       expect(nullInstance.getContinentsPerPlanet()).toBe(0);
       expect(nullInstance.getFeaturesPerPlanetContinent()).toBe(0);
+      expect(nullInstance.getPolitical().numberOfRealms).toBe(0);
+      expect(nullInstance.getPolitical().minPlanetsPerRealm).toBe(0);
+      expect(nullInstance.getPolitical().maxPlanetsPerRealm).toBe(0);
+      expect(nullInstance.getPolitical().ensurePlayerRealm).toBe(false);
+      expect(nullInstance.getPolitical().spatialDistribution).toBe('random');
     });
 
     it('should return the same singleton instance on multiple calls', () => {
@@ -125,7 +160,14 @@ describe('WorldGenData', () => {
         planetsPerSector: 32,
         featuresPerContinent: 25,
         continentsPerPlanet: 3,
-        featuresPerPlanetContinent: 48
+        featuresPerPlanetContinent: 48,
+        political: {
+          numberOfRealms: 5,
+          minPlanetsPerRealm: 3,
+          maxPlanetsPerRealm: 5,
+          ensurePlayerRealm: true,
+          spatialDistribution: 'random'
+        }
       };
       worldGenData = WorldGenData.create(data);
     });
@@ -148,6 +190,15 @@ describe('WorldGenData', () => {
 
     it('should return correct featuresPerPlanetContinent', () => {
       expect(worldGenData.getFeaturesPerPlanetContinent()).toBe(48);
+    });
+
+    it('should return correct political configuration', () => {
+      const political = worldGenData.getPolitical();
+      expect(political.numberOfRealms).toBe(5);
+      expect(political.minPlanetsPerRealm).toBe(3);
+      expect(political.maxPlanetsPerRealm).toBe(5);
+      expect(political.ensurePlayerRealm).toBe(true);
+      expect(political.spatialDistribution).toBe('random');
     });
   });
 });

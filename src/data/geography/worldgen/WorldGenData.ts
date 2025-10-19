@@ -1,4 +1,5 @@
 import { TypeUtils } from '../../../util/TypeUtils';
+import { PoliticalLandscapeConfig } from '../../../generator/realm/PoliticalLandscapeConfig';
 
 /**
  * Represents world generation configuration data loaded from JSON.
@@ -10,6 +11,7 @@ export class WorldGenData {
   private readonly featuresPerContinent: number;
   private readonly continentsPerPlanet: number;
   private readonly featuresPerPlanetContinent: number;
+  private readonly political: PoliticalLandscapeConfig;
 
   private static instance: WorldGenData | null = null;
 
@@ -29,6 +31,16 @@ export class WorldGenData {
     this.featuresPerContinent = data.featuresPerContinent;
     this.continentsPerPlanet = data.continentsPerPlanet;
     this.featuresPerPlanetContinent = data.featuresPerPlanetContinent;
+
+    // Initialize political configuration with defaults if not provided
+    this.political = {
+      numberOfRealms: data.political?.numberOfRealms ?? 5,
+      minPlanetsPerRealm: data.political?.minPlanetsPerRealm ?? 3,
+      maxPlanetsPerRealm: data.political?.maxPlanetsPerRealm ?? 5,
+      ensurePlayerRealm: data.political?.ensurePlayerRealm ?? true,
+      spatialDistribution: data.political?.spatialDistribution ?? 'random'
+    };
+
     Object.freeze(this); // Make instances immutable
   }
 
@@ -53,7 +65,14 @@ export class WorldGenData {
         planetsPerSector: 0,
         featuresPerContinent: 0,
         continentsPerPlanet: 0,
-        featuresPerPlanetContinent: 0
+        featuresPerPlanetContinent: 0,
+        political: {
+          numberOfRealms: 0,
+          minPlanetsPerRealm: 0,
+          maxPlanetsPerRealm: 0,
+          ensurePlayerRealm: false,
+          spatialDistribution: 'random'
+        }
       });
     }
     return WorldGenData.instance;
@@ -97,5 +116,13 @@ export class WorldGenData {
    */
   getFeaturesPerPlanetContinent(): number {
     return this.featuresPerPlanetContinent;
+  }
+
+  /**
+   * Gets the political landscape generation configuration.
+   * @returns The political landscape configuration.
+   */
+  getPolitical(): PoliticalLandscapeConfig {
+    return this.political;
   }
 }
