@@ -113,8 +113,7 @@ export class SimulationBuilder extends Builder {
             nameGenerator,
             this.worldGenConfig.getRealmConfiguration()
         );
-        const realmIds = realmGenerator.generate(galaxyMapComponent, randomComponent, this.simEcs);
-        console.log(`Generated ${realmIds.length} realms`);
+        const realmIds = realmGenerator.generate(galaxyMapComponent, randomComponent, this.simEcs);        console.log(`Generated ${realmIds.length} realms`);
 
         // create global entity to hold simulation-wide state, like the current time.
         entityManager.createEntity(

@@ -9,20 +9,20 @@ import { TypeUtils } from '../util/TypeUtils';
  * This component manages territorial claims, distinguishing this from RealmStateComponent
  * which manages the dynasty's resources (Treasury, Stability, etc.).
  */
-export class TerritorialRealmComponent extends Component {
+export class TerritoryComponent extends Component {
     private readonly name: string;
     private readonly claimedPlanets: Map<string, ClaimStatus>;
     private foundingYear: number;
 
     /**
-     * Creates a new TerritorialRealmComponent.
+     * Creates a new TerritoryComponent.
      * @param name - The display name of the realm
      * @param foundingYear - The year the realm was established
      */
     constructor(name: string, foundingYear: number) {
         super();
-        TypeUtils.ensureNonEmptyString(name, 'TerritorialRealmComponent name must be a non-empty string.');
-        TypeUtils.ensureNumber(foundingYear, 'TerritorialRealmComponent foundingYear must be a number.');
+        TypeUtils.ensureNonEmptyString(name, 'TerritoryComponent name must be a non-empty string.');
+        TypeUtils.ensureNumber(foundingYear, 'TerritoryComponent foundingYear must be a number.');
 
         this.name = name;
         this.foundingYear = foundingYear;
@@ -109,11 +109,11 @@ export class TerritorialRealmComponent extends Component {
     }
 
     /**
-     * Static factory method for creating TerritorialRealmComponent instances.
+     * Static factory method for creating TerritoryComponent instances.
      * @param name - The display name of the realm
      * @param foundingYear - The year the realm was established
      */
-    static create(name: string, foundingYear: number): TerritorialRealmComponent {
-        return new TerritorialRealmComponent(name, foundingYear);
+    static create(name: string, foundingYear: number): TerritoryComponent {
+        return new TerritoryComponent(name, foundingYear);
     }
 }

@@ -2,7 +2,7 @@ import { Ecs } from '../../ecs/Ecs';
 import { TypeUtils } from '../../util/TypeUtils';
 import { NameGenerator } from '../../naming/NameGenerator';
 import { GalaxyMapComponent } from '../../geography/galaxy/GalaxyMapComponent';
-import { TerritorialRealmComponent } from '../../realm/TerritorialRealmComponent';
+import { TerritoryComponent } from '../../realm/TerritoryComponent';
 import { TerritoryClaimComponent } from '../../realm/TerritoryClaimComponent';
 import { ClaimStatus } from '../../realm/ClaimStatus';
 import { NameComponent } from '../../ecs/NameComponent';
@@ -215,11 +215,11 @@ export class RealmGenerator {
         realmEntity.addComponent(NameComponent.create(name));
 
         // Add territorial realm component
-        const territorialComponent = TerritorialRealmComponent.create(name, foundingYear);
+        const territoryComponent = TerritoryComponent.create(name, foundingYear);
         planetIds.forEach(planetId => {
-            territorialComponent.addPlanet(planetId, ClaimStatus.Core);
+            territoryComponent.addPlanet(planetId, ClaimStatus.Core);
         });
-        realmEntity.addComponent(territorialComponent);
+        realmEntity.addComponent(territoryComponent);
 
         // Add territory claim components to planets
         planetIds.forEach(planetId => {

@@ -5,7 +5,7 @@ import { GalaxyMapComponent } from '../../../src/geography/galaxy/GalaxyMapCompo
 import { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } from '../../../src/geography/planet/PlanetComponent';
 import { NameGenerator } from '../../../src/naming/NameGenerator';
 import { RandomComponent } from '../../../src/random/RandomComponent';
-import { TerritorialRealmComponent } from '../../../src/realm/TerritorialRealmComponent';
+import { TerritoryComponent } from '../../../src/realm/TerritoryComponent';
 import { TerritoryClaimComponent } from '../../../src/realm/TerritoryClaimComponent';
 import { ClaimStatus } from '../../../src/realm/ClaimStatus';
 import { Sector } from '../../../src/geography/galaxy/Sector';
@@ -95,7 +95,7 @@ describe('RealmGenerator', () => {
             expect(realmIds.length).toBe(3);
         });
 
-        it('should create realm entities with TerritorialRealmComponent', () => {
+        it('should create realm entities with TerritoryComponent', () => {
             const generator = RealmGenerator.create(nameGenerator, config);
             const realmIds = generator.generate(galaxyMap, randomComponent, ecs);
 
@@ -103,8 +103,8 @@ describe('RealmGenerator', () => {
                 const realmEntity = ecs.getEntityManager().getEntity(realmId);
                 expect(realmEntity).toBeDefined();
                 
-                const territorialComponent = realmEntity!.getComponent(TerritorialRealmComponent);
-                expect(territorialComponent).toBeDefined();
+                const territoryComponent = realmEntity!.getComponent(TerritoryComponent);
+                expect(territoryComponent).toBeDefined();
             });
         });
 
@@ -114,15 +114,15 @@ describe('RealmGenerator', () => {
 
             realmIds.forEach(realmId => {
                 const realmEntity = ecs.getEntityManager().getEntity(realmId);
-                const territorialComponent = realmEntity!.getComponent(TerritorialRealmComponent);
+                const territoryComponent = realmEntity!.getComponent(TerritoryComponent);
                 
-                expect(territorialComponent!.getPlanetCount()).toBeGreaterThanOrEqual(config.minPlanetsPerRealm);
-                expect(territorialComponent!.getPlanetCount()).toBeLessThanOrEqual(config.maxPlanetsPerRealm);
+                expect(territoryComponent!.getPlanetCount()).toBeGreaterThanOrEqual(config.minPlanetsPerRealm);
+                expect(territoryComponent!.getPlanetCount()).toBeLessThanOrEqual(config.maxPlanetsPerRealm);
 
                 // All planets should be Core status
-                const planets = territorialComponent!.getPlanets();
+                const planets = territoryComponent!.getPlanets();
                 planets.forEach(planetId => {
-                    expect(territorialComponent!.getClaimStatus(planetId)).toBe(ClaimStatus.Core);
+                    expect(territoryComponent!.getClaimStatus(planetId)).toBe(ClaimStatus.Core);
                 });
             });
         });
@@ -133,8 +133,8 @@ describe('RealmGenerator', () => {
 
             realmIds.forEach(realmId => {
                 const realmEntity = ecs.getEntityManager().getEntity(realmId);
-                const territorialComponent = realmEntity!.getComponent(TerritorialRealmComponent);
-                const planets = territorialComponent!.getPlanets();
+                const territoryComponent = realmEntity!.getComponent(TerritoryComponent);
+                const planets = territoryComponent!.getPlanets();
 
                 planets.forEach(planetId => {
                     const planetEntity = ecs.getEntityManager().getEntity(planetId);
@@ -156,8 +156,8 @@ describe('RealmGenerator', () => {
 
             realmIds.forEach(realmId => {
                 const realmEntity = ecs.getEntityManager().getEntity(realmId);
-                const territorialComponent = realmEntity!.getComponent(TerritorialRealmComponent);
-                const planets = territorialComponent!.getPlanets();
+                const territoryComponent = realmEntity!.getComponent(TerritoryComponent);
+                const planets = territoryComponent!.getPlanets();
 
                 planets.forEach(planetId => {
                     expect(allClaimedPlanets.has(planetId)).toBe(false);
@@ -172,12 +172,12 @@ describe('RealmGenerator', () => {
 
             realmIds.forEach(realmId => {
                 const realmEntity = ecs.getEntityManager().getEntity(realmId);
-                const territorialComponent = realmEntity!.getComponent(TerritorialRealmComponent);
-                const planets = territorialComponent!.getPlanets();
+                const territoryComponent = realmEntity!.getComponent(TerritoryComponent);
+                const planets = territoryComponent!.getPlanets();
 
                 planets.forEach(planetId => {
                     // Check realm -> planet reference
-                    expect(territorialComponent!.hasPlanet(planetId)).toBe(true);
+                    expect(territoryComponent!.hasPlanet(planetId)).toBe(true);
 
                     // Check planet -> realm reference
                     const planetEntity = ecs.getEntityManager().getEntity(planetId);

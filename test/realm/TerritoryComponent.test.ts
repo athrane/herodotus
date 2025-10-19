@@ -1,10 +1,10 @@
-import { TerritorialRealmComponent } from '../../src/realm/TerritorialRealmComponent';
+import { TerritoryComponent } from '../../src/realm/TerritoryComponent';
 import { ClaimStatus } from '../../src/realm/ClaimStatus';
 
-describe('TerritorialRealmComponent', () => {
+describe('TerritoryComponent', () => {
     describe('constructor and factory', () => {
         it('should create with valid parameters', () => {
-            const component = TerritorialRealmComponent.create('Terran Dominion', 2500);
+            const component = TerritoryComponent.create('Terran Dominion', 2500);
             
             expect(component.getName()).toBe('Terran Dominion');
             expect(component.getFoundingYear()).toBe(2500);
@@ -12,26 +12,26 @@ describe('TerritorialRealmComponent', () => {
         });
 
         it('should throw error for empty name', () => {
-            expect(() => TerritorialRealmComponent.create('', 2500))
-                .toThrow('TerritorialRealmComponent name must be a non-empty string.');
+            expect(() => TerritoryComponent.create('', 2500))
+                .toThrow('TerritoryComponent name must be a non-empty string.');
         });
 
         it('should throw error for non-string name', () => {
-            expect(() => TerritorialRealmComponent.create(123 as any, 2500))
-                .toThrow('TerritorialRealmComponent name must be a non-empty string.');
+            expect(() => TerritoryComponent.create(123 as any, 2500))
+                .toThrow('TerritoryComponent name must be a non-empty string.');
         });
 
         it('should throw error for non-number founding year', () => {
-            expect(() => TerritorialRealmComponent.create('Test Realm', '2500' as any))
-                .toThrow('TerritorialRealmComponent foundingYear must be a number.');
+            expect(() => TerritoryComponent.create('Test Realm', '2500' as any))
+                .toThrow('TerritoryComponent foundingYear must be a number.');
         });
     });
 
     describe('planet management', () => {
-        let component: TerritorialRealmComponent;
+        let component: TerritoryComponent;
 
         beforeEach(() => {
-            component = TerritorialRealmComponent.create('Test Realm', 2500);
+            component = TerritoryComponent.create('Test Realm', 2500);
         });
 
         it('should add planet with Core status', () => {
