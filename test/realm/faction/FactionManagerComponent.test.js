@@ -1,5 +1,5 @@
-import { FactionManagerComponent } from '../../src/realm/FactionManagerComponent';
-import { Faction } from '../../src/realm/Faction';
+import { FactionManagerComponent } from '../../../src/realm/faction/FactionManagerComponent';
+import { Faction } from '../../../src/realm/faction/Faction';
 
 describe('FactionManagerComponent', () => {
   // ========================================================================

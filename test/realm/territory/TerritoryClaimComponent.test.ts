@@ -1,5 +1,5 @@
-import { TerritoryClaimComponent } from '../../src/realm/TerritoryClaimComponent';
-import { ClaimStatus } from '../../src/realm/ClaimStatus';
+import { TerritoryClaimComponent } from '../../../src/realm/territory/TerritoryClaimComponent';
+import { ClaimStatus } from '../../../src/realm/territory/ClaimStatus';
 
 describe('TerritoryClaimComponent', () => {
     describe('constructor and factory', () => {

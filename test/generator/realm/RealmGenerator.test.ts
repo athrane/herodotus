@@ -5,9 +5,9 @@ import { GalaxyMapComponent } from '../../../src/geography/galaxy/GalaxyMapCompo
 import { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } from '../../../src/geography/planet/PlanetComponent';
 import { NameGenerator } from '../../../src/naming/NameGenerator';
 import { RandomComponent } from '../../../src/random/RandomComponent';
-import { TerritoryComponent } from '../../../src/realm/TerritoryComponent';
-import { TerritoryClaimComponent } from '../../../src/realm/TerritoryClaimComponent';
-import { ClaimStatus } from '../../../src/realm/ClaimStatus';
+import { TerritoryComponent } from '../../../src/realm/territory/TerritoryComponent';
+import { TerritoryClaimComponent } from '../../../src/realm/territory/TerritoryClaimComponent';
+import { ClaimStatus } from '../../../src/realm/territory/ClaimStatus';
 import { Sector } from '../../../src/geography/galaxy/Sector';
 import { createTestRandomComponent } from '../../util/RandomTestUtils';
 
