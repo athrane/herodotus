@@ -1,4 +1,4 @@
-import { TypeUtils } from '../util/TypeUtils';
+import { TypeUtils } from '../../util/TypeUtils';
 
 /**
  * Represents a political or social faction within the realm.

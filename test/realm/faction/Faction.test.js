@@ -1,4 +1,4 @@
-import { Faction } from '../../src/realm/Faction';
+import { Faction } from '../../../src/realm/faction/Faction';
 
 describe('Faction', () => {
   // ========================================================================
