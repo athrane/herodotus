@@ -25,3 +25,6 @@ coverage/
 .DS_Store
 Thumbs.db
 /out.log
+
+# Generated files
+data/geography/galaxy/galaxy-map.json
