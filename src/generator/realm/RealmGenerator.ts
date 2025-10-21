@@ -8,7 +8,7 @@ import { ClaimStatus } from '../../realm/territory/ClaimStatus';
 import { NameComponent } from '../../ecs/NameComponent';
 import { TimeComponent } from '../../time/TimeComponent';
 import { RandomComponent } from '../../random/RandomComponent';
-import type { RealmGeneratorConfig } from './RealmGeneratorConfig';
+import { RealmData } from '../../data/realm/RealmData';
 
 /**
  * Generator that creates the initial realm configuration of the galaxy.
@@ -17,28 +17,19 @@ import type { RealmGeneratorConfig } from './RealmGeneratorConfig';
  */
 export class RealmGenerator {
     private readonly nameGenerator: NameGenerator;
-    private readonly config: RealmGeneratorConfig;
+    private readonly realmData: RealmData;
 
     /**
      * Creates a new RealmGenerator.
      * @param nameGenerator - Name generator for realm names
-     * @param config - Configuration for realm generation
+     * @param realmData - Realm configuration data
      */
-    constructor(nameGenerator: NameGenerator, config: RealmGeneratorConfig) {
+    constructor(nameGenerator: NameGenerator, realmData: RealmData) {
         TypeUtils.ensureInstanceOf(nameGenerator, NameGenerator);
-        TypeUtils.ensureNumber(config.numberOfRealms, 'numberOfRealms must be a number.');
-        TypeUtils.ensureNumber(config.minPlanetsPerRealm, 'minPlanetsPerRealm must be a number.');
-        TypeUtils.ensureNumber(config.maxPlanetsPerRealm, 'maxPlanetsPerRealm must be a number.');
-
-        if (config.minPlanetsPerRealm < 1) {
-            throw new TypeError('minPlanetsPerRealm must be at least 1.');
-        }
-        if (config.maxPlanetsPerRealm < config.minPlanetsPerRealm) {
-            throw new TypeError('maxPlanetsPerRealm must be >= minPlanetsPerRealm.');
-        }
+        TypeUtils.ensureInstanceOf(realmData, RealmData);
 
         this.nameGenerator = nameGenerator;
-        this.config = config;
+        this.realmData = realmData;
     }
 
     /**
@@ -62,8 +53,8 @@ export class RealmGenerator {
 
         // Determine how many realms we can actually create
         const totalPlanets = galaxyMap.getPlanetCount();
-        const maxPossibleRealms = Math.floor(totalPlanets / this.config.minPlanetsPerRealm);
-        const realmsToCreate = Math.min(this.config.numberOfRealms, maxPossibleRealms);
+        const maxPossibleRealms = Math.floor(totalPlanets / this.realmData.getMinPlanetsPerRealm());
+        const realmsToCreate = Math.min(this.realmData.getNumberOfRealms(), maxPossibleRealms);
 
         if (realmsToCreate === 0) {
             console.warn('Not enough planets to create any realms.');
@@ -76,8 +67,8 @@ export class RealmGenerator {
         // Generate each realm
         for (const seedPlanetId of seedPlanets) {
             const targetSize = randomComponent.nextInt(
-                this.config.minPlanetsPerRealm,
-                this.config.maxPlanetsPerRealm
+                this.realmData.getMinPlanetsPerRealm(),
+                this.realmData.getMaxPlanetsPerRealm()
             );
 
             // Expand territory from seed planet
@@ -259,12 +250,12 @@ export class RealmGenerator {
     /**
      * Static factory method for creating RealmGenerator instances.
      * @param nameGenerator - Name generator for realm names
-     * @param config - Configuration for realm generation
+     * @param realmData - Realm configuration data
      */
     static create(
         nameGenerator: NameGenerator,
-        config: RealmGeneratorConfig
+        realmData: RealmData
     ): RealmGenerator {
-        return new RealmGenerator(nameGenerator, config);
+        return new RealmGenerator(nameGenerator, realmData);
     }
 }

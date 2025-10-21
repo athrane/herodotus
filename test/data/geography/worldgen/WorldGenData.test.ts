@@ -8,14 +8,7 @@ describe('WorldGenData', () => {
         planetsPerSector: 64,
         featuresPerContinent: 50,
         continentsPerPlanet: 5,
-        featuresPerPlanetContinent: 64,
-        realm: {
-          numberOfRealms: 5,
-          minPlanetsPerRealm: 3,
-          maxPlanetsPerRealm: 5,
-          ensurePlayerRealm: true,
-          spatialDistribution: 'random'
-        }
+        featuresPerPlanetContinent: 64
       };
 
       const worldGenData = WorldGenData.create(data);
@@ -26,29 +19,6 @@ describe('WorldGenData', () => {
       expect(worldGenData.getFeaturesPerContinent()).toBe(50);
       expect(worldGenData.getContinentsPerPlanet()).toBe(5);
       expect(worldGenData.getFeaturesPerPlanetContinent()).toBe(64);
-      expect(worldGenData.getRealmConfiguration().numberOfRealms).toBe(5);
-      expect(worldGenData.getRealmConfiguration().minPlanetsPerRealm).toBe(3);
-      expect(worldGenData.getRealmConfiguration().maxPlanetsPerRealm).toBe(5);
-      expect(worldGenData.getRealmConfiguration().ensurePlayerRealm).toBe(true);
-      expect(worldGenData.getRealmConfiguration().spatialDistribution).toBe('random');
-    });
-
-    it('should use default realm values when not provided', () => {
-      const data = {
-        numberOfSectors: 3,
-        planetsPerSector: 64,
-        featuresPerContinent: 50,
-        continentsPerPlanet: 5,
-        featuresPerPlanetContinent: 64
-      };
-
-      const worldGenData = WorldGenData.create(data);
-
-      expect(worldGenData.getRealmConfiguration().numberOfRealms).toBe(5);
-      expect(worldGenData.getRealmConfiguration().minPlanetsPerRealm).toBe(3);
-      expect(worldGenData.getRealmConfiguration().maxPlanetsPerRealm).toBe(5);
-      expect(worldGenData.getRealmConfiguration().ensurePlayerRealm).toBe(true);
-      expect(worldGenData.getRealmConfiguration().spatialDistribution).toBe('random');
     });
 
     it('should be immutable after creation', () => {
@@ -136,11 +106,6 @@ describe('WorldGenData', () => {
       expect(nullInstance.getFeaturesPerContinent()).toBe(0);
       expect(nullInstance.getContinentsPerPlanet()).toBe(0);
       expect(nullInstance.getFeaturesPerPlanetContinent()).toBe(0);
-      expect(nullInstance.getRealmConfiguration().numberOfRealms).toBe(0);
-      expect(nullInstance.getRealmConfiguration().minPlanetsPerRealm).toBe(0);
-      expect(nullInstance.getRealmConfiguration().maxPlanetsPerRealm).toBe(0);
-      expect(nullInstance.getRealmConfiguration().ensurePlayerRealm).toBe(false);
-      expect(nullInstance.getRealmConfiguration().spatialDistribution).toBe('random');
     });
 
     it('should return the same singleton instance on multiple calls', () => {
@@ -160,14 +125,7 @@ describe('WorldGenData', () => {
         planetsPerSector: 32,
         featuresPerContinent: 25,
         continentsPerPlanet: 3,
-        featuresPerPlanetContinent: 48,
-        realm: {
-          numberOfRealms: 5,
-          minPlanetsPerRealm: 3,
-          maxPlanetsPerRealm: 5,
-          ensurePlayerRealm: true,
-          spatialDistribution: 'random'
-        }
+        featuresPerPlanetContinent: 48
       };
       worldGenData = WorldGenData.create(data);
     });
@@ -190,15 +148,6 @@ describe('WorldGenData', () => {
 
     it('should return correct featuresPerPlanetContinent', () => {
       expect(worldGenData.getFeaturesPerPlanetContinent()).toBe(48);
-    });
-
-    it('should return correct realm configuration', () => {
-      const realmConfig = worldGenData.getRealmConfiguration();
-      expect(realmConfig.numberOfRealms).toBe(5);
-      expect(realmConfig.minPlanetsPerRealm).toBe(3);
-      expect(realmConfig.maxPlanetsPerRealm).toBe(5);
-      expect(realmConfig.ensurePlayerRealm).toBe(true);
-      expect(realmConfig.spatialDistribution).toBe('random');
     });
   });
 });

@@ -1,0 +1,7 @@
+{
+  "numberOfRealms": 5,
+  "minPlanetsPerRealm": 3,
+  "maxPlanetsPerRealm": 5,
+  "ensurePlayerRealm": true,
+  "spatialDistribution": "random"
+}

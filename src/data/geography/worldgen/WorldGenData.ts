@@ -1,5 +1,4 @@
 import { TypeUtils } from '../../../util/TypeUtils';
-import { RealmGeneratorConfig } from '../../../generator/realm/RealmGeneratorConfig';
 
 /**
  * Represents world generation configuration data loaded from JSON.
@@ -11,7 +10,6 @@ export class WorldGenData {
   private readonly featuresPerContinent: number;
   private readonly continentsPerPlanet: number;
   private readonly featuresPerPlanetContinent: number;
-  private readonly realmConfiguration: RealmGeneratorConfig;
 
   private static instance: WorldGenData | null = null;
 
@@ -31,15 +29,6 @@ export class WorldGenData {
     this.featuresPerContinent = data.featuresPerContinent;
     this.continentsPerPlanet = data.continentsPerPlanet;
     this.featuresPerPlanetContinent = data.featuresPerPlanetContinent;
-
-    // Initialize realm configuration with defaults if not provided
-    this.realmConfiguration = {
-      numberOfRealms: data.realm?.numberOfRealms ?? 5,
-      minPlanetsPerRealm: data.realm?.minPlanetsPerRealm ?? 3,
-      maxPlanetsPerRealm: data.realm?.maxPlanetsPerRealm ?? 5,
-      ensurePlayerRealm: data.realm?.ensurePlayerRealm ?? true,
-      spatialDistribution: data.realm?.spatialDistribution ?? 'random'
-    };
 
     Object.freeze(this); // Make instances immutable
   }
@@ -65,14 +54,7 @@ export class WorldGenData {
         planetsPerSector: 0,
         featuresPerContinent: 0,
         continentsPerPlanet: 0,
-        featuresPerPlanetContinent: 0,
-        realm: {
-          numberOfRealms: 0,
-          minPlanetsPerRealm: 0,
-          maxPlanetsPerRealm: 0,
-          ensurePlayerRealm: false,
-          spatialDistribution: 'random'
-        }
+        featuresPerPlanetContinent: 0
       });
     }
     return WorldGenData.instance;
@@ -116,13 +98,5 @@ export class WorldGenData {
    */
   getFeaturesPerPlanetContinent(): number {
     return this.featuresPerPlanetContinent;
-  }
-
-  /**
-   * Gets the realm generation configuration.
-   * @returns The realm configuration.
-   */
-  getRealmConfiguration(): RealmGeneratorConfig {
-    return this.realmConfiguration;
   }
 }

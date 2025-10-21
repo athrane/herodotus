@@ -33,6 +33,8 @@ import { loadRandomSeed } from '../../data/random/loadRandomSeed';
 import { RandomSeedData } from '../../data/random/RandomSeedData';
 import { RandomComponent } from '../../random/RandomComponent';
 import { WorldGenData } from '../../data/geography/worldgen/WorldGenData';
+import { loadRealmData } from '../../data/realm/loadRealmData';
+import { RealmData } from '../../data/realm/RealmData';
 
 /**
  * SimulationBuilder class is responsible for building an ECS-based simulation.
@@ -79,6 +81,12 @@ export class SimulationBuilder extends Builder {
      */
     private worldGenConfig!: WorldGenData;
 
+    /**
+     * Configuration data for realm generation.
+     * ! signifies that this property is not yet initialized.
+     */
+    private realmData!: RealmData;
+
     /** 
      * Creates a new instance of SimulationBuilder.
      * @constructor
@@ -111,7 +119,7 @@ export class SimulationBuilder extends Builder {
         // Generate realms (realms controlling clusters of planets)
         const realmGenerator = RealmGenerator.create(
             nameGenerator,
-            this.worldGenConfig.getRealmConfiguration()
+            this.realmData
         );
         const realmIds = realmGenerator.generate(galaxyMapComponent, randomComponent, this.simEcs);        console.log(`Generated ${realmIds.length} realms`);
 
@@ -196,6 +204,9 @@ export class SimulationBuilder extends Builder {
 
         // Load world generation configuration
         this.worldGenConfig = loadWorldGenData();
+
+        // Load realm generation configuration
+        this.realmData = loadRealmData();
     }
 
     /**
