@@ -17,6 +17,7 @@ import { GeographicalFeatureTypeRegistry } from '../../../src/geography/feature/
 jest.mock('../../../src/generator/world/WorldGenerator', () => {
     const { GalaxyMapComponent } = jest.requireActual('../../../src/geography/galaxy/GalaxyMapComponent.ts');
     const { Sector } = jest.requireActual('../../../src/geography/galaxy/Sector.ts');
+    const { Position } = jest.requireActual('../../../src/geography/galaxy/Position.ts');
     const { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } = jest.requireActual('../../../src/geography/planet/PlanetComponent.ts');
     return {
         WorldGenerator: {
@@ -25,7 +26,7 @@ jest.mock('../../../src/generator/world/WorldGenerator', () => {
                     const map = GalaxyMapComponent.create();
                     map.reset();
 
-                    const sector = Sector.create('sector-mock', 'Mock Sector');
+                    const sector = Sector.create('sector-mock', 'Mock Sector', Position.create(0, 0, 0));
                     map.addSector(sector);
 
                     const planet = PlanetComponent.create(

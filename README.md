@@ -504,6 +504,85 @@ Entity component queries now use instanceof semantics with an exact-match prefer
 - `src/geography/feature/GeographicalFeaturesFactory.ts` — Factory to create features
 - `src/geography/feature/GeographicalFeatureTypeRegistry.ts` — Registry of feature types
 - `src/generator/world/WorldGenerator.ts` — World generator implementation
+- `src/generator/galaxy/GalaxyGenerator.ts` — Standalone procedural galaxy map generator creating sector-based 2D spiral galaxy layouts
+- `src/generator/galaxy/GalaxyMapData.ts` — Output interface for galaxy map generation defining the structure of generated sector data
+
+##### Galaxy Generation
+
+The Herodotus project includes a standalone `GalaxyGenerator` tool that procedurally generates 2D spiral galaxy maps with sectors distributed across a galactic disc. This generator creates the spatial foundation for world-building by establishing named sectors positioned in concentric rings.
+
+**Core Classes:**
+- `src/generator/galaxy/GalaxyGenerator.ts` — Standalone generator class implementing radial sector distribution algorithm with deterministic random generation
+- `src/generator/galaxy/GalaxyMapData.ts` — Interface defining galaxy map output structure with typed sector data
+- `src/data/geography/galaxy/GalaxyGenData.ts` — Configuration data class for galaxy generation parameters with runtime validation
+- `src/data/geography/galaxy/loadGalaxyGenConfig.ts` — Loader function reading galaxy generation configuration from JSON
+- `data/geography/galaxy/galaxy.json` — JSON configuration file containing galaxy generation parameters
+
+**Configuration Parameters:**
+The `galaxy.json` file defines:
+- `numberSectors` — Total number of sectors to generate in the galaxy (default: 100)
+- `galaxySize` — Maximum radius of the galaxy in arbitrary spatial units (default: 10)
+
+**Generation Algorithm:**
+1. Creates a central sector at galactic origin (0, 0, 0)
+2. Distributes remaining sectors across concentric rings around the center
+3. Calculates optimal ring count using square root of remaining sectors
+4. Positions sectors at calculated radii with even angular distribution
+5. Generates deterministic names for each sector using `NameGenerator`
+6. Increases sector density in outer rings (6, 12, 18, 24... sectors per ring)
+
+**Architecture Benefits:**
+- **Standalone Tool**: Independent generator that can be used outside the main simulation
+- **Deterministic Generation**: Uses `RandomComponent` for reproducible galaxy layouts with seed support
+- **Configurable Parameters**: JSON-based configuration without code changes
+- **Type Safety**: Runtime validation ensures configuration integrity
+- **Immutable Output**: Generated data follows immutability patterns
+- **Follows Project Patterns**: Implements standard factory methods and dependency injection
+
+**Usage Example:**
+```typescript
+// Load configuration
+const config = loadGalaxyGenConfig();
+
+// Create generator with dependencies
+const randomComponent = RandomComponent.create(randomSeed);
+const nameGenerator = NameGenerator.create();
+const generator = GalaxyGenerator.create(randomComponent, nameGenerator, config);
+
+// Generate galaxy map
+const galaxyMap = generator.generateGalaxyMap();
+// Returns: { sectors: [ { id, name, position: { x, y, z } }, ... ] }
+```
+
+**Output Structure:**
+```typescript
+interface GalaxyMapData {
+  sectors: {
+    id: string;        // Unique identifier (e.g., "sector-1")
+    name: string;      // Procedurally generated name
+    position: {
+      x: number;       // X coordinate in galactic space
+      y: number;       // Y coordinate in galactic space  
+      z: number;       // Z coordinate (always 0 for 2D galaxy)
+    };
+  }[];
+}
+```
+
+**Key Features:**
+- Empty sectors without planets (establishes spatial foundation only)
+- 2D galactic disc structure (Z coordinate always 0)
+- Radial distribution with increasing density in outer rings
+- Deterministic procedural naming via `NameGenerator`
+- JSON-configurable sector count and galaxy size
+- Compatible with existing `Sector` and `Position` domain classes
+
+**Implementation Details:**
+- Accepts `RandomComponent`, `NameGenerator`, and `GalaxyGenData` via constructor
+- Uses dependency injection for testability
+- Returns plain data objects (not domain entities) for flexibility
+- Integrates with existing geography domain model
+- Follows Standalone Class Pattern from Random Number Generation guidelines
 
 ##### Data-Driven World Generation
 The Herodotus project uses a data-driven approach for world generation configuration, separating generation parameters from code logic. This architecture enhances configurability and maintainability by externalizing world generation settings into JSON files.
