@@ -510,11 +510,11 @@ The Herodotus project uses a data-driven approach for world generation configura
 
 **Core Classes:**
 - `src/data/geography/worldgen/WorldGenData.ts` — Type-safe data class containing world generation parameters with runtime validation, immutability enforcement, and null object pattern implementation
-- `src/data/geography/worldgen/loadWorldGenData.ts` — Loader function that reads and validates world generation configuration from JSON
-- `data/geography/world/worldgen.json` — JSON configuration file containing all world generation parameters
+- `src/data/geography/worldgen/loadWorldGenData.ts` — Loader function that reads and validates world generation configuration from JavaScript module
+- `data/geography/world/world.js` — JavaScript module configuration file containing all world generation parameters
 
 **Configuration Parameters:**
-The `worldgen.json` file defines the following parameters:
+The `world.js` file defines the following parameters:
 - `numSectors` — Number of sectors to generate in the galaxy (default: 3)
 - `planetsPerSector` — Number of planets to generate per sector (default: 64)
 - `featuresPerContinent` — Number of geographical features per continent (default: 50)
@@ -522,7 +522,7 @@ The `worldgen.json` file defines the following parameters:
 - `featuresPerPlanetContinent` — Number of geographical features per planetary continent (default: 64)
 
 **Architecture Benefits:**
-- **Improved Configurability**: World generation can be adjusted by editing JSON without code changes or recompilation
+- **Improved Configurability**: World generation can be adjusted by editing JavaScript module without recompilation
 - **Separation of Concerns**: Clear boundary between world generation logic and configuration data
 - **Type Safety**: Runtime validation using `TypeUtils` ensures configuration integrity
 - **Immutability**: Configuration instances are frozen after creation to prevent accidental modification
@@ -531,7 +531,7 @@ The `worldgen.json` file defines the following parameters:
 
 **Usage Example:**
 ```typescript
-// Load configuration from JSON
+// Load configuration from JavaScript module
 const config = loadWorldGenData();
 
 // Create world generator with configuration
@@ -543,14 +543,14 @@ const galaxyMap = worldGenerator.generateGalaxyMap();
 ```
 
 **Customization:**
-To modify world generation parameters, simply edit `data/geography/world/worldgen.json`:
-```json
-{
-  "numSectors": 5,
+To modify world generation parameters, simply edit `data/geography/world/world.js`:
+```javascript
+export default {
+  "numberOfSectors": 5,
   "planetsPerSector": 128,
   "continentsPerPlanet": 7,
   ...
-}
+};
 ```
 No code changes or recompilation required!
 
