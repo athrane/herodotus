@@ -1,4 +1,4 @@
-{
+export default {
   "numberOfSectors": 3,
   "planetsPerSector": 64,
   "featuresPerContinent": 50,
@@ -11,4 +11,4 @@
     "ensurePlayerRealm": true,
     "spatialDistribution": "random"
   }
-}
+};

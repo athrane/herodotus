@@ -2,7 +2,7 @@ import { loadWorldGenData } from '../../../../src/data/geography/worldgen/loadWo
 import { WorldGenData } from '../../../../src/data/geography/worldgen/WorldGenData';
 
 describe('loadWorldGenData', () => {
-  it('should load world generation data from JSON file', () => {
+  it('should load world generation data from JavaScript module', () => {
     const worldGenData = loadWorldGenData();
 
     expect(worldGenData).toBeInstanceOf(WorldGenData);
@@ -11,7 +11,7 @@ describe('loadWorldGenData', () => {
     it('should return valid configuration values', () => {
     const worldGenData = loadWorldGenData();
 
-    // These values should match the JSON file
+    // These values should match the JavaScript module file
     expect(worldGenData.getNumberOfSectors()).toBe(3);
     expect(worldGenData.getPlanetsPerSector()).toBe(64);
     expect(worldGenData.getFeaturesPerContinent()).toBe(50);
