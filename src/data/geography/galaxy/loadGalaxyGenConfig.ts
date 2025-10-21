@@ -1,4 +1,4 @@
-import galaxyGenDataRaw from '../../../../data/geography/galaxy/galaxy-gen.json';
+import galaxyGenDataRaw from '../../../../data/geography/galaxy/galaxy.json';
 import { GalaxyGenData } from './GalaxyGenData';
 
 /**

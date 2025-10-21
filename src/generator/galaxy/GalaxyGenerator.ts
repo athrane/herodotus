@@ -4,21 +4,7 @@ import { NameGenerator } from '../../naming/NameGenerator';
 import { GalaxyGenData } from '../../data/geography/galaxy/GalaxyGenData';
 import { Sector } from '../../geography/galaxy/Sector';
 import { Position } from '../../geography/galaxy/Position';
-
-/**
- * Output structure for generated galaxy map data.
- */
-export interface GalaxyMapData {
-    sectors: {
-        id: string;
-        name: string;
-        position: {
-            x: number;
-            y: number;
-            z: number;
-        };
-    }[];
-}
+import { GalaxyMapData } from './GalaxyMapData';
 
 /**
  * A standalone tool class that procedurally generates a 2D spiral galaxy map

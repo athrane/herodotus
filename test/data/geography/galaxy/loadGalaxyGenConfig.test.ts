@@ -20,7 +20,7 @@ describe('loadGalaxyGenConfig', () => {
     it('loads expected default values', () => {
         const config = loadGalaxyGenConfig();
 
-        // Based on galaxy-gen.json
+        // Based on galaxy.json
         expect(config.getNumberSectors()).toBe(100);
         expect(config.getGalaxySize()).toBe(10);
     });
