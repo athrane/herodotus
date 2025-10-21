@@ -7,6 +7,7 @@ import { ChronicleComponent } from '../../src/chronicle/ChronicleComponent';
 import { TimeComponent } from '../../src/time/TimeComponent';
 import { GalaxyMapComponent } from '../../src/geography/galaxy/GalaxyMapComponent';
 import { Sector } from '../../src/geography/galaxy/Sector';
+import { Position } from '../../src/geography/galaxy/Position';
 import { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } from '../../src/geography/planet/PlanetComponent';
 import { Continent } from '../../src/geography/planet/Continent';
 import { GeographicalFeature } from '../../src/geography/feature/GeographicalFeature';
@@ -61,7 +62,7 @@ describe('SelectChoiceSystem', () => {
         galaxyMapComponent = GalaxyMapComponent.create();
         
         // Register the sector first (required before registering planet)
-        const sector = Sector.create(planet.getSectorId(), 'Test Sector');
+        const sector = Sector.create(planet.getSectorId(), 'Test Sector', Position.create(0, 0, 0));
         galaxyMapComponent.addSector(sector);
         
         // Now register the planet
@@ -924,7 +925,7 @@ describe('SelectChoiceSystem', () => {
         it('should use null location even with planets in galaxy when entity lacks LocationComponent', () => {
             // Arrange - Create planet with continent but entity has no LocationComponent
             galaxyMapComponent.reset();
-            const sector = Sector.create('test-sector', 'Test Sector');
+            const sector = Sector.create('test-sector', 'Test Sector', Position.create(0, 0, 0));
             galaxyMapComponent.addSector(sector);
             
             const emptyContinent = Continent.create('Empty Continent');
@@ -1037,7 +1038,7 @@ describe('SelectChoiceSystem', () => {
             randomComponent = createTestRandomComponent('missing-time-test-seed');
             chronicleComponent = ChronicleComponent.create();
             galaxyMapComponent = GalaxyMapComponent.create();
-            const sector = Sector.create('test-sector', 'Test Sector');
+            const sector = Sector.create('test-sector', 'Test Sector', Position.create(0, 0, 0));
             galaxyMapComponent.addSector(sector);
             
             globalEntity = entityManager.createEntity(chronicleComponent, galaxyMapComponent, randomComponent);

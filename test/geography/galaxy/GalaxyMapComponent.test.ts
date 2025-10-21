@@ -1,5 +1,6 @@
 import { GalaxyMapComponent } from '../../../src/geography/galaxy/GalaxyMapComponent';
 import { Sector } from '../../../src/geography/galaxy/Sector';
+import { Position } from '../../../src/geography/galaxy/Position';
 import { PlanetComponent, PlanetStatus, PlanetResourceSpecialization } from '../../../src/geography/planet/PlanetComponent';
 import { Continent } from '../../../src/geography/planet/Continent';
 import { createTestRandomComponent } from '../../util/RandomTestUtils';
@@ -28,7 +29,7 @@ describe('GalaxyMapComponent', () => {
   });
 
   it('registers sectors and planets and associates them correctly', () => {
-    const sector = Sector.create('sector-1', 'Core Worlds');
+    const sector = Sector.create('sector-1', 'Core Worlds', Position.create(0, 0, 0));
     galaxy.addSector(sector);
 
     const planet = createPlanet('planet-a');
@@ -43,7 +44,7 @@ describe('GalaxyMapComponent', () => {
   });
 
   it('connects planets bidirectionally', () => {
-    const sector = Sector.create('sector-1', 'Core Worlds');
+    const sector = Sector.create('sector-1', 'Core Worlds', Position.create(0, 0, 0));
     galaxy.addSector(sector);
     const planetA = createPlanet('planet-a');
     const planetB = createPlanet('planet-b');
@@ -57,7 +58,7 @@ describe('GalaxyMapComponent', () => {
   });
 
   it('returns an empty array when no connections exist', () => {
-    const sector = Sector.create('sector-1', 'Core Worlds');
+    const sector = Sector.create('sector-1', 'Core Worlds', Position.create(0, 0, 0));
     galaxy.addSector(sector);
     const planet = createPlanet('planet-a');
     galaxy.registerPlanet(planet);
@@ -84,7 +85,7 @@ describe('GalaxyMapComponent', () => {
   });
 
   it('throws when connecting unknown planets', () => {
-    const sector = Sector.create('sector-1', 'Core Worlds');
+    const sector = Sector.create('sector-1', 'Core Worlds', Position.create(0, 0, 0));
     galaxy.addSector(sector);
     galaxy.registerPlanet(createPlanet('planet-a'));
     const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -103,7 +104,7 @@ describe('GalaxyMapComponent', () => {
   });
 
   it('clears all data when reset is called', () => {
-    const sector = Sector.create('sector-1', 'Core Worlds');
+    const sector = Sector.create('sector-1', 'Core Worlds', Position.create(0, 0, 0));
     galaxy.addSector(sector);
     galaxy.registerPlanet(createPlanet('planet-a'));
 
@@ -130,7 +131,7 @@ describe('GalaxyMapComponent', () => {
   });
 
   it('returns a random planet from the galaxy', () => {
-    const sector = Sector.create('sector-1', 'Core Worlds');
+    const sector = Sector.create('sector-1', 'Core Worlds', Position.create(0, 0, 0));
     galaxy.addSector(sector);
     const planetA = createPlanet('planet-a');
     const planetB = createPlanet('planet-b');

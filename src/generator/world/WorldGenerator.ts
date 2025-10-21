@@ -3,6 +3,7 @@ import { GeographicalFeature } from '../../geography/feature/GeographicalFeature
 import { GeographicalFeatureTypeRegistry } from '../../geography/feature/GeographicalFeatureTypeRegistry';
 import { GalaxyMapComponent } from '../../geography/galaxy/GalaxyMapComponent';
 import { Sector } from '../../geography/galaxy/Sector';
+import { Position } from '../../geography/galaxy/Position';
 import { PlanetComponent, PlanetResourceSpecialization, PlanetStatus } from '../../geography/planet/PlanetComponent';
 import { TypeUtils } from '../../util/TypeUtils';
 import { NameGenerator } from '../../naming/NameGenerator';
@@ -69,7 +70,9 @@ export class WorldGenerator {
         for (let sectorIndex = 0; sectorIndex < this.config.getNumberOfSectors(); sectorIndex++) {
             const sectorId = `sector-${sectorIndex + 1}`;
             const sectorName = this.nameGenerator.generateSyllableName('SECTOR');
-            const sector = Sector.create(sectorId, sectorName);
+            // Simple enumeration positioning for backward compatibility
+            const position = Position.create(sectorIndex, 0, 0);
+            const sector = Sector.create(sectorId, sectorName, position);
             galaxyMap.addSector(sector);
 
             let previousPlanetId: string | null = null;

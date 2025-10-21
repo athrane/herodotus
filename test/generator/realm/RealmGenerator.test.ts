@@ -9,6 +9,7 @@ import { TerritoryComponent } from '../../../src/realm/territory/TerritoryCompon
 import { TerritoryClaimComponent } from '../../../src/realm/territory/TerritoryClaimComponent';
 import { ClaimStatus } from '../../../src/realm/territory/ClaimStatus';
 import { Sector } from '../../../src/geography/galaxy/Sector';
+import { Position } from '../../../src/geography/galaxy/Position';
 import { createTestRandomComponent } from '../../util/RandomTestUtils';
 
 describe('RealmGenerator', () => {
@@ -209,7 +210,7 @@ describe('RealmGenerator', () => {
  * Creates planets in a chain topology for easy testing.
  */
 function setupGalaxyWithPlanets(count: number, galaxyMap: GalaxyMapComponent, ecs: Ecs): void {
-    const sector = Sector.create('sector-1', 'Test Sector');
+    const sector = Sector.create('sector-1', 'Test Sector', Position.create(0, 0, 0));
     galaxyMap.addSector(sector);
 
     const planetIds: string[] = [];

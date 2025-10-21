@@ -12,6 +12,7 @@
     "start:bundle": "node dist/bundle.js",
     "start:gui": "tsx src/mainGUI.ts",
     "start:main": "tsx src/main.ts",
+    "start:galaxygen": "tsx src/mainGalaxyGen.ts",
     "dev": "tsx src/main.ts",
     "start:ts": "tsx src/main.ts",
     "test": "jest --config jest.config.js",

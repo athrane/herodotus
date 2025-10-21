@@ -1,4 +1,5 @@
 import { TypeUtils } from '../../util/TypeUtils';
+import { Position } from './Position';
 
 /**
  * A sector encapsulates a named region of the galaxy and tracks the planets
@@ -8,20 +9,24 @@ import { TypeUtils } from '../../util/TypeUtils';
 export class Sector {
     private readonly id: string;
     private readonly name: string;
+    private readonly position: Position;
     private readonly planetIds: Set<string>;
 
     /**
      * Creates a new Sector instance.
     * @param id - Unique identifier for the sector.
      * @param name - Display name of the sector.
+     * @param position - 3D position of the sector in the galaxy.
      * @param planetIds - Optional iterable of planet identifiers belonging to the sector.
      */
-    constructor(id: string, name: string, planetIds?: Iterable<string>) {
+    constructor(id: string, name: string, position: Position, planetIds?: Iterable<string>) {
         TypeUtils.ensureNonEmptyString(id, 'Sector id must be a non-empty string.');
         TypeUtils.ensureNonEmptyString(name, 'Sector name must be a non-empty string.');
+        TypeUtils.ensureInstanceOf(position, Position, 'Sector position must be a Position instance.');
 
         this.id = id;
         this.name = name;
+        this.position = position;
         this.planetIds = new Set<string>();
 
         if (planetIds) {
@@ -46,6 +51,14 @@ export class Sector {
      */
     getName(): string {
         return this.name;
+    }
+
+    /**
+     * Gets the 3D position of the sector in the galaxy.
+     * @return The sector's position.
+     */
+    getPosition(): Position {
+        return this.position;
     }
 
     /**
@@ -84,13 +97,26 @@ export class Sector {
     }
 
     /**
+     * Serializes the sector to a JSON object.
+     * @return A JSON representation of the sector.
+     */
+    toJSON(): { id: string; name: string; position: { x: number; y: number; z: number } } {
+        return {
+            id: this.id,
+            name: this.name,
+            position: this.position.toJSON()
+        };
+    }
+
+    /**
      * Static factory method to create a Sector.
      * @param id - Unique identifier for the sector.
      * @param name - Display name of the sector.
+     * @param position - 3D position of the sector in the galaxy.
      * @param planetIds - Optional iterable of planet identifiers belonging to the sector.
      * @return A new Sector instance.
      */
-    static create(id: string, name: string, planetIds?: Iterable<string>): Sector {
-        return new Sector(id, name, planetIds);
+    static create(id: string, name: string, position: Position, planetIds?: Iterable<string>): Sector {
+        return new Sector(id, name, position, planetIds);
     }
 }
